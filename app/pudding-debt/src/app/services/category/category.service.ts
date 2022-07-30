@@ -17,8 +17,8 @@ export class CategoryService {
 
 	constructor(private httpClient: HttpClient) {}
 
-	loadCategories(event: PuddingEvent): Observable<Category[]> {
-        return this.httpClient.get<Category[]>(this.apiUrl + `?eventId=${event.id}`);
+	loadCategories(eventId: number): Observable<Category[]> {
+        return this.httpClient.get<Category[]>(this.apiUrl + `?eventId=${eventId}`);
     }
 
     createCategory(name: string) {

@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
 			this.users = users;
 			console.log(users);
 		});
-        this.categoryService.loadCategories(this.selectedEvent).subscribe((categories) => {
+        this.categoryService.loadCategories(this.selectedEvent.id).subscribe((categories) => {
             this.categories = categories;
         });
 	}
@@ -46,7 +46,8 @@ export class AppComponent implements OnInit {
 
 	createUser(nameInput: HTMLInputElement) {
 		console.log('nameinput', nameInput.value);
-		this.userService.createUser(nameInput.value, this.selectedEvent).subscribe((users) => {
+
+        this.userService.createUser(nameInput.value, this.selectedEvent).subscribe((users) => {
 			this.users = users;
 			console.log(users);
 		});

@@ -1,0 +1,12 @@
+
+<nav class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
+    <a mat-tab-link routerLink="../../events"><mat-icon>arrow_back</mat-icon></a>
+    <a mat-tab-link color="primary" [routerLink]="'./users'">Users</a>
+    <a mat-tab-link [routerLink]="'./expenses'">Expenses</a>
+    <a mat-tab-link [routerLink]="'./categories'">Categories</a>
+    <a mat-tab-link [routerLink]="'./payment'">Payment Structure</a>
+</nav>
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+<div class="content">
+    <router-outlet></router-outlet>
+</div>

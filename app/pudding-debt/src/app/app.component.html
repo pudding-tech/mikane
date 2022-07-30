@@ -1,9 +1,5 @@
 <router-outlet></router-outlet>
-<div *ngFor="let event of events">
-    <button type="button" (click)="clickEvent(event)">
-        {{ event.name }}
-    </button>
-</div>
+
 <div *ngIf="selectedEvent">
     <h1>Add Expense</h1>
     <label for="expenseName">Name</label>

@@ -10,6 +10,7 @@ export interface Expense {
 	id: number;
 	name: string;
 	description: string;
+    user: string;
 }
 
 @Injectable({
@@ -20,9 +21,9 @@ export class ExpenseService {
 
 	constructor(private httpClient: HttpClient) {}
 
-	loadExpenses(event: PuddingEvent): Observable<Expense[]> {
+	loadExpenses(eventId: number): Observable<Expense[]> {
 		return this.httpClient.get<Expense[]>(
-			this.apiUrl + `?eventId=${event.id}`
+			this.apiUrl + `?eventId=${eventId}`
 		);
 	}
 

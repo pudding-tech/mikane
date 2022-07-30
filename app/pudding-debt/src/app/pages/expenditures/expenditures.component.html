@@ -1,1 +1,10 @@
-<p>expenditures works!</p>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr *ngFor="let expense of expenses">
+        <td>{{ expense.name }}</td>
+        <td>{{ expense.description }}</td>
+    </tr>
+</table>

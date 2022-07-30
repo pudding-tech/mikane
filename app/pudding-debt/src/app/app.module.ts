@@ -9,8 +9,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserComponent } from './pages/user/user.component';
 import { ExpendituresComponent } from './pages/expenditures/expenditures.component';
 import { PaymentStructureComponent } from './pages/payment-structure/payment-structure.component';
-import { EventComponent } from './pages/event/event.component';
+import { EventsComponent } from './pages/events/events.component';
 import { HttpClientModule } from '@angular/common/http';
+import { CategoryComponent } from './pages/category/category.component';
+import { EventComponent } from './pages/events/event/event.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -18,7 +24,9 @@ import { HttpClientModule } from '@angular/common/http';
     UserComponent,
     ExpendituresComponent,
     PaymentStructureComponent,
-    EventComponent
+    EventsComponent,
+    CategoryComponent,
+    EventComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,7 +38,11 @@ import { HttpClientModule } from '@angular/common/http';
       registrationStrategy: 'registerWhenStable:30000'
     }),
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatButtonModule,
+    MatTabsModule,
+    MatIconModule,
+    MatListModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

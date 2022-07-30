@@ -6,11 +6,11 @@ import {
 } from 'src/app/services/event/event.service';
 
 @Component({
-	selector: 'app-event',
-	templateUrl: './event.component.html',
-	styleUrls: ['./event.component.scss'],
+	selector: 'app-events',
+	templateUrl: './events.component.html',
+	styleUrls: ['./events.component.scss'],
 })
-export class EventComponent implements OnInit {
+export class EventsComponent implements OnInit {
 	events: PuddingEvent[] = [];
 	selectedEvent!: PuddingEvent;
 

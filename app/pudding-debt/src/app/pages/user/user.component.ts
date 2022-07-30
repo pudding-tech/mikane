@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { User, UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -8,22 +8,28 @@ import { User, UserService } from 'src/app/services/user/user.service';
 	styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
-	users: User[] = [];
-    eventId: number;
+    private eventId!: number;
 
-	constructor(private userService: UserService, private router: Router) {
-        this.eventId = this.router.getCurrentNavigation()?.extras.state?.['event'];
+	users: User[] = [];
+
+	constructor(private userService: UserService, private route: ActivatedRoute) {
     }
 
 	ngOnInit() {
-        console.log('event', this.eventId);
-        console.log('current navigation', this.router.getCurrentNavigation());
+        this.route.parent?.params.subscribe(params => {
+            console.log('route params', params);
+            this.eventId = params['eventId'];
+            this.loadUsers();
+        });
+	}
+    
+    loadUsers() {
         if (this.eventId) {
             this.userService.loadUsersForEvent(this.eventId).subscribe((users) => {
                 this.users = users;
             });
         } else {
-            console.error('no even found in route data');
+            console.error('NO EVENT ID');
         }
-	}
+    }
 }

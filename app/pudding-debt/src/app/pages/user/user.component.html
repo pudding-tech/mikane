@@ -1,4 +1,5 @@
-<div *ngFor="let user of users">
-    <p>{{ user.id }}</p>
-    <p>{{ user.name }}</p>
-</div>
+<mat-list>
+    <mat-list-item *ngFor="let user of users">
+        <p matLine>{{ user.name }}</p>
+    </mat-list-item>
+</mat-list>
