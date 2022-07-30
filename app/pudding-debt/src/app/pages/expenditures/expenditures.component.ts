@@ -11,6 +11,7 @@ export class ExpendituresComponent implements OnInit {
     private eventId!: number;
 
     expenses: Expense[] = [];
+    displayedColumns: string[] = ['name', 'payer', 'amount', 'description'];
 
 	constructor(
 		private expenseService: ExpenseService,

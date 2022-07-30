@@ -10,7 +10,8 @@ export interface Expense {
 	id: number;
 	name: string;
 	description: string;
-    user: string;
+    amount: number;
+    payer: string;
 }
 
 @Injectable({
