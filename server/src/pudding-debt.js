@@ -18,7 +18,7 @@ function EXPENSES(participant, expenditures, expenditureDistributions, distribut
       }
     }
     return sum;
-  };
+  }
   
   function PAYMENTS(participants = ["Alice","Bob","Charlie"], netExpenses = [[-6.67],[1.67],[5]]) {
     var loans = [];
@@ -60,5 +60,5 @@ function EXPENSES(participant, expenditures, expenditureDistributions, distribut
   
     }
     return payments;
-  };
+  }
   
