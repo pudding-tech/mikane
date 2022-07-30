@@ -1,8 +1,8 @@
 import express from "express";
 import sql from "mssql";
-const expenseRouter = express.Router();
+const router = express.Router();
 
-expenseRouter.get("/expenses", (req, res, next) => {
+router.get("/expenses", (req, res, next) => {
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
   }
@@ -16,14 +16,16 @@ expenseRouter.get("/expenses", (req, res, next) => {
     .catch(next);
 });
 
-expenseRouter.post("/expenses", (req, res, next) => {
+router.post("/expenses", (req, res, next) => {
   if (!req.body.name || !req.body.description || !req.body.categoryId || !req.body.userId) {
     return res.status(400).send("Name, description, categoryId or userId not provided!");
   }
+  console.log(req.body.amount);
   const request = new sql.Request();
   request
     .input("name", sql.NVarChar, req.body.name)
     .input("description", sql.NVarChar, req.body.description)
+    .input("amount", sql.Numeric(16, 2), req.body.amount)
     .input("category_id", sql.Int, req.body.categoryId)
     .input("user_id", sql.Int, req.body.userId)
     .execute("new_expense")
@@ -33,4 +35,4 @@ expenseRouter.post("/expenses", (req, res, next) => {
     .catch(next);
 });
 
-export default expenseRouter;
+export default router;

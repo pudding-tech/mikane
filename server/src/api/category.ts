@@ -1,8 +1,8 @@
 import express from "express";
 import sql from "mssql";
-const categoryRouter = express.Router();
+const router = express.Router();
 
-categoryRouter.get("/categories", (req, res, next) => {
+router.get("/categories", (req, res, next) => {
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
   }
@@ -16,7 +16,7 @@ categoryRouter.get("/categories", (req, res, next) => {
     .catch(next);
 });
 
-categoryRouter.post("/categories", (req, res, next) => {
+router.post("/categories", (req, res, next) => {
   if (!req.body.name || !req.body.eventId) {
     return res.status(400).send("Name or eventId not provided!");
   }
@@ -31,4 +31,4 @@ categoryRouter.post("/categories", (req, res, next) => {
     .catch(next);
 });
 
-export default categoryRouter;
+export default router;

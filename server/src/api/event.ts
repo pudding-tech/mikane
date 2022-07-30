@@ -1,8 +1,8 @@
 import express from "express";
 import sql from "mssql";
-const eventRouter = express.Router();
+const router = express.Router();
 
-eventRouter.get("/events", (req, res, next) => {
+router.get("/events", (req, res, next) => {
   console.log("Get all events");
   const request = new sql.Request();
   request
@@ -15,4 +15,4 @@ eventRouter.get("/events", (req, res, next) => {
     .catch(next);
 });
 
-export default eventRouter;
+export default router;
