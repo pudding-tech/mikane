@@ -1,5 +1,7 @@
 import express from "express";
 import sql from "mssql";
+import { Category } from "../types";
+import { buildCategories } from "../calculations";
 const router = express.Router();
 
 router.get("/categories", (req, res, next) => {
@@ -11,7 +13,8 @@ router.get("/categories", (req, res, next) => {
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_categories")
     .then( (data) => {
-      res.send(data.recordset);
+      const categories: Category[] = buildCategories(data.recordset);
+      res.send(categories);
     })
     .catch(next);
 });

@@ -6,12 +6,12 @@ create procedure new_expense
   @description nvarchar(255),
   @amount numeric(16, 2),
   @category_id int,
-  @user_id int
+  @payer_id int
 as
 begin
   print(@amount)
-  insert into expense([name], [description], amount, category_id, user_id)
-    values (@name, @description, @amount, @category_id, @user_id)
+  insert into expense([name], [description], amount, category_id, payer_id)
+    values (@name, @description, @amount, @category_id, @payer_id)
 
   select ex.* from expense ex
     inner join category c on c.id = ex.category_id

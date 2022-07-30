@@ -16,8 +16,19 @@ insert into event_user (event_id, user_id)
 
 exec new_category 1, 'Food'
 exec new_category 1, 'Transport'
+exec new_category 1, 'Ski jumping'
+exec new_category 2, 'Racing'
 exec new_category 3, 'Food'
 exec new_category 3, 'Tickets to Ride'
+
+exec add_user_to_category 1, 1, 3
+exec add_user_to_category 1, 2, 2
+exec add_user_to_category 1, 3, 6
+exec add_user_to_category 1, 4, 1
+exec add_user_to_category 2, 3, 1
+exec add_user_to_category 2, 5, 1
+exec add_user_to_category 4, 1, 2
+exec add_user_to_category 4, 2, 99
 
 exec new_expense 'Bananer', 'De kommer i pyjamas', 54, 1, 1
 exec new_expense 'Ostepop', 'PS: De lukter', 12.95, 1, 3
