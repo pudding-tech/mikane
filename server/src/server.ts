@@ -6,22 +6,10 @@ import eventRoutes from "./api/event";
 import userRoutes from "./api/user";
 import categoryRoutes from "./api/category";
 import expenseRoutes from "./api/expense";
-const port = process.env.PORT || 5000;
 
 dotenv.config();
-const dbConfig = {
-  server: process.env.DB_SERVER || "Server env not set",
-  port: parseInt(process.env.DB_PORT || "1433"),
-  database: process.env.DB_DATABASE,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  options: {
-    encrypt: true,
-    trustedConnection: true,
-    trustServerCertificate: true,
-    enableArithAbort: true
-  }
-};
+import { dbConfig } from "./config";
+const port = process.env.PORT || 5000;
 
 const app = express();
 
@@ -36,7 +24,7 @@ sql
       console.log("Connected to SQL database");
     }
   })
-  .catch((e) => console.log("An error occured connecting to database: " + e));
+  .catch((err) => console.log("An error occured connecting to database: " + err));
 
 // Set static folder
 app.use(express.static("public"));

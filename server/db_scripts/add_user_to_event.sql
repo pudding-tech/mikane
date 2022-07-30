@@ -1,7 +1,7 @@
-if object_id ('new_user_in_event') is not null
-  drop procedure new_user_in_event
+if object_id ('add_user_to_event') is not null
+  drop procedure add_user_to_event
 go
-create procedure new_user_in_event
+create procedure add_user_to_event
   @event_id int,
   @user_id int
 as
