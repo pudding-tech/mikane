@@ -1,0 +1,44 @@
+<router-outlet></router-outlet>
+<div *ngFor="let event of events">
+    <button type="button" (click)="clickEvent(event)">
+        {{ event.name }}
+    </button>
+</div>
+<div *ngIf="selectedEvent">
+    <h1>Add Expense</h1>
+    <label for="expenseName">Name</label>
+    <input name="expenseName" id="expenseName" type="text" #expenseName>
+
+    <label for="expenseAmount" type="text">Amount</label>
+    <input name="expenseAmount" id="expenseAmount" type="text" #expenseAmount>
+
+    <label for="expenseComment" type="text">Comment</label>
+    <input name="expenseComment" id="expenseComment" type="text" #expenseComment>
+
+    <label for="expenseParticipant">Choose a participant:</label>
+    <select name="expenseParticipant" id="expenseParticipant" #expenseParticipant>
+        <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+    </select>
+    
+    <label for="expenseCategory">Choose a category:</label>
+    <select name="expenseCategory" id="expenseCategory" #expenseCategory>
+        <option *ngFor="let category of categories" [value]="category.id">
+            {{ category.name }}
+        </option>
+    </select>
+
+    <button type="button" (click)="createExpense(expenseName, expenseAmount, expenseComment, expenseParticipant, expenseCategory)">Create Expense</button>
+    
+</div>
+<div *ngIf="selectedEvent">
+    <input type="text" #newUser/>
+    <button type="button" (click)="createUser(newUser)">
+        Create User
+    </button>
+</div>
+<div *ngFor="let user of users">
+    <p>{{ user.id }}</p>
+    <p>{{ user.name }}</p>
+</div>
+
+
