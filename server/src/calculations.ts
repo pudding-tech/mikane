@@ -1,4 +1,4 @@
-export const expenses = (participant: string, expenditures: number[], expenditureDistributions: number[], distributions: any) => {
+export const expenses = (participant: string, expenditures: number[], expenditureDistributions: number[], distributions: [[string], ...number[]]) => {
   let sum = 0;
   for (let i = 0; i < expenditures.length; i++) {
     const expenditure = expenditures[i];
@@ -20,7 +20,7 @@ export const expenses = (participant: string, expenditures: number[], expenditur
   return sum;
 };
 
-export const payments = (participants = ["Alice","Bob","Charlie"], netExpenses = [[-6.67],[1.67],[5]]) => {
+export const payments = (participants: [string], netExpenses: [...[number][]]) => {
   const loans = [];
   const debts = [];
   for (let i = 0; i < participants.length; i++) {

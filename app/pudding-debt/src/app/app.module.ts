@@ -9,13 +9,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ParticipantsComponent } from './pages/participants/participants.component';
 import { ExpendituresComponent } from './pages/expenditures/expenditures.component';
 import { PaymentStructureComponent } from './pages/payment-structure/payment-structure.component';
+import { EventComponent } from './pages/event/event.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ParticipantsComponent,
     ExpendituresComponent,
-    PaymentStructureComponent
+    PaymentStructureComponent,
+    EventComponent
   ],
   imports: [
     BrowserModule,
