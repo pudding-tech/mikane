@@ -1,13 +1,17 @@
 export type User = {
   id: number,
-  name: string,
-  weight: number
+  name: string
 }
 
 export type Category = {
   id: number,
   name: string,
-  users: User[]
+  userWeights?: Map<number, number>,
+  users?: {
+    id: number,
+    name: string,
+    weight: number
+  }[]
 }
 
 export type Expense = {

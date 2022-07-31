@@ -16,11 +16,11 @@ export const calculatePayments = (
 	const userNetExpense = new Map<number, number>();
 
 	categories.forEach((category) => {
-		const sumCategoryWeights = category.users.reduce((accumulator, obj) => {
+		const sumCategoryWeights = category.users!.reduce((accumulator, obj) => {
 			return accumulator + obj.weight;
 		}, 0);
 		const userWeights = new Map(
-			category.users.map((obj) => {
+			category.users!.map((obj) => {
 				return [obj.id, obj.weight / sumCategoryWeights];
 			})
 		);
@@ -60,7 +60,7 @@ export const calculatePayments = (
 
 		if (!largestLeander || !largestDebtor) {
 			break;
-		};
+		}
 
 		let paymentAmount = 0;
 		if (largestLeander.amount > largestDebtor.amount) {

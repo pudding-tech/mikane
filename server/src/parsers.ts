@@ -1,9 +1,9 @@
 import { Category, Expense } from "./types";
 
 /*
-/	Build array of Category objects
+/	Build array of Category objects. Format for either client or calculate function
 */
-export const parseCategories = (catInput: object[]) : Category[] => {
+export const parseCategories = (catInput: object[], target: string) : Category[] => {
   
   const categories: Category[] = [];
   catInput.forEach( (catObj) => {
@@ -11,20 +11,31 @@ export const parseCategories = (catInput: object[]) : Category[] => {
     const category: Category = {
       id: catObj["id" as keyof typeof catObj],
       name: catObj["name" as keyof typeof catObj],
-      users: []
     };
+
+    if (target === "client") {
+      category.users = [];
+    }
+    else if (target === "calc") {
+      category.userWeights = new Map<number, number>();
+    }
 
     if (catObj["user_weight" as keyof typeof catObj] !== null) {
       const userWeightString: string[] = (catObj["user_weight" as keyof typeof catObj] as string).split(";");
       userWeightString.forEach( userWeight => {
         const userWeightProps = userWeight.split(",");
-        category.users.push(
-          {
-            id: parseInt(userWeightProps[0]),
-            name: userWeightProps[1],
-            weight: parseInt(userWeightProps[2])
-          }
-        );
+        if (target === "client" && category.users) {
+          category.users.push(
+            {
+              id: parseInt(userWeightProps[0]),
+              name: userWeightProps[1],
+              weight: parseInt(userWeightProps[2])
+            }
+          );
+        }
+        else if (target === "calc" && category.userWeights) {
+          category.userWeights.set(parseInt(userWeightProps[0]), parseInt(userWeightProps[2]));
+        }
       });
     }
 

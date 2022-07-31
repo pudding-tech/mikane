@@ -14,7 +14,7 @@ router.get("/categories", (req, res, next) => {
     .execute("get_categories")
     .then( (data) => {
       console.log(data.recordset);
-      const categories: Category[] = parseCategories(data.recordset);
+      const categories: Category[] = parseCategories(data.recordset, "client");
       res.send(categories);
     })
     .catch(next);
@@ -50,7 +50,7 @@ router.post("/categories/:catId/user", (req, res, next) => {
     .input("weight", sql.Numeric(14), req.body.weight)
     .execute("add_user_to_category")
     .then( (data) => {
-      const categories: Category[] = parseCategories(data.recordset);
+      const categories: Category[] = parseCategories(data.recordset, "client");
       res.send(categories);
     })
     .catch(next);
@@ -68,7 +68,7 @@ router.delete("/categories/:catId/user/:userId", (req, res, next) => {
     .input("user_id", sql.Int, userId)
     .execute("remove_user_from_category")
     .then( (data) => {
-      const categories: Category[] = parseCategories(data.recordset);
+      const categories: Category[] = parseCategories(data.recordset, "client");
       res.send(categories);
     })
     .catch(next);
