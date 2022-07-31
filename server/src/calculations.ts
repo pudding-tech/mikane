@@ -9,7 +9,7 @@ import {
 export const calculatePayments = (
 	expenses: Expense[],
 	categories: Category[]
-): PaymentCalculationResult | undefined => {
+): PaymentCalculationResult => {
 	const payments: Payment[] = [];
 	const debts: Debt[] = [];
 	const categoryWeights = new Map<number, Map<number, number>>();
@@ -58,7 +58,9 @@ export const calculatePayments = (
 		const largestLeander = lenders.pop();
 		const largestDebtor = debtors.pop();
 
-		if (!largestLeander || !largestDebtor) return;
+		if (!largestLeander || !largestDebtor) {
+			break;
+		};
 
 		let paymentAmount = 0;
 		if (largestLeander.amount > largestDebtor.amount) {
