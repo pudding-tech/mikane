@@ -12,8 +12,8 @@ export const calculatePayments = (
 ): PaymentCalculationResult | undefined => {
 	const payments: Payment[] = [];
 	const debts: Debt[] = [];
-	const userNetExpense = new Map<number, number>();
 	const categoryWeights = new Map<number, Map<number, number>>();
+	const userNetExpense = new Map<number, number>();
 
 	categories.forEach((category) => {
 		const sumCategoryWeights = category.users.reduce((accumulator, obj) => {
@@ -30,19 +30,20 @@ export const calculatePayments = (
 	expenses.forEach((expense) => {
 		const expenseCategory = categoryWeights.get(expense.categoryId);
 		if (expenseCategory) {
-			expenseCategory.forEach((userId: number, userWeight: number) => {
-				const currentNetExpense = userNetExpense.get(userId) ? userNetExpense.get(userId)	: 0.0;
-				userNetExpense.set(
-					userId,
-					currentNetExpense! + expense.amount * userWeight
-				);
+			expenseCategory.forEach((userWeight: number, userId: number) => {
+				let currentNetExpense = userNetExpense.get(userId)?? 0;
+				currentNetExpense -= (expense.amount * userWeight);
+				if (expense.payerId == userId) {
+					currentNetExpense += expense.amount;
+				}
+				userNetExpense.set(userId, currentNetExpense);
 			});
 		}
 	});
 
 	const lenders: Debt[] = [];
 	const debtors: Debt[] = [];
-	userNetExpense.forEach((userId: number, netExpense: number) => {
+	userNetExpense.forEach((netExpense: number, userId: number) => {
 		if (netExpense > 0) {
 			lenders.push({ userId: userId, amount: netExpense });
 		} else if (netExpense < 0) {

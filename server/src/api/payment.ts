@@ -50,9 +50,6 @@ router.get("/payments", async (req, res, next) => {
 
 router.get("/paymentsTest", async (req, res) => {
   console.log("Payments TEST!");
-  if (!req.query.eventId) {
-    return res.status(400).send("EventId not provided!");
-  }
 
   const user1: User = {
     id: 1,
