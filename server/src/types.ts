@@ -4,7 +4,7 @@ export type Category = {
   users: {
     id: number,
     name: string,
-    weight?: number
+    weight: number
   }[]
 }
 
@@ -17,4 +17,20 @@ export type Expense = {
   categoryName: string,
   payerId: number,
   payer: string
+}
+
+export type Payment = {
+  senderId: number,
+  receiverId: number,
+  amount: number
+}
+
+export type Debt = {
+  userId: number,
+  amount: number
+}
+
+export type PaymentCalculationResult = {
+  payments: Payment[],
+  debts: Debt[]
 }

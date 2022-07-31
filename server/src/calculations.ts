@@ -1,87 +1,81 @@
-import { Category, Expense } from "./types";
+import { Category, Expense, Payment, Debt, PaymentCalculationResult } from "./types";
 
-export const expenses = (
-	participant: string,
-	expenditures: number[],
-	expenditureDistributions: number[],
-	distributions: [[string], ...number[]] | any
-) => {
-	let sum = 0;
-	for (let i = 0; i < expenditures.length; i++) {
-		const expenditure = expenditures[i];
-		if (expenditure != 0) {
-			const distributionKey = expenditureDistributions[i];
-			let participantShare = 0;
-			let distributionSum = 1;
-			for (let j = 1; j < distributions[0].length; j++) {
-				const distributionParticipant = distributions[0][j];
-				if (distributionParticipant == participant) {
-					participantShare = distributions[distributionKey][j];
-					distributionSum = distributions[distributionKey][0];
-					break;
-				}
-			}
-			sum += expenditure * (participantShare / distributionSum);
-		}
-	}
-	return sum;
-};
+export const calculatePayments = (expenses: Expense[], categories: Category[]) : PaymentCalculationResult | undefined => {
+	const payments: Payment[] = [];
+	const debts: Debt[] = [];
+	const userNetExpense = new Map<number, number>;
+	const categoryWeights = new Map<number, Map<number, number>>;
 
-export const payments = (
-	participants: [string],
-	netExpenses: [...[number][]]
-) => {
-	const loans: {participant: string, netExpense: number}[] = [];
-	const debts: {participant: string, netExpense: number}[] = [];
-	for (let i = 0; i < participants.length; i++) {
-		const participant = participants[i];
-		const netExpense = netExpenses[i][0];
-		console.log(netExpense);
-		if (netExpense > 0) {
-			loans.push({ participant: participant, netExpense: netExpense });
-		} else if (netExpense < 0) {
-			debts.push({
-				participant: participant,
-				netExpense: Math.abs(netExpense)
+	categories.forEach( category => {
+		const sumCategoryWeights = category.users.reduce((accumulator, obj) => {
+			return accumulator + obj.weight;
+		}, 0);
+		const userWeights = new Map(category.users.map(obj => {
+			return [obj.id, obj.weight /sumCategoryWeights];
+		}));
+		categoryWeights.set(category.id, userWeights);
+	});
+
+	expenses.forEach( expense => {
+		const expenseCategory = categoryWeights.get(expense.categoryId);
+		if (expenseCategory) {
+			expenseCategory.forEach((userId: number, userWeight: number) => {
+				const currentNetExpense = userNetExpense.get(userId) ? userNetExpense.get(userId) : 0.0;
+				userNetExpense.set(userId, currentNetExpense + expense.amount * userWeight);
 			});
 		}
-	}
+	});
 
-	const payments = new Array(participants.length)
-		.fill("")
-		.map(() => new Array(participants.length).fill(""));
+	const lenders: Debt[] = [];
+	const debtors: Debt[] = [];
+	userNetExpense.forEach((userId: number, netExpense: number) => {
+		if (netExpense > 0) {
+			lenders.push({ userId: userId, amount: netExpense });
+		} else if (netExpense < 0) {
+			debtors.push({ userId: userId, amount: Math.abs(netExpense) });
+		}
+		debts.push({ userId: userId, amount: netExpense });
+	});
 
-	while (loans.length > 0) {
-		loans.sort((a, b) => (a.netExpense > b.netExpense ? 1 : -1));
-		debts.sort((a, b) => (a.netExpense > b.netExpense ? 1 : -1));
-		const largestLoan = loans.pop();
-		const largestDebt = debts.pop();
+	while (lenders.length > 0) {
+		lenders.sort((a, b) => (a.amount > b.amount ? 1 : -1));
+		debtors.sort((a, b) => (a.amount > b.amount ? 1 : -1));
+		const largestLeander = lenders.pop();
+		const largestDebtor = debtors.pop();
 
-		if (!largestLoan || !largestDebt)
+		if (!largestLeander || !largestDebtor)
 			return;
 
 		let paymentAmount = 0;
-		if (largestLoan.netExpense > largestDebt.netExpense) {
-			paymentAmount = largestDebt.netExpense;
-			loans.push({
-				participant: largestLoan.participant,
-				netExpense: largestLoan.netExpense - largestDebt.netExpense,
+		if (largestLeander.amount > largestDebtor.amount) {
+			paymentAmount = largestDebtor.amount;
+			lenders.push({
+				userId: largestLeander.userId,
+				amount: largestLeander.amount - largestDebtor.amount,
 			});
-		} else if (largestLoan.netExpense < largestDebt.netExpense) {
-			paymentAmount = largestLoan.netExpense;
-			debts.push({
-				participant: largestDebt.participant,
-				netExpense: largestDebt.netExpense - largestLoan.netExpense,
+		}
+		else if (largestLeander.amount < largestDebtor.amount) {
+			paymentAmount = largestLeander.amount;
+			debtors.push({
+				userId: largestDebtor.userId,
+				amount: largestDebtor.amount - largestLeander.amount,
 			});
-		} else {
-			paymentAmount = largestDebt.netExpense;
+		}
+		else {
+			paymentAmount = largestDebtor.amount;
 		}
 
-		payments[participants.indexOf(largestDebt.participant)][
-			participants.indexOf(largestLoan.participant)
-		] = paymentAmount;
+		payments.push({
+			senderId: largestDebtor.userId,
+			receiverId: largestLeander.userId,
+			amount: paymentAmount
+		})
 	}
-	return payments;
+
+	return {
+		payments: payments,
+		debts: debts
+	}
 };
 
 /*
