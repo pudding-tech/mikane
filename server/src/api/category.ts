@@ -1,7 +1,7 @@
 import express from "express";
 import sql from "mssql";
 import { Category } from "../types";
-import { buildCategories } from "../calculations";
+import { buildCategories } from "../parsers";
 const router = express.Router();
 
 router.get("/categories", (req, res, next) => {
@@ -34,13 +34,17 @@ router.post("/categories", (req, res, next) => {
     .catch(next);
 });
 
-router.post("/userInCategory", (req, res, next) => {
-  if (!req.body.categoryId || !req.body.userId || !req.body.weight) {
-    return res.status(400).send("CategoryId, userId or weight not provided!");
+router.post("/categories/:catId/adduser", (req, res, next) => {
+  const catId = Number(req.params.catId);
+  if (isNaN(catId)) {
+    return res.status(400).send("Category ID is not a number!");
+  }
+  if (!req.body.userId || !req.body.weight) {
+    return res.status(400).send("UserId or weight not provided!");
   }
   const request = new sql.Request();
   request
-    .input("category_id", sql.Int, req.body.categoryId)
+    .input("category_id", sql.Int, catId)
     .input("user_id", sql.Int, req.body.userId)
     .input("weight", sql.Numeric(14), req.body.weight)
     .execute("add_user_to_category")

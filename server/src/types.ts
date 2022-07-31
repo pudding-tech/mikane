@@ -1,11 +1,13 @@
+export type User = {
+  id: number,
+  name: string,
+  weight: number
+}
+
 export type Category = {
   id: number,
   name: string,
-  users: {
-    id: number,
-    name: string,
-    weight: number
-  }[]
+  users: User[]
 }
 
 export type Expense = {

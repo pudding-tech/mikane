@@ -1,7 +1,7 @@
 import express from "express";
 import sql from "mssql";
 import { Expense } from "../types";
-import { buildExpenses } from "../calculations";
+import { buildExpenses } from "../parsers";
 const router = express.Router();
 
 router.get("/expenses", (req, res, next) => {
@@ -20,8 +20,8 @@ router.get("/expenses", (req, res, next) => {
 });
 
 router.post("/expenses", (req, res, next) => {
-  if (!req.body.name || !req.body.description || !req.body.categoryId || !req.body.userId) {
-    return res.status(400).send("Name, description, categoryId or userId not provided!");
+  if (!req.body.name || !req.body.description || !req.body.categoryId || !req.body.payerId) {
+    return res.status(400).send("Name, description, categoryId or payerId not provided!");
   }
   console.log(req.body.amount);
   const request = new sql.Request();
@@ -30,7 +30,7 @@ router.post("/expenses", (req, res, next) => {
     .input("description", sql.NVarChar, req.body.description)
     .input("amount", sql.Numeric(16, 2), req.body.amount)
     .input("category_id", sql.Int, req.body.categoryId)
-    .input("user_id", sql.Int, req.body.userId)
+    .input("payer_id", sql.Int, req.body.payerId)
     .execute("new_expense")
     .then( (data) => {
       res.send(data.recordset);

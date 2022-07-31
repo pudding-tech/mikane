@@ -50,5 +50,5 @@ app.use(((req, res) => {
 
 // Listen for requests
 app.listen(port, () => {
-  console.log("Server running on port " + port);
+  console.log("PuddingDebt server running on port " + port);
 });
