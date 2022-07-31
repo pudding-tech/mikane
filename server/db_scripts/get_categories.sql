@@ -21,7 +21,7 @@ begin
     c.*,
     #temp.user_weight
   from category c
-    inner join #temp on c.id = #temp.category_id
+    left join #temp on c.id = #temp.category_id
   where c.event_id = @event_id
 
 end

@@ -9,7 +9,9 @@ create procedure new_expense
   @payer_id int
 as
 begin
-  print(@amount)
+  
+  set @description = isnull(@description, '')
+
   insert into expense([name], [description], amount, category_id, payer_id)
     values (@name, @description, @amount, @category_id, @payer_id)
 

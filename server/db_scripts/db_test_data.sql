@@ -43,7 +43,8 @@ exec add_user_to_category 4, 6, 18
 exec add_user_to_category 5, 4, 1
 exec add_user_to_category 5, 5, 1
 
-exec add_user_to_category 6, 6, 1
+exec add_user_to_category 6, 6, 3
+exec add_user_to_category 6, 1, 1
 
 exec add_user_to_category 7, 1, 1
 exec add_user_to_category 7, 2, 1
@@ -68,7 +69,7 @@ exec new_expense 'Stinky sock cheese', null, 2, 5, 6
 exec new_expense 'Norvegia', null, 60, 5, 2
 exec new_expense 'Bobsleigh', null, 7999, 5, 2
 exec new_expense 'City bike', null, 3000, 4, 6
-exec new_expense 'Bull', 'The angriest one', 8400, 4, 1
+exec new_expense 'Bull', 'The angriest one', 8400, 6, 1
 exec new_expense 'Ticket', 'Choo choo!', 4800, 10, 1
 exec new_expense 'Huge water tank', null, 19900, 9, 6
 exec new_expense 'Cage', 'Moderately secure', 3999, 9, 6

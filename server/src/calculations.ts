@@ -31,9 +31,7 @@ export const calculatePayments = (
 		const expenseCategory = categoryWeights.get(expense.categoryId);
 		if (expenseCategory) {
 			expenseCategory.forEach((userId: number, userWeight: number) => {
-				const currentNetExpense = userNetExpense.get(userId)
-					? userNetExpense.get(userId)
-					: 0.0;
+				const currentNetExpense = userNetExpense.get(userId) ? userNetExpense.get(userId)	: 0.0;
 				userNetExpense.set(
 					userId,
 					currentNetExpense! + expense.amount * userWeight

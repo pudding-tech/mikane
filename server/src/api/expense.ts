@@ -1,7 +1,7 @@
 import express from "express";
 import sql from "mssql";
 import { Expense } from "../types";
-import { buildExpenses } from "../parsers";
+import { parseExpenses } from "../parsers";
 const router = express.Router();
 
 router.get("/expenses", (req, res, next) => {
@@ -13,7 +13,7 @@ router.get("/expenses", (req, res, next) => {
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_expenses")
     .then( (data) => {
-      const expenses: Expense[] = buildExpenses(data.recordset);
+      const expenses: Expense[] = parseExpenses(data.recordset);
       res.send(expenses);
     })
     .catch(next);

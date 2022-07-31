@@ -1,7 +1,7 @@
 import express from "express";
 import sql from "mssql";
 import { Category } from "../types";
-import { buildCategories } from "../parsers";
+import { parseCategories } from "../parsers";
 const router = express.Router();
 
 router.get("/categories", (req, res, next) => {
@@ -13,7 +13,8 @@ router.get("/categories", (req, res, next) => {
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_categories")
     .then( (data) => {
-      const categories: Category[] = buildCategories(data.recordset);
+      console.log(data.recordset);
+      const categories: Category[] = parseCategories(data.recordset);
       res.send(categories);
     })
     .catch(next);
@@ -34,7 +35,7 @@ router.post("/categories", (req, res, next) => {
     .catch(next);
 });
 
-router.post("/categories/:catId/adduser", (req, res, next) => {
+router.post("/categories/:catId/user", (req, res, next) => {
   const catId = Number(req.params.catId);
   if (isNaN(catId)) {
     return res.status(400).send("Category ID is not a number!");
@@ -49,7 +50,26 @@ router.post("/categories/:catId/adduser", (req, res, next) => {
     .input("weight", sql.Numeric(14), req.body.weight)
     .execute("add_user_to_category")
     .then( (data) => {
-      res.send(data.recordset);
+      const categories: Category[] = parseCategories(data.recordset);
+      res.send(categories);
+    })
+    .catch(next);
+});
+
+router.delete("/categories/:catId/user/:userId", (req, res, next) => {
+  const catId = Number(req.params.catId);
+  const userId = Number(req.params.userId);
+  if (isNaN(catId) || isNaN(userId)) {
+    return res.status(400).send("Category ID and user ID must be numbers!");
+  }
+  const request = new sql.Request();
+  request
+    .input("category_id", sql.Int, catId)
+    .input("user_id", sql.Int, userId)
+    .execute("remove_user_from_category")
+    .then( (data) => {
+      const categories: Category[] = parseCategories(data.recordset);
+      res.send(categories);
     })
     .catch(next);
 });

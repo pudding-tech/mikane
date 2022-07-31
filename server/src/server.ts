@@ -6,6 +6,7 @@ import eventRoutes from "./api/event";
 import userRoutes from "./api/user";
 import categoryRoutes from "./api/category";
 import expenseRoutes from "./api/expense";
+import paymentRoutes from "./api/payment";
 
 dotenv.config();
 import { dbConfig } from "./config";
@@ -42,6 +43,7 @@ app.use("/api", eventRoutes);
 app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", expenseRoutes);
+app.use("/api", paymentRoutes);
 
 // Send not found error message back to client if API call not found
 app.use(((req, res) => {

@@ -24,7 +24,7 @@ create table category (
 create table expense (
   id int identity(1,1) primary key,
   [name] nvarchar(255) not null,
-  [description] nvarchar(255),
+  [description] nvarchar(255) not null,
   amount numeric(16, 2) not null,
   category_id int foreign key references category(id) on delete no action,
   payer_id int foreign key references [user](id) on delete no action

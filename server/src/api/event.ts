@@ -27,7 +27,7 @@ router.post("/events", (req, res, next) => {
     .catch(next);
 });
 
-router.post("/events/:eventId/adduser", (req, res, next) => {
+router.post("/events/:eventId/user", (req, res, next) => {
   const eventId = Number(req.params.eventId);
   if (isNaN(eventId)) {
     return res.status(400).send("Event ID is not a number!");
