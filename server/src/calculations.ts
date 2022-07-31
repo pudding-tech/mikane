@@ -52,7 +52,7 @@ export const calculatePayments = (
 		debts.push({ userId: userId, amount: netExpense });
 	});
 
-	while (lenders.length > 0) {
+	while (lenders.length > 0 && debtors.length > 0) {
 		lenders.sort((a, b) => (a.amount > b.amount ? 1 : -1));
 		debtors.sort((a, b) => (a.amount > b.amount ? 1 : -1));
 		const largestLeander = lenders.pop();
