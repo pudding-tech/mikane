@@ -33,14 +33,14 @@ export class CategoryService {
 		categoryId: number,
 		userId: number,
 		weight: number
-	): Observable<Category[]> {
-		return this.httpClient.post<Category[]>(
+	): Observable<Category> {
+		return this.httpClient.post<Category>(
 			this.apiUrl + `/${categoryId}/user`,
 			{ userId, weight }
 		);
 	}
 
-    deleteUser(categoryId: number, userId: number): Observable<Category[]> {
-        return this.httpClient.delete<Category[]>(this.apiUrl + `/${categoryId}/user/${userId}`);
+    deleteUser(categoryId: number, userId: number): Observable<Category> {
+        return this.httpClient.delete<Category>(this.apiUrl + `/${categoryId}/user/${userId}`);
     }
 }

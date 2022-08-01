@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
 	Category,
@@ -30,7 +30,8 @@ export class CategoryComponent implements OnInit {
 		private categoryService: CategoryService,
 		private userService: UserService,
 		private route: ActivatedRoute,
-		public dialog: MatDialog
+		public dialog: MatDialog,
+        private cd: ChangeDetectorRef,
 	) {}
 
 	ngOnInit(): void {
@@ -77,40 +78,57 @@ export class CategoryComponent implements OnInit {
 
 		dialogRef.afterClosed().subscribe((result) => {
 			console.log('The dialog was closed');
-            if (result) {
-                this.createCategory(result);
-            }
+			if (result) {
+				this.createCategory(result);
+			}
 		});
 	}
-    
-    createCategory(name: string) {
-        this.categoryService.createCategory(name, this.eventId).subscribe((category) => {
-            this.categories.push(category);
-        });
-    }
 
-    
+	createCategory(name: string) {
+		this.categoryService
+			.createCategory(name, this.eventId)
+			.subscribe((category) => {
+				this.categories.push(category);
+			});
+	}
 
 	addUser(categoryId: number) {
 		console.log(this.name.value);
 		if (this.name.value) {
 			this.categoryService
 				.addUser(categoryId, +this.name.value, this.weight.value)
-				.subscribe((categories) => {
-					this.categories = categories;
+				.subscribe((res) => {
+					const index = this.categories.findIndex(
+						(category) => category.id === res.id
+					);
+					if (index > -1) {
+                        this.categories[index].users = res.users;
+                        this.cd.detectChanges();
+					}
+                    this.name.setValue('');
+					this.name.markAsUntouched();
+					this.weight.reset();
 				});
 		}
 	}
 
 	removeUser(categoryId: number, userId: number) {
-		this.categoryService
-			.deleteUser(categoryId, userId)
-			.subscribe((categories) => {
-				this.categories = categories;
-			});
+		this.categoryService.deleteUser(categoryId, userId).subscribe((res) => {
+			const index = this.categories.findIndex(
+				(category) => category.id === res.id
+			);
+			if (index > -1) {
+				this.categories[index].users = res.users;
+                this.cd.detectChanges();
+			}
+		});
 	}
 
-    drop(event: CdkDragDrop<Category[]>) {
-        moveItemInArray(this.categories, event.previousIndex, event.currentIndex);
-    }
+	drop(event: CdkDragDrop<Category[]>) {
+		moveItemInArray(
+			this.categories,
+			event.previousIndex,
+			event.currentIndex
+		);
+	}
 }
