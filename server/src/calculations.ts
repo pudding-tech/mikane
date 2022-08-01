@@ -14,15 +14,15 @@ export const calculatePayments = (
 ): PaymentCalculationResult => {
 	const payments: Payment[] = [];
 	const debts: Debt[] = [];
-	const categoryWeights = new Map<number, Map<User, number>>();
-	const userNetExpense = new Map<User, number>();
+	const categoryWeights = new Map<number, Map<number, number>>();
+	const userNetExpense = new Map<number, number>();
 
 	categories.forEach((category) => {
 		let sumCategoryWeights = 0;
 		category.userWeights!.forEach((weight) => {
 			sumCategoryWeights += weight;
 		});
-		const adjustedUserWeights = new Map<User, number>();
+		const adjustedUserWeights = new Map<number, number>();
 		category.userWeights!.forEach((weight, user) => {
 			adjustedUserWeights.set(user, weight / sumCategoryWeights);
 		});
@@ -31,15 +31,15 @@ export const calculatePayments = (
 
 	expenses.forEach((expense) => {
 		userNetExpense.set(
-			expense.payer,
-			(userNetExpense.get(expense.payer) ?? 0) + expense.amount
+			expense.payer.id,
+			(userNetExpense.get(expense.payer.id) ?? 0) + expense.amount
 		);
 		const expenseCategory = categoryWeights.get(expense.categoryId);
 		if (expenseCategory) {
-			expenseCategory.forEach((userWeight: number, user: User) => {
+			expenseCategory.forEach((userWeight: number, userId: number) => {
 				userNetExpense.set(
-					user,
-					(userNetExpense.get(user) ?? 0) - (expense.amount * userWeight)
+					userId,
+					(userNetExpense.get(userId) ?? 0) - (expense.amount * userWeight)
 				);
 			});
 		}
@@ -47,13 +47,18 @@ export const calculatePayments = (
 
 	const lenders: Debt[] = [];
 	const debtors: Debt[] = [];
-	userNetExpense.forEach((netExpense: number, user: User) => {
-		if (netExpense > 0) {
-			lenders.push({ user: user, amount: netExpense });
-		} else if (netExpense < 0) {
-			debtors.push({ user: user, amount: Math.abs(netExpense) });
+	userNetExpense.forEach((netExpense: number, userId: number) => {
+		const user = users.find((user) => {
+			return user.id == userId;
+		});
+		if (user !== undefined) {
+			if (netExpense > 0) {
+				lenders.push({ user: user, amount: netExpense });
+			} else if (netExpense < 0) {
+				debtors.push({ user: user, amount: Math.abs(netExpense) });
+			}
+			debts.push({ user: user, amount: netExpense });
 		}
-		debts.push({ user: user, amount: netExpense });
 	});
 
 	while (lenders.length > 0 && debtors.length > 0) {
