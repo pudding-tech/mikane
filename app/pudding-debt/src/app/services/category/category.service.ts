@@ -43,4 +43,8 @@ export class CategoryService {
     deleteUser(categoryId: number, userId: number): Observable<Category> {
         return this.httpClient.delete<Category>(this.apiUrl + `/${categoryId}/user/${userId}`);
     }
+
+    editUser(categoryId: number, userId: number, weight: number): Observable<Category> {
+        return this.httpClient.put<Category>(this.apiUrl + `/${categoryId}/user/${userId}`, { weight });
+    }
 }

@@ -35,7 +35,7 @@
 				<td mat-cell *matCellDef="let user">{{ user.weight }}</td>
 				<td mat-footer-cell *matFooterCellDef>
 					<mat-form-field>
-						<input matInput [formControl]="weight" placeholder="Weight" />
+						<input matInput type="text" [formControl]="weight" placeholder="Weight" />
 					</mat-form-field>
 				</td>
 			</ng-container>
