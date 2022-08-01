@@ -10,20 +10,10 @@ router.get("/payments", async (req, res, next) => {
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
   }
-  let users: User[] | undefined;
   let categories: Category[] | undefined;
   let expenses: Expense[] | undefined;
 
   let request = new sql.Request();
-  await request
-    .input("event_id", sql.Int, req.query.eventId)
-    .execute("get_users")
-    .then( (data) => {
-      users = data.recordset;
-    })
-    .catch(next);
-
-  request = new sql.Request();
   await request
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_categories")
@@ -60,11 +50,11 @@ router.get("/payments", async (req, res, next) => {
 router.get("/paymentsTest", async (req, res) => {
   console.log("Payments TEST!");
 
-  const user1: User = {
+  const arnt: User = {
     id: 1,
     name: "Arnt"
   };
-  const user2: User = {
+  const per: User = {
     id: 2,
     name: "Per"
   };
@@ -73,7 +63,7 @@ router.get("/paymentsTest", async (req, res) => {
     {
       id: 1,
       name: "Board games",
-      userWeights: new Map<User, number>([ [user1, 1], [user2, 1] ])
+      userWeights: new Map<User, number>([ [arnt, 1], [per, 1] ])
     }
   ];
 
@@ -85,8 +75,7 @@ router.get("/paymentsTest", async (req, res) => {
       amount: 500,
       categoryId: 1,
       categoryName: "Board games",
-      payerId: 2,
-      payer: "Per"
+      payer: per
     }
   ];
 

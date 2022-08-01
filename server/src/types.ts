@@ -21,8 +21,7 @@ export type Expense = {
   amount: number,
   categoryId: number,
   categoryName: string,
-  payerId: number,
-  payer: string
+  payer: User
 }
 
 export type Payment = {
