@@ -30,12 +30,14 @@ export type Payment = {
   amount: number
 }
 
-export type Debt = {
+export type Record = {
   user: User,
   amount: number
 }
 
 export type PaymentCalculationResult = {
   payments: Payment[],
-  debts: Debt[]
+  balance: Record[],
+  spending: Record[],
+  expenses: Record[]
 }

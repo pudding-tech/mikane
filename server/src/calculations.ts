@@ -3,7 +3,7 @@ import {
 	Category,
 	Expense,
 	Payment,
-	Debt,
+	Record,
 	PaymentCalculationResult,
 } from "./types";
 
@@ -13,7 +13,9 @@ export const calculatePayments = (
 	users: User[]
 ): PaymentCalculationResult => {
 	const payments: Payment[] = [];
-	const debts: Debt[] = [];
+	const balance: Record[] = [];
+	const spending: Record[] = [];
+	const expensesOutput: Record[] = [];
 	const categoryWeights = new Map<number, Map<number, number>>();
 	const userNetExpense = new Map<number, number>();
 
@@ -29,7 +31,13 @@ export const calculatePayments = (
 		categoryWeights.set(category.id, adjustedUserWeights);
 	});
 
+	const spendingMap = new Map<number, number>();
+	const expensesOutputMap = new Map<number, number>();
 	expenses.forEach((expense) => {
+		spendingMap.set(
+			expense.payer.id,
+			(spendingMap.get(expense.payer.id) ?? 0) + expense.amount
+		);
 		userNetExpense.set(
 			expense.payer.id,
 			(userNetExpense.get(expense.payer.id) ?? 0) + expense.amount
@@ -37,6 +45,10 @@ export const calculatePayments = (
 		const expenseCategory = categoryWeights.get(expense.categoryId);
 		if (expenseCategory) {
 			expenseCategory.forEach((userWeight: number, userId: number) => {
+				expensesOutputMap.set(
+					userId,
+					(expensesOutputMap.get(userId) ?? 0) - (expense.amount * userWeight)
+				);
 				userNetExpense.set(
 					userId,
 					(userNetExpense.get(userId) ?? 0) - (expense.amount * userWeight)
@@ -45,8 +57,8 @@ export const calculatePayments = (
 		}
 	});
 
-	const lenders: Debt[] = [];
-	const debtors: Debt[] = [];
+	const lenders: Record[] = [];
+	const debtors: Record[] = [];
 	userNetExpense.forEach((netExpense: number, userId: number) => {
 		const user = users.find((user) => {
 			return user.id == userId;
@@ -57,7 +69,9 @@ export const calculatePayments = (
 			} else if (netExpense < 0) {
 				debtors.push({ user: user, amount: Math.abs(netExpense) });
 			}
-			debts.push({ user: user, amount: netExpense });
+			spending.push({ user: user, amount: spendingMap.get(userId) ?? 0 });
+			expensesOutput.push({ user: user, amount: expensesOutputMap.get(userId) ?? 0 });
+			balance.push({ user: user, amount: netExpense });
 		}
 	});
 
@@ -97,6 +111,8 @@ export const calculatePayments = (
 
 	return {
 		payments: payments,
-		debts: debts,
+		balance: balance,
+		spending: spending,
+		expenses: expensesOutput
 	};
 };
