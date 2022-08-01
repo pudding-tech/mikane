@@ -27,6 +27,7 @@ export class ExpendituresComponent implements OnInit {
 		'amount',
 		'categoryName',
 		'description',
+        'delete'
 	];
 
 	constructor(
@@ -82,6 +83,15 @@ export class ExpendituresComponent implements OnInit {
     createExpense(category: Category, expense: any) {
         this.expenseService.createExpense(expense.name, expense.description, expense.amount, category.id, expense.payer).subscribe((expense) => {
             this.expenses = [...this.expenses, expense];
+        });
+    }
+
+    removeExpense(expenseId: number) {
+        this.expenseService.deleteExpense(expenseId).subscribe(() => {
+            this.expenses = [...this.expenses.filter((expense) => {
+                return expense.id !== expenseId;
+            })]
+            console.info('Expense deleted!');
         });
     }
 }

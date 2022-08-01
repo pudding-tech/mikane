@@ -42,4 +42,8 @@ export class ExpenseService {
 			payerId: payerId,
 		});
 	}
+
+    deleteExpense(expenseId: number): Observable<void> {
+        return this.httpClient.delete<void>(this.apiUrl + `/${expenseId}`);
+    }
 }
