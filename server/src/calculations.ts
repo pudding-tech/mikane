@@ -16,27 +16,29 @@ export const calculatePayments = (
 	const userNetExpense = new Map<number, number>();
 
 	categories.forEach((category) => {
-		const sumCategoryWeights = category.users!.reduce((accumulator, obj) => {
-			return accumulator + obj.weight;
-		}, 0);
-		const userWeights = new Map(
-			category.users!.map((obj) => {
-				return [obj.id, obj.weight / sumCategoryWeights];
-			})
-		);
-		categoryWeights.set(category.id, userWeights);
+		let sumCategoryWeights = 0;
+		category.userWeights!.forEach((weight) => {
+			sumCategoryWeights += weight;
+		});
+		const adjustedUserWeights = new Map<number, number>();
+		category.userWeights!.forEach((weight, userId) => {
+			adjustedUserWeights.set(userId, weight / sumCategoryWeights);
+		});
+		categoryWeights.set(category.id, adjustedUserWeights);
 	});
 
 	expenses.forEach((expense) => {
+		userNetExpense.set(
+			expense.payerId,
+			(userNetExpense.get(expense.payerId) ?? 0) + expense.amount
+		);
 		const expenseCategory = categoryWeights.get(expense.categoryId);
 		if (expenseCategory) {
 			expenseCategory.forEach((userWeight: number, userId: number) => {
-				let currentNetExpense = userNetExpense.get(userId)?? 0;
-				currentNetExpense -= (expense.amount * userWeight);
-				if (expense.payerId == userId) {
-					currentNetExpense += expense.amount;
-				}
-				userNetExpense.set(userId, currentNetExpense);
+				userNetExpense.set(
+					userId,
+					(userNetExpense.get(userId) ?? 0) - (expense.amount * userWeight)
+				);
 			});
 		}
 	});
