@@ -20,12 +20,15 @@ export const calculatePayments = (
 	const userNetExpense = new Map<number, number>();
 
 	categories.forEach((category) => {
+		if (!category.userWeights) {
+			return console.log("Category object formatted wrong!");
+		}
 		let sumCategoryWeights = 0;
-		category.userWeights!.forEach((weight) => {
+		category.userWeights.forEach((weight) => {
 			sumCategoryWeights += weight;
 		});
 		const adjustedUserWeights = new Map<number, number>();
-		category.userWeights!.forEach((weight, user) => {
+		category.userWeights.forEach((weight, user) => {
 			adjustedUserWeights.set(user, weight / sumCategoryWeights);
 		});
 		categoryWeights.set(category.id, adjustedUserWeights);

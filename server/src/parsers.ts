@@ -1,4 +1,4 @@
-import { Category, Expense, User } from "./types";
+import { Category, Expense } from "./types";
 
 /*
 /	Build array of Category objects. Format for either client or calculate function

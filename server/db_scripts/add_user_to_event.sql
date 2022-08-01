@@ -9,6 +9,6 @@ begin
 
   insert into event_user (event_id, user_id) values (@event_id, @user_id)
 
-  select * from event_user where event_id = @event_id and user_id = @user_id
+  select * from [event] where id = @event_id
 
 end

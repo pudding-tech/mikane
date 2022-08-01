@@ -31,8 +31,8 @@ router.post("/events/:eventId/user", (req, res, next) => {
   if (isNaN(eventId)) {
     return res.status(400).send("Event ID is not a number!");
   }
-  if (!req.body.eventId || !req.body.userId) {
-    return res.status(400).send("EventId or userId not provided!");
+  if (!req.body.userId) {
+    return res.status(400).send("UserId not provided!");
   }
   const request = new sql.Request();
   request
