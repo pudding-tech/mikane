@@ -9,6 +9,7 @@ body {
 
 .content {
     margin-left: 10%;
+    margin-top: 2em;
     width: 80%;
 }
 
@@ -18,4 +19,20 @@ body {
 
 .expenseTable {
     width: 100%;
+}
+
+.category-table {
+    width: 30%;
+}
+
+.add-button {
+    margin: 1em;
+}
+
+.category-amount {
+    text-align: right;
+    justify-content: flex-end;
+    div {
+        margin-right: 1.5em;
+    }
 }

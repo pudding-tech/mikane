@@ -25,7 +25,7 @@ const routes: Routes = [
         children: [
             {
                 path: 'users',
-                title: 'Users',
+                title: 'Participants',
                 component: UserComponent
             },
             {
@@ -35,7 +35,7 @@ const routes: Routes = [
             },
             {
                 path: 'categories',
-                title: 'Categories',
+                title: 'Expense Categories',
                 component: CategoryComponent
             },
             {

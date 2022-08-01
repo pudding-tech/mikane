@@ -1,0 +1,53 @@
+<h1 mat-dialog-title>Add Expense</h1>
+<div mat-dialog-content>
+	<mat-form-field appearance="fill">
+		<mat-label>Expense Name</mat-label>
+		<input matInput [(ngModel)]="expense.name" required />
+	</mat-form-field>
+	<mat-form-field appearance="fill">
+		<mat-label>Description</mat-label>
+		<input matInput [(ngModel)]="expense.description" required />
+	</mat-form-field>
+	<mat-form-field appearance="fill">
+		<mat-label>Expense Category</mat-label>
+		<!-- <input matInput [(ngModel)]="expense.categoryName" required /> -->
+
+		<input
+			type="text"
+			placeholder="Pick or add a category"
+			aria-label="Expense category name"
+			matInput
+			[(ngModel)]="expense.categoryName"
+			[matAutocomplete]="auto"
+		/>
+		<mat-autocomplete #auto="matAutocomplete">
+			<mat-option
+				*ngFor="let category of categories"
+				[value]="category.name"
+			>
+				{{ category.name }}
+			</mat-option>
+		</mat-autocomplete>
+	</mat-form-field>
+	<mat-form-field appearance="fill">
+		<mat-label>Amount</mat-label>
+		<input matInput [(ngModel)]="expense.amount" required />
+	</mat-form-field>
+	<mat-form-field appearance="fill">
+		<mat-label>Payer</mat-label>
+		<!-- <input matInput [(ngModel)]="expense.payer" required /> -->
+
+		<select matNativeControl [(ngModel)]="expense.payer" required>
+			<option value="" disabled selected>Choose payer</option>
+			<option *ngFor="let user of users" [value]="user.id">
+				{{ user.name }}
+			</option>
+		</select>
+	</mat-form-field>
+</div>
+<div mat-dialog-actions>
+	<button mat-button (click)="onNoClick()">Cancel</button>
+	<button mat-button [mat-dialog-close]="expense" cdkFocusInitial>
+		Create
+	</button>
+</div>

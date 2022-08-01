@@ -2,16 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Category } from '../category/category.service';
-import { PuddingEvent } from '../event/event.service';
 import { User } from '../user/user.service';
 
 export interface Expense {
-	id: number;
+	id?: number;
 	name: string;
 	description: string;
+    categoryName: string;
     amount: number;
-    payer: string;
+    payer: User;
 }
 
 @Injectable({
@@ -32,15 +31,15 @@ export class ExpenseService {
 		expenseName: string,
         expenseDescription: string,
         amount: number,
-		category: string,
-		user: string
-	): Observable<Expense[]> {
-		return this.httpClient.post<Expense[]>(this.apiUrl, {
+		categoryId: number,
+		payerId: number
+	): Observable<Expense> {
+		return this.httpClient.post<Expense>(this.apiUrl, {
 			name: expenseName,
 			description: expenseDescription,
             amount: amount,
-			categoryId: category,
-			userId: user,
+			categoryId: categoryId,
+			payerId: payerId,
 		});
 	}
 }

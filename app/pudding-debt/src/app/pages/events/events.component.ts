@@ -31,11 +31,7 @@ export class EventsComponent implements OnInit {
 		this.selectedEvent = event;
 		this.router.navigate([this.selectedEvent.id, 'users'], {
 			relativeTo: this.route,
-			state: { event: this.selectedEvent.id },
+			state: { event: this.selectedEvent },
 		});
-		/* this.userService.loadUsersForEvent(event.id).subscribe((users) => {
-			this.users = users;
-			console.log(users);
-		}); */
 	}
 }

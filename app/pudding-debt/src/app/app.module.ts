@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -20,37 +20,67 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+import { CategoryDialogComponent } from './pages/category/category-dialog/category-dialog.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { registerLocaleData } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
+import localeNo from '@angular/common/locales/no';
+import { ExpenditureDialogComponent } from './pages/expenditures/expenditure-dialog/expenditure-dialog.component';
+registerLocaleData(localeNo);
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    UserComponent,
-    ExpendituresComponent,
-    PaymentStructureComponent,
-    EventsComponent,
-    CategoryComponent,
-    EventComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
-    }),
-    BrowserAnimationsModule,
-    HttpClientModule,
-    MatButtonModule,
-    MatTabsModule,
-    MatIconModule,
-    MatListModule,
-    MatCardModule,
-    MatDividerModule,
-    MatTableModule,
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+	declarations: [
+		AppComponent,
+		UserComponent,
+		ExpendituresComponent,
+		PaymentStructureComponent,
+		EventsComponent,
+		CategoryComponent,
+		EventComponent,
+		CategoryDialogComponent,
+		ExpenditureDialogComponent,
+	],
+	imports: [
+		BrowserModule,
+		AppRoutingModule,
+		ServiceWorkerModule.register('ngsw-worker.js', {
+			enabled: environment.production,
+			// Register the ServiceWorker as soon as the application is stable
+			// or after 30 seconds (whichever comes first).
+			registrationStrategy: 'registerWhenStable:30000',
+		}),
+		BrowserAnimationsModule,
+		HttpClientModule,
+		ReactiveFormsModule,
+		FormsModule,
+		DragDropModule,
+		MatButtonModule,
+		MatTabsModule,
+		MatIconModule,
+		MatListModule,
+		MatCardModule,
+		MatDividerModule,
+		MatTableModule,
+		MatExpansionModule,
+		MatToolbarModule,
+		MatInputModule,
+		MatSelectModule,
+		MatDialogModule,
+		MatAutocompleteModule,
+	],
+	providers: [
+		{
+			provide: LOCALE_ID,
+			useValue: 'no',
+		},
+	],
+	bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

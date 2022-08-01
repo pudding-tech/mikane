@@ -1,12 +1,7 @@
+<div class="add-button" >
+    <button mat-raised-button color="primary" (click)="openDialog()">Add expense</button>
+</div>
 
-<!-- <mat-list>
-    <mat-list-item *ngFor="let expense of expenses">
-        <mat-card>
-            <mat-card-title>{{ expense.name }}</mat-card-title>
-            <mat-card-subtitle>{{ expense.amount }}</mat-card-subtitle>
-        </mat-card>
-    </mat-list-item>
-</mat-list> -->
 <table *ngIf="expenses" class="expenseTable" mat-table [dataSource]="expenses">
     <!-- Name Column -->
     <ng-container matColumnDef="name">
@@ -17,13 +12,23 @@
     <!-- Payer Column -->
     <ng-container matColumnDef="payer">
         <th mat-header-cell *matHeaderCellDef> Payer </th>
-        <td mat-cell *matCellDef="let expense"> {{expense.payer}} </td>
+        <td mat-cell *matCellDef="let expense"> {{expense.payer.name}} </td>
+    </ng-container>
+
+    <!-- Expense Category -->
+    <ng-container matColumnDef="categoryName">
+        <th mat-header-cell *matHeaderCellDef> Category </th>
+        <td mat-cell *matCellDef="let expense"> {{expense.categoryName}} </td>
     </ng-container>
     
     <!-- Amount Column -->
     <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef> Amount </th>
-        <td mat-cell *matCellDef="let expense"> {{expense.amount}} </td>
+        <td mat-cell class="category-amount" *matCellDef="let expense"> 
+            <div>
+                {{expense.amount | currency:'':'':'1.2-2':'no'}} kr
+            </div>
+        </td>
     </ng-container>
 
     <!-- Description Column -->
