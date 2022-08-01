@@ -6,7 +6,7 @@ export type User = {
 export type Category = {
   id: number,
   name: string,
-  userWeights?: Map<User, number>,
+  userWeights?: Map<number, number>,
   users?: {
     id: number,
     name: string,

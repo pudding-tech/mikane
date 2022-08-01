@@ -17,7 +17,7 @@ export const parseCategories = (catInput: object[], target: string) : Category[]
       category.users = [];
     }
     else if (target === "calc") {
-      category.userWeights = new Map<User, number>();
+      category.userWeights = new Map<number, number>();
     }
 
     if (catObj["user_weight" as keyof typeof catObj] !== null) {
@@ -34,11 +34,7 @@ export const parseCategories = (catInput: object[], target: string) : Category[]
           );
         }
         else if (target === "calc" && category.userWeights) {
-          const user: User = {
-            id: parseInt(userWeightProps[0]),
-            name: userWeightProps[1]
-          };
-          category.userWeights.set(user, parseInt(userWeightProps[2]));
+          category.userWeights.set(parseInt(userWeightProps[0]), parseInt(userWeightProps[2]));
         }
       });
     }

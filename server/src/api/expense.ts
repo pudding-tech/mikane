@@ -39,4 +39,19 @@ router.post("/expenses", (req, res, next) => {
     .catch(next);
 });
 
+router.delete("/expenses/:expenseId", (req, res, next) => {
+  const expId = Number(req.params.expenseId);
+  if (isNaN(expId)) {
+    return res.status(400).send("Expense ID must be a number!");
+  }
+  const request = new sql.Request();
+  request
+    .input("expense_id", sql.Int, expId)
+    .execute("delete_expense")
+    .then( () => {
+      res.send({});
+    })
+    .catch(next);
+});
+
 export default router;

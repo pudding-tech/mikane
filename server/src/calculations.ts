@@ -9,7 +9,8 @@ import {
 
 export const calculatePayments = (
 	expenses: Expense[],
-	categories: Category[]
+	categories: Category[],
+	users: User[]
 ): PaymentCalculationResult => {
 	const payments: Payment[] = [];
 	const debts: Debt[] = [];
