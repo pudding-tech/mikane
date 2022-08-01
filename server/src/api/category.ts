@@ -11,9 +11,9 @@ router.get("/categories", (req, res, next) => {
   const request = new sql.Request();
   request
     .input("event_id", sql.Int, req.query.eventId)
+    .input("category_id", sql.Int, null)
     .execute("get_categories")
     .then( (data) => {
-      console.log(data.recordset);
       const categories: Category[] = parseCategories(data.recordset, "client");
       res.send(categories);
     })
@@ -66,7 +66,7 @@ router.post("/categories/:catId/user", (req, res, next) => {
     .execute("add_user_to_category")
     .then( (data) => {
       const categories: Category[] = parseCategories(data.recordset, "client");
-      res.send(categories);
+      res.send(categories[0]);
     })
     .catch(next);
 });
@@ -84,9 +84,28 @@ router.delete("/categories/:catId/user/:userId", (req, res, next) => {
     .execute("remove_user_from_category")
     .then( (data) => {
       const categories: Category[] = parseCategories(data.recordset, "client");
-      res.send(categories);
+      res.send(categories[0]);
     })
     .catch(next);
 });
+
+router.put("/categories/:catId/user/:userId", (req, res, next) => {
+  const catId = Number(req.params.catId);
+  const userId = Number(req.params.userId);
+  if (isNaN(catId) || isNaN(userId)) {
+    return res.status(400).send("Category ID and user ID must be numbers!");
+  }
+  const request = new sql.Request();
+  request
+    .input("category_id", sql.Int, catId)
+    .input("user_id", sql.Int, userId)
+    .execute("edit_user_weight")
+    .then( (data) => {
+      const categories: Category[] = parseCategories(data.recordset, "client");
+      res.send(categories[0]);
+    })
+    .catch(next);
+});
+
 
 export default router;

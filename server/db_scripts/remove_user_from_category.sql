@@ -17,6 +17,6 @@ begin
     inner join category c on c.event_id = e.id
   where c.id = @category_id
 
-  exec get_categories @event_id
+  exec get_categories @event_id, @category_id
 
 end

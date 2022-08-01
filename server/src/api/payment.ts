@@ -27,6 +27,7 @@ router.get("/payments", async (req, res, next) => {
   request = new sql.Request();
   await request
     .input("event_id", sql.Int, req.query.eventId)
+    .input("category_id", sql.Int, null)
     .execute("get_categories")
     .then( (data) => {
       categories = parseCategories(data.recordset, "calc");
@@ -58,7 +59,7 @@ router.get("/payments", async (req, res, next) => {
   }
 
   const payments = calculatePayments(expenses, categories, users);
-  res.send(payments["payments"]);
+  res.send(payments["expenses"]);
 });
 
 router.get("/paymentsTest", async (req, res) => {

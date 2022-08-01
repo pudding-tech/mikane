@@ -166,7 +166,7 @@ exec new_expense 'Personal expenses, Odd 02.08', null, 14.9, 7, 3
 exec new_expense 'Kitchen equipment 02.08', null, 98, 8, 3
 exec new_expense 'Food shopping, Tuesday 03.08', null, 943.83, 2, 3
 exec new_expense 'Food shopping, Wednesday 04.08', 'Removed some personal expenses', 1819.31, 2, 3
-exec new_expense 'Food shopping, Thursday 05.08', 'Removed some personal expenses', 1301.82, 2, 3
+exec new_expense 'Food shopping, Thursday 05.08', 'Removed some personal expenses', 1303.82, 2, 3
 exec new_expense 'Food shopping, Friday 06.08', 'Removed some personal expenses', 1762.1, 2, 3
 exec new_expense 'Personal expenses, Odd 06.08', null, 33.9, 7, 3
 exec new_expense 'Rafting toll', null, 60, 4, 6
