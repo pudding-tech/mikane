@@ -30,7 +30,7 @@ router.post("/categories", (req, res, next) => {
     .input("event_id", sql.Int, req.body.eventId)
     .execute("new_category")
     .then( (data) => {
-      res.send(data.recordset);
+      res.send(data.recordset[0]);
     })
     .catch(next);
 });

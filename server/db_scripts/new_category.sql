@@ -9,6 +9,6 @@ begin
 
   insert into category(event_id, [name]) values (@event_id, @name)
 
-  select * from category where event_id = @event_id
+  select * from category where id = @@IDENTITY
 
 end

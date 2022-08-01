@@ -1,4 +1,4 @@
-import { Category, Expense } from "./types";
+import { Category, Expense, User } from "./types";
 
 /*
 /	Build array of Category objects. Format for either client or calculate function
@@ -17,7 +17,7 @@ export const parseCategories = (catInput: object[], target: string) : Category[]
       category.users = [];
     }
     else if (target === "calc") {
-      category.userWeights = new Map<number, number>();
+      category.userWeights = new Map<User, number>();
     }
 
     if (catObj["user_weight" as keyof typeof catObj] !== null) {
@@ -34,7 +34,11 @@ export const parseCategories = (catInput: object[], target: string) : Category[]
           );
         }
         else if (target === "calc" && category.userWeights) {
-          category.userWeights.set(parseInt(userWeightProps[0]), parseInt(userWeightProps[2]));
+          const user: User = {
+            id: parseInt(userWeightProps[0]),
+            name: userWeightProps[1]
+          };
+          category.userWeights.set(user, parseInt(userWeightProps[2]));
         }
       });
     }

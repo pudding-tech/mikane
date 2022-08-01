@@ -60,56 +60,36 @@ router.get("/payments", async (req, res, next) => {
 router.get("/paymentsTest", async (req, res) => {
   console.log("Payments TEST!");
 
-  const users: User[] = [
-    {
-      id: 1,
-      name: "Arnt"
-    },
-    {
-      id: 2,
-      name: "Per"
-    }
-  ];
+  const user1: User = {
+    id: 1,
+    name: "Arnt"
+  };
+  const user2: User = {
+    id: 2,
+    name: "Per"
+  };
 
   const categories: Category[] = [
     {
       id: 1,
-      name: "Food",
-      userWeights: new Map<number, number>([ [1, 1], [2, 1] ])
-    },
-    {
-      id: 2,
-      name: "Transport",
-      userWeights: new Map<number, number>([ [1, 1], [2, 1] ])
+      name: "Board games",
+      userWeights: new Map<User, number>([ [user1, 1], [user2, 1] ])
     }
   ];
 
   const expenses: Expense[] = [
     {
       id: 1,
-      name: "Bananer",
+      name: "Scam lamps",
       description: "",
-      amount: 200,
+      amount: 500,
       categoryId: 1,
-      categoryName: "Food",
-      payerId: 1,
-      payer: "Arnt"
-    },
-    {
-      id: 2,
-      name: "Gas gas gas",
-      description: "",
-      amount: 1000,
-      categoryId: 2,
-      categoryName: "Transport",
+      categoryName: "Board games",
       payerId: 2,
       payer: "Per"
     }
   ];
 
-  console.log("------------");
-  console.log("Users:");
-  console.log(users);
   console.log("------------");
   console.log("Categories:");
   console.log(categories);
@@ -118,10 +98,11 @@ router.get("/paymentsTest", async (req, res) => {
   console.log(expenses);
   console.log("------------");
 
-  const test = calculatePayments(expenses, categories);
-  console.log("Result of Capeo's marvelous function:");
-  console.log(test);
-  res.send(test || "undefined :(");
+  //const test = calculatePayments(expenses, categories);
+  //console.log("Result of Capeo's marvelous function:");
+  //console.log(test);
+  res.send("Yes");
+  //res.send(test || "undefined :(");
 });
 
 export default router;
