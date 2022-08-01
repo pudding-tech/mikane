@@ -41,8 +41,10 @@ exec new_category 2, 'Food' -- 10
 exec new_category 2, 'Transport' -- 11
 exec new_category 2, 'Bobsleigh riding' -- 12
 exec new_category 2, 'Megavalanche bike racing' -- 13
+
 exec new_category 3, 'Cheese eating contest' -- 14
 exec new_category 3, 'Running of the bulls' -- 15
+
 exec new_category 4, 'Food' -- 16
 exec new_category 4, 'Fighter-jet flying' -- 17
 exec new_category 4, 'Cage diving with sharks' -- 18
@@ -99,8 +101,24 @@ exec add_user_to_category 6, 2, 1 -- Trondheim drive
 exec add_user_to_category 6, 3, 1
 exec add_user_to_category 6, 4, 1
 exec add_user_to_category 6, 5, 1
----------------------------------------------------------- PAUSED HERE
-exec add_user_to_category 6, 2, 1 -- Personal Odd
+
+exec add_user_to_category 7, 2, 1 -- Personal Odd
+
+exec add_user_to_category 8, 1, 1 -- Personal SP
+
+exec add_user_to_category 9, 1, 1 -- Karaoke
+exec add_user_to_category 9, 2, 1
+exec add_user_to_category 9, 3, 1
+exec add_user_to_category 9, 4, 1
+exec add_user_to_category 9, 5, 1
+exec add_user_to_category 9, 6, 1
+exec add_user_to_category 9, 7, 1
+exec add_user_to_category 9, 8, 1
+exec add_user_to_category 9, 9, 1
+exec add_user_to_category 9, 10, 1
+exec add_user_to_category 9, 11, 1
+exec add_user_to_category 9, 12, 1
+exec add_user_to_category 9, 13, 1
 
 -- Pudding Week 2022
 exec add_user_to_category 10, 3, 3
@@ -118,12 +136,14 @@ exec add_user_to_category 12, 8, 1
 exec add_user_to_category 13, 1, 3
 exec add_user_to_category 13, 6, 18
 
+-- Christmas Party
 exec add_user_to_category 14, 8, 1
 exec add_user_to_category 14, 1, 1
 
 exec add_user_to_category 15, 6, 3
 exec add_user_to_category 15, 3, 1
 
+-- Midsummer Festival
 exec add_user_to_category 16, 3, 1
 exec add_user_to_category 16, 4, 1
 exec add_user_to_category 16, 2, 1
@@ -139,6 +159,40 @@ exec add_user_to_category 19, 3, 2
 exec add_user_to_category 19, 4, 99
 
 -- name, desc, amount, cat_id, payer_id
+exec new_expense 'Food shopping, Saturday 31.07', 'Removed some personal expenses', 3140.29, 2, 3
+exec new_expense 'Personal expenses, Odd 31.07', null, 87.8, 7, 3
+exec new_expense 'Food shopping, Monday 02.08', 'Removed some personal expenses', 688.5, 2, 3
+exec new_expense 'Personal expenses, Odd 02.08', null, 14.9, 7, 3
+exec new_expense 'Kitchen equipment 02.08', null, 98, 8, 3
+exec new_expense 'Food shopping, Tuesday 03.08', null, 943.83, 2, 3
+exec new_expense 'Food shopping, Wednesday 04.08', 'Removed some personal expenses', 1819.31, 2, 3
+exec new_expense 'Food shopping, Thursday 05.08', 'Removed some personal expenses', 1301.82, 2, 3
+exec new_expense 'Food shopping, Friday 06.08', 'Removed some personal expenses', 1762.1, 2, 3
+exec new_expense 'Personal expenses, Odd 06.08', null, 33.9, 7, 3
+exec new_expense 'Rafting toll', null, 60, 4, 6
+exec new_expense 'Paddleboard toll', null, 60, 5, 6
+exec new_expense 'Climbing toll', null, 60, 3, 6
+exec new_expense 'Vinmonopol 04.08', null, 465, 9, 6
+exec new_expense 'Food shopping, Thursday 05.08', null, 322, 2, 6
+exec new_expense 'Petrol Sondre, rafting', null, 688, 4, 6
+exec new_expense 'Food shopping, Wednesday 04.08', null, 146.56, 2, 9
+exec new_expense 'Food shopping, Tuesday 03.08 (Kiwi)', null, 501.67, 2, 3
+exec new_expense 'Food shopping, Wednesday 04.08 (Kiwi)', null, 391.8, 2, 3
+exec new_expense 'Food shopping, Sunday 01.08 (Kiwi)', 'Removed some personal expenses', 722.1, 2, 3
+exec new_expense 'Personal expenses, Odd 01.08', null, 13.7, 7, 3
+exec new_expense 'Food shopping, Tuesday 31.07 (Kiwi)', null, 123.3, 2, 3
+exec new_expense 'Vinmonopol 30.07', null, 471.8, 9, 2
+exec new_expense 'Paddleboard rent', null, 800, 5, 2
+exec new_expense 'Food shopping, Tuesday 30.07', null, 875.5, 2, 1
+exec new_expense 'Klatrepark', null, 2310, 3, 1
+exec new_expense 'Rafting', null, 6975, 4, 1
+exec new_expense 'Climbing toll', null, 60, 3, 1
+exec new_expense 'Cabin rent', null, 10998, 1, 1
+exec new_expense 'Food shopping Saturday 07.08', null, 723.05, 2, 3
+exec new_expense 'Gas shopping', null, 381.4, 2, 3
+exec new_expense 'Gas Trondheim-Trysil (round trip)', null, 1111.8, 6, 3
+exec new_expense 'Toll Trondheim-Trysil (round trip)', null, 64, 6, 3
+
 exec new_expense 'Bananer', 'De kommer i pyjamas', 54, 10, 3
 exec new_expense 'Ostepop', 'Illeluktende', 12.95, 10, 2
 exec new_expense 'Steam train', 'We''ve got a ticket to ride', 17999, 11, 4

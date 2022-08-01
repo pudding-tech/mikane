@@ -5,7 +5,6 @@ const router = express.Router();
 router.get("/events", (req, res, next) => {
   const request = new sql.Request();
   request
-    .input("name", sql.NVarChar, null)
     .execute("get_events")
     .then( (data) => {
       res.send(data.recordset);

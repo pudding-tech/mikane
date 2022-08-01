@@ -90,7 +90,6 @@ router.get("/paymentsTest", async (req, res) => {
   const test = calculatePayments(expenses, categories);
   console.log("Result of Capeo's marvelous function:");
   console.log(test);
-  //res.send("Yes");
   res.send(test || "undefined :(");
 });
 
