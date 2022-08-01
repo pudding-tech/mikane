@@ -7,9 +7,8 @@ create procedure new_user
 as
 begin
 
-  insert into [user](name, created) values (@name, GETDATE())
-  insert into event_user (event_id, user_id) values (@event_id, @@identity)
+  insert into [user](name, created, event_id) values (@name, GETDATE(), @event_id)
 
-  select * from [user]
+  select * from [user] where id = @@IDENTITY
 
 end

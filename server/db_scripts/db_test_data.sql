@@ -1,7 +1,7 @@
-exec new_event 'Pudding Week 2021'
-exec new_event 'Pudding Week 2022'
-exec new_event 'Christmas Party'
-exec new_event 'Midsummer Festival'
+exec new_event 'Pudding Week 2021' -- 1
+exec new_event 'Pudding Week 2022' -- 2
+exec new_event 'Christmas Party' -- 3
+exec new_event 'Midsummer Festival' -- 4
 
 exec new_user 'Svend-Peder', 1 -- 1
 exec new_user 'Odd', 1 -- 2
@@ -16,16 +16,33 @@ exec new_user 'Tord', 1 -- 10
 exec new_user 'Elisabeth', 1 -- 11
 exec new_user 'Andreas L', 1 -- 12
 exec new_user 'Oda', 1 -- 13
-exec new_user 'Nikolai', 2 -- 14
 
-insert into event_user (event_id, user_id)
-  values (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8) -- Pudding Week 2022
+exec new_user 'Svend-Peder', 2 -- 14
+exec new_user 'Odd', 2 -- 15
+exec new_user 'Adrian', 2 -- 16
+exec new_user 'Andreas', 2 -- 17
+exec new_user 'Arisa', 2 -- 18
+exec new_user 'Sondre', 2 -- 19
+exec new_user 'Alida', 2 -- 20
+exec new_user 'Martin', 2 -- 21
+exec new_user 'Nikolai', 2 -- 22
 
-insert into event_user (event_id, user_id)
-  values (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6), (3, 7), (3, 8) -- Christmas Party
+exec new_user 'Svend-Peder', 3 -- 23
+exec new_user 'Odd', 3 -- 24
+exec new_user 'Adrian', 3 -- 25
+exec new_user 'Andreas', 3 -- 26
+exec new_user 'Arisa', 3 -- 27
+exec new_user 'Sondre', 3 -- 28
+exec new_user 'Alida', 3 -- 29
+exec new_user 'Martin', 3 -- 30
 
-insert into event_user (event_id, user_id)
-  values (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6), (4, 7) -- Midsummer Festival
+exec new_user 'Svend-Peder', 4 -- 31
+exec new_user 'Odd', 4 -- 32
+exec new_user 'Adrian', 4 -- 33
+exec new_user 'Andreas', 4 -- 34
+exec new_user 'Arisa', 4 -- 35
+exec new_user 'Sondre', 4 -- 36
+exec new_user 'Martin', 4 -- 37
 
 exec new_category 1, 'Cabin stay' -- 1
 exec new_category 1, 'Food' -- 2
@@ -121,42 +138,42 @@ exec add_user_to_category 9, 12, 1
 exec add_user_to_category 9, 13, 1
 
 -- Pudding Week 2022
-exec add_user_to_category 10, 3, 3
-exec add_user_to_category 10, 4, 2
-exec add_user_to_category 10, 2, 6
-exec add_user_to_category 10, 8, 1
+exec add_user_to_category 10, 16, 3
+exec add_user_to_category 10, 17, 2
+exec add_user_to_category 10, 15, 6
+exec add_user_to_category 10, 21, 1
 
-exec add_user_to_category 11, 3, 1
-exec add_user_to_category 11, 2, 1
-exec add_user_to_category 11, 1, 1
+exec add_user_to_category 11, 16, 1
+exec add_user_to_category 11, 15, 1
+exec add_user_to_category 11, 14, 1
 
-exec add_user_to_category 12, 4, 1
-exec add_user_to_category 12, 8, 1
+exec add_user_to_category 12, 17, 1
+exec add_user_to_category 12, 21, 1
 
-exec add_user_to_category 13, 1, 3
-exec add_user_to_category 13, 6, 18
+exec add_user_to_category 13, 14, 3
+exec add_user_to_category 13, 19, 18
 
 -- Christmas Party
-exec add_user_to_category 14, 8, 1
-exec add_user_to_category 14, 1, 1
+exec add_user_to_category 14, 30, 1
+exec add_user_to_category 14, 23, 1
 
-exec add_user_to_category 15, 6, 3
-exec add_user_to_category 15, 3, 1
+exec add_user_to_category 15, 28, 3
+exec add_user_to_category 15, 25, 1
 
 -- Midsummer Festival
-exec add_user_to_category 16, 3, 1
-exec add_user_to_category 16, 4, 1
-exec add_user_to_category 16, 2, 1
+exec add_user_to_category 16, 33, 1
+exec add_user_to_category 16, 34, 1
+exec add_user_to_category 16, 32, 1
 
-exec add_user_to_category 17, 3, 1
-exec add_user_to_category 17, 4, 1
-exec add_user_to_category 17, 2, 1
+exec add_user_to_category 17, 33, 1
+exec add_user_to_category 17, 34, 1
+exec add_user_to_category 17, 32, 1
 
-exec add_user_to_category 18, 1, 2
-exec add_user_to_category 18, 6, 2
+exec add_user_to_category 18, 31, 2
+exec add_user_to_category 18, 36, 2
 
-exec add_user_to_category 19, 3, 2
-exec add_user_to_category 19, 4, 99
+exec add_user_to_category 19, 33, 2
+exec add_user_to_category 19, 34, 99
 
 -- name, desc, amount, cat_id, payer_id
 exec new_expense 'Food shopping, Saturday 31.07', 'Removed some personal expenses', 3140.29, 2, 3
@@ -193,18 +210,18 @@ exec new_expense 'Gas shopping', null, 381.4, 2, 3
 exec new_expense 'Gas Trondheim-Trysil (round trip)', null, 1111.8, 6, 3
 exec new_expense 'Toll Trondheim-Trysil (round trip)', null, 64, 6, 3
 
-exec new_expense 'Bananer', 'De kommer i pyjamas', 54, 10, 3
-exec new_expense 'Ostepop', 'Illeluktende', 12.95, 10, 2
-exec new_expense 'Steam train', 'We''ve got a ticket to ride', 17999, 11, 4
-exec new_expense 'Shark', null, 24000, 18, 6
-exec new_expense 'Blue cheese', null, 45.75, 14, 1
-exec new_expense 'Stinky sock cheese', null, 2, 14, 6
-exec new_expense 'Norvegia', null, 60, 14, 4
-exec new_expense 'Bobsleigh', null, 7999, 12, 4
-exec new_expense 'City bike', null, 3000, 13, 6
-exec new_expense 'Bull', 'The angriest one', 8400, 15, 3
-exec new_expense 'Ticket', 'Choo choo!', 4800, 19, 3
-exec new_expense 'Huge water tank', null, 19900, 18, 6
-exec new_expense 'Cage', 'Moderately secure', 3999, 18, 6
-exec new_expense 'Pringles', null, 800, 16, 3
-exec new_expense 'Donkey ride', 'One last ride...', 200, 11, 4
+exec new_expense 'Bananer', 'De kommer i pyjamas', 54, 10, 16
+exec new_expense 'Ostepop', 'Illeluktende', 12.95, 10, 15
+exec new_expense 'Steam train', 'We''ve got a ticket to ride', 17999, 11, 17
+exec new_expense 'Shark', null, 24000, 18, 36
+exec new_expense 'Blue cheese', null, 45.75, 14, 23
+exec new_expense 'Stinky sock cheese', null, 2, 14, 28
+exec new_expense 'Norvegia', null, 60, 14, 26
+exec new_expense 'Bobsleigh', null, 7999, 12, 17
+exec new_expense 'City bike', null, 3000, 13, 19
+exec new_expense 'Bull', 'The angriest one', 8400, 15, 25
+exec new_expense 'Ticket', 'Choo choo!', 4800, 19, 33
+exec new_expense 'Huge water tank', null, 19900, 18, 36
+exec new_expense 'Cage', 'Moderately secure', 3999, 18, 36
+exec new_expense 'Pringles', null, 800, 16, 33
+exec new_expense 'Donkey ride', 'One last ride...', 200, 11, 17

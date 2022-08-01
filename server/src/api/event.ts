@@ -26,23 +26,4 @@ router.post("/events", (req, res, next) => {
     .catch(next);
 });
 
-router.post("/events/:eventId/user", (req, res, next) => {
-  const eventId = Number(req.params.eventId);
-  if (isNaN(eventId)) {
-    return res.status(400).send("Event ID is not a number!");
-  }
-  if (!req.body.userId) {
-    return res.status(400).send("UserId not provided!");
-  }
-  const request = new sql.Request();
-  request
-    .input("event_id", sql.Int, eventId)
-    .input("user_id", sql.Int, req.body.userId)
-    .execute("add_user_to_event")
-    .then( (data) => {
-      res.send(data.recordset);
-    })
-    .catch(next);
-});
-
 export default router;

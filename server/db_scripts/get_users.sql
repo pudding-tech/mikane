@@ -9,17 +9,21 @@ begin
   if (@event_id is null)
     begin
         
-      select * from [user]
+      select * from
+        [user]
+      order by
+        id
       
     end
   else
     begin
         
-      select
-        u.id, u.name
-      from [user] u
-        inner join event_user eu on eu.user_id = u.id
-      where eu.event_id = @event_id
+      select * from
+        [user]
+      where
+        event_id = @event_id
+      order by
+        id
 
     end
 

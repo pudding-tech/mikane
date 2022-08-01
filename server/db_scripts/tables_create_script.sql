@@ -1,18 +1,13 @@
-create table [user] (
-  id int identity(1,1) primary key,
-  [name] nvarchar(255) not null unique,
-  created datetime
-)
-
 create table [event] (
   id int identity(1,1) primary key,
   [name] nvarchar(255) not null unique
 )
 
-create table event_user (
-  event_id int foreign key references [event](id) on delete cascade,
-  user_id int foreign key references [user](id) on delete cascade
-  primary key (event_id, user_id)
+create table [user] (
+  id int identity(1,1) primary key,
+  [name] nvarchar(255) not null,
+  created datetime not null,
+  event_id int foreign key references [event](id) on delete no action
 )
 
 create table category (
