@@ -35,13 +35,6 @@ export class ExpenditureDialogComponent implements OnInit {
 	}
 
     onSave() {
-        const category: Category | undefined = this.categories.find((category) => category.name === this.expense.categoryName);
-        if (category) {
-            this.dialogRef.close(this.expense);
-        } else {
-            this.categoryService.createCategory(this.expense.categoryName, this.data).subscribe((categories) => {
-                this.dialogRef.close();
-            });
-        }
+        this.dialogRef.close(this.expense);
     }
 }

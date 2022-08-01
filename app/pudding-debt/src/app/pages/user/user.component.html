@@ -1,5 +1,9 @@
-<mat-list>
+<div class="add-button" >
+    <button mat-raised-button color="primary" (click)="openDialog()">Add participant to event</button>
+</div>
+<mat-list class="user-list">
     <mat-list-item *ngFor="let user of users">
         <p matLine>{{ user.name }}</p>
+        <mat-divider></mat-divider>
     </mat-list-item>
 </mat-list>

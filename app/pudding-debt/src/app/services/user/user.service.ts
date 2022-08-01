@@ -24,7 +24,7 @@ export class UserService {
 		return this.httpClient.get<User[]>(this.apiUrl + `?eventId=${eventId}`);
 	}
 
-	createUser(name: string, event: PuddingEvent) {
-		return this.httpClient.post<User[]>(this.apiUrl, { name: name, eventId: event?.id });
+	createUser(eventId: number, name: string): Observable<User> {
+		return this.httpClient.post<User>(this.apiUrl, { name: name, eventId: eventId });
 	}
 }

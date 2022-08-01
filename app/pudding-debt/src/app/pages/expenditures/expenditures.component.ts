@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, map, of, switchMap } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 import {
 	Category,
 	CategoryService,
