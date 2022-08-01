@@ -35,6 +35,21 @@ router.post("/categories", (req, res, next) => {
     .catch(next);
 });
 
+router.delete("/categories/:catId", (req, res, next) => {
+  const catId = Number(req.params.catId);
+  if (isNaN(catId)) {
+    return res.status(400).send("Category ID must be a number!");
+  }
+  const request = new sql.Request();
+  request
+    .input("category_id", sql.Int, catId)
+    .execute("delete_category")
+    .then( () => {
+      res.send({});
+    })
+    .catch(next);
+});
+
 router.post("/categories/:catId/user", (req, res, next) => {
   const catId = Number(req.params.catId);
   if (isNaN(catId)) {

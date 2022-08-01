@@ -15,9 +15,9 @@ begin
   insert into expense([name], [description], amount, category_id, payer_id)
     values (@name, @description, @amount, @category_id, @payer_id)
 
-  select ex.* from expense ex
+  select ex.*, c.name as category_name, u.name as payer from expense ex
     inner join category c on c.id = ex.category_id
-    inner join [event] ev on ev.id = c.event_id
-  where c.id = @category_id
+    inner join [user] u on u.id = ex.payer_id
+  where ex.id = @@IDENTITY
 
 end

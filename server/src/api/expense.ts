@@ -20,8 +20,8 @@ router.get("/expenses", (req, res, next) => {
 });
 
 router.post("/expenses", (req, res, next) => {
-  if (!req.body.name || !req.body.description || !req.body.categoryId || !req.body.payerId) {
-    return res.status(400).send("Name, description, categoryId or payerId not provided!");
+  if (!req.body.name || !req.body.categoryId || !req.body.payerId) {
+    return res.status(400).send("Name, categoryId or payerId not provided!");
   }
   console.log(req.body.amount);
   const request = new sql.Request();
@@ -33,7 +33,8 @@ router.post("/expenses", (req, res, next) => {
     .input("payer_id", sql.Int, req.body.payerId)
     .execute("new_expense")
     .then( (data) => {
-      res.send(data.recordset);
+      const expenses: Expense[] = parseExpenses(data.recordset);
+      res.send(expenses[0]);
     })
     .catch(next);
 });
