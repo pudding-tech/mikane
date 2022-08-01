@@ -34,9 +34,9 @@ export const calculatePayments = (
 	const spendingMap = new Map<number, number>();
 	const expensesOutputMap = new Map<number, number>();
 	expenses.forEach((expense) => {
-		spendingMap.set(
+		expensesOutputMap.set(
 			expense.payer.id,
-			(spendingMap.get(expense.payer.id) ?? 0) + expense.amount
+			(expensesOutputMap.get(expense.payer.id) ?? 0) + expense.amount
 		);
 		userNetExpense.set(
 			expense.payer.id,
@@ -45,9 +45,9 @@ export const calculatePayments = (
 		const expenseCategory = categoryWeights.get(expense.categoryId);
 		if (expenseCategory) {
 			expenseCategory.forEach((userWeight: number, userId: number) => {
-				expensesOutputMap.set(
+				spendingMap.set(
 					userId,
-					(expensesOutputMap.get(userId) ?? 0) - (expense.amount * userWeight)
+					(spendingMap.get(userId) ?? 0) - (expense.amount * userWeight)
 				);
 				userNetExpense.set(
 					userId,
