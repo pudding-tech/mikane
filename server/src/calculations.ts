@@ -1,4 +1,5 @@
 import {
+	User,
 	Category,
 	Expense,
 	Payment,
@@ -12,32 +13,32 @@ export const calculatePayments = (
 ): PaymentCalculationResult => {
 	const payments: Payment[] = [];
 	const debts: Debt[] = [];
-	const categoryWeights = new Map<number, Map<number, number>>();
-	const userNetExpense = new Map<number, number>();
+	const categoryWeights = new Map<number, Map<User, number>>();
+	const userNetExpense = new Map<User, number>();
 
 	categories.forEach((category) => {
 		let sumCategoryWeights = 0;
 		category.userWeights!.forEach((weight) => {
 			sumCategoryWeights += weight;
 		});
-		const adjustedUserWeights = new Map<number, number>();
-		category.userWeights!.forEach((weight, userId) => {
-			adjustedUserWeights.set(userId, weight / sumCategoryWeights);
+		const adjustedUserWeights = new Map<User, number>();
+		category.userWeights!.forEach((weight, user) => {
+			adjustedUserWeights.set(user, weight / sumCategoryWeights);
 		});
 		categoryWeights.set(category.id, adjustedUserWeights);
 	});
 
 	expenses.forEach((expense) => {
 		userNetExpense.set(
-			expense.payerId,
-			(userNetExpense.get(expense.payerId) ?? 0) + expense.amount
+			expense.payer,
+			(userNetExpense.get(expense.payer) ?? 0) + expense.amount
 		);
 		const expenseCategory = categoryWeights.get(expense.categoryId);
 		if (expenseCategory) {
-			expenseCategory.forEach((userWeight: number, userId: number) => {
+			expenseCategory.forEach((userWeight: number, user: User) => {
 				userNetExpense.set(
-					userId,
-					(userNetExpense.get(userId) ?? 0) - (expense.amount * userWeight)
+					user,
+					(userNetExpense.get(user) ?? 0) - (expense.amount * userWeight)
 				);
 			});
 		}
@@ -45,13 +46,13 @@ export const calculatePayments = (
 
 	const lenders: Debt[] = [];
 	const debtors: Debt[] = [];
-	userNetExpense.forEach((netExpense: number, userId: number) => {
+	userNetExpense.forEach((netExpense: number, user: User) => {
 		if (netExpense > 0) {
-			lenders.push({ userId: userId, amount: netExpense });
+			lenders.push({ user: user, amount: netExpense });
 		} else if (netExpense < 0) {
-			debtors.push({ userId: userId, amount: Math.abs(netExpense) });
+			debtors.push({ user: user, amount: Math.abs(netExpense) });
 		}
-		debts.push({ userId: userId, amount: netExpense });
+		debts.push({ user: user, amount: netExpense });
 	});
 
 	while (lenders.length > 0 && debtors.length > 0) {
@@ -68,13 +69,13 @@ export const calculatePayments = (
 		if (largestLeander.amount > largestDebtor.amount) {
 			paymentAmount = largestDebtor.amount;
 			lenders.push({
-				userId: largestLeander.userId,
+				user: largestLeander.user,
 				amount: largestLeander.amount - largestDebtor.amount,
 			});
 		} else if (largestLeander.amount < largestDebtor.amount) {
 			paymentAmount = largestLeander.amount;
 			debtors.push({
-				userId: largestDebtor.userId,
+				user: largestDebtor.user,
 				amount: largestDebtor.amount - largestLeander.amount,
 			});
 		} else {
@@ -82,8 +83,8 @@ export const calculatePayments = (
 		}
 
 		payments.push({
-			senderId: largestDebtor.userId,
-			receiverId: largestLeander.userId,
+			sender: largestDebtor.user,
+			receiver: largestLeander.user,
 			amount: paymentAmount,
 		});
 	}

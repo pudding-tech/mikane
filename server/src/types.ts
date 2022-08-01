@@ -25,13 +25,13 @@ export type Expense = {
 }
 
 export type Payment = {
-  senderId: number,
-  receiverId: number,
+  sender: User,
+  receiver: User,
   amount: number
 }
 
 export type Debt = {
-  userId: number,
+  user: User,
   amount: number
 }
 

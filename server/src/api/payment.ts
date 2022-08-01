@@ -63,7 +63,7 @@ router.get("/paymentsTest", async (req, res) => {
     {
       id: 1,
       name: "Board games",
-      userWeights: new Map<User, number>([ [arnt, 1], [per, 1] ])
+      userWeights: new Map<User, number>([ [arnt, 1] ])
     }
   ];
 
@@ -87,11 +87,11 @@ router.get("/paymentsTest", async (req, res) => {
   console.log(expenses);
   console.log("------------");
 
-  //const test = calculatePayments(expenses, categories);
-  //console.log("Result of Capeo's marvelous function:");
-  //console.log(test);
-  res.send("Yes");
-  //res.send(test || "undefined :(");
+  const test = calculatePayments(expenses, categories);
+  console.log("Result of Capeo's marvelous function:");
+  console.log(test);
+  //res.send("Yes");
+  res.send(test || "undefined :(");
 });
 
 export default router;
