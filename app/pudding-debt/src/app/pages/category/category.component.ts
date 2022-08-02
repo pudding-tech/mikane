@@ -52,7 +52,7 @@ export class CategoryComponent implements OnInit {
 	}
 
 	loadUsers() {
-		this.userService.loadUsersForEvent(this.eventId).subscribe((users) => {
+		this.userService.loadUsers(this.eventId).subscribe((users) => {
 			this.users = users;
 		});
 	}

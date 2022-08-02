@@ -30,6 +30,7 @@ import { CategoryDialogComponent } from './pages/category/category-dialog/catego
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { registerLocaleData } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import localeNo from '@angular/common/locales/no';
 import { ExpenditureDialogComponent } from './pages/expenditures/expenditure-dialog/expenditure-dialog.component';
@@ -76,6 +77,7 @@ registerLocaleData(localeNo);
 		MatSelectModule,
 		MatDialogModule,
 		MatAutocompleteModule,
+        MatProgressSpinnerModule,
 	],
 	providers: [
 		{

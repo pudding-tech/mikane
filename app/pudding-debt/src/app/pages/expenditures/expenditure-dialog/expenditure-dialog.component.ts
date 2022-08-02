@@ -25,7 +25,7 @@ export class ExpenditureDialogComponent implements OnInit {
             this.categories = categories;
         });
 
-        this.userService.loadUsersForEvent(this.data).subscribe((users) => {
+        this.userService.loadUsers(this.data).subscribe((users) => {
             this.users = users;
         });
     }
