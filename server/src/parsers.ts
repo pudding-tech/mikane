@@ -1,4 +1,4 @@
-import { Category, Expense } from "./types";
+import { Category, Expense, User } from "./types";
 
 /*
 /	Build array of Category objects. Format for either client or calculate function
@@ -69,4 +69,22 @@ export const parseExpenses = (expInput: object[]): Expense[] => {
 	});
 
 	return expenses;
+};
+
+/*
+/	Build array of User objects
+*/
+export const parseUsers = (usersInput: object[]): User[] => {
+
+	const users: User[] = [];
+	usersInput.forEach( (userObj) => {
+		const user: User = {
+			id: userObj["id" as keyof typeof userObj],
+			name: userObj["name" as keyof typeof userObj]
+		};
+
+		users.push(user);
+	});
+
+	return users;
 };

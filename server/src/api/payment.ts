@@ -1,12 +1,11 @@
 import express from "express";
 import sql from "mssql";
 import { calculatePayments } from "../calculations";
-import { parseCategories, parseExpenses } from "../parsers";
+import { parseCategories, parseExpenses, parseUsers } from "../parsers";
 import { Category, Expense, User } from "../types";
 const router = express.Router();
 
 router.get("/payments", async (req, res, next) => {
-  console.log("Payments!");
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
   }
@@ -20,7 +19,7 @@ router.get("/payments", async (req, res, next) => {
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_users")
     .then( (data) => {
-      users = data.recordset;
+      users = parseUsers(data.recordset);
     })
     .catch(next);
 
@@ -59,7 +58,7 @@ router.get("/payments", async (req, res, next) => {
   }
 
   const payments = calculatePayments(expenses, categories, users);
-  res.send(payments["expenses"]);
+  res.send(payments["payments"]);
 });
 
 router.get("/paymentsTest", async (req, res) => {

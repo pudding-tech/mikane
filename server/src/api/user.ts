@@ -1,5 +1,7 @@
 import express from "express";
 import sql from "mssql";
+import { parseExpenses, parseUsers } from "../parsers";
+import { Expense, User } from "../types";
 const router = express.Router();
 
 router.get("/users", (req, res, next) => {
@@ -8,7 +10,8 @@ router.get("/users", (req, res, next) => {
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_users")
     .then( (data) => {
-      res.send(data.recordset);
+      const users: User[] = parseUsers(data.recordset);
+      res.send(users);
     })
     .catch(next);
 });
@@ -23,26 +26,20 @@ router.post("/users", (req, res, next) => {
     .input("event_id", sql.Int, req.body.eventId)
     .execute("new_user")
     .then( (data) => {
-      res.send(data.recordset);
+      const users: User[] = parseUsers(data.recordset);
+      res.send(users[0]);
     })
     .catch(next);
 });
 
-router.post("/users/:userId/event", (req, res, next) => {
-  const userId = Number(req.params.userId);
-  if (isNaN(userId)) {
-    return res.status(400).send("User ID is not a number!");
-  }
-  if (!req.body.eventId) {
-    return res.status(400).send("EventId not provided!");
-  }
+router.get("/users/:id/expenses", (req, res, next) => {
   const request = new sql.Request();
   request
-    .input("event_id", sql.Int, req.body.eventId)
-    .input("user_id", sql.Int, userId)
-    .execute("add_user_to_event")
+    .input("event_id", sql.Int, req.query.eventId)
+    .execute("get_user_expenses")
     .then( (data) => {
-      res.send(data.recordset);
+      const expenses: Expense[] = parseExpenses(data.recordset);
+      res.send(expenses);
     })
     .catch(next);
 });
