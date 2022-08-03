@@ -2,7 +2,7 @@
 <div mat-dialog-content>
 	<mat-form-field appearance="fill">
 		<mat-label>Expense Name</mat-label>
-		<input matInput [(ngModel)]="expense.name" required />
+		<input matInput type="text" [(ngModel)]="expense.name" required />
 	</mat-form-field>
 	<mat-form-field appearance="fill">
 		<mat-label>Description</mat-label>
@@ -31,7 +31,7 @@
 	</mat-form-field>
 	<mat-form-field appearance="fill">
 		<mat-label>Amount</mat-label>
-		<input matInput type="text" [(ngModel)]="expense.amount" required />
+		<input matInput type="number" [(ngModel)]="expense.amount" required />
 	</mat-form-field>
 	<mat-form-field appearance="fill">
 		<mat-label>Payer</mat-label>

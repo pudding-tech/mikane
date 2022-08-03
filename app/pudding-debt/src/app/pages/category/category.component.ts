@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MessageService } from 'src/app/services/message/message.service';
+import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
 
 @Component({
 	selector: 'app-category',
@@ -103,7 +104,6 @@ export class CategoryComponent implements OnInit {
 	}
 
 	addUser(categoryId: number) {
-		console.log(this.name.value);
 		if (this.name.value) {
 			this.categoryService
 				.addUser(categoryId, +this.name.value, this.weight.value)
@@ -140,6 +140,33 @@ export class CategoryComponent implements OnInit {
             this.messageService.showError('Error removing user from category');
         }});
 	}
+
+    openEditDialog(categoryId: number, userId: number) {
+        const dialogRef = this.dialog.open(CategoryEditDialogComponent, {
+            width: '350px',
+            data: {categoryId, userId}
+        });
+
+        dialogRef.afterClosed().subscribe((res) => {
+            this.editCategory(categoryId, userId, res);
+        });
+    }
+
+    editCategory(categoryId: number, userId: number, weight: number) {
+        this.categoryService.editUser(categoryId, userId, weight).subscribe((category) => {
+            const catIndex = this.categories.findIndex((category) => {
+                return category.id === categoryId;
+            });
+            if (catIndex > -1) {
+                const userIndex = this.categories[catIndex].users.findIndex((user) => {
+                    return user.id === userId;
+                });
+                if (userIndex > -1) {
+                    this.categories[catIndex].users[userIndex].weight = weight
+                }
+            }
+        });
+    }
 
 	drop(event: CdkDragDrop<Category[]>) {
 		moveItemInArray(
