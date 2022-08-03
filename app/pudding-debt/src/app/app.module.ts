@@ -39,6 +39,7 @@ import { UserDialogComponent } from './pages/user/user-dialog/user-dialog.compon
 import { EventDialogComponent } from './pages/events/event-dialog/event-dialog.component';
 import { SuccessMessageComponent } from './services/message/success/success-message.component';
 import { ErrorMessageComponent } from './services/message/error/error-message.component';
+import { SharedModule } from './shared/shared.module';
 registerLocaleData(localeNo);
 
 @NgModule({
@@ -60,6 +61,7 @@ registerLocaleData(localeNo);
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
+        SharedModule,
 		ServiceWorkerModule.register('ngsw-worker.js', {
 			enabled: environment.production,
 			// Register the ServiceWorker as soon as the application is stable

@@ -49,7 +49,7 @@ export class PaymentStructureComponent implements OnInit {
 			map(payments, (payment) => {
 				if (
 					this.senders.find((sender) => {
-						sender.sender.id === payment.sender.id;
+						return sender.sender.id === payment.sender.id;
 					}) === undefined
 				) {
 					this.senders.push({

@@ -2,7 +2,7 @@
     <button mat-raised-button color="primary" (click)="openDialog()">Add category</button>
 </div>
 
-<mat-accordion class="categories">
+<mat-accordion class="categories" *ngIf="categories.length > 0;else noCategories">
     <div cdkDropList (cdkDropListDropped)="drop($event)">
 	<mat-expansion-panel *ngFor="let category of categories" cdkDrag>
 		<mat-expansion-panel-header>
@@ -67,3 +67,8 @@
 </div>
 </mat-accordion>
 
+<ng-template #noCategories>
+    <mat-card>
+        No expense categories
+    </mat-card>
+</ng-template>

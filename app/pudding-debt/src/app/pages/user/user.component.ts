@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash';
-import { combineLatest, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ExpenseDataSource } from './expense.datasource';
@@ -23,6 +23,8 @@ type UsersWithBalance = {
 })
 export class UserComponent implements OnInit {
 	private eventId!: number;
+
+    loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
 	users: User[] = [];
     usersWithBalance: UsersWithBalance[] = [];
@@ -49,6 +51,7 @@ export class UserComponent implements OnInit {
 
 	loadUsers() {
 		if (this.eventId) {
+            this.loading.next(true);
             combineLatest([
                 this.userService.loadUsers(this.eventId),
                 this.userService.loadUserBalance(this.eventId)
@@ -68,8 +71,10 @@ export class UserComponent implements OnInit {
                 return usersWithBalance
             })).subscribe({next: (usersWithBalance) => {
                 this.usersWithBalance = usersWithBalance;
+                this.loading.next(false);
             }, error: () => {
                 this.messageService.showError('Error loading users and user balance');
+                this.loading.next(false);
             }});
 		} else {
 			console.error('NO EVENT ID');

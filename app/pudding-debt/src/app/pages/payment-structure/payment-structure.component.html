@@ -6,7 +6,7 @@
 		Collapse all payments
 	</button>
 </div>
-<mat-accordion class="payments" multi>
+<mat-accordion class="payments" multi *ngIf="senders.length > 0;else noPayments">
 	<mat-expansion-panel *ngFor="let sender of senders">
 		<mat-expansion-panel-header>
 			<mat-panel-title>{{ sender.sender.name }}</mat-panel-title>
@@ -46,3 +46,9 @@
 		</ng-template>
 	</mat-expansion-panel>
 </mat-accordion>
+
+<ng-template #noPayments>
+    <mat-card>
+        No payments
+    </mat-card>
+</ng-template>

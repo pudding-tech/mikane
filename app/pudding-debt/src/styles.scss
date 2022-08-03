@@ -25,6 +25,29 @@ body {
     width: 30%;
 }
 
+.events-container {
+    min-width: 20em;
+    margin: 1em;
+    width: auto;
+    display: inline-block;
+    button { 
+        margin: 1em;
+    }
+}
+
+.loading-spinner-container {
+    margin: {
+        top: 60px;
+        bottom: 60px;
+    };
+
+    .progress-spinner {
+        margin: auto;
+        position: relative;
+    }
+}
+
+
 .add-button {
     margin: 1em;
 }
