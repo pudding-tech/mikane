@@ -1,5 +1,22 @@
-<mat-accordion class="payments">
-    <mat-expansion-panel *ngFor="let payment of payments">
-        <mat-panel-title>{{ payment</mat-panel-title>
-    </mat-expansion-panel>
+<div class="payment-actions">
+	<button mat-raised-button color="primary" (click)="accordion.openAll()">
+		Show all payments
+	</button>
+	<button mat-raised-button color="primary" (click)="accordion.closeAll()">
+		Collapse all payments
+	</button>
+</div>
+<mat-accordion class="payments" multi>
+	<mat-expansion-panel *ngFor="let sender of senders">
+		<mat-expansion-panel-header>
+			<mat-panel-title>{{ sender.sender.name }}</mat-panel-title>
+		</mat-expansion-panel-header>
+		<ng-template matExpansionPanelContent>
+			<mat-list>
+				<mat-list-item *ngFor="let receiver of sender.receivers">
+					{{ receiver.receiver.name }} - {{ receiver.amount }}
+				</mat-list-item>
+			</mat-list>
+		</ng-template>
+	</mat-expansion-panel>
 </mat-accordion>

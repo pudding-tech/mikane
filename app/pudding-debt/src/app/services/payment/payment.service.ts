@@ -18,6 +18,6 @@ export class PaymentService {
 	constructor(private httpClient: HttpClient) {}
 
 	loadPayments(eventId: number) {
-        return this.httpClient.get<Payment[]>(this.apiUrl);
+        return this.httpClient.get<Payment[]>(this.apiUrl + `/?eventId=${eventId}`);
     }
 }

@@ -5,12 +5,36 @@
 </div>
 
 <mat-accordion class="user-list">
+    <mat-expansion-panel disabled>
+        <mat-expansion-panel-header>
+            <mat-panel-title class="user-panel-title">
+                    <div class="first">Name</div>
+                    <div>Spending</div>
+                    <div>Expense</div>
+                    <div>Balance</div>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+    </mat-expansion-panel>
 	<mat-expansion-panel
 		*ngFor="let userWithBalance of usersWithBalance"
 		(opened)="getExpenses(userWithBalance.user)"
+        hideToggle
 	>
 		<mat-expansion-panel-header>
-			<mat-panel-title>{{ userWithBalance.user.name }} - Spending: {{ userWithBalance.balances.spending }} - Expenses: {{ userWithBalance.balances.expenses }} - Balance: {{ userWithBalance.balances.balance }}</mat-panel-title>
+			<mat-panel-title>
+                    <div class="first">
+                        {{ userWithBalance.user.name }}
+                    </div>
+                    <div>
+                        {{ userWithBalance.balances.spending | currency:'':'':'1.2-2':'no' }} kr
+                    </div>
+                    <div>
+                        {{ userWithBalance.balances.expenses | currency:'':'':'1.2-2':'no'  }} kr
+                    </div>
+                    <div>
+                        {{ userWithBalance.balances.balance | currency:'':'':'1.2-2':'no'  }} kr
+                    </div>
+            </mat-panel-title>
 		</mat-expansion-panel-header>
 		<ng-template matExpansionPanelContent>
 			<!-- Deferred initialization until the panel is open. -->

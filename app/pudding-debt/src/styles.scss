@@ -28,6 +28,31 @@ body {
     margin: 1em;
 }
 
+.payment-actions {
+    margin: 1em;
+    button {
+        margin: 0 1em;
+    }
+}
+
+.user-list {
+    mat-panel-title {
+        display: contents;
+        div {
+            width: 30%;
+            text-align: right;
+        }
+        div.first {
+            width: 10%;
+            text-align: left;
+        }
+    }
+}
+
+.user-panel-title {
+    color:#242424
+}
+
 .category-amount {
     text-align: right;
     justify-content: flex-end;
