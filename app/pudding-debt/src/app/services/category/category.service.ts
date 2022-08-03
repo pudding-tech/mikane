@@ -7,6 +7,7 @@ import { User } from '../user/user.service';
 export interface Category {
 	id: number;
 	name: string;
+    weighted: boolean;
 	// users: [...{ id: number; name: string; weight: number }[]];
 	users: {
         id: number;
@@ -29,8 +30,8 @@ export class CategoryService {
 		);
 	}
 
-	createCategory(name: string, eventId: number): Observable<Category> {
-		return this.httpClient.post<Category>(this.apiUrl, { name, eventId });
+	createCategory(name: string, eventId: number, weighted: boolean): Observable<Category> {
+		return this.httpClient.post<Category>(this.apiUrl, { name, eventId, weighted });
 	}
 
 	addUser(

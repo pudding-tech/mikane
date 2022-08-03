@@ -50,12 +50,12 @@
 
 					<!-- Weight Column -->
 					<ng-container matColumnDef="weight">
-						<th mat-header-cell *matHeaderCellDef>Weight</th>
+						<th mat-header-cell *matHeaderCellDef>{{ category.weighted ? 'Weight' : '' }}</th>
 						<td mat-cell *matCellDef="let user">
-							{{ user.weight }}
+							{{ category.weighted ? user.weight : '' }}
 						</td>
 						<td mat-footer-cell *matFooterCellDef>
-							<mat-form-field>
+							<mat-form-field *ngIf="category.weighted">
 								<input
 									matInput
 									type="text"
@@ -76,6 +76,7 @@
 									mat-icon-button
 									type="button"
 									(click)="openEditDialog(category.id, user.id)"
+                                    *ngIf="category.weighted"
 								>
 									<mat-icon>edit</mat-icon>
 								</button>

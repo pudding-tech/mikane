@@ -31,6 +31,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { registerLocaleData } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import {
 	MatSnackBarModule,
 	MAT_SNACK_BAR_DEFAULT_OPTIONS,
@@ -93,6 +94,7 @@ registerLocaleData(localeNo);
 		MatAutocompleteModule,
 		MatProgressSpinnerModule,
 		MatSnackBarModule,
+        MatCheckboxModule,
 	],
 	providers: [
 		{

@@ -1,9 +1,12 @@
 <h1 mat-dialog-title>Add Expense Category</h1>
-<div mat-dialog-content>
+<div mat-dialog-content >
 	<mat-form-field appearance="fill">
 		<mat-label>Category Name</mat-label>
-		<input matInput type="text" [(ngModel)]="data" />
+		<input matInput type="text" [(ngModel)]="data.name" />
 	</mat-form-field>
+    <div>
+        <mat-checkbox name="weightedCheckbox" [(ngModel)]="data.weighted">Weighted</mat-checkbox>
+    </div>
 </div>
 <div mat-dialog-actions>
 	<button mat-button (click)="onNoClick()">Cancel</button>

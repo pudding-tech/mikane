@@ -58,11 +58,14 @@ export class CategoryComponent implements OnInit {
 	}
 
 	loadUsers() {
-		this.userService.loadUsers(this.eventId).subscribe({next: (users) => {
-			this.users = users;
-		}, error: () => {
-            this.messageService.showError('Error loading users');
-        }});
+		this.userService.loadUsers(this.eventId).subscribe({
+			next: (users) => {
+				this.users = users;
+			},
+			error: () => {
+				this.messageService.showError('Error loading users');
+			},
+		});
 	}
 
 	filterUsers(categoryId: number) {
@@ -82,91 +85,124 @@ export class CategoryComponent implements OnInit {
 	openDialog() {
 		const dialogRef = this.dialog.open(CategoryDialogComponent, {
 			width: '350px',
+			data: { weighted: false },
 		});
 
 		dialogRef.afterClosed().subscribe((result) => {
+			console.log(result);
 			if (result) {
-				this.createCategory(result);
+				this.createCategory(result.name, result.weighted);
 			}
 		});
 	}
 
-	createCategory(name: string) {
-		this.categoryService.createCategory(name, this.eventId).subscribe({
-			next: (category) => {
-				this.categories.push(category);
-				this.messageService.showSuccess('Category created!');
-			},
-			error: () => {
-				this.messageService.showError('Error creating category');
-			},
-		});
+	createCategory(name: string, weighted: boolean) {
+		this.categoryService
+			.createCategory(name, this.eventId, weighted)
+			.subscribe({
+				next: (category) => {
+					this.categories.push(category);
+					this.messageService.showSuccess('Category created!');
+				},
+				error: () => {
+					this.messageService.showError('Error creating category');
+				},
+			});
 	}
 
 	addUser(categoryId: number) {
 		if (this.name.value) {
 			this.categoryService
 				.addUser(categoryId, +this.name.value, this.weight.value)
-				.subscribe({next: (res) => {
-					const index = this.categories.findIndex(
-						(category) => category.id === res.id
-					);
-					if (index > -1) {
-						this.categories[index].users = res.users;
-						this.cd.detectChanges();
-					}
-					this.name.setValue('');
-					this.name.markAsUntouched();
-					this.weight.reset();
-                    
-                    this.messageService.showSuccess('User added to ' + this.categories[index].name);
-				}, error: () => {
-                    this.messageService.showError('Error adding user to category');
-                }});
+				.subscribe({
+					next: (res) => {
+						const index = this.categories.findIndex(
+							(category) => category.id === res.id
+						);
+						if (index > -1) {
+							this.categories[index].users = res.users;
+							this.cd.detectChanges();
+						}
+						this.name.setValue('');
+						this.name.markAsUntouched();
+						this.weight.reset();
+
+						this.messageService.showSuccess(
+							'User added to category "' +
+								this.categories[index].name +
+								'"'
+						);
+					},
+					error: () => {
+						this.messageService.showError(
+							'Error adding user to category'
+						);
+					},
+				});
 		}
 	}
 
 	removeUser(categoryId: number, userId: number) {
-		this.categoryService.deleteUser(categoryId, userId).subscribe({next: (res) => {
-			const index = this.categories.findIndex(
-				(category) => category.id === res.id
-			);
-			if (index > -1) {
-				this.categories[index].users = res.users;
-				this.cd.detectChanges();
-			}
-            this.messageService.showSuccess('User removed from ' + this.categories[index].name);
-		}, error: () => {
-            this.messageService.showError('Error removing user from category');
-        }});
+		this.categoryService.deleteUser(categoryId, userId).subscribe({
+			next: (res) => {
+				const index = this.categories.findIndex(
+					(category) => category.id === res.id
+				);
+				if (index > -1) {
+					this.categories[index].users = res.users;
+					this.cd.detectChanges();
+				}
+				this.messageService.showSuccess(
+					'User removed from category "' +
+						this.categories[index].name +
+						'"'
+				);
+			},
+			error: () => {
+				this.messageService.showError(
+					'Error removing user from category'
+				);
+			},
+		});
 	}
 
-    openEditDialog(categoryId: number, userId: number) {
-        const dialogRef = this.dialog.open(CategoryEditDialogComponent, {
-            width: '350px',
-            data: {categoryId, userId}
-        });
+	openEditDialog(categoryId: number, userId: number) {
+		const dialogRef = this.dialog.open(CategoryEditDialogComponent, {
+			width: '350px',
+			data: { categoryId, userId },
+		});
 
-        dialogRef.afterClosed().subscribe((res) => {
-            this.editCategory(categoryId, userId, res);
-        });
-    }
+		dialogRef.afterClosed().subscribe((res) => {
+			if (res) {
+				this.editCategory(categoryId, userId, res);
+			}
+		});
+	}
 
-    editCategory(categoryId: number, userId: number, weight: number) {
-        this.categoryService.editUser(categoryId, userId, weight).subscribe((category) => {
-            const catIndex = this.categories.findIndex((category) => {
-                return category.id === categoryId;
-            });
-            if (catIndex > -1) {
-                const userIndex = this.categories[catIndex].users.findIndex((user) => {
-                    return user.id === userId;
-                });
-                if (userIndex > -1) {
-                    this.categories[catIndex].users[userIndex].weight = weight
-                }
-            }
-        });
-    }
+	editCategory(categoryId: number, userId: number, weight: number) {
+		this.categoryService.editUser(categoryId, userId, weight).subscribe({
+			next: (res) => {
+				const catIndex = this.categories.findIndex((category) => {
+					return category.id === res.id;
+				});
+				if (catIndex > -1) {
+					const userIndex = this.categories[catIndex].users.findIndex(
+						(user) => {
+							return user.id === userId;
+						}
+					);
+					if (userIndex > -1) {
+						this.categories[catIndex].users[userIndex].weight =
+							weight;
+						this.messageService.showSuccess('Category edited!');
+					}
+				}
+			},
+			error: () => {
+				this.messageService.showError('Error editing category');
+			},
+		});
+	}
 
 	drop(event: CdkDragDrop<Category[]>) {
 		moveItemInArray(

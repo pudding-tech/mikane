@@ -86,7 +86,8 @@ export class ExpendituresComponent implements OnInit {
 					} else {
 						return this.categoryService.createCategory(
 							expense.categoryName,
-							this.eventId
+							this.eventId,
+                            true
 						);
 					}
 				})
