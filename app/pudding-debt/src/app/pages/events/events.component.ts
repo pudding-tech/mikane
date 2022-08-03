@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
 	PuddingEvent,
 	EventService,
 } from 'src/app/services/event/event.service';
+import { EventDialogComponent } from './event-dialog/event-dialog.component';
 
 @Component({
 	selector: 'app-events',
@@ -17,7 +19,8 @@ export class EventsComponent implements OnInit {
 	constructor(
 		private eventService: EventService,
 		private router: Router,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
+		public dialog: MatDialog
 	) {}
 
 	ngOnInit() {
@@ -32,6 +35,20 @@ export class EventsComponent implements OnInit {
 		this.router.navigate([this.selectedEvent.id, 'users'], {
 			relativeTo: this.route,
 			state: { event: this.selectedEvent },
+		});
+	}
+
+	openDialog() {
+		const dialogRef = this.dialog.open(EventDialogComponent, {
+			width: '350px'
+		});
+
+		dialogRef.afterClosed().subscribe((event: string) => {
+			if (event) {
+				this.eventService.createEvent(event).subscribe((event) => {
+					this.events.push(event);
+				});
+			}
 		});
 	}
 }

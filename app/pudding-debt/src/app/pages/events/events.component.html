@@ -1,4 +1,7 @@
 <mat-toolbar>PUDDING DEBT</mat-toolbar>
+<div class="add-button" >
+    <button mat-raised-button color="primary" (click)="openDialog()">New event</button>
+</div>
 <div *ngFor="let event of events">
     <button mat-button type="button" color="primary" (click)="clickEvent(event)">
         {{ event.name }}

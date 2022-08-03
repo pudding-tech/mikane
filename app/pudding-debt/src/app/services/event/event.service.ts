@@ -20,7 +20,7 @@ export class EventService {
 		return this.httpClient.get<PuddingEvent[]>(this.apiUrl);
 	}
 
-    addUser(eventId: number, userId: number): Observable<PuddingEvent> {
-        return this.httpClient.post<PuddingEvent>(this.apiUrl + `/${eventId}/user`, { userId });
-    }
+	createEvent(name: string): Observable<PuddingEvent> {
+		return this.httpClient.post<PuddingEvent>(this.apiUrl, { name });
+	}
 }

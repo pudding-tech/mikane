@@ -8,6 +8,6 @@ begin
 
   insert into [event]([name]) values (@name)
 
-  select * from [event]
+  select * from [event] where id = @@IDENTITY
 
 end

@@ -35,6 +35,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import localeNo from '@angular/common/locales/no';
 import { ExpenditureDialogComponent } from './pages/expenditures/expenditure-dialog/expenditure-dialog.component';
 import { UserDialogComponent } from './pages/user/user-dialog/user-dialog.component';
+import { EventDialogComponent } from './pages/events/event-dialog/event-dialog.component';
 registerLocaleData(localeNo);
 
 @NgModule({
@@ -49,6 +50,7 @@ registerLocaleData(localeNo);
 		CategoryDialogComponent,
 		ExpenditureDialogComponent,
         UserDialogComponent,
+				EventDialogComponent
 	],
 	imports: [
 		BrowserModule,

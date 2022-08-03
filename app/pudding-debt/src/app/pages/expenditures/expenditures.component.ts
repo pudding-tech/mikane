@@ -57,11 +57,11 @@ export class ExpendituresComponent implements OnInit {
 			data: this.eventId,
 		});
 
-        dialogRef.afterClosed().subscribe((expense) => {
-            if (expense) {
-                this.findCategory(expense);
-            }
-        });
+		dialogRef.afterClosed().subscribe((expense) => {
+				if (expense) {
+						this.findCategory(expense);
+				}
+		});
 	}
 
     findCategory(expense: any) {
