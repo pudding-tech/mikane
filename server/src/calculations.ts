@@ -92,7 +92,7 @@ export const calculatePayments = (
 		if (record.amount > 0) {
 			lenders.push(record);
 		} else if (record.amount < 0) {
-			debtors.push(record);
+			debtors.push({ user: record.user, amount: Math.abs(record.amount) });
 		}
 	});
 
