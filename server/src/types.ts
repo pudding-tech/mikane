@@ -40,3 +40,10 @@ export type BalanceCalculationResult = {
   spending: Record[],
   expenses: Record[]
 }
+
+export type UserBalance = {
+  userId: number,
+  spending: number,
+  expenses: number,
+  balance: number
+}

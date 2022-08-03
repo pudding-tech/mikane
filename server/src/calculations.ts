@@ -75,7 +75,7 @@ export const calculateBalance = (
 		spending: spending,
 		expenses: expensesOutput
 	};
-}
+};
 
 export const calculatePayments = (
 	expenses: Expense[],

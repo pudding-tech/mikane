@@ -66,6 +66,7 @@ exec new_category 4, 'Food' -- 16
 exec new_category 4, 'Fighter-jet flying' -- 17
 exec new_category 4, 'Cage diving with sharks' -- 18
 exec new_category 4, 'Tickets to Ride' -- 19
+exec new_category 4, 'Festives' -- 20
 
 -- Pudding Week 2021
 exec add_user_to_category 1, 1, 1 -- Cabin stay
@@ -175,6 +176,9 @@ exec add_user_to_category 18, 36, 2
 exec add_user_to_category 19, 33, 2
 exec add_user_to_category 19, 34, 99
 
+exec add_user_to_category 20, 33, 1
+exec add_user_to_category 20, 34, 1
+
 -- name, desc, amount, cat_id, payer_id
 exec new_expense 'Food shopping, Saturday 31.07', 'Removed some personal expenses', 3140.29, 2, 3
 exec new_expense 'Personal expenses, Odd 31.07', null, 87.8, 7, 3
@@ -219,9 +223,11 @@ exec new_expense 'Stinky sock cheese', null, 2, 14, 28
 exec new_expense 'Norvegia', null, 60, 14, 26
 exec new_expense 'Bobsleigh', null, 7999, 12, 17
 exec new_expense 'City bike', null, 3000, 13, 19
-exec new_expense 'Bull', 'The angriest one', 8400, 15, 25
+exec new_expense 'Angry bull', 'Lean and mean', 8400, 15, 25
 exec new_expense 'Ticket', 'Choo choo!', 4800, 19, 33
 exec new_expense 'Huge water tank', null, 19900, 18, 36
 exec new_expense 'Cage', 'Moderately secure', 3999, 18, 36
 exec new_expense 'Pringles', null, 800, 16, 33
 exec new_expense 'Donkey ride', 'One last ride...', 200, 11, 17
+exec new_expense 'Bonfire', null, 200, 20, 33
+exec new_expense 'Flowers', null, 200, 20, 34

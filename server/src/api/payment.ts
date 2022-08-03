@@ -58,58 +58,7 @@ router.get("/payments", async (req, res, next) => {
   }
 
   const payments = calculatePayments(expenses, categories, users);
-  res.send(payments["payments"]);
-});
-
-router.get("/paymentsTest", async (req, res) => {
-  console.log("Payments TEST!");
-
-  const arnt: User = {
-    id: 1,
-    name: "Arnt"
-  };
-  const per: User = {
-    id: 2,
-    name: "Per"
-  };
-
-  const users: User[] = [arnt, per];
-
-  const categories: Category[] = [
-    {
-      id: 1,
-      name: "Board games",
-      userWeights: new Map<number, number>([ [1, 1] ])
-    }
-  ];
-
-  const expenses: Expense[] = [
-    {
-      id: 1,
-      name: "Scam lamps",
-      description: "",
-      amount: 500,
-      categoryId: 1,
-      categoryName: "Board games",
-      payer: per
-    }
-  ];
-
-  console.log("------------");
-  console.log("Users:");
-  console.log(users);
-  console.log("------------");
-  console.log("Categories:");
-  console.log(categories);
-  console.log("------------");
-  console.log("Expenses:");
-  console.log(expenses);
-  console.log("------------");
-
-  const test = calculatePayments(expenses, categories, users);
-  console.log("Result of Capeo's marvelous function:");
-  console.log(test);
-  res.send(test || "undefined :(");
+  res.send(payments);
 });
 
 export default router;

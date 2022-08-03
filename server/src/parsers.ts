@@ -1,4 +1,4 @@
-import { Category, Expense, User } from "./types";
+import { Category, Expense, User, UserBalance, BalanceCalculationResult } from "./types";
 
 /*
 /	Build array of Category objects. Format for either client or calculate function
@@ -87,4 +87,21 @@ export const parseUsers = (usersInput: object[]): User[] => {
 	});
 
 	return users;
+};
+
+/*
+/ Parse BalanceCalculationResult into a list of UserBalance objects
+*/
+export const parseBalance = (balanceRes: BalanceCalculationResult) => {
+
+  const balances: UserBalance[] = [];
+  for (let i = 0; i < balanceRes.balance.length; i++) {
+    balances.push({
+      userId: balanceRes.balance[i].user.id,
+      spending: +balanceRes.spending[i].amount.toFixed(2),
+      expenses: +balanceRes.expenses[i].amount.toFixed(2),
+      balance: +balanceRes.balance[i].amount.toFixed(2)
+    });
+  }
+  return balances;
 };
