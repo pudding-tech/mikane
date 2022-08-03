@@ -4,6 +4,7 @@ import {
 	PuddingEvent,
 	EventService,
 } from 'src/app/services/event/event.service';
+import { MessageService } from 'src/app/services/message/message.service';
 
 @Component({
 	selector: 'app-events',
@@ -17,14 +18,16 @@ export class EventsComponent implements OnInit {
 	constructor(
 		private eventService: EventService,
 		private router: Router,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
+        private messageService: MessageService,
 	) {}
 
 	ngOnInit() {
-		this.eventService.loadEvents().subscribe((events) => {
+		this.eventService.loadEvents().subscribe({next: (events) => {
 			this.events = events;
-			console.log(events);
-		});
+		}, error: () => {
+            this.messageService.showError('Error loading events');
+        }});
 	}
 
 	clickEvent(event: PuddingEvent) {
