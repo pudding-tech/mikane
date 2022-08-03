@@ -1,15 +1,22 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { PuddingEvent } from 'src/app/services/event/event.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map, combineLatest } from 'rxjs';
+import {
+	EventService,
+	PuddingEvent,
+} from 'src/app/services/event/event.service';
+import { MessageService } from 'src/app/services/message/message.service';
 
 @Component({
 	selector: 'app-event',
 	templateUrl: './event.component.html',
 	styleUrls: ['./event.component.scss'],
 })
-export class EventComponent {
-	event: PuddingEvent;
-    activeLink = '';
+export class EventComponent implements OnInit {
+	event: PuddingEvent = {
+		name: 'PUDDING DEBT',
+	} as PuddingEvent;
+	activeLink = '';
 	links = [
 		{
 			name: 'Participants',
@@ -29,9 +36,30 @@ export class EventComponent {
 		},
 	];
 
-	constructor(private router: Router) {
-		this.event =
-			this.router.getCurrentNavigation()?.extras.state?.['event'] ?? {};
-		console.log('event', this.event);
+	constructor(
+		private eventService: EventService,
+		private route: ActivatedRoute,
+		private messageService: MessageService
+	) {}
+
+	ngOnInit() {
+		combineLatest([this.eventService.loadEvents(), this.route.params])
+			.pipe(
+				map(([events, params]) => {
+					return events.find((event) => {
+						return event.id === +params['eventId'];
+					});
+				})
+			)
+			.subscribe({
+				next: (event) => {
+					if (event) {
+						this.event = event;
+					}
+				},
+				error: () => {
+					this.messageService.showError('Error loading events');
+				},
+			});
 	}
 }

@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash';
-import { Observable, first, combineLatest, map } from 'rxjs';
-import { EventService } from 'src/app/services/event/event.service';
-import { Expense } from 'src/app/services/expense/expense.service';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ExpenseDataSource } from './expense.datasource';
 import { UserDialogComponent } from './user-dialog/user-dialog.component';
@@ -25,6 +24,8 @@ type UsersWithBalance = {
 export class UserComponent implements OnInit {
 	private eventId!: number;
 
+    loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
 	users: User[] = [];
     usersWithBalance: UsersWithBalance[] = [];
 
@@ -35,7 +36,7 @@ export class UserComponent implements OnInit {
 		private userService: UserService,
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
-        private eventService: EventService,
+        private messageService: MessageService,
 	) {}
 
 	ngOnInit() {
@@ -50,6 +51,7 @@ export class UserComponent implements OnInit {
 
 	loadUsers() {
 		if (this.eventId) {
+            this.loading.next(true);
             combineLatest([
                 this.userService.loadUsers(this.eventId),
                 this.userService.loadUserBalance(this.eventId)
@@ -60,16 +62,20 @@ export class UserComponent implements OnInit {
                     usersWithBalance.push({
                         user: user,
                         balances: {
-                            spending: userBalance.spending,
-                            expenses: userBalance.expenses,
-                            balance: userBalance.balance
+                            spending: userBalance?.spending ?? 0,
+                            expenses: userBalance?.expenses ?? 0,
+                            balance: userBalance?.balance ?? 0
                         }
                     });
                 });
                 return usersWithBalance
-            })).subscribe((usersWithBalance) => {
+            })).subscribe({next: (usersWithBalance) => {
                 this.usersWithBalance = usersWithBalance;
-            });
+                this.loading.next(false);
+            }, error: () => {
+                this.messageService.showError('Error loading users and user balance');
+                this.loading.next(false);
+            }});
 		} else {
 			console.error('NO EVENT ID');
 		}
@@ -88,9 +94,12 @@ export class UserComponent implements OnInit {
     }
 
     createUser(user: {name: string}) {
-        this.userService.createUser(this.eventId, user.name).subscribe((user) => {
-            this.users.push(user);
-        });
+        this.userService.createUser(this.eventId, user.name).subscribe({next: (user) => {
+            this.loadUsers();
+            this.messageService.showSuccess('User created!');
+        }, error: () => {
+            this.messageService.showError('Failed to create user');
+        }});
     }
 
     getExpenses(user: User): void {

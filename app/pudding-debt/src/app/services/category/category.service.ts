@@ -8,7 +8,11 @@ export interface Category {
 	id: number;
 	name: string;
 	// users: [...{ id: number; name: string; weight: number }[]];
-	users: User[];
+	users: {
+        id: number;
+        name: string;
+        weight?: number;
+    }[];
 }
 
 @Injectable({

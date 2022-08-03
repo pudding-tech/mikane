@@ -2,7 +2,7 @@
     <button mat-raised-button color="primary" (click)="openDialog()">Add expense</button>
 </div>
 
-<table *ngIf="expenses" class="expense-table" mat-table [dataSource]="expenses">
+<table *ngIf="expenses.length > 0;else noExpenses" class="expense-table" mat-table [dataSource]="expenses">
     <!-- Name Column -->
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef> Name </th>
@@ -51,3 +51,9 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
 </table>
+
+<ng-template #noExpenses>
+    <mat-card>
+        No expenses
+    </mat-card>
+</ng-template>

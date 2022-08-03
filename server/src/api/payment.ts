@@ -42,16 +42,6 @@ router.get("/payments", async (req, res, next) => {
     })
     .catch(next);
 
-  console.log("------------");
-  console.log("Users:");
-  console.log(users);
-  console.log("------------");
-  console.log("Categories:");
-  console.log(categories);
-  console.log("------------");
-  console.log("Expenses:");
-  console.log(expenses);
-  console.log("------------");
 
   if (!users || !categories || !expenses) {
     return res.status(400).send("Something went wrong getting users, categories or expenses");

@@ -9,6 +9,7 @@ body {
 
 .content {
     margin-left: 10%;
+    padding-bottom: 3em;
     width: 80%;
 }
 
@@ -24,8 +25,60 @@ body {
     width: 30%;
 }
 
+.events-container {
+    min-width: 20em;
+    margin: 1em;
+    width: auto;
+    display: inline-block;
+    button { 
+        margin: 1em;
+    }
+}
+
+.category-actions {
+    display: flex;
+}
+
+.loading-spinner-container {
+    margin: {
+        top: 60px;
+        bottom: 60px;
+    };
+
+    .progress-spinner {
+        margin: auto;
+        position: relative;
+    }
+}
+
+
 .add-button {
     margin: 1em;
+}
+
+.payment-actions {
+    margin: 1em 0 1em 1em;
+    button {
+        margin: 0 2em 0 0;
+    }
+}
+
+.user-list {
+    mat-panel-title {
+        display: contents;
+        div {
+            width: 30%;
+            text-align: right;
+        }
+        div.first {
+            width: 10%;
+            text-align: left;
+        }
+    }
+}
+
+.user-panel-title {
+    color:#242424
 }
 
 .category-amount {

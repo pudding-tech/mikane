@@ -21,7 +21,7 @@ router.post("/events", (req, res, next) => {
     .input("name", sql.NVarChar, req.body.name)
     .execute("new_event")
     .then( (data) => {
-      res.send(data.recordset);
+      res.send(data.recordset[0]);
     })
     .catch(next);
 });

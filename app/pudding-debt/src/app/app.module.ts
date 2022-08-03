@@ -31,10 +31,19 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { registerLocaleData } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {
+	MatSnackBarModule,
+	MAT_SNACK_BAR_DEFAULT_OPTIONS,
+} from '@angular/material/snack-bar';
 
 import localeNo from '@angular/common/locales/no';
 import { ExpenditureDialogComponent } from './pages/expenditures/expenditure-dialog/expenditure-dialog.component';
 import { UserDialogComponent } from './pages/user/user-dialog/user-dialog.component';
+import { EventDialogComponent } from './pages/events/event-dialog/event-dialog.component';
+import { SuccessMessageComponent } from './services/message/success/success-message.component';
+import { ErrorMessageComponent } from './services/message/error/error-message.component';
+import { SharedModule } from './shared/shared.module';
+import { CategoryEditDialogComponent } from './pages/category/category-edit-dialog/category-edit-dialog.component';
 registerLocaleData(localeNo);
 
 @NgModule({
@@ -48,11 +57,16 @@ registerLocaleData(localeNo);
 		EventComponent,
 		CategoryDialogComponent,
 		ExpenditureDialogComponent,
-        UserDialogComponent,
+		UserDialogComponent,
+		EventDialogComponent,
+		SuccessMessageComponent,
+		ErrorMessageComponent,
+		CategoryEditDialogComponent,
 	],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
+		SharedModule,
 		ServiceWorkerModule.register('ngsw-worker.js', {
 			enabled: environment.production,
 			// Register the ServiceWorker as soon as the application is stable
@@ -77,12 +91,19 @@ registerLocaleData(localeNo);
 		MatSelectModule,
 		MatDialogModule,
 		MatAutocompleteModule,
-        MatProgressSpinnerModule,
+		MatProgressSpinnerModule,
+		MatSnackBarModule,
 	],
 	providers: [
 		{
 			provide: LOCALE_ID,
 			useValue: 'no',
+		},
+		{
+			provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+			useValue: {
+				duration: 2500,
+			},
 		},
 	],
 	bootstrap: [AppComponent],
