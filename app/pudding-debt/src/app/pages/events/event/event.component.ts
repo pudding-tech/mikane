@@ -9,7 +9,7 @@ import { PuddingEvent } from 'src/app/services/event/event.service';
 })
 export class EventComponent {
 	event: PuddingEvent;
-    activeLink = '';
+  activeLink = '';
 	links = [
 		{
 			name: 'Participants',
