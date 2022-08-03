@@ -60,9 +60,9 @@ export class UserComponent implements OnInit {
                     usersWithBalance.push({
                         user: user,
                         balances: {
-                            spending: userBalance.spending,
-                            expenses: userBalance.expenses,
-                            balance: userBalance.balance
+                            spending: userBalance?.spending ?? 0,
+                            expenses: userBalance?.expenses ?? 0,
+                            balance: userBalance?.balance ?? 0
                         }
                     });
                 });

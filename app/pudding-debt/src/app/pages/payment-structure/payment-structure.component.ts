@@ -54,6 +54,7 @@ export class PaymentStructureComponent implements OnInit {
 					});
 				}
 			});
+            console.log('senders', this.senders);
 
 			map(this.senders, (sender) => {
 				map(
@@ -61,7 +62,6 @@ export class PaymentStructureComponent implements OnInit {
 						return payment.sender.id === sender.sender.id;
 					}),
 					(payment) => {
-                        console.log('payment', payment);
 						sender.receivers.push({
 							receiver: payment.receiver,
 							amount: payment.amount,
@@ -69,12 +69,6 @@ export class PaymentStructureComponent implements OnInit {
 					}
 				);
 			});
-
-            console.log('senders', this.senders);
 		});
 	}
-
-    expandAll() {
-
-    }
 }
