@@ -64,9 +64,9 @@ export const calculateBalance = (
 			return user.id == userId;
 		});
 		if (user !== undefined) {
-			spending.push({ user: user, amount: spendingMap.get(userId) ?? 0 });
-			expensesOutput.push({ user: user, amount: expensesOutputMap.get(userId) ?? 0 });
-			balance.push({ user: user, amount: netExpense });
+			spending.push({ user: user, amount: roundAmount(spendingMap.get(userId) ?? 0) });
+			expensesOutput.push({ user: user, amount: roundAmount(expensesOutputMap.get(userId) ?? 0) });
+			balance.push({ user: user, amount: roundAmount(netExpense) });
 		}
 	});
 
@@ -131,4 +131,8 @@ export const calculatePayments = (
 	}
 
 	return payments;
+};
+
+const roundAmount = (amount: number) : number => {
+	return +amount.toFixed(2);
 };
