@@ -31,11 +31,14 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { registerLocaleData } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import localeNo from '@angular/common/locales/no';
 import { ExpenditureDialogComponent } from './pages/expenditures/expenditure-dialog/expenditure-dialog.component';
 import { UserDialogComponent } from './pages/user/user-dialog/user-dialog.component';
 import { EventDialogComponent } from './pages/events/event-dialog/event-dialog.component';
+import { SuccessMessageComponent } from './services/message/success/success-message.component';
+import { ErrorMessageComponent } from './services/message/error/error-message.component';
 registerLocaleData(localeNo);
 
 @NgModule({
@@ -50,7 +53,9 @@ registerLocaleData(localeNo);
 		CategoryDialogComponent,
 		ExpenditureDialogComponent,
         UserDialogComponent,
-				EventDialogComponent
+				EventDialogComponent,
+        SuccessMessageComponent,
+        ErrorMessageComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -80,6 +85,7 @@ registerLocaleData(localeNo);
 		MatDialogModule,
 		MatAutocompleteModule,
         MatProgressSpinnerModule,
+        MatSnackBarModule,
 	],
 	providers: [
 		{

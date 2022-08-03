@@ -6,6 +6,7 @@ import {
 	EventService,
 } from 'src/app/services/event/event.service';
 import { EventDialogComponent } from './event-dialog/event-dialog.component';
+import { MessageService } from 'src/app/services/message/message.service';
 
 @Component({
 	selector: 'app-events',
@@ -20,14 +21,16 @@ export class EventsComponent implements OnInit {
 		private eventService: EventService,
 		private router: Router,
 		private route: ActivatedRoute,
-		public dialog: MatDialog
+		public dialog: MatDialog,
+    private messageService: MessageService,
 	) {}
 
 	ngOnInit() {
-		this.eventService.loadEvents().subscribe((events) => {
+		this.eventService.loadEvents().subscribe({next: (events) => {
 			this.events = events;
-			console.log(events);
-		});
+		}, error: () => {
+            this.messageService.showError('Error loading events');
+        }});
 	}
 
 	clickEvent(event: PuddingEvent) {
