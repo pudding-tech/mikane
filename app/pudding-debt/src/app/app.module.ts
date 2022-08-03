@@ -31,7 +31,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { registerLocaleData } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
 import localeNo from '@angular/common/locales/no';
 import { ExpenditureDialogComponent } from './pages/expenditures/expenditure-dialog/expenditure-dialog.component';
@@ -53,7 +53,7 @@ registerLocaleData(localeNo);
 		CategoryDialogComponent,
 		ExpenditureDialogComponent,
         UserDialogComponent,
-				EventDialogComponent,
+		EventDialogComponent,
         SuccessMessageComponent,
         ErrorMessageComponent,
 	],
@@ -91,7 +91,13 @@ registerLocaleData(localeNo);
 		{
 			provide: LOCALE_ID,
 			useValue: 'no',
-		},
+		}, 
+        {
+            provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, 
+            useValue: {
+                duration: 2500
+            }
+        }
 	],
 	bootstrap: [AppComponent],
 })

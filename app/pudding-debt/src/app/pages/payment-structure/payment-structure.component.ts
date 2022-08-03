@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'lodash';
+import { MessageService } from 'src/app/services/message/message.service';
 import {
 	Payment,
 	PaymentService,
@@ -31,7 +32,8 @@ export class PaymentStructureComponent implements OnInit {
 
 	constructor(
 		private paymentService: PaymentService,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
+        private messageService: MessageService,
 	) {}
 
 	ngOnInit(): void {
@@ -42,7 +44,7 @@ export class PaymentStructureComponent implements OnInit {
 	}
 
 	loadPayments() {
-		this.paymentService.loadPayments(this.eventId).subscribe((payments) => {
+		this.paymentService.loadPayments(this.eventId).subscribe({next: (payments) => {
 			this.payments = payments;
 			map(payments, (payment) => {
 				if (
@@ -56,7 +58,6 @@ export class PaymentStructureComponent implements OnInit {
 					});
 				}
 			});
-            console.log('senders', this.senders);
 
 			map(this.senders, (sender) => {
 				map(
@@ -71,6 +72,8 @@ export class PaymentStructureComponent implements OnInit {
 					}
 				);
 			});
-		});
+		}, error: () => {
+            this.messageService.showError('Error loading payments');
+        }});
 	}
 }

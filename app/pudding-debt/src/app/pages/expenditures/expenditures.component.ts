@@ -96,7 +96,7 @@ export class ExpendituresComponent implements OnInit {
 					this.createExpense(category, expense);
 				},
 				error: () => {
-					this.messageService.showError('Error loading categories');
+					this.messageService.showError('Failed to create category');
 				},
 			});
 	}

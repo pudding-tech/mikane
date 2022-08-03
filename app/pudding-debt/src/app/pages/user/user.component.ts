@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash';
-import { Observable, first, combineLatest, map } from 'rxjs';
-import { EventService } from 'src/app/services/event/event.service';
-import { Expense } from 'src/app/services/expense/expense.service';
+import { combineLatest, map } from 'rxjs';
+import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ExpenseDataSource } from './expense.datasource';
 import { UserDialogComponent } from './user-dialog/user-dialog.component';
@@ -35,7 +34,7 @@ export class UserComponent implements OnInit {
 		private userService: UserService,
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
-        private eventService: EventService,
+        private messageService: MessageService,
 	) {}
 
 	ngOnInit() {
@@ -67,9 +66,11 @@ export class UserComponent implements OnInit {
                     });
                 });
                 return usersWithBalance
-            })).subscribe((usersWithBalance) => {
+            })).subscribe({next: (usersWithBalance) => {
                 this.usersWithBalance = usersWithBalance;
-            });
+            }, error: () => {
+                this.messageService.showError('Error loading users and user balance');
+            }});
 		} else {
 			console.error('NO EVENT ID');
 		}
@@ -88,9 +89,12 @@ export class UserComponent implements OnInit {
     }
 
     createUser(user: {name: string}) {
-        this.userService.createUser(this.eventId, user.name).subscribe((user) => {
-            this.users.push(user);
-        });
+        this.userService.createUser(this.eventId, user.name).subscribe({next: (user) => {
+            this.loadUsers();
+            this.messageService.showSuccess('User created!');
+        }, error: () => {
+            this.messageService.showError('Failed to create user');
+        }});
     }
 
     getExpenses(user: User): void {
