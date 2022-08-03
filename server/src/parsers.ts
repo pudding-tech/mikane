@@ -99,9 +99,9 @@ export const parseBalance = (balanceRes: BalanceCalculationResult) => {
   for (let i = 0; i < balanceRes.balance.length; i++) {
     balances.push({
       userId: balanceRes.balance[i].user.id,
-      spending: +balanceRes.spending[i].amount.toFixed(2),
-      expenses: +balanceRes.expenses[i].amount.toFixed(2),
-      balance: +balanceRes.balance[i].amount.toFixed(2)
+      spending: balanceRes.spending[i].amount,
+      expenses: balanceRes.expenses[i].amount,
+      balance: balanceRes.balance[i].amount
     });
   }
   return balances;

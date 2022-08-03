@@ -88,7 +88,6 @@ router.get("/users/balances", async (req, res, next) => {
   if (!users || !categories || !expenses) {
     return res.status(400).send("Something went wrong getting users, categories or expenses");
   }
-  console.log(categories);
 
   const balance = calculateBalance(expenses, categories, users);
   const userBalance = parseBalance(balance);
