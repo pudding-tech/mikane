@@ -18,6 +18,8 @@ export class PaymentStructureComponent implements OnInit {
     
 	private eventId!: number;
 
+    displayedColumns: string[] = ['name', 'amount'];
+
 	payments: Payment[] = [];
 	senders: {
 		sender: User;
