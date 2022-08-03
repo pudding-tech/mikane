@@ -6,11 +6,12 @@ export type User = {
 export type Category = {
   id: number,
   name: string,
+  weighted: boolean,
   userWeights?: Map<number, number>,
   users?: {
     id: number,
     name: string,
-    weight: number
+    weight?: number
   }[]
 }
 

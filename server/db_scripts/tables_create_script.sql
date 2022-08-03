@@ -13,6 +13,7 @@ create table [user] (
 create table category (
   id int identity(1,1) primary key,
   [name] nvarchar(255) not null,
+  weighted bit,
   event_id int foreign key references [event](id) on delete cascade
 )
 

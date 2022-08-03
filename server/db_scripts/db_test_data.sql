@@ -44,40 +44,40 @@ exec new_user 'Arisa', 4 -- 35
 exec new_user 'Sondre', 4 -- 36
 exec new_user 'Martin', 4 -- 37
 
-exec new_category 1, 'Cabin stay' -- 1
-exec new_category 1, 'Food' -- 2
-exec new_category 1, 'Høyt og lavt (climbing)' -- 3
-exec new_category 1, 'Rafting' -- 4
-exec new_category 1, 'Paddleboard' -- 5
-exec new_category 1, 'Trondheim drive (Adrian''s car)' -- 6
-exec new_category 1, 'Personal expenses Odd (paid by Adrian)' -- 7
-exec new_category 1, 'Personal expenses SP (paid by Adrian)' -- 8
-exec new_category 1, 'Karaoke night' -- 9
+exec new_category 1, 'Cabin stay', 0 -- 1
+exec new_category 1, 'Food', 1 -- 2
+exec new_category 1, 'Høyt og lavt (climbing)', 0 -- 3
+exec new_category 1, 'Rafting', 0 -- 4
+exec new_category 1, 'Paddleboard', 0 -- 5
+exec new_category 1, 'Trondheim drive (Adrian''s car)', 1 -- 6
+exec new_category 1, 'Personal expenses Odd (paid by Adrian)', 0 -- 7
+exec new_category 1, 'Personal expenses SP (paid by Adrian)', 0 -- 8
+exec new_category 1, 'Karaoke night', 1 -- 9
 
-exec new_category 2, 'Food' -- 10
-exec new_category 2, 'Transport' -- 11
-exec new_category 2, 'Bobsleigh riding' -- 12
-exec new_category 2, 'Megavalanche bike racing' -- 13
+exec new_category 2, 'Food', 1 -- 10
+exec new_category 2, 'Transport', 1 -- 11
+exec new_category 2, 'Bobsleigh riding', 0 -- 12
+exec new_category 2, 'Megavalanche bike racing', 1 -- 13
 
-exec new_category 3, 'Cheese eating contest' -- 14
-exec new_category 3, 'Running of the bulls' -- 15
+exec new_category 3, 'Cheese eating contest', 0 -- 14
+exec new_category 3, 'Running of the bulls', 1 -- 15
 
-exec new_category 4, 'Food' -- 16
-exec new_category 4, 'Fighter-jet flying' -- 17
-exec new_category 4, 'Cage diving with sharks' -- 18
-exec new_category 4, 'Tickets to Ride' -- 19
-exec new_category 4, 'Festives' -- 20
+exec new_category 4, 'Food', 1 -- 16
+exec new_category 4, 'Fighter-jet flying', 1 -- 17
+exec new_category 4, 'Cage diving with sharks', 0 -- 18
+exec new_category 4, 'Tickets to Ride', 0 -- 19
+exec new_category 4, 'Festives', 0 -- 20
 
 -- Pudding Week 2021
-exec add_user_to_category 1, 1, 1 -- Cabin stay
-exec add_user_to_category 1, 2, 1
-exec add_user_to_category 1, 3, 1
-exec add_user_to_category 1, 4, 1
-exec add_user_to_category 1, 5, 1
-exec add_user_to_category 1, 6, 1
-exec add_user_to_category 1, 7, 1
-exec add_user_to_category 1, 8, 1
-exec add_user_to_category 1, 9, 1
+exec add_user_to_category 1, 1, null -- Cabin stay
+exec add_user_to_category 1, 2, null
+exec add_user_to_category 1, 3, null
+exec add_user_to_category 1, 4, null
+exec add_user_to_category 1, 5, null
+exec add_user_to_category 1, 6, null
+exec add_user_to_category 1, 7, null
+exec add_user_to_category 1, 8, null
+exec add_user_to_category 1, 9, null
 
 exec add_user_to_category 2, 1, 9 -- Food
 exec add_user_to_category 2, 2, 9
@@ -93,27 +93,27 @@ exec add_user_to_category 2, 11, 3
 exec add_user_to_category 2, 12, 3
 exec add_user_to_category 2, 13, 3
 
-exec add_user_to_category 3, 1, 1 -- Climbing
-exec add_user_to_category 3, 4, 1
-exec add_user_to_category 3, 5, 1
-exec add_user_to_category 3, 6, 1
-exec add_user_to_category 3, 7, 1
-exec add_user_to_category 3, 8, 1
-exec add_user_to_category 3, 9, 1
+exec add_user_to_category 3, 1, null -- Climbing
+exec add_user_to_category 3, 4, null
+exec add_user_to_category 3, 5, null
+exec add_user_to_category 3, 6, null
+exec add_user_to_category 3, 7, null
+exec add_user_to_category 3, 8, null
+exec add_user_to_category 3, 9, null
 
-exec add_user_to_category 4, 1, 1 -- Rafting
-exec add_user_to_category 4, 2, 1
-exec add_user_to_category 4, 6, 1
-exec add_user_to_category 4, 7, 1
-exec add_user_to_category 4, 8, 1
+exec add_user_to_category 4, 1, null -- Rafting
+exec add_user_to_category 4, 2, null
+exec add_user_to_category 4, 6, null
+exec add_user_to_category 4, 7, null
+exec add_user_to_category 4, 8, null
 
-exec add_user_to_category 5, 1, 1 -- Paddleboard
-exec add_user_to_category 5, 2, 1
-exec add_user_to_category 5, 6, 1
-exec add_user_to_category 5, 10, 1
-exec add_user_to_category 5, 11, 1
-exec add_user_to_category 5, 12, 1
-exec add_user_to_category 5, 13, 1
+exec add_user_to_category 5, 1, 9 -- Paddleboard
+exec add_user_to_category 5, 2, 9
+exec add_user_to_category 5, 6, 8
+exec add_user_to_category 5, 10, 9
+exec add_user_to_category 5, 11, 9
+exec add_user_to_category 5, 12, 8
+exec add_user_to_category 5, 13, 8
 
 exec add_user_to_category 6, 2, 1 -- Trondheim drive
 exec add_user_to_category 6, 3, 1

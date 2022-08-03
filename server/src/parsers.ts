@@ -11,6 +11,7 @@ export const parseCategories = (catInput: object[], target: string) : Category[]
     const category: Category = {
       id: catObj["id" as keyof typeof catObj],
       name: catObj["name" as keyof typeof catObj],
+      weighted: catObj["weighted" as keyof typeof catObj]
     };
 
     if (target === "client") {

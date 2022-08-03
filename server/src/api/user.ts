@@ -47,7 +47,6 @@ router.get("/users/:id/expenses", (req, res, next) => {
 });
 
 router.get("/users/balances", async (req, res, next) => {
-  console.log("users/balances");
 
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
@@ -72,6 +71,7 @@ router.get("/users/balances", async (req, res, next) => {
     .input("category_id", sql.Int, null)
     .execute("get_categories")
     .then( (data) => {
+      console.log(data.recordset);
       categories = parseCategories(data.recordset, "calc");
     })
     .catch(next);
@@ -88,6 +88,7 @@ router.get("/users/balances", async (req, res, next) => {
   if (!users || !categories || !expenses) {
     return res.status(400).send("Something went wrong getting users, categories or expenses");
   }
+  console.log(categories);
 
   const balance = calculateBalance(expenses, categories, users);
   const userBalance = parseBalance(balance);

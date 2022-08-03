@@ -21,13 +21,14 @@ router.get("/categories", (req, res, next) => {
 });
 
 router.post("/categories", (req, res, next) => {
-  if (!req.body.name || !req.body.eventId) {
-    return res.status(400).send("Name or eventId not provided!");
+  if (!req.body.name || !req.body.eventId || !req.body.weighted) {
+    return res.status(400).send("Name, event ID or weighted not provided!");
   }
   const request = new sql.Request();
   request
     .input("name", sql.NVarChar, req.body.name)
     .input("event_id", sql.Int, req.body.eventId)
+    .input("weighted", sql.Bit, req.body.weighted)
     .execute("new_category")
     .then( (data) => {
       res.send(data.recordset[0]);
@@ -95,10 +96,14 @@ router.put("/categories/:catId/user/:userId", (req, res, next) => {
   if (isNaN(catId) || isNaN(userId)) {
     return res.status(400).send("Category ID and user ID must be numbers!");
   }
+  if (!req.body.weight) {
+    return res.status(400).send("Weight not provided!");
+  }
   const request = new sql.Request();
   request
     .input("category_id", sql.Int, catId)
     .input("user_id", sql.Int, userId)
+    .input("weight", sql.Int, req.body.weight)
     .execute("edit_user_weight")
     .then( (data) => {
       const categories: Category[] = parseCategories(data.recordset, "client");
@@ -106,6 +111,5 @@ router.put("/categories/:catId/user/:userId", (req, res, next) => {
     })
     .catch(next);
 });
-
 
 export default router;

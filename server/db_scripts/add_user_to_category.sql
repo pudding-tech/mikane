@@ -8,9 +8,23 @@ create procedure add_user_to_category
 as
 begin
 
-  insert into category_user (category_id, user_id, [weight]) values (@category_id, @user_id, @weight)
+  declare @weighted bit
+  declare @event_id int;
 
-  declare @event_id int
+  select @weighted = weighted from category where id = @category_id
+
+  if (@weighted = 1 and @weight is null)
+    begin;
+      throw 51000, 'Weight required when adding user to weighted category', 1
+    end
+  else if (@weighted = 1)
+    begin
+      insert into category_user (category_id, user_id, [weight]) values (@category_id, @user_id, @weight)
+    end
+  else
+    begin
+      insert into category_user (category_id, user_id) values (@category_id, @user_id)
+    end
 
   select top 1
     @event_id = e.id
