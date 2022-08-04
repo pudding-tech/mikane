@@ -91,7 +91,7 @@ export class CategoryComponent implements OnInit {
 		dialogRef.afterClosed().subscribe((result) => {
 			console.log(result);
 			if (result) {
-				this.createCategory(result.name, result.weighted);
+				this.createCategory(result.categoryName, result.weighted);
 			}
 		});
 	}

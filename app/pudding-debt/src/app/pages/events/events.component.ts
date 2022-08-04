@@ -49,7 +49,7 @@ export class EventsComponent implements OnInit {
 		dialogRef.afterClosed().subscribe((event: string) => {
 			if (event) {
 				this.eventService.createEvent(event).subscribe((event) => {
-					this.events.push(event);
+					this.events.unshift(event);
 				});
 			}
 		});
