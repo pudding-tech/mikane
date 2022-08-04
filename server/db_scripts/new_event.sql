@@ -6,7 +6,7 @@ create procedure new_event
 as
 begin
 
-  insert into [event]([name]) values (@name)
+  insert into [event]([name], created) values (@name, GETDATE())
 
   select * from [event] where id = @@IDENTITY
 

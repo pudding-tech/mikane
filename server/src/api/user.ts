@@ -34,7 +34,6 @@ router.post("/users", (req, res, next) => {
 });
 
 router.get("/users/:id/expenses", (req, res, next) => {
-  console.log("users/expenses");
   const request = new sql.Request();
   request
     .input("user_id", sql.Int, req.params.id)
