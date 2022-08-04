@@ -1,5 +1,5 @@
 exec new_event 'Pudding Week 2021' -- 1
-exec new_event 'Pudding Week 2022' -- 2
+exec new_event 'Space Odyssey' -- 2
 exec new_event 'Christmas Party' -- 3
 exec new_event 'Midsummer Festival' -- 4
 
