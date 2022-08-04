@@ -89,7 +89,6 @@ export class CategoryComponent implements OnInit {
 		});
 
 		dialogRef.afterClosed().subscribe((result) => {
-			console.log(result);
 			if (result) {
 				this.createCategory(result.categoryName, result.weighted);
 			}
@@ -174,7 +173,7 @@ export class CategoryComponent implements OnInit {
 
 		dialogRef.afterClosed().subscribe((res) => {
 			if (res) {
-				this.editCategory(categoryId, userId, res);
+				this.editCategory(categoryId, userId, res.weight);
 			}
 		});
 	}
