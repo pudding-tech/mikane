@@ -33,6 +33,20 @@ router.post("/users", (req, res, next) => {
     .catch(next);
 });
 
+router.delete("/users", (req, res, next) => {
+  if (!req.body.userId) {
+    return res.status(400).send("User ID not provided!");
+  }
+  const request = new sql.Request();
+  request
+    .input("user_id", sql.Int, req.body.userId)
+    .execute("delete_user")
+    .then( () => {
+      res.send({});
+    })
+    .catch(next);
+});
+
 router.get("/users/:id/expenses", (req, res, next) => {
   const request = new sql.Request();
   request

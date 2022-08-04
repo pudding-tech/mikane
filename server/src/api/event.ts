@@ -26,4 +26,18 @@ router.post("/events", (req, res, next) => {
     .catch(next);
 });
 
+router.delete("/events", (req, res, next) => {
+  if (!req.body.id) {
+    return res.status(400).send("Event ID not provided!");
+  }
+  const request = new sql.Request();
+  request
+    .input("event_id", sql.Int, req.body.id)
+    .execute("delete_event")
+    .then( () => {
+      res.send({});
+    })
+    .catch(next);
+});
+
 export default router;
