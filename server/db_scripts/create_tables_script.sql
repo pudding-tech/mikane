@@ -23,8 +23,8 @@ create table expense (
   [name] nvarchar(255) not null,
   [description] nvarchar(255) not null,
   amount numeric(16, 2) not null,
-  category_id int foreign key references category(id) on delete no action,
-  payer_id int foreign key references [user](id) on delete no action
+  category_id int foreign key references category(id) on delete cascade,
+  payer_id int foreign key references [user](id) on delete cascade
 )
 
 create table category_user (

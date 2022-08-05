@@ -2,11 +2,11 @@ import express from "express";
 import cors from "cors";
 import sql from "mssql";
 import dotenv from "dotenv";
-import eventRoutes from "./api/event";
-import userRoutes from "./api/user";
-import categoryRoutes from "./api/category";
-import expenseRoutes from "./api/expense";
-import paymentRoutes from "./api/payment";
+import eventRoutes from "./api/events";
+import userRoutes from "./api/users";
+import categoryRoutes from "./api/categories";
+import expenseRoutes from "./api/expenses";
+import paymentRoutes from "./api/payments";
 
 dotenv.config();
 import { dbConfig } from "./config";
