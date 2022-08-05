@@ -23,7 +23,6 @@ router.post("/expenses", (req, res, next) => {
   if (!req.body.name || !req.body.categoryId || !req.body.payerId) {
     return res.status(400).send("Name, categoryId or payerId not provided!");
   }
-  console.log(req.body.amount);
   const request = new sql.Request();
   request
     .input("name", sql.NVarChar, req.body.name)

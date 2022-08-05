@@ -85,7 +85,6 @@ router.get("/users/balances", async (req, res, next) => {
     .input("category_id", sql.Int, null)
     .execute("get_categories")
     .then( (data) => {
-      console.log(data.recordset);
       categories = parseCategories(data.recordset, "calc");
     })
     .catch(next);
