@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'lodash';
+import { BehaviorSubject } from 'rxjs';
 import { MessageService } from 'src/app/services/message/message.service';
 import {
 	Payment,
@@ -18,6 +19,8 @@ export class PaymentStructureComponent implements OnInit {
     @ViewChild(MatAccordion) accordion!: MatAccordion;
     
 	private eventId!: number;
+
+    loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     displayedColumns: string[] = ['name', 'amount'];
 
@@ -44,6 +47,7 @@ export class PaymentStructureComponent implements OnInit {
 	}
 
 	loadPayments() {
+        this.loading.next(true);
 		this.paymentService.loadPayments(this.eventId).subscribe({next: (payments) => {
 			this.payments = payments;
 			map(payments, (payment) => {
@@ -72,8 +76,11 @@ export class PaymentStructureComponent implements OnInit {
 					}
 				);
 			});
+
+            this.loading.next(false);
 		}, error: () => {
             this.messageService.showError('Error loading payments');
+            this.loading.next(false);
         }});
 	}
 }
