@@ -37,4 +37,15 @@ export class ExpenseDataSource implements DataSource<Expense> {
                 this.expenseSubject.next(expenses);
             });
 	}
+
+    removeExpense(expenseId: number) {
+        const expenses = this.expenseSubject.value;
+        const index = expenses.findIndex((expense) => {
+            return expense.id === expenseId;
+        });
+        if (index > -1) {
+            expenses.splice(index, 1);
+            this.expenseSubject.next(expenses);
+        }
+    }
 }

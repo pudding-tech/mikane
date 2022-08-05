@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ExpenseDataSource } from './expense.datasource';
@@ -29,7 +30,7 @@ export class UserComponent implements OnInit {
 	users: User[] = [];
     usersWithBalance: UsersWithBalance[] = [];
 
-	displayedColumns: string[] = ['name', 'amount', 'category', 'description'];
+	displayedColumns: string[] = ['name', 'amount', 'category', 'description', 'actions'];
     dataSource!: ExpenseDataSource;
 
 	constructor(
@@ -37,6 +38,7 @@ export class UserComponent implements OnInit {
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
         private messageService: MessageService,
+        private expenseService: ExpenseService,
 	) {}
 
 	ngOnInit() {
@@ -104,5 +106,14 @@ export class UserComponent implements OnInit {
 
     getExpenses(user: User): void {
         this.dataSource.loadExpenses(user.id);
+    }
+
+    deleteExpense(id: number, dataSource: ExpenseDataSource): void {
+        this.expenseService.deleteExpense(id).subscribe({next: () => {
+            dataSource.removeExpense(id);
+            this.messageService.showSuccess('Expense deleted!');
+        }, error: () => {
+            this.messageService.showError('Failed to delete expense from user');
+        }});
     }
 }

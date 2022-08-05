@@ -75,6 +75,16 @@
                             {{ expense.description }}
                         </td>
                     </ng-container>
+
+                    <!-- Action Columnn -->
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let expense">
+                            <button mat-icon-button type="button" (click)="deleteExpense(expense.id, dataSource)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
     
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr
