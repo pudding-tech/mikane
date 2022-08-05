@@ -52,4 +52,12 @@ export class CategoryService {
     editUser(categoryId: number, userId: number, weight: number): Observable<Category> {
         return this.httpClient.put<Category>(this.apiUrl + `/${categoryId}/user/${userId}`, { weight });
     }
+
+    setWeighted(categoryId: number, weighted: boolean): Observable<Category> {
+        return this.httpClient.put<Category>(this.apiUrl + `/${categoryId}/weighted`, { weighted });
+    }
+
+    deleteCategory(categoryId: number): Observable<Category[]> {
+        return this.httpClient.delete<Category[]>(this.apiUrl + `/${categoryId}`);
+    }
 }

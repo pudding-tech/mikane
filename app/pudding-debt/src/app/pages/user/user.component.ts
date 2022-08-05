@@ -119,9 +119,12 @@ export class UserComponent implements OnInit {
     }
     
     deleteUser(userId: number) {
-        this.userService.deleteUser(userId).subscribe(() => {
+        this.userService.deleteUser(userId).subscribe({next: () => {
             this.loadUsers();
-        });
+            this.messageService.showSuccess('User deleted!');
+        }, error: () => {
+            this.messageService.showError('Failed to delete user');
+        }});
     }
 
     getExpenses(user: User): void {

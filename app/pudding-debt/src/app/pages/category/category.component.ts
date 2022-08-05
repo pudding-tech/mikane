@@ -12,6 +12,7 @@ import { CategoryDialogComponent } from './category-dialog/category-dialog.compo
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MessageService } from 'src/app/services/message/message.service';
 import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
+import { DeleteCategoryDialogComponent } from './category-delete-dialog/category-delete-dialog.component';
 
 @Component({
 	selector: 'app-category',
@@ -25,8 +26,6 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
         participantName: new FormControl('', [Validators.required]),
         weight: new FormControl(undefined, [Validators.required]),
     }) as FormGroup;
-
-
 
 	categories: Category[] = [];
 	users: User[] = [];
@@ -210,6 +209,42 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 			},
 		});
 	}
+
+    toggleWeighted(categoryId: number, weighted: boolean) {
+        this.categoryService.setWeighted(categoryId, !weighted).subscribe({next: () => {
+            const category = this.categories.find((category) => {
+                return category.id === categoryId;
+            });
+            if (category) {
+                category.weighted = !weighted;
+            }
+        }, error: () => {
+            this.messageService.showError('Failed to toggle weighted status');
+        }});
+    }
+
+    deleteCategoryDialog(categoryId: number) {
+        const dialogRef = this.dialog.open(DeleteCategoryDialogComponent, {
+            width: '350px',
+            data: categoryId
+        });
+
+        dialogRef.afterClosed().subscribe((categoryId) => {
+            if (categoryId) {
+                this.deleteCategory(categoryId);
+            }
+        });
+    }
+
+    deleteCategory(categoryId: number) {
+        this.categoryService.deleteCategory(categoryId).subscribe({next: () => {
+            const index = this.categories.findIndex((category) => category.id === categoryId);
+            this.categories.splice(index, 1);
+            this.messageService.showSuccess('Successfully deleted category!');
+        }, error: () => {
+            this.messageService.showError('Error deleting category');
+        }});
+    }
 
 	drop(event: CdkDragDrop<Category[]>) {
 		moveItemInArray(
