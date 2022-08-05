@@ -13,6 +13,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MessageService } from 'src/app/services/message/message.service';
 import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
 import { DeleteCategoryDialogComponent } from './category-delete-dialog/category-delete-dialog.component';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
 	selector: 'app-category',
@@ -21,6 +22,8 @@ import { DeleteCategoryDialogComponent } from './category-delete-dialog/category
 })
 export class CategoryComponent implements OnInit, AfterViewChecked {
 	private eventId!: number;
+
+    loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     addUserForm = new FormGroup({
         participantName: new FormControl('', [Validators.required]),
@@ -53,12 +56,15 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
     }
 
 	loadCategories() {
+        this.loading.next(true);
 		this.categoryService.loadCategories(this.eventId).subscribe({
 			next: (categories) => {
 				this.categories = categories;
 				this.loadUsers();
+                this.loading.next(false);
 			},
 			error: () => {
+                this.loading.next(false);
 				this.messageService.showError('Error loading categories');
 			},
 		});
