@@ -42,8 +42,8 @@
                 <div class="spinner-container" *ngIf="dataSource.loading$ | async">
                     <mat-spinner></mat-spinner>
                 </div>
-                <i>Expenses:</i>
                 <table mat-table class="expense-table" [dataSource]="dataSource">
+                    <caption>Expenses:</caption>
                     <!-- Name Column -->
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef>Name</th>

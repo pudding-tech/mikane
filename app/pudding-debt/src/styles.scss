@@ -19,6 +19,9 @@ body {
 
 .expense-table {
     width: 100%;
+    caption {
+        text-align: left;
+    }
 }
 
 .category-table {
