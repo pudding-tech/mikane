@@ -8,30 +8,10 @@ as
 begin
 
   declare @event_id int
-  declare @weight numeric(14)
   declare @currently_weighted bit
 
   select @currently_weighted = weighted from category where id = @category_id
-
-  if (@weighted = 1 and @currently_weighted = 1)
-    begin
-      return
-    end
-
-  if (@weighted = 0)
-    begin
-      set @weight = null
-    end
-  else
-    begin
-      set @weight = 1
-    end
-
-  update category set weighted = @weighted
-
-  update category_user
-  set [weight] = @weight
-  where category_id = @category_id
+  update category set weighted = @weighted where id = @category_id
 
   select top 1
     @event_id = e.id
