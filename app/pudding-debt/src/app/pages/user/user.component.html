@@ -100,6 +100,11 @@
                         </td>
                     </tr>
                 </table>
+                <div class="user-actions">
+                    <button mat-raised-button type="button" color="warn" (click)="deleteUserDialog(userWithBalance.user.id)">
+                        Delete User
+                    </button>
+                </div>
             </ng-template>
         </mat-expansion-panel>
     </mat-accordion>

@@ -6,6 +6,7 @@ import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { DeleteUserDialogComponent } from './delete-user-dialog/delete-user-dialog.component';
 import { ExpenseDataSource } from './expense.datasource';
 import { UserDialogComponent } from './user-dialog/user-dialog.component';
 
@@ -102,6 +103,25 @@ export class UserComponent implements OnInit {
         }, error: () => {
             this.messageService.showError('Failed to create user');
         }});
+    }
+
+    deleteUserDialog(userId: number) {
+        const dialogRef = this.dialog.open(DeleteUserDialogComponent, {
+            width: '350px',
+            data: userId
+        });
+
+        dialogRef.afterClosed().subscribe((userId) => {
+            if (userId) {
+                this.deleteUser(userId);
+            }
+        });
+    }
+    
+    deleteUser(userId: number) {
+        this.userService.deleteUser(userId).subscribe(() => {
+            this.loadUsers();
+        });
     }
 
     getExpenses(user: User): void {

@@ -39,4 +39,8 @@ export class UserService {
     loadUserBalance(eventId: number): Observable<UserBalance[]> {
         return this.httpClient.get<UserBalance[]>(this.apiUrl + `/balances?eventId=${eventId}`);
     }
+
+    deleteUser(userId: number): Observable<User[]> {
+        return this.httpClient.delete<User[]>(this.apiUrl + `/${userId}`);
+    }
 }
