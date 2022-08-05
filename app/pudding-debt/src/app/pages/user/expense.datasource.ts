@@ -48,4 +48,8 @@ export class ExpenseDataSource implements DataSource<Expense> {
             this.expenseSubject.next(expenses);
         }
     }
+
+    addExpense(expense: Expense) {
+        this.expenseSubject.next([...this.expenseSubject.value, expense]);
+    }
 }

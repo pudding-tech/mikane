@@ -18,22 +18,25 @@ export class ExpenditureDialogComponent implements OnInit {
         description: new FormControl(''),
         category: new FormControl('', [Validators.required]),
         amount: new FormControl('', [Validators.required]),
-        payer: new FormControl('', [Validators.required])
+        payer: new FormControl({value: this.data.userId, disabled: this.data.userId !== undefined}, [Validators.required])
     });
     
 	constructor(
 		public dialogRef: MatDialogRef<ExpenditureDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: number,
+		@Inject(MAT_DIALOG_DATA) public data: {
+            eventId: number,
+            userId: number
+        },
         private categoryService: CategoryService,
         private userService: UserService,
 	) {}
 
     ngOnInit() {
-        this.categoryService.loadCategories(this.data).subscribe((categories) => {
+        this.categoryService.loadCategories(this.data.eventId).subscribe((categories) => {
             this.categories = categories;
         });
 
-        this.userService.loadUsers(this.data).subscribe((users) => {
+        this.userService.loadUsers(this.data.eventId).subscribe((users) => {
             this.users = users;
         });
     }

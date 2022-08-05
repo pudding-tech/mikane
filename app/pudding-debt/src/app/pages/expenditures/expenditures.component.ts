@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, map, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Subject, switchMap, takeUntil } from 'rxjs';
 import {
 	Category,
 	CategoryService,
@@ -21,7 +21,8 @@ import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dia
 export class ExpendituresComponent implements OnInit {
 	private eventId!: number;
 
-    loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    cancel$: Subject<void> = new Subject();
 
 	expenses: Expense[] = [];
 	displayedColumns: string[] = [
@@ -42,22 +43,18 @@ export class ExpendituresComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.route.parent?.params.subscribe((params) => {
-			this.eventId = params['eventId'];
-			this.loadExpenses();
-		});
-	}
-
-	loadExpenses() {
         this.loading.next(true);
-		this.expenseService.loadExpenses(this.eventId).subscribe({
+		this.route.parent?.params.pipe(switchMap((params) => {
+			this.eventId = params['eventId'];
+            return this.expenseService.loadExpenses(this.eventId)
+        })).subscribe({
 			next: (expenses) => {
 				this.expenses = expenses;
-                this.loading.next(false);
+				this.loading.next(false);
 			},
 			error: () => {
-                this.loading.next(false);
-                this.messageService.showError('Error loading expenses');
+				this.loading.next(false);
+				this.messageService.showError('Error loading expenses');
 			},
 		});
 	}
@@ -65,65 +62,36 @@ export class ExpendituresComponent implements OnInit {
 	openDialog() {
 		const dialogRef = this.dialog.open(ExpenditureDialogComponent, {
 			width: '350px',
-			data: this.eventId,
+			data: {
+				eventId: this.eventId,
+				userId: undefined,
+			},
 		});
 
-		dialogRef.afterClosed().subscribe((expense) => {
-			if (expense) {
-				this.findCategory(expense);
-			}
-		});
-	}
-
-	findCategory(expense: any) {
-		this.categoryService
-			.loadCategories(this.eventId)
-			.pipe(
-				map((categories): Category | undefined => {
-					return categories.find(
-						(category) => category.name === expense?.category
-					);
-				}),
-				switchMap((category) => {
-					if (category) {
-						return of(category);
-					} else {
-						return this.categoryService.createCategory(
-							expense.category,
-							this.eventId,
-                            true
-						);
-					}
-				})
-			)
-			.subscribe({
-				next: (category) => {
-					this.createExpense(category, expense);
-				},
-				error: () => {
-					this.messageService.showError('Failed to create category');
-				},
-			});
-	}
-
-	createExpense(category: Category, expense: any) {
-		this.expenseService
-			.createExpense(
-				expense.name,
-				expense.description,
-				expense.amount,
-				category.id,
-				expense.payer
-			)
-			.subscribe({
-				next: (expense) => {
-					this.expenses = [...this.expenses, expense];
-					this.messageService.showSuccess('New expense created!');
-				},
-				error: () => {
-					this.messageService.showError('Failed to create expense');
-				},
-			});
+        let newExpense: any;
+        dialogRef.afterClosed().pipe(switchMap((expense) => {
+            if (!expense) {
+                this.cancel$.next();
+            }
+            newExpense = expense;
+            return this.categoryService.findOrCreate(this.eventId, expense?.category);
+        }), takeUntil(this.cancel$)).pipe(switchMap((category: Category) => {
+            return this.expenseService.createExpense(
+                newExpense.name,
+                newExpense.description,
+                newExpense.amount,
+                category.id,
+                newExpense.payer
+            )
+        })).subscribe({
+            next: (expense) => {
+                this.expenses = [...this.expenses, expense];
+                this.messageService.showSuccess('New expense created!');
+            },
+            error: () => {
+                this.messageService.showError('Failed to create expense');
+            },
+        });
 	}
 
 	removeExpense(expenseId: number) {

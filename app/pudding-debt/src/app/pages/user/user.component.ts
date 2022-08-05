@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Subject, switchMap, takeUntil } from 'rxjs';
+import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { ExpenditureDialogComponent } from '../expenditures/expenditure-dialog/expenditure-dialog.component';
 import { DeleteUserDialogComponent } from './delete-user-dialog/delete-user-dialog.component';
 import { ExpenseDataSource } from './expense.datasource';
 import { UserDialogComponent } from './user-dialog/user-dialog.component';
@@ -27,6 +29,7 @@ export class UserComponent implements OnInit {
 	private eventId!: number;
 
     loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    cancel$: Subject<void> = new Subject();
 
 	users: User[] = [];
     usersWithBalance: UsersWithBalance[] = [];
@@ -40,6 +43,7 @@ export class UserComponent implements OnInit {
 		public dialog: MatDialog,
         private messageService: MessageService,
         private expenseService: ExpenseService,
+        private categoryService: CategoryService
 	) {}
 
 	ngOnInit() {
@@ -129,6 +133,42 @@ export class UserComponent implements OnInit {
 
     getExpenses(user: User): void {
         this.dataSource.loadExpenses(user.id);
+    }
+
+    createExpenseDialog(userId: number, dataSource: ExpenseDataSource) {
+        const dialogRef = this.dialog.open(ExpenditureDialogComponent, {
+            width: '350px',
+            data: {
+                eventId: this.eventId,
+                userId
+            }
+        });
+
+        let newExpense: any;
+        dialogRef.afterClosed().pipe(switchMap((expense) => {
+            if (!expense) {
+                this.cancel$.next();
+            }
+            newExpense = expense;
+            return this.categoryService.findOrCreate(this.eventId, expense?.category);
+        }), takeUntil(this.cancel$)).pipe(switchMap((category: Category) => {
+            console.log('newExpense', newExpense);
+            return this.expenseService.createExpense(
+                newExpense.name,
+                newExpense.description,
+                newExpense.amount,
+                category.id,
+                newExpense.payer
+            )
+        })).subscribe({
+            next: (expense) => {
+                dataSource.addExpense(expense);
+                this.messageService.showSuccess('New expense created!');
+            },
+            error: () => {
+                this.messageService.showError('Failed to create expense');
+            },
+        });
     }
 
     deleteExpense(id: number, dataSource: ExpenseDataSource): void {

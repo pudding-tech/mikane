@@ -35,8 +35,8 @@
         <mat-form-field appearance="fill">
             <mat-label>Payer</mat-label>
             <select matNativeControl formControlName="payer" required>
-                <option value="" disabled selected>Choose payer</option>
-                <option *ngFor="let user of users" [value]="user.id">
+                <option value="" disabled>Choose payer</option>
+                <option [selected]="user.id === data.userId" *ngFor="let user of users" [value]="user.id">
                     {{ user.name }}
                 </option>
             </select>
@@ -45,7 +45,7 @@
 </div>
 <div mat-dialog-actions>
 	<button mat-button (click)="onNoClick()">Cancel</button>
-	<button mat-button [mat-dialog-close]="addExpenseForm.value" [disabled]="addExpenseForm.invalid || !addExpenseForm.dirty">
+	<button mat-button [mat-dialog-close]="addExpenseForm.getRawValue()" [disabled]="addExpenseForm.invalid || !addExpenseForm.dirty">
 		Create
 	</button>
 </div>
