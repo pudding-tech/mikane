@@ -36,12 +36,12 @@ export class CategoryService {
 
 	addUser(
 		categoryId: number,
-		userId: number,
-		weight: number
+		userId: string,
+        weight: number,
 	): Observable<Category> {
 		return this.httpClient.post<Category>(
 			this.apiUrl + `/${categoryId}/user`,
-			{ userId, weight }
+			{userId, weight}
 		);
 	}
 

@@ -21,6 +21,7 @@
 					class="category-table"
 					[dataSource]="category.users"
 				>
+                <form [formGroup]="addUserForm">
 					<!-- Name Column -->
 					<ng-container matColumnDef="name">
 						<th mat-header-cell *matHeaderCellDef>Participant</th>
@@ -29,7 +30,8 @@
 							<mat-form-field class="category-user-name">
 								<select
 									matNativeControl
-									[formControl]="name"
+									formControlName="participantName"
+                                    name="participantName"
 									required
 								>
 									<option value="" disabled selected>
@@ -59,7 +61,8 @@
 								<input
 									matInput
 									type="text"
-									[formControl]="weight"
+									formControlName="weight"
+                                    name="weight"
 									placeholder="Weight"
 									readonly="false"
 								/>
@@ -94,6 +97,7 @@
 								mat-icon-button
 								type="button"
 								(click)="addUser(category.id)"
+                                [disabled]="(addUserForm.get('participantName')?.invalid || !addUserForm.get('participantName')?.dirty) || (category.weighted && (addUserForm.get('weight')?.invalid))"
 							>
 								<mat-icon>add_circle</mat-icon>
 							</button>
@@ -107,6 +111,7 @@
 					></tr>
 
 					<tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                </form>
 				</table>
 			</ng-template>
 		</mat-expansion-panel>

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
 	Category,
@@ -6,7 +6,7 @@ import {
 } from 'src/app/services/category/category.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { map } from 'lodash';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -18,15 +18,19 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 	templateUrl: './category.component.html',
 	styleUrls: ['./category.component.scss'],
 })
-export class CategoryComponent implements OnInit {
+export class CategoryComponent implements OnInit, AfterViewChecked {
 	private eventId!: number;
+
+    addUserForm = new FormGroup({
+        participantName: new FormControl('', [Validators.required]),
+        weight: new FormControl(undefined, [Validators.required]),
+    }) as FormGroup;
+
+
 
 	categories: Category[] = [];
 	users: User[] = [];
 	displayedColumns: string[] = ['name', 'weight', 'save'];
-
-	name = new FormControl('');
-	weight = new FormControl();
 
 	constructor(
 		private categoryService: CategoryService,
@@ -44,6 +48,10 @@ export class CategoryComponent implements OnInit {
 			this.loadCategories();
 		});
 	}
+
+    ngAfterViewChecked(): void {
+        this.cd.detectChanges();
+    }
 
 	loadCategories() {
 		this.categoryService.loadCategories(this.eventId).subscribe({
@@ -110,9 +118,9 @@ export class CategoryComponent implements OnInit {
 	}
 
 	addUser(categoryId: number) {
-		if (this.name.value) {
+		if (this.addUserForm.value.participantName) {
 			this.categoryService
-				.addUser(categoryId, +this.name.value, this.weight.value)
+				.addUser(categoryId, this.addUserForm.value.participantName, this.addUserForm.value.weight ?? 1)
 				.subscribe({
 					next: (res) => {
 						const index = this.categories.findIndex(
@@ -122,9 +130,9 @@ export class CategoryComponent implements OnInit {
 							this.categories[index].users = res.users;
 							this.cd.detectChanges();
 						}
-						this.name.setValue('');
-						this.name.markAsUntouched();
-						this.weight.reset();
+						this.addUserForm.get('participantName')?.setValue('');
+						this.addUserForm.get('participantName')?.markAsUntouched();
+						this.addUserForm.get('weight')?.reset();
 
 						this.messageService.showSuccess(
 							'User added to category "' +
