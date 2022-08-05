@@ -112,4 +112,24 @@ router.put("/categories/:catId/user/:userId", (req, res, next) => {
     .catch(next);
 });
 
+router.put("/categories/:catId/weighted", (req, res, next) => {
+  const catId = Number(req.params.catId);
+  if (isNaN(catId)) {
+    return res.status(400).send("Category ID and user ID must be numbers!");
+  }
+  if (req.body.weighted === undefined) {
+    return res.status(400).send("Weighted boolean not provided!");
+  }
+  const request = new sql.Request();
+  request
+    .input("category_id", sql.Int, catId)
+    .input("weighted", sql.Bit, req.body.weighted)
+    .execute("edit_category_weighted_status")
+    .then( (data) => {
+      const categories: Category[] = parseCategories(data.recordset, "client");
+      res.send(categories[0]);
+    })
+    .catch(next);
+});
+
 export default router;
