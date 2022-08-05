@@ -41,7 +41,6 @@ export class ExpendituresComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.route.parent?.params.subscribe((params) => {
-			console.log('route params', params);
 			this.eventId = params['eventId'];
 			this.loadExpenses();
 		});
@@ -77,7 +76,7 @@ export class ExpendituresComponent implements OnInit {
 			.pipe(
 				map((categories): Category | undefined => {
 					return categories.find(
-						(category) => category.name === expense?.categoryName
+						(category) => category.name === expense?.category
 					);
 				}),
 				switchMap((category) => {
@@ -85,7 +84,7 @@ export class ExpendituresComponent implements OnInit {
 						return of(category);
 					} else {
 						return this.categoryService.createCategory(
-							expense.categoryName,
+							expense.category,
 							this.eventId,
                             true
 						);

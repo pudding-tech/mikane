@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { User, UserService } from 'src/app/services/user/user.service';
@@ -11,6 +12,14 @@ export class ExpenditureDialogComponent implements OnInit {
     categories: Category[] = [];
     users: User[] = [];
     expense: any = {};
+
+    addExpenseForm = new FormGroup({
+        name: new FormControl('', [Validators.required]),
+        description: new FormControl(''),
+        category: new FormControl('', [Validators.required]),
+        amount: new FormControl('', [Validators.required]),
+        payer: new FormControl('', [Validators.required])
+    });
     
 	constructor(
 		public dialogRef: MatDialogRef<ExpenditureDialogComponent>,
@@ -32,8 +41,4 @@ export class ExpenditureDialogComponent implements OnInit {
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
-
-    onSave() {
-        this.dialogRef.close(this.expense);
-    }
 }
