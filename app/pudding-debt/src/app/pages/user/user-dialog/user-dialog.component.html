@@ -1,17 +1,19 @@
 <h1 mat-dialog-title>Add participant to event</h1>
 <div mat-dialog-content>
-	<mat-form-field appearance="fill">
-		<mat-label>Participant name</mat-label>
-		<input
-			type="text"
-			placholder="Enter participant name"
-			aria-label="Participant name"
-			matInput
-			[(ngModel)]="newUser.name"
-		/>
-	</mat-form-field>
+    <form [formGroup]="addUserForm">
+        <mat-form-field appearance="fill">
+            <mat-label>Participant name</mat-label>
+            <input
+                type="text"
+                placholder="Enter participant name"
+                aria-label="Participant name"
+                matInput
+                formControlName="name"
+            />
+        </mat-form-field>
+    </form>
 </div>
 <div mat-dialog-actions>
 	<button mat-button (click)="onNoClick()">Cancel</button>
-	<button mat-button [mat-dialog-close]="newUser" cdkFocusInitial>Add</button>
+	<button mat-button [mat-dialog-close]="addUserForm.value" [disabled]="addUserForm.invalid || !addUserForm.dirty">Add</button>
 </div>

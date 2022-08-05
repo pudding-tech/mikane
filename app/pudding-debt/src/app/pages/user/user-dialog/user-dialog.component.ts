@@ -1,4 +1,5 @@
 import { Component, Inject } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { User } from 'src/app/services/user/user.service';
 
@@ -9,6 +10,10 @@ import { User } from 'src/app/services/user/user.service';
 export class UserDialogComponent {
     newUser = { name: '' };
 
+    addUserForm = new FormGroup({
+        name: new FormControl('', [Validators.required]),
+    });
+
 	constructor(
 		public dialogRef: MatDialogRef<UserDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: any,
@@ -16,9 +21,5 @@ export class UserDialogComponent {
 
     onNoClick(): void {
         this.dialogRef.close();
-    }
-
-    onSave() {
-        this.dialogRef.close(this.newUser);
     }
 }
