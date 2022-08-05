@@ -7,6 +7,7 @@ import {
 } from 'src/app/services/event/event.service';
 import { EventDialogComponent } from './event-dialog/event-dialog.component';
 import { MessageService } from 'src/app/services/message/message.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
 	selector: 'app-events',
@@ -17,20 +18,28 @@ export class EventsComponent implements OnInit {
 	events: PuddingEvent[] = [];
 	selectedEvent!: PuddingEvent;
 
+	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
 	constructor(
 		private eventService: EventService,
 		private router: Router,
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
-    private messageService: MessageService,
+		private messageService: MessageService
 	) {}
 
 	ngOnInit() {
-		this.eventService.loadEvents().subscribe({next: (events) => {
-			this.events = events;
-		}, error: () => {
-            this.messageService.showError('Error loading events');
-        }});
+        this.loading.next(true);
+		this.eventService.loadEvents().subscribe({
+			next: (events) => {
+				this.events = events;
+                this.loading.next(false);
+			},
+			error: () => {
+                this.messageService.showError('Error loading events');
+                this.loading.next(false);
+			},
+		});
 	}
 
 	clickEvent(event: PuddingEvent) {
@@ -43,7 +52,7 @@ export class EventsComponent implements OnInit {
 
 	openDialog() {
 		const dialogRef = this.dialog.open(EventDialogComponent, {
-			width: '350px'
+			width: '350px',
 		});
 
 		dialogRef.afterClosed().subscribe((event: string) => {
