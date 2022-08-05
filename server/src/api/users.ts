@@ -33,13 +33,14 @@ router.post("/users", (req, res, next) => {
     .catch(next);
 });
 
-router.delete("/users", (req, res, next) => {
-  if (!req.body.userId) {
-    return res.status(400).send("User ID not provided!");
+router.delete("/users/:id", (req, res, next) => {
+  const userId = Number(req.params.id);
+  if (isNaN(userId)) {
+    return res.status(400).send("User ID must be numbers!");
   }
   const request = new sql.Request();
   request
-    .input("user_id", sql.Int, req.body.userId)
+    .input("user_id", sql.Int, userId)
     .execute("delete_user")
     .then( () => {
       res.send({});
