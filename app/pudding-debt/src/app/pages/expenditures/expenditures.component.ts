@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { map, of, switchMap } from 'rxjs';
+import { BehaviorSubject, map, of, switchMap } from 'rxjs';
 import {
 	Category,
 	CategoryService,
@@ -20,6 +20,8 @@ import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dia
 })
 export class ExpendituresComponent implements OnInit {
 	private eventId!: number;
+
+    loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
 	expenses: Expense[] = [];
 	displayedColumns: string[] = [
@@ -47,12 +49,15 @@ export class ExpendituresComponent implements OnInit {
 	}
 
 	loadExpenses() {
+        this.loading.next(true);
 		this.expenseService.loadExpenses(this.eventId).subscribe({
 			next: (expenses) => {
 				this.expenses = expenses;
+                this.loading.next(false);
 			},
 			error: () => {
-				this.messageService.showError('Error loading expenses');
+                this.loading.next(false);
+                this.messageService.showError('Error loading expenses');
 			},
 		});
 	}
