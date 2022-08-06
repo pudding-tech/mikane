@@ -8,7 +8,6 @@ services:
         - "5000:5000"
       env_file:
         - .env
-      command: /bin/bash ./entrypoint.sh
   db:
     image: mcr.microsoft.com/mssql/server:2019-latest
     ports:
@@ -17,3 +16,7 @@ services:
       - .env
     environment:
       - ACCEPT_EULA=Y
+    command: /bin/bash ./entrypoint.sh
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh
+      - ./db_scripts/:/db_scripts/

@@ -1,4 +1,5 @@
 create database puddingdebt
+go
 use puddingdebt
 go
 
