@@ -7,7 +7,7 @@ create procedure get_categories
 as
 begin
 
-  select 
+  select
     cu.user_id,
     c.id as 'category_id',
     c.weighted,

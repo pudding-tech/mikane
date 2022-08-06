@@ -15,17 +15,25 @@ const port = process.env.PORT || 5000;
 const app = express();
 
 // Connect to DB
-sql
-  .connect(dbConfig)
-  .then((pool) => {
-    if (pool.connecting) {
-      console.log("Still connecting to database...");
-    }
-    if (pool.connected) {
-      console.log("Connected to SQL database");
-    }
-  })
-  .catch((err) => console.log("An error occured connecting to database: " + err));
+const connectDB = () => {
+  sql
+    .connect(dbConfig)
+    .then((pool) => {
+      if (pool.connecting) {
+        console.log("Still connecting to database...");
+      }
+      if (pool.connected) {
+        console.log("Connected to SQL database");
+      }
+    })
+    .catch((err) => {
+      console.log("An error occured connecting to database: " + err);
+      setTimeout( () => {
+        connectDB();
+      }, 5000);
+    });
+};
+connectDB();
 
 // Set static folder
 app.use(express.static("public"));

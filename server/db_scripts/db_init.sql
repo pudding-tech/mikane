@@ -1,3 +1,7 @@
+create database puddingdebt
+use puddingdebt
+go
+
 create table [event] (
   id int identity(1,1) primary key,
   [name] nvarchar(255) not null unique,
