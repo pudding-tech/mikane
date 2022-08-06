@@ -20,3 +20,4 @@ services:
     volumes:
       - ./entrypoint.sh:/entrypoint.sh
       - ./db_scripts/:/db_scripts/
+      - ./db_data:/var/opt/mssql/data

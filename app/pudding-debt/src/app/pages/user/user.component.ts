@@ -48,7 +48,6 @@ export class UserComponent implements OnInit {
 
 	ngOnInit() {
 		this.route.parent?.params.subscribe((params) => {
-			console.log('route params', params);
 			this.eventId = params['eventId'];
 			this.loadUsers();
 		});
@@ -152,7 +151,6 @@ export class UserComponent implements OnInit {
             newExpense = expense;
             return this.categoryService.findOrCreate(this.eventId, expense?.category);
         }), takeUntil(this.cancel$)).pipe(switchMap((category: Category) => {
-            console.log('newExpense', newExpense);
             return this.expenseService.createExpense(
                 newExpense.name,
                 newExpense.description,

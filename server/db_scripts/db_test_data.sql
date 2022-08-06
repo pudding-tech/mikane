@@ -1,4 +1,4 @@
-exec new_event 'Pudding Week 2021' -- 1
+/* exec new_event 'Pudding Week 2021' -- 1
 exec new_event 'Space Odyssey' -- 2
 exec new_event 'Christmas Party' -- 3
 exec new_event 'Midsummer Festival' -- 4
@@ -231,3 +231,4 @@ exec new_expense 'Pringles', null, 800, 16, 33
 exec new_expense 'Donkey ride', 'One last ride...', 200, 11, 17
 exec new_expense 'Bonfire', null, 200, 20, 33
 exec new_expense 'Flowers', null, 200, 20, 34
+ */
