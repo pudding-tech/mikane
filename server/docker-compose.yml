@@ -1,15 +1,18 @@
 version: "3.8"
+name: puddingdebt
 services:
   server:
       depends_on:
         - db
       build: ./
+      container_name: api
       ports:
         - "5000:5000"
       env_file:
         - .env
   db:
     image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: db
     ports:
       - "1433:1433"
     env_file:

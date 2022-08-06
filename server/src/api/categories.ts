@@ -59,6 +59,9 @@ router.post("/categories/:catId/user", (req, res) => {
   if (!req.body.userId) {
     return res.status(400).send("UserId not provided!");
   }
+  if (req.body.weight < 1) {
+    return res.status(400).send("Weight can not be less than 1!");
+  }
   const request = new sql.Request();
   request
     .input("category_id", sql.Int, catId)
@@ -98,6 +101,9 @@ router.put("/categories/:catId/user/:userId", (req, res, next) => {
   }
   if (!req.body.weight) {
     return res.status(400).send("Weight not provided!");
+  }
+  if (req.body.weight < 1) {
+    return res.status(400).send("Weight can not be less than 1!");
   }
   const request = new sql.Request();
   request

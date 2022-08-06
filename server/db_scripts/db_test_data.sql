@@ -1,7 +1,8 @@
-/* exec new_event 'Pudding Week 2021' -- 1
+exec new_event 'Pudding Week 2021' -- 1
 exec new_event 'Space Odyssey' -- 2
 exec new_event 'Christmas Party' -- 3
 exec new_event 'Midsummer Festival' -- 4
+exec new_event 'Pudding Week 2022' -- 5
 
 exec new_user 'Svend-Peder', 1 -- 1
 exec new_user 'Odd', 1 -- 2
@@ -44,6 +45,16 @@ exec new_user 'Arisa', 4 -- 35
 exec new_user 'Sondre', 4 -- 36
 exec new_user 'Martin', 4 -- 37
 
+exec new_user 'Adrian', 5 -- 38
+exec new_user 'Andreas', 5 -- 39
+exec new_user 'Martin', 5 -- 40
+exec new_user 'Odd', 5 -- 41
+exec new_user 'Svend-Peder', 5 -- 42
+exec new_user 'Sondre', 5 -- 43
+exec new_user 'Emilia', 5 -- 44
+exec new_user 'Arisa', 5 -- 45
+exec new_user 'Nikolai', 5 -- 46
+
 exec new_category 1, 'Cabin stay', 0 -- 1
 exec new_category 1, 'Food', 1 -- 2
 exec new_category 1, 'Høyt og lavt (climbing)', 0 -- 3
@@ -67,6 +78,14 @@ exec new_category 4, 'Fighter-jet flying', 1 -- 17
 exec new_category 4, 'Cage diving with sharks', 0 -- 18
 exec new_category 4, 'Tickets to Ride', 0 -- 19
 exec new_category 4, 'Festives', 0 -- 20
+
+exec new_category 5, 'Food', 1 -- 21
+exec new_category 5, 'Other', 0 -- 22
+exec new_category 5, 'Alcohol', 0 -- 23
+exec new_category 5, 'Gas Trondheim-Trysil', 0 -- 24
+exec new_category 5, 'Hamar', 0 -- 25
+exec new_category 5, 'Gas Trysil-Trondheim', 0 -- 26
+exec new_category 5, 'Gas Other (Adrian)', 1 -- 27
 
 -- Pudding Week 2021
 exec add_user_to_category 1, 1, null -- Cabin stay
@@ -138,7 +157,7 @@ exec add_user_to_category 9, 11, 1
 exec add_user_to_category 9, 12, 1
 exec add_user_to_category 9, 13, 1
 
--- Pudding Week 2022
+-- Space Odyssey
 exec add_user_to_category 10, 16, 3
 exec add_user_to_category 10, 17, 2
 exec add_user_to_category 10, 15, 6
@@ -178,6 +197,48 @@ exec add_user_to_category 19, 34, 99
 
 exec add_user_to_category 20, 33, 1
 exec add_user_to_category 20, 34, 1
+
+-- Pudding Week 2022
+exec add_user_to_category 21, 38, 9 -- Food
+exec add_user_to_category 21, 39, 9
+exec add_user_to_category 21, 40, 9
+exec add_user_to_category 21, 41, 9
+exec add_user_to_category 21, 42, 9
+exec add_user_to_category 21, 43, 9
+exec add_user_to_category 21, 44, 9
+exec add_user_to_category 21, 45, 3
+exec add_user_to_category 21, 46, 8
+
+exec add_user_to_category 22, 38, null -- Other
+exec add_user_to_category 22, 39, null
+exec add_user_to_category 22, 40, null
+exec add_user_to_category 22, 41, null
+exec add_user_to_category 22, 42, null
+exec add_user_to_category 22, 43, null
+exec add_user_to_category 22, 44, null
+exec add_user_to_category 22, 45, null
+exec add_user_to_category 22, 46, null
+
+exec add_user_to_category 23, 38, null -- Alcohol
+exec add_user_to_category 23, 40, null
+exec add_user_to_category 23, 41, null
+exec add_user_to_category 23, 42, null
+exec add_user_to_category 23, 43, null
+exec add_user_to_category 23, 44, null
+exec add_user_to_category 23, 46, null
+
+exec add_user_to_category 24, 38, null -- Gas Trondheim-Trysil
+exec add_user_to_category 24, 39, null
+exec add_user_to_category 24, 43, null
+
+exec add_user_to_category 25, 38, null -- Hamar
+exec add_user_to_category 25, 39, null
+exec add_user_to_category 25, 45, null
+
+exec add_user_to_category 26, 38, null -- Gas Trysil-Trondheim
+exec add_user_to_category 26, 39, null
+exec add_user_to_category 26, 43, null
+exec add_user_to_category 26, 45, null
 
 -- name, desc, amount, cat_id, payer_id
 exec new_expense 'Food shopping, Saturday 31.07', 'Removed some personal expenses', 3140.29, 2, 3
@@ -231,4 +292,24 @@ exec new_expense 'Pringles', null, 800, 16, 33
 exec new_expense 'Donkey ride', 'One last ride...', 200, 11, 17
 exec new_expense 'Bonfire', null, 200, 20, 33
 exec new_expense 'Flowers', null, 200, 20, 34
- */
+
+exec new_expense 'Handling 6. august', null, 1233.8, 21, 38
+exec new_expense 'Handling 5. august', null, 339.6, 21, 38
+exec new_expense 'Handling nr.2 - 5. august', null, 451.17, 21, 38
+exec new_expense 'Handling 4. august', null, 71.3, 21, 38
+exec new_expense 'Handling nr.2 - 4. august', null, 1564.86, 21, 38
+exec new_expense 'Handling 3. august', null, 1389.87, 21, 38
+exec new_expense 'Handling 2. august', null, 1945.09, 21, 38
+exec new_expense 'Handling 1. august', null, 2204.49, 21, 38
+exec new_expense 'Skjøteledning', null, 99, 22, 38
+exec new_expense 'Handling 30. juli', null, 93.4, 21, 38
+exec new_expense 'Kjøkkenutstyr', null, 98, 22, 38
+exec new_expense 'Handling 30. juli', null, 3952.74, 21, 38
+exec new_expense 'Handling kiwi 05.08', null, 110.4, 21, 38
+exec new_expense 'Handling kiwi 04.08', null, 84.9, 21, 38
+exec new_expense 'Handling kiwi 03.08', null, 294.59, 21, 38
+exec new_expense 'Handling kiwi 30.07', null, 67.8, 21, 38
+exec new_expense 'Vinmonopolet 3. august', null, 852.8, 23, 38
+exec new_expense 'Parkering Hamar', null, 26, 25, 38
+exec new_expense 'Handling Rema 02.08', null, 73.5, 21, 38
+exec new_expense 'Vinmonopolet (for mat) 4. august', null, 132.9, 21, 38
