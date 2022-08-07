@@ -43,7 +43,7 @@ app.use(express.json());
 
 // Enable client access
 app.use(cors({
-  origin: "pudding-debt.hundseth.com"
+  origin: "https://pudding-debt.hundseth.com"
 }));
 
 // Initialize routes defined in "/api/"
