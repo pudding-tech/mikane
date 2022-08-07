@@ -41,9 +41,9 @@ app.use(express.static("public"));
 // Body parser
 app.use(express.json());
 
-// Enable client access (temporarily set to public)
+// Enable client access
 app.use(cors({
-  origin: "*"
+  origin: "pudding-debt.hundseth.com"
 }));
 
 // Initialize routes defined in "/api/"
