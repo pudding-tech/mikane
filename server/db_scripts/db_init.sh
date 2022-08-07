@@ -24,4 +24,3 @@ echo "Running db_init script"
 /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/new_expense.sql
 /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/new_user.sql
 /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/remove_user_from_category.sql
-/opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/db_init_data.sql
