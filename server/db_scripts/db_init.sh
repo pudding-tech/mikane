@@ -1,5 +1,5 @@
 # Wait to be sure that SQL Server came up
-sleep 10s
+sleep 20s
 
 echo "Running db_init script"
 
@@ -24,4 +24,4 @@ echo "Running db_init script"
 /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/new_expense.sql
 /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/new_user.sql
 /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/remove_user_from_category.sql
-/opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/db_test_data.sql
+/opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/db_init_data.sql
