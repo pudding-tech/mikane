@@ -91,7 +91,7 @@ export class CategoryService {
 				if (category) {
 					return of(category);
 				} else {
-					return this.createCategory(categoryName, eventId, true);
+					return this.createCategory(categoryName, eventId, false);
 				}
 			})
 		);
