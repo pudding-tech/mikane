@@ -30,8 +30,11 @@ body {
     }
 }
 
+.mat-dialog-content {
+    overflow: initial !important;
+}
+
 #category-actions {
-    // margin: 1em;
     button {
         margin: 1em;
     }
