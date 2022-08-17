@@ -2,6 +2,11 @@ import express from "express";
 import sql from "mssql";
 const router = express.Router();
 
+/* --- */
+/* GET */
+/* --- */
+
+// Get a list of all events
 router.get("/events", (req, res, next) => {
   const request = new sql.Request();
   request
@@ -12,6 +17,11 @@ router.get("/events", (req, res, next) => {
     .catch(next);
 });
 
+/* ---- */
+/* POST */
+/* ---- */
+
+// Create new event
 router.post("/events", (req, res, next) => {
   if (!req.body.name) {
     return res.status(400).send("Name not provided!");
@@ -26,6 +36,11 @@ router.post("/events", (req, res, next) => {
     .catch(next);
 });
 
+/* ------ */
+/* DELETE */
+/* ------ */
+
+// Delete an event
 router.delete("/events", (req, res, next) => {
   if (!req.body.id) {
     return res.status(400).send("Event ID not provided!");
