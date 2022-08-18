@@ -4,6 +4,11 @@ import { Category } from "../types";
 import { parseCategories } from "../parsers";
 const router = express.Router();
 
+/* --- */
+/* GET */
+/* --- */
+
+// Get a list of all categories for a given event
 router.get("/categories", (req, res, next) => {
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
@@ -20,6 +25,11 @@ router.get("/categories", (req, res, next) => {
     .catch(next);
 });
 
+/* ---- */
+/* POST */
+/* ---- */
+
+// Create a new category
 router.post("/categories", (req, res, next) => {
   if (!req.body.name || !req.body.eventId || req.body.weighted === undefined) {
     return res.status(400).send("Name, event ID or weighted not provided!");
@@ -36,21 +46,7 @@ router.post("/categories", (req, res, next) => {
     .catch(next);
 });
 
-router.delete("/categories/:catId", (req, res, next) => {
-  const catId = Number(req.params.catId);
-  if (isNaN(catId)) {
-    return res.status(400).send("Category ID must be a number!");
-  }
-  const request = new sql.Request();
-  request
-    .input("category_id", sql.Int, catId)
-    .execute("delete_category")
-    .then( () => {
-      res.send({});
-    })
-    .catch(next);
-});
-
+// Add a user to a category
 router.post("/categories/:catId/user", (req, res) => {
   const catId = Number(req.params.catId);
   if (isNaN(catId)) {
@@ -75,24 +71,31 @@ router.post("/categories/:catId/user", (req, res) => {
     .catch(() => res.status(400).send("Weight required when adding user to weighted category"));
 });
 
-router.delete("/categories/:catId/user/:userId", (req, res, next) => {
-  const catId = Number(req.params.catId);
-  const userId = Number(req.params.userId);
-  if (isNaN(catId) || isNaN(userId)) {
-    return res.status(400).send("Category ID and user ID must be numbers!");
+/* --- */
+/* PUT */
+/* --- */
+
+// Rename a category
+router.put("/categories/:id/name", (req, res, next) => {
+  const catId = Number(req.params.id);
+  if (isNaN(catId)) {
+    return res.status(400).send("Category ID must be a number!");
+  }
+  if (!req.body.name) {
+    return res.status(400).send("Category name not provided!");
   }
   const request = new sql.Request();
   request
     .input("category_id", sql.Int, catId)
-    .input("user_id", sql.Int, userId)
-    .execute("remove_user_from_category")
+    .input("name", sql.NVarChar, req.body.name)
+    .execute("rename_category")
     .then( (data) => {
-      const categories: Category[] = parseCategories(data.recordset, "client");
-      res.send(categories[0]);
+      res.send(data.recordset);
     })
     .catch(next);
 });
 
+// Edit a user's weight for a category
 router.put("/categories/:catId/user/:userId", (req, res, next) => {
   const catId = Number(req.params.catId);
   const userId = Number(req.params.userId);
@@ -118,6 +121,7 @@ router.put("/categories/:catId/user/:userId", (req, res, next) => {
     .catch(next);
 });
 
+// Change weight status for a category (weighted or non-weighted)
 router.put("/categories/:catId/weighted", (req, res, next) => {
   const catId = Number(req.params.catId);
   if (isNaN(catId)) {
@@ -131,6 +135,45 @@ router.put("/categories/:catId/weighted", (req, res, next) => {
     .input("category_id", sql.Int, catId)
     .input("weighted", sql.Bit, req.body.weighted)
     .execute("edit_category_weighted_status")
+    .then( (data) => {
+      const categories: Category[] = parseCategories(data.recordset, "client");
+      res.send(categories[0]);
+    })
+    .catch(next);
+});
+
+/* ------ */
+/* DELETE */
+/* ------ */
+
+// Delete a category
+router.delete("/categories/:catId", (req, res, next) => {
+  const catId = Number(req.params.catId);
+  if (isNaN(catId)) {
+    return res.status(400).send("Category ID must be a number!");
+  }
+  const request = new sql.Request();
+  request
+    .input("category_id", sql.Int, catId)
+    .execute("delete_category")
+    .then( () => {
+      res.send({});
+    })
+    .catch(next);
+});
+
+// Remove a user from a category
+router.delete("/categories/:catId/user/:userId", (req, res, next) => {
+  const catId = Number(req.params.catId);
+  const userId = Number(req.params.userId);
+  if (isNaN(catId) || isNaN(userId)) {
+    return res.status(400).send("Category ID and user ID must be numbers!");
+  }
+  const request = new sql.Request();
+  request
+    .input("category_id", sql.Int, catId)
+    .input("user_id", sql.Int, userId)
+    .execute("remove_user_from_category")
     .then( (data) => {
       const categories: Category[] = parseCategories(data.recordset, "client");
       res.send(categories[0]);

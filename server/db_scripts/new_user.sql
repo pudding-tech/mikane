@@ -7,7 +7,7 @@ create procedure new_user
 as
 begin
 
-  insert into [user](name, created, event_id) values (@name, GETDATE(), @event_id)
+  insert into [user]([name], created, event_id) values (@name, GETDATE(), @event_id)
 
   select * from [user] where id = @@IDENTITY
 
