@@ -14,9 +14,9 @@ import { MessageService } from 'src/app/services/message/message.service';
 })
 export class EventComponent implements OnInit {
 	event: PuddingEvent = {
-		name: 'PUDDING DEBT',
+		name: '',
 	} as PuddingEvent;
-	activeLink = '';
+	activeLink = './users';
 	links = [
 		{
 			name: 'Participants',
