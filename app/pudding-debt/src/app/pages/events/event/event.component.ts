@@ -16,7 +16,7 @@ export class EventComponent implements OnInit {
 	event: PuddingEvent = {
 		name: '',
 	} as PuddingEvent;
-	activeLink = './users';
+	activeLink = '';
 	links = [
 		{
 			name: 'Participants',
@@ -43,6 +43,9 @@ export class EventComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
+		// Set active link based on current URL
+		this.activeLink = './' + window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+		
 		combineLatest([this.eventService.loadEvents(), this.route.params])
 			.pipe(
 				map(([events, params]) => {
