@@ -34,7 +34,6 @@ export class EventsComponent implements OnInit {
 			next: (events) => {
 				this.events = events;
 				this.loading.next(false);
-				console.log(this.events);
 			},
 			error: () => {
 				this.messageService.showError('Error loading events');
