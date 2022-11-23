@@ -5,6 +5,6 @@ create procedure get_events
 as
 begin
 
-  select * from [event] order by id desc
+  select id, [name], created, [guid] from [event] order by id desc
 
 end

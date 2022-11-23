@@ -15,7 +15,7 @@ router.get("/users", (req, res, next) => {
   request
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_users")
-    .then( (data) => {
+    .then(data => {
       const users: User[] = parseUsers(data.recordset);
       res.send(users);
     })
@@ -28,7 +28,7 @@ router.get("/users/:id/expenses", (req, res, next) => {
   request
     .input("user_id", sql.Int, req.params.id)
     .execute("get_user_expenses")
-    .then( (data) => {
+    .then(data => {
       const expenses: Expense[] = parseExpenses(data.recordset);
       res.send(expenses);
     })
@@ -50,7 +50,7 @@ router.get("/users/balances", async (req, res, next) => {
   await request
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_users")
-    .then( (data) => {
+    .then(data => {
       users = parseUsers(data.recordset);
     })
     .catch(next);
@@ -69,7 +69,7 @@ router.get("/users/balances", async (req, res, next) => {
   await request
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_expenses")
-    .then( (data) => {
+    .then(data => {
       expenses = parseExpenses(data.recordset);
     })
     .catch(next);
@@ -97,7 +97,7 @@ router.post("/users", (req, res, next) => {
     .input("name", sql.NVarChar, req.body.name)
     .input("event_id", sql.Int, req.body.eventId)
     .execute("new_user")
-    .then( (data) => {
+    .then(data => {
       const users: User[] = parseUsers(data.recordset);
       res.send(users[0]);
     })
@@ -122,7 +122,7 @@ router.put("/users/:id", (req, res, next) => {
     .input("user_id", sql.Int, userId)
     .input("name", sql.NVarChar, req.body.name)
     .execute("edit_user")
-    .then( () => {
+    .then(() => {
       res.send({});
     })
     .catch(next);
@@ -142,7 +142,7 @@ router.delete("/users/:id", (req, res, next) => {
   request
     .input("user_id", sql.Int, userId)
     .execute("delete_user")
-    .then( () => {
+    .then(() => {
       res.send({});
     })
     .catch(next);

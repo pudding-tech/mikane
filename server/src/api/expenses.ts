@@ -17,7 +17,7 @@ router.get("/expenses", (req, res, next) => {
   request
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_expenses")
-    .then( (data) => {
+    .then(data => {
       const expenses: Expense[] = parseExpenses(data.recordset);
       res.send(expenses);
     })
@@ -41,7 +41,7 @@ router.post("/expenses", (req, res, next) => {
     .input("category_id", sql.Int, req.body.categoryId)
     .input("payer_id", sql.Int, req.body.payerId)
     .execute("new_expense")
-    .then( (data) => {
+    .then(data => {
       const expenses: Expense[] = parseExpenses(data.recordset);
       res.send(expenses[0]);
     })
@@ -62,7 +62,7 @@ router.delete("/expenses/:expenseId", (req, res, next) => {
   request
     .input("expense_id", sql.Int, expId)
     .execute("delete_expense")
-    .then( () => {
+    .then(() => {
       res.send({});
     })
     .catch(next);

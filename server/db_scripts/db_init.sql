@@ -6,7 +6,8 @@ go
 create table [event] (
   id int identity(1,1) primary key,
   [name] nvarchar(255) not null unique,
-  created datetime not null
+  created datetime not null,
+  [guid] uniqueidentifier not null default newid()
 )
 
 create table [user] (
@@ -29,7 +30,8 @@ create table expense (
   [description] nvarchar(255) not null,
   amount numeric(16, 2) not null,
   category_id int foreign key references category(id) on delete cascade,
-  payer_id int foreign key references [user](id) on delete cascade
+  payer_id int foreign key references [user](id) on delete cascade,
+  date_added datetime not null
 )
 
 create table category_user (
