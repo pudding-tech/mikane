@@ -15,32 +15,27 @@ const routes: Routes = [
     },
 	{
 		path: 'events',
-		title: 'Events',
+		title: 'PuddingDebt',
 		component: EventsComponent,
     },
     {
         path: 'events/:eventId',
-        title: 'Event',
         component: EventComponent,
         children: [
             {
                 path: 'users',
-                title: 'Participants',
                 component: UserComponent
             },
             {
                 path: 'expenses',
-                title: 'Expenses',
                 component: ExpendituresComponent,
             },
             {
                 path: 'categories',
-                title: 'Expense Categories',
                 component: CategoryComponent
             },
             {
                 path: 'payment',
-                title: 'Payment Structure',
                 component: PaymentStructureComponent,
             },
         ]

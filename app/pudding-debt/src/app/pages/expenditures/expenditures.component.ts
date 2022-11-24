@@ -85,7 +85,7 @@ export class ExpendituresComponent implements OnInit {
             )
         })).subscribe({
             next: (expense) => {
-								this.expenses = [expense, ...this.expenses];
+                this.expenses = [expense, ...this.expenses];
                 this.messageService.showSuccess('New expense created!');
             },
             error: () => {
