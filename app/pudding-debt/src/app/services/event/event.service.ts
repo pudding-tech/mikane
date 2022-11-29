@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 
 export interface PuddingEvent {
 	id: number;
+	guid: string;
 	name: string;
 }
 

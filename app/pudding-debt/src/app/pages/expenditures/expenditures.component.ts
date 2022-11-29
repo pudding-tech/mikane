@@ -43,7 +43,7 @@ export class ExpendituresComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-        this.loading.next(true);
+		this.loading.next(true);
 		this.route.parent?.params.pipe(switchMap((params) => {
 			this.eventId = params['eventId'];
             return this.expenseService.loadExpenses(this.eventId)
@@ -85,7 +85,7 @@ export class ExpendituresComponent implements OnInit {
             )
         })).subscribe({
             next: (expense) => {
-                this.expenses = [...this.expenses, expense];
+                this.expenses = [expense, ...this.expenses];
                 this.messageService.showSuccess('New expense created!');
             },
             error: () => {

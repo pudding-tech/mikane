@@ -29,15 +29,15 @@ export class EventsComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-        this.loading.next(true);
+		this.loading.next(true);
 		this.eventService.loadEvents().subscribe({
 			next: (events) => {
 				this.events = events;
-                this.loading.next(false);
+				this.loading.next(false);
 			},
 			error: () => {
-                this.messageService.showError('Error loading events');
-                this.loading.next(false);
+				this.messageService.showError('Error loading events');
+				this.loading.next(false);
 			},
 		});
 	}

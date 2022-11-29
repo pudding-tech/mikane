@@ -27,7 +27,7 @@ const connectDB = () => {
       }
     })
     .catch((err) => {
-      console.log("An error occured connecting to database: " + err);
+      console.log("An error occurred connecting to database: " + err);
       setTimeout( () => {
         connectDB();
       }, 5000);

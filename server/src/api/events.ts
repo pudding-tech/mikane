@@ -11,7 +11,7 @@ router.get("/events", (req, res, next) => {
   const request = new sql.Request();
   request
     .execute("get_events")
-    .then( (data) => {
+    .then(data => {
       res.send(data.recordset);
     })
     .catch(next);
@@ -30,7 +30,7 @@ router.post("/events", (req, res, next) => {
   request
     .input("name", sql.NVarChar, req.body.name)
     .execute("new_event")
-    .then( (data) => {
+    .then(data => {
       res.send(data.recordset[0]);
     })
     .catch(next);
@@ -49,7 +49,7 @@ router.delete("/events", (req, res, next) => {
   request
     .input("event_id", sql.Int, req.body.id)
     .execute("delete_event")
-    .then( () => {
+    .then(() => {
       res.send({});
     })
     .catch(next);

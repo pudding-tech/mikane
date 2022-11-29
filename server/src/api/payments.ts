@@ -23,7 +23,7 @@ router.get("/payments", async (req, res, next) => {
   await request
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_users")
-    .then( (data) => {
+    .then(data => {
       users = parseUsers(data.recordset);
     })
     .catch(next);
@@ -33,7 +33,7 @@ router.get("/payments", async (req, res, next) => {
     .input("event_id", sql.Int, req.query.eventId)
     .input("category_id", sql.Int, null)
     .execute("get_categories")
-    .then( (data) => {
+    .then(data => {
       categories = parseCategories(data.recordset, "calc");
     })
     .catch(next);
@@ -42,7 +42,7 @@ router.get("/payments", async (req, res, next) => {
   await request
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_expenses")
-    .then( (data) => {
+    .then(data => {
       expenses = parseExpenses(data.recordset);
     })
     .catch(next);
