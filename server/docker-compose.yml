@@ -10,6 +10,7 @@ services:
         - "3002:5000"
       env_file:
         - .env
+      restart: unless-stopped
   db:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: db
@@ -25,3 +26,4 @@ services:
       - ./entrypoint.sh:/entrypoint.sh
       - ./db_scripts/:/db_scripts/
       - ./db_data:/var/opt/mssql/data
+    restart: unless-stopped
