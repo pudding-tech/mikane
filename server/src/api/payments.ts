@@ -2,9 +2,14 @@ import express from "express";
 import sql from "mssql";
 import { calculatePayments } from "../calculations";
 import { parseCategories, parseExpenses, parseUsers } from "../parsers";
-import { Category, Expense, User } from "../types";
+import { User, Category, Expense, Payment } from "../types";
 const router = express.Router();
 
+/* --- */
+/* GET */
+/* --- */
+
+// Get a list of all payments for a given event
 router.get("/payments", async (req, res, next) => {
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
@@ -18,7 +23,7 @@ router.get("/payments", async (req, res, next) => {
   await request
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_users")
-    .then( (data) => {
+    .then(data => {
       users = parseUsers(data.recordset);
     })
     .catch(next);
@@ -28,7 +33,7 @@ router.get("/payments", async (req, res, next) => {
     .input("event_id", sql.Int, req.query.eventId)
     .input("category_id", sql.Int, null)
     .execute("get_categories")
-    .then( (data) => {
+    .then(data => {
       categories = parseCategories(data.recordset, "calc");
     })
     .catch(next);
@@ -37,7 +42,7 @@ router.get("/payments", async (req, res, next) => {
   await request
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_expenses")
-    .then( (data) => {
+    .then(data => {
       expenses = parseExpenses(data.recordset);
     })
     .catch(next);
@@ -47,7 +52,7 @@ router.get("/payments", async (req, res, next) => {
     return res.status(400).send("Something went wrong getting users, categories or expenses");
   }
 
-  const payments = calculatePayments(expenses, categories, users);
+  const payments: Payment[] = calculatePayments(expenses, categories, users);
   res.send(payments);
 });
 

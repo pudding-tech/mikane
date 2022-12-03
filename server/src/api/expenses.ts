@@ -4,6 +4,11 @@ import { Expense } from "../types";
 import { parseExpenses } from "../parsers";
 const router = express.Router();
 
+/* --- */
+/* GET */
+/* --- */
+
+// Get a list of all expenses for a given event
 router.get("/expenses", (req, res, next) => {
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
@@ -12,13 +17,18 @@ router.get("/expenses", (req, res, next) => {
   request
     .input("event_id", sql.Int, req.query.eventId)
     .execute("get_expenses")
-    .then( (data) => {
+    .then(data => {
       const expenses: Expense[] = parseExpenses(data.recordset);
       res.send(expenses);
     })
     .catch(next);
 });
 
+/* ---- */
+/* POST */
+/* ---- */
+
+// Create a new expense
 router.post("/expenses", (req, res, next) => {
   if (!req.body.name || !req.body.categoryId || !req.body.payerId) {
     return res.status(400).send("Name, categoryId or payerId not provided!");
@@ -31,13 +41,18 @@ router.post("/expenses", (req, res, next) => {
     .input("category_id", sql.Int, req.body.categoryId)
     .input("payer_id", sql.Int, req.body.payerId)
     .execute("new_expense")
-    .then( (data) => {
+    .then(data => {
       const expenses: Expense[] = parseExpenses(data.recordset);
       res.send(expenses[0]);
     })
     .catch(next);
 });
 
+/* ------ */
+/* DELETE */
+/* ------ */
+
+// Delete an expense
 router.delete("/expenses/:expenseId", (req, res, next) => {
   const expId = Number(req.params.expenseId);
   if (isNaN(expId)) {
@@ -47,7 +62,7 @@ router.delete("/expenses/:expenseId", (req, res, next) => {
   request
     .input("expense_id", sql.Int, expId)
     .execute("delete_expense")
-    .then( () => {
+    .then(() => {
       res.send({});
     })
     .catch(next);

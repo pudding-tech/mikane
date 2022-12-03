@@ -12,8 +12,8 @@ begin
   
   set @description = isnull(@description, '')
 
-  insert into expense([name], [description], amount, category_id, payer_id)
-    values (@name, @description, @amount, @category_id, @payer_id)
+  insert into expense([name], [description], amount, category_id, payer_id, date_added)
+    values (@name, @description, @amount, @category_id, @payer_id, GETDATE())
 
   select ex.*, c.name as category_name, u.name as payer from expense ex
     inner join category c on c.id = ex.category_id

@@ -10,7 +10,7 @@ import paymentRoutes from "./api/payments";
 
 dotenv.config();
 import { dbConfig } from "./config";
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3002;
 
 const app = express();
 
@@ -27,7 +27,7 @@ const connectDB = () => {
       }
     })
     .catch((err) => {
-      console.log("An error occured connecting to database: " + err);
+      console.log("An error occurred connecting to database: " + err);
       setTimeout( () => {
         connectDB();
       }, 5000);

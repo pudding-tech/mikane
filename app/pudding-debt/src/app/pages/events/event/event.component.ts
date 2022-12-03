@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, combineLatest } from 'rxjs';
 import {
@@ -14,7 +15,7 @@ import { MessageService } from 'src/app/services/message/message.service';
 })
 export class EventComponent implements OnInit {
 	event: PuddingEvent = {
-		name: 'PUDDING DEBT',
+		name: '',
 	} as PuddingEvent;
 	activeLink = '';
 	links = [
@@ -39,10 +40,21 @@ export class EventComponent implements OnInit {
 	constructor(
 		private eventService: EventService,
 		private route: ActivatedRoute,
-		private messageService: MessageService
-	) {}
+		private router: Router,
+		private messageService: MessageService,
+		private titleService: Title
+	) {
+		const event = this.router.getCurrentNavigation()?.extras.state?.['event'];
+		if (event) {
+			this.event = event;
+			this.titleService.setTitle(event.name);
+		}
+	}
 
 	ngOnInit() {
+		// Set active link based on current URL
+		this.activeLink = './' + window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+
 		combineLatest([this.eventService.loadEvents(), this.route.params])
 			.pipe(
 				map(([events, params]) => {
@@ -55,6 +67,7 @@ export class EventComponent implements OnInit {
 				next: (event) => {
 					if (event) {
 						this.event = event;
+						this.titleService.setTitle(event.name);
 					}
 				},
 				error: () => {
