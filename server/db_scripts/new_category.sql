@@ -13,3 +13,4 @@ begin
   select * from category where id = @@IDENTITY
 
 end
+go

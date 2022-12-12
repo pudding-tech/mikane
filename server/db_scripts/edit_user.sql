@@ -12,3 +12,4 @@ begin
   select * from [user] where id = @user_id
 
 end
+go

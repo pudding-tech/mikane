@@ -10,6 +10,19 @@ const router = express.Router();
 router.get("/events", (req, res, next) => {
   const request = new sql.Request();
   request
+    .input("event_id", sql.Int, null)
+    .execute("get_events")
+    .then(data => {
+      res.send(data.recordset);
+    })
+    .catch(next);
+});
+
+// Get specific event
+router.get("/events/:id", (req, res, next) => {
+  const request = new sql.Request();
+  request
+    .input("event_id", sql.Int, req.params.id)
     .execute("get_events")
     .then(data => {
       res.send(data.recordset);

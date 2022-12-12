@@ -11,3 +11,4 @@ begin
   select * from [event] where id = @@IDENTITY
 
 end
+go

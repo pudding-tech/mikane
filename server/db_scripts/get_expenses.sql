@@ -15,3 +15,4 @@ begin
   order by ex.date_added desc
 
 end
+go

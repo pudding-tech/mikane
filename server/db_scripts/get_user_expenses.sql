@@ -13,3 +13,4 @@ begin
   where u.id = @user_id
 
 end
+go

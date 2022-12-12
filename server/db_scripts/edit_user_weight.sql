@@ -19,3 +19,4 @@ begin
   exec get_categories @event_id, @category_id
 
 end
+go

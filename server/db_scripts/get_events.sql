@@ -2,9 +2,29 @@ if object_id ('get_events') is not null
   drop procedure get_events
 go
 create procedure get_events
+  @event_id int
 as
 begin
 
-  select id, [name], created, [guid] from [event] order by id desc
+  if (@event_id is null)
+    begin
+      select
+        id, [name], created, [guid]
+      from
+        [event]
+      order by id desc
+    end
+  
+  else
+    begin
+      select
+        id, [name], created, [guid]
+      from
+        [event]
+      where
+        id = @event_id
+      order by id desc
+    end
 
 end
+go
