@@ -47,6 +47,7 @@ import { SharedModule } from './shared/shared.module';
 import { CategoryEditDialogComponent } from './pages/category/category-edit-dialog/category-edit-dialog.component';
 import { DeleteUserDialogComponent } from './pages/user/delete-user-dialog/delete-user-dialog.component';
 import { DeleteCategoryDialogComponent } from './pages/category/category-delete-dialog/category-delete-dialog.component';
+import { FooterComponent } from './footer.component';
 registerLocaleData(localeNo);
 
 @NgModule({
@@ -65,8 +66,9 @@ registerLocaleData(localeNo);
 		SuccessMessageComponent,
 		ErrorMessageComponent,
 		CategoryEditDialogComponent,
-        DeleteUserDialogComponent,
-        DeleteCategoryDialogComponent,
+		DeleteUserDialogComponent,
+		DeleteCategoryDialogComponent,
+		FooterComponent
 	],
 	imports: [
 		BrowserModule,
