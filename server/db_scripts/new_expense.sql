@@ -21,3 +21,4 @@ begin
   where ex.id = @@IDENTITY
 
 end
+go

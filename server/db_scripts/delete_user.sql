@@ -9,3 +9,4 @@ begin
   delete from [user] where id = @user_id
 
 end
+go

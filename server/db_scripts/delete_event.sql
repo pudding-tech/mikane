@@ -9,3 +9,4 @@ begin
   delete from [event] where id = @event_id
 
 end
+go

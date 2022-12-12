@@ -9,3 +9,4 @@ begin
   delete from category where id = @category_id
 
 end
+go

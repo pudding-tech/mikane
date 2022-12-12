@@ -9,3 +9,4 @@ begin
   delete from expense where id = @expense_id
 
 end
+go
