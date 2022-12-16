@@ -10,7 +10,7 @@ import { UserComponent } from './pages/user/user.component';
 import { ExpendituresComponent } from './pages/expenditures/expenditures.component';
 import { PaymentStructureComponent } from './pages/payment-structure/payment-structure.component';
 import { EventsComponent } from './pages/events/events.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CategoryComponent } from './pages/category/category.component';
 import { EventComponent } from './pages/events/event/event.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,11 +48,16 @@ import { CategoryEditDialogComponent } from './pages/category/category-edit-dial
 import { DeleteUserDialogComponent } from './pages/user/delete-user-dialog/delete-user-dialog.component';
 import { DeleteCategoryDialogComponent } from './pages/category/category-delete-dialog/category-delete-dialog.component';
 import { FooterComponent } from './footer.component';
+import { AuthInterceptor } from './services/auth/auth.interceptor';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { LoginComponent } from './pages/login/login.component';
+
 registerLocaleData(localeNo);
 
 @NgModule({
 	declarations: [
 		AppComponent,
+		LoginComponent,
 		UserComponent,
 		ExpendituresComponent,
 		PaymentStructureComponent,
@@ -68,7 +73,7 @@ registerLocaleData(localeNo);
 		CategoryEditDialogComponent,
 		DeleteUserDialogComponent,
 		DeleteCategoryDialogComponent,
-		FooterComponent
+		FooterComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -100,7 +105,8 @@ registerLocaleData(localeNo);
 		MatAutocompleteModule,
 		MatProgressSpinnerModule,
 		MatSnackBarModule,
-        MatCheckboxModule,
+		MatCheckboxModule,
+		MatFormFieldModule,
 	],
 	providers: [
 		{
@@ -112,6 +118,11 @@ registerLocaleData(localeNo);
 			useValue: {
 				duration: 2500,
 			},
+		},
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: AuthInterceptor,
+			multi: true,
 		},
 	],
 	bootstrap: [AppComponent],

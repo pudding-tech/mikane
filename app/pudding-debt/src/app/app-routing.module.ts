@@ -4,6 +4,7 @@ import { CategoryComponent } from './pages/category/category.component';
 import { EventComponent } from './pages/events/event/event.component';
 import { EventsComponent } from './pages/events/events.component';
 import { ExpendituresComponent } from './pages/expenditures/expenditures.component';
+import { LoginComponent } from './pages/login/login.component';
 import { PaymentStructureComponent } from './pages/payment-structure/payment-structure.component';
 import { UserComponent } from './pages/user/user.component';
 
@@ -39,6 +40,10 @@ const routes: Routes = [
                 component: PaymentStructureComponent,
             },
         ]
+    },
+    {
+        path: 'login',
+        component: LoginComponent,
     }
 ];
 
