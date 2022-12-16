@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
-import { PuddingEvent } from '../event/event.service';
 import { Expense } from '../expense/expense.service';
 
 export interface User {
@@ -32,8 +31,8 @@ export class UserService {
 		return this.httpClient.post<User>(this.apiUrl, { name: name, eventId: eventId });
 	}
 
-    loadUserExpenses(userId: number): Observable<Expense[]> {
-        return this.httpClient.get<Expense[]>(this.apiUrl + `/${userId}/expenses`);
+    loadUserExpenses(userId: number, eventId: number): Observable<Expense[]> {
+        return this.httpClient.get<Expense[]>(this.apiUrl + `/${userId}/expenses/${eventId}`);
     }
 
     loadUserBalance(eventId: number): Observable<UserBalance[]> {

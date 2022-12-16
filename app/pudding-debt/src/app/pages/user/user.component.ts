@@ -131,7 +131,7 @@ export class UserComponent implements OnInit {
     }
 
     getExpenses(user: User): void {
-        this.dataSource.loadExpenses(user.id);
+        this.dataSource.loadExpenses(user.id, this.eventId);
     }
 
     createExpenseDialog(userId: number, dataSource: ExpenseDataSource) {
