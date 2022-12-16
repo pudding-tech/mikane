@@ -3,13 +3,14 @@ if object_id ('new_user') is not null
 go
 create procedure new_user
   @name nvarchar(255),
-  @event_id int
+  @email nvarchar(255),
+  @password nvarchar(255)
 as
 begin
 
-  insert into [user]([name], created, event_id) values (@name, GETDATE(), @event_id)
+  insert into [user]([name], email, [password], created) values (@name, @email, @password, GETDATE())
 
-  select * from [user] where id = @@IDENTITY
+  select id, [name], email, created from [user] where id = @@IDENTITY
 
 end
 go

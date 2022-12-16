@@ -9,7 +9,7 @@ as
 begin
 
   declare @weighted bit
-  declare @event_id int;
+  declare @event_id int
 
   select @weighted = weighted from category where id = @category_id
 
