@@ -2,7 +2,7 @@ import express from "express";
 import sql from "mssql";
 import { calculateBalance } from "../calculations";
 import { parseBalance, parseCategories, parseExpenses, parseUsers } from "../parsers";
-import { Category, Expense, User, UserBalance } from "../types";
+import { Category, Expense, User, UserBalance } from "../types/types";
 const router = express.Router();
 
 /* --- */
@@ -19,20 +19,25 @@ router.get("/users", (req, res, next) => {
       const users: User[] = parseUsers(data.recordset);
       res.send(users);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 // Get a list of a user's expenses
-router.get("/users/:id/expenses", (req, res, next) => {
+router.get("/users/:id/expenses/:event", (req, res, next) => {
+  const eventId = Number(req.params.event);
+  if (isNaN(eventId)) {
+    return res.status(400).json("Event ID must be a number");
+  }
   const request = new sql.Request();
   request
+    .input("event_id", sql.Int, eventId)
     .input("user_id", sql.Int, req.params.id)
-    .execute("get_user_expenses")
+    .execute("get_expenses")
     .then(data => {
       const expenses: Expense[] = parseExpenses(data.recordset);
       res.send(expenses);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 // Get a list of all users' balance information in an event
@@ -42,41 +47,22 @@ router.get("/users/balances", async (req, res, next) => {
     return res.status(400).send("EventId not provided!");
   }
 
-  let users: User[] | undefined;
-  let categories: Category[] | undefined;
-  let expenses: Expense[] | undefined;
-
-  let request = new sql.Request();
-  await request
+  const request = new sql.Request();
+  const data = await request
     .input("event_id", sql.Int, req.query.eventId)
-    .execute("get_users")
-    .then(data => {
-      users = parseUsers(data.recordset);
+    .execute("get_event_payment_data")
+    .then(res => {
+      return res.recordsets as sql.IRecordSet<object>[];
     })
-    .catch(next);
+    .catch(err => next(err));
 
-  request = new sql.Request();
-  await request
-    .input("event_id", sql.Int, req.query.eventId)
-    .input("category_id", sql.Int, null)
-    .execute("get_categories")
-    .then( (data) => {
-      categories = parseCategories(data.recordset, "calc");
-    })
-    .catch(next);
-
-  request = new sql.Request();
-  await request
-    .input("event_id", sql.Int, req.query.eventId)
-    .execute("get_expenses")
-    .then(data => {
-      expenses = parseExpenses(data.recordset);
-    })
-    .catch(next);
-
-  if (!users || !categories || !expenses) {
+  if (!data || data.length < 3) {
     return res.status(400).send("Something went wrong getting users, categories or expenses");
   }
+
+  const users: User[] = parseUsers(data[0]);
+  const categories: Category[] = parseCategories(data[1], "calc");
+  const expenses: Expense[] = parseExpenses(data[2]);
 
   const balance = calculateBalance(expenses, categories, users);
   const userBalance: UserBalance[] = parseBalance(balance);
@@ -101,7 +87,7 @@ router.post("/users", (req, res, next) => {
       const users: User[] = parseUsers(data.recordset);
       res.send(users[0]);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 /* --- */
@@ -125,7 +111,7 @@ router.put("/users/:id", (req, res, next) => {
     .then(() => {
       res.send({});
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 /* ------ */
@@ -145,7 +131,7 @@ router.delete("/users/:id", (req, res, next) => {
     .then(() => {
       res.send({});
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 export default router;

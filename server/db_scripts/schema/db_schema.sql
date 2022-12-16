@@ -3,6 +3,15 @@ go
 use puddingdebt
 go
 
+create table [user] (
+  id int identity(1,1) primary key,
+  [name] nvarchar(255) not null,
+  email nvarchar(255) not null,
+  [password] nvarchar(255) not null,
+  created datetime not null
+)
+go
+
 create table [event] (
   id int identity(1,1) primary key,
   [name] nvarchar(255) not null unique,
@@ -11,11 +20,12 @@ create table [event] (
 )
 go
 
-create table [user] (
-  id int identity(1,1) primary key,
-  [name] nvarchar(255) not null,
-  created datetime not null,
-  event_id int foreign key references [event](id) on delete no action
+create table user_event (
+  user_id int foreign key references [user](id) on delete cascade,
+  event_id int foreign key references [event](id) on delete cascade,
+  [admin] bit not null,
+  joined_date datetime not null,
+  primary key (user_id, event_id)
 )
 go
 

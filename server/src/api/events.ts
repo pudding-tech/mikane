@@ -15,7 +15,7 @@ router.get("/events", (req, res, next) => {
     .then(data => {
       res.send(data.recordset);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 // Get specific event
@@ -27,7 +27,7 @@ router.get("/events/:id", (req, res, next) => {
     .then(data => {
       res.send(data.recordset);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 /* ---- */
@@ -46,7 +46,7 @@ router.post("/events", (req, res, next) => {
     .then(data => {
       res.send(data.recordset[0]);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 /* ------ */
@@ -65,7 +65,7 @@ router.delete("/events", (req, res, next) => {
     .then(() => {
       res.send({});
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 export default router;

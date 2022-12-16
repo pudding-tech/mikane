@@ -9,7 +9,7 @@ begin
   if (@event_id is null)
     begin
         
-      select * from
+      select id, [name], email, created from
         [user]
       order by
         id
@@ -18,12 +18,13 @@ begin
   else
     begin
         
-      select * from
-        [user]
+      select u.id, u.[name], u.email, u.created, ue.admin, ue.joined_date from
+        [user] u
+        inner join user_event ue on ue.user_id = u.id
       where
-        event_id = @event_id
+        ue.event_id = @event_id
       order by
-        id
+        u.id
 
     end
 

@@ -1,6 +1,6 @@
 import express from "express";
 import sql from "mssql";
-import { Expense } from "../types";
+import { Expense } from "../types/types";
 import { parseExpenses } from "../parsers";
 const router = express.Router();
 
@@ -16,12 +16,13 @@ router.get("/expenses", (req, res, next) => {
   const request = new sql.Request();
   request
     .input("event_id", sql.Int, req.query.eventId)
+    .input("user_id", sql.Int, null)
     .execute("get_expenses")
     .then(data => {
       const expenses: Expense[] = parseExpenses(data.recordset);
       res.send(expenses);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 /* ---- */
@@ -45,7 +46,7 @@ router.post("/expenses", (req, res, next) => {
       const expenses: Expense[] = parseExpenses(data.recordset);
       res.send(expenses[0]);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 /* ------ */
@@ -65,7 +66,7 @@ router.delete("/expenses/:expenseId", (req, res, next) => {
     .then(() => {
       res.send({});
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 export default router;

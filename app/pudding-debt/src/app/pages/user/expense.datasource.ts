@@ -23,11 +23,11 @@ export class ExpenseDataSource implements DataSource<Expense> {
 		this.loadingSubject.complete();
 	}
 
-	loadExpenses(userId: number) {
+	loadExpenses(userId: number, eventId: number) {
 		this.loadingSubject.next(true);
 
 		this.userService
-			.loadUserExpenses(userId)
+			.loadUserExpenses(userId, eventId)
 			.pipe(
 				catchError(() => of([])),
 				finalize(() => this.loadingSubject.next(false))

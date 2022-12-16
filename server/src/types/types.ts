@@ -1,6 +1,7 @@
 export type User = {
   id: number,
-  name: string
+  name: string,
+  eventJoined?: Date
 }
 
 export type Category = {
@@ -44,6 +45,7 @@ export type BalanceCalculationResult = {
 
 export type UserBalance = {
   userId: number,
+  user: User,
   spending: number,
   expenses: number,
   balance: number

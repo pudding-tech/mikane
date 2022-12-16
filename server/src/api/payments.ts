@@ -2,7 +2,7 @@ import express from "express";
 import sql from "mssql";
 import { calculatePayments } from "../calculations";
 import { parseCategories, parseExpenses, parseUsers } from "../parsers";
-import { User, Category, Expense, Payment } from "../types";
+import { User, Category, Expense, Payment } from "../types/types";
 const router = express.Router();
 
 /* --- */
@@ -15,42 +15,22 @@ router.get("/payments", async (req, res, next) => {
     return res.status(400).send("EventId not provided!");
   }
 
-  let users: User[] | undefined;
-  let categories: Category[] | undefined;
-  let expenses: Expense[] | undefined;
-
-  let request = new sql.Request();
-  await request
+  const request = new sql.Request();
+  const data = await request
     .input("event_id", sql.Int, req.query.eventId)
-    .execute("get_users")
-    .then(data => {
-      users = parseUsers(data.recordset);
+    .execute("get_event_payment_data")
+    .then(res => {
+      return res.recordsets as sql.IRecordSet<object>[];
     })
-    .catch(next);
+    .catch(err => next(err));
 
-  request = new sql.Request();
-  await request
-    .input("event_id", sql.Int, req.query.eventId)
-    .input("category_id", sql.Int, null)
-    .execute("get_categories")
-    .then(data => {
-      categories = parseCategories(data.recordset, "calc");
-    })
-    .catch(next);
-
-  request = new sql.Request();
-  await request
-    .input("event_id", sql.Int, req.query.eventId)
-    .execute("get_expenses")
-    .then(data => {
-      expenses = parseExpenses(data.recordset);
-    })
-    .catch(next);
-
-
-  if (!users || !categories || !expenses) {
+  if (!data || data.length < 3) {
     return res.status(400).send("Something went wrong getting users, categories or expenses");
   }
+
+  const users: User[] = parseUsers(data[0]);
+  const categories: Category[] = parseCategories(data[1], "calc");
+  const expenses: Expense[] = parseExpenses(data[2]);
 
   const payments: Payment[] = calculatePayments(expenses, categories, users);
   res.send(payments);
