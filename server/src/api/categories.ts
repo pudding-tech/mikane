@@ -1,6 +1,6 @@
 import express from "express";
 import sql from "mssql";
-import { Category } from "../types";
+import { Category } from "../types/types";
 import { parseCategories } from "../parsers";
 const router = express.Router();
 
@@ -22,7 +22,7 @@ router.get("/categories", (req, res, next) => {
       const categories: Category[] = parseCategories(data.recordset, "client");
       res.send(categories);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 /* ---- */
@@ -43,7 +43,7 @@ router.post("/categories", (req, res, next) => {
     .then( (data) => {
       res.send(data.recordset[0]);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 // Add a user to a category
@@ -92,7 +92,7 @@ router.put("/categories/:id/name", (req, res, next) => {
     .then( (data) => {
       res.send(data.recordset);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 // Edit a user's weight for a category
@@ -118,7 +118,7 @@ router.put("/categories/:catId/user/:userId", (req, res, next) => {
       const categories: Category[] = parseCategories(data.recordset, "client");
       res.send(categories[0]);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 // Change weight status for a category (weighted or non-weighted)
@@ -139,7 +139,7 @@ router.put("/categories/:catId/weighted", (req, res, next) => {
       const categories: Category[] = parseCategories(data.recordset, "client");
       res.send(categories[0]);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 /* ------ */
@@ -159,7 +159,7 @@ router.delete("/categories/:catId", (req, res, next) => {
     .then( () => {
       res.send({});
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 // Remove a user from a category
@@ -178,7 +178,7 @@ router.delete("/categories/:catId/user/:userId", (req, res, next) => {
       const categories: Category[] = parseCategories(data.recordset, "client");
       res.send(categories[0]);
     })
-    .catch(next);
+    .catch(err => next(err));
 });
 
 export default router;

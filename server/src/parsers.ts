@@ -1,4 +1,4 @@
-import { Category, Expense, User, UserBalance, BalanceCalculationResult } from "./types";
+import { Category, Expense, User, UserBalance, BalanceCalculationResult } from "./types/types";
 
 /*
 /	Build array of Category objects. Format for either client or calculate function
@@ -78,10 +78,11 @@ export const parseExpenses = (expInput: object[]): Expense[] => {
 export const parseUsers = (usersInput: object[]): User[] => {
 
 	const users: User[] = [];
-	usersInput.forEach( (userObj) => {
+	usersInput.forEach(userObj => {
 		const user: User = {
-			id: userObj["id" as keyof typeof userObj],
-			name: userObj["name" as keyof typeof userObj]
+      id: userObj["id" as keyof typeof userObj],
+			name: userObj["name" as keyof typeof userObj],
+      eventJoined: userObj["joined_date" as keyof typeof userObj]
 		};
 
 		users.push(user);
@@ -99,10 +100,17 @@ export const parseBalance = (balanceRes: BalanceCalculationResult) => {
   for (let i = 0; i < balanceRes.balance.length; i++) {
     balances.push({
       userId: balanceRes.balance[i].user.id,
+      user: balanceRes.balance[i].user,
       spending: balanceRes.spending[i].amount,
       expenses: balanceRes.expenses[i].amount,
       balance: balanceRes.balance[i].amount
     });
   }
+  balances.sort((a, b) => {
+    if (!a.user.eventJoined || !b.user.eventJoined) {
+      return 0;
+    }
+    return a.user.eventJoined.getTime() - b.user.eventJoined.getTime();
+  });
   return balances;
 };

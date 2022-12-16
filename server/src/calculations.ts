@@ -5,7 +5,7 @@ import {
 	Payment,
 	Record,
 	BalanceCalculationResult,
-} from "./types";
+} from "./types/types";
 
 export const calculateBalance = (
 	expenses: Expense[],
