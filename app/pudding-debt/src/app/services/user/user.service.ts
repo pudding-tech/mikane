@@ -10,7 +10,7 @@ export interface User {
 }
 
 export interface UserBalance {
-    userId: number,
+    user: User;
     spending: number,
     expenses: number,
     balance: number
