@@ -27,13 +27,13 @@
                             {{ userWithBalance.user.name }}
                         </div>
                         <div>
-                            {{ userWithBalance.balances.spending | currency:'':'':'1.2-2':'no' }} kr
+                            {{ userWithBalance.spending | currency:'':'':'1.2-2':'no' }} kr
                         </div>
                         <div>
-                            {{ userWithBalance.balances.expenses | currency:'':'':'1.2-2':'no'  }} kr
+                            {{ userWithBalance.expenses | currency:'':'':'1.2-2':'no'  }} kr
                         </div>
                         <div>
-                            {{ userWithBalance.balances.balance | currency:'':'':'1.2-2':'no'  }} kr
+                            {{ userWithBalance.balance | currency:'':'':'1.2-2':'no'  }} kr
                         </div>
                 </mat-panel-title>
             </mat-expansion-panel-header>
