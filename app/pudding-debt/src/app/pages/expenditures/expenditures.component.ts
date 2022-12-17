@@ -44,7 +44,7 @@ export class ExpendituresComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.loading.next(true);
-		this.route.parent?.params.pipe(switchMap((params) => {
+		this.route.parent?.parent?.params.pipe(switchMap((params) => {
 			this.eventId = params['eventId'];
             return this.expenseService.loadExpenses(this.eventId)
         })).subscribe({

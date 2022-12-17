@@ -40,7 +40,7 @@ export class PaymentStructureComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.route.parent?.params.subscribe((params) => {
+		this.route.parent?.parent?.params.subscribe((params) => {
 			this.eventId = params['eventId'];
 			this.loadPayments();
 		});

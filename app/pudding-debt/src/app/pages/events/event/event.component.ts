@@ -44,7 +44,8 @@ export class EventComponent implements OnInit {
 		private messageService: MessageService,
 		private titleService: Title
 	) {
-		const event = this.router.getCurrentNavigation()?.extras.state?.['event'];
+		const event =
+			this.router.getCurrentNavigation()?.extras.state?.['event'];
 		if (event) {
 			this.event = event;
 			this.titleService.setTitle(event.name);
@@ -53,7 +54,11 @@ export class EventComponent implements OnInit {
 
 	ngOnInit() {
 		// Set active link based on current URL
-		this.activeLink = './' + window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+		this.activeLink =
+			'./' +
+			window.location.href.substring(
+				window.location.href.lastIndexOf('/') + 1
+			);
 
 		combineLatest([this.eventService.loadEvents(), this.route.params])
 			.pipe(

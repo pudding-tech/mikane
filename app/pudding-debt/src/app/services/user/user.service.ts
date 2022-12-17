@@ -28,7 +28,7 @@ export class UserService {
 	}
 
 	createUser(eventId: number, name: string): Observable<User> {
-		return this.httpClient.post<User>(this.apiUrl, { name: name, eventId: eventId, email: '', password: '' });
+		return this.httpClient.post<User>(this.apiUrl, { name: name, eventId: eventId, email: 'email', password: 'password' });
 	}
 
     loadUserExpenses(userId: number, eventId: number): Observable<Expense[]> {
