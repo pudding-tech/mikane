@@ -1,12 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CategoryComponent } from './pages/category/category.component';
-import { EventComponent } from './pages/events/event/event.component';
-import { EventsComponent } from './pages/events/events.component';
-import { ExpendituresComponent } from './pages/expenditures/expenditures.component';
-import { LoginComponent } from './pages/login/login.component';
-import { PaymentStructureComponent } from './pages/payment-structure/payment-structure.component';
-import { UserComponent } from './pages/user/user.component';
 
 const routes: Routes = [
     {
@@ -17,33 +10,12 @@ const routes: Routes = [
 	{
 		path: 'events',
 		title: 'PuddingDebt',
-		component: EventsComponent,
+		loadChildren: () => import('./pages/events/events.module').then(m => m.EventsModule),
     },
-    {
-        path: 'events/:eventId',
-        component: EventComponent,
-        children: [
-            {
-                path: 'users',
-                component: UserComponent
-            },
-            {
-                path: 'expenses',
-                component: ExpendituresComponent,
-            },
-            {
-                path: 'categories',
-                component: CategoryComponent
-            },
-            {
-                path: 'payment',
-                component: PaymentStructureComponent,
-            },
-        ]
-    },
+    
     {
         path: 'login',
-        component: LoginComponent,
+        loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule),
     }
 ];
 

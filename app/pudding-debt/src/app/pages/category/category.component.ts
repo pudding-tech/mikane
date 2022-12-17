@@ -44,7 +44,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 	) {}
 
 	ngOnInit(): void {
-		this.route.parent?.params.subscribe((params) => {
+		this.route.parent?.parent?.params.subscribe((params) => {
 			this.eventId = params['eventId'];
 			this.loadCategories();
 		});

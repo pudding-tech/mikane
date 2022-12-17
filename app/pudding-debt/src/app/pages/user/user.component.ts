@@ -57,7 +57,7 @@ export class UserComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		this.route.parent?.params.subscribe((params) => {
+		this.route.parent?.parent?.params.subscribe((params) => {
 			this.eventId = params['eventId'];
 			this.loadUsers();
 		});
