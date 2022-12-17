@@ -44,7 +44,6 @@ export type BalanceCalculationResult = {
 }
 
 export type UserBalance = {
-  userId: number,
   user: User,
   spending: number,
   expenses: number,

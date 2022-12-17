@@ -65,8 +65,8 @@ router.get("/users/balances", async (req, res, next) => {
   const expenses: Expense[] = parseExpenses(data[2]);
 
   const balance = calculateBalance(expenses, categories, users);
-  const userBalance: UserBalance[] = parseBalance(balance);
-  res.send(userBalance);
+  const usersWithBalance: UserBalance[] = parseBalance(users, balance);
+  res.send(usersWithBalance);
 });
 
 /* ---- */
@@ -82,6 +82,8 @@ router.post("/users", (req, res, next) => {
   request
     .input("name", sql.NVarChar, req.body.name)
     .input("event_id", sql.Int, req.body.eventId)
+    .input("email", sql.NVarChar, req.body.email)
+    .input("password", sql.NVarChar, req.body.password)
     .execute("new_user")
     .then(data => {
       const users: User[] = parseUsers(data.recordset);

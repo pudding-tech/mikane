@@ -94,23 +94,35 @@ export const parseUsers = (usersInput: object[]): User[] => {
 /*
 / Parse BalanceCalculationResult into a list of UserBalance objects
 */
-export const parseBalance = (balanceRes: BalanceCalculationResult) => {
+export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult) => {
 
   const balances: UserBalance[] = [];
-  for (let i = 0; i < balanceRes.balance.length; i++) {
+  users.forEach(user => {
+    for (let i = 0; i < balanceRes.balance.length; i++) {
+      if (balanceRes.balance[i].user.id === user.id) {
+        balances.push({
+          user: user,
+          spending: balanceRes.spending[i].amount,
+          expenses: balanceRes.expenses[i].amount,
+          balance: balanceRes.balance[i].amount
+        });
+        return;
+      }
+    }
     balances.push({
-      userId: balanceRes.balance[i].user.id,
-      user: balanceRes.balance[i].user,
-      spending: balanceRes.spending[i].amount,
-      expenses: balanceRes.expenses[i].amount,
-      balance: balanceRes.balance[i].amount
+      user: user,
+      spending: 0,
+      expenses: 0,
+      balance: 0
     });
-  }
+  });
+
   balances.sort((a, b) => {
     if (!a.user.eventJoined || !b.user.eventJoined) {
       return 0;
     }
     return a.user.eventJoined.getTime() - b.user.eventJoined.getTime();
   });
+  
   return balances;
 };
