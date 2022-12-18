@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
 import { ActivatedRoute } from '@angular/router';
-import { map } from 'lodash';
+import { map } from 'lodash-es';
 import { BehaviorSubject } from 'rxjs';
 import { MessageService } from 'src/app/services/message/message.service';
 import {

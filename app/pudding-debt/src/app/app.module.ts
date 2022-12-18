@@ -13,7 +13,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FooterComponent } from './footer.component';
+import { FooterComponent } from './features/footer/footer.component';
 import { AuthInterceptor } from './services/auth/auth.interceptor';
 import { ErrorMessageComponent } from './services/message/error/error-message.component';
 import { SuccessMessageComponent } from './services/message/success/success-message.component';

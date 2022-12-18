@@ -5,7 +5,7 @@ import {
 	CategoryService,
 } from 'src/app/services/category/category.service';
 import { User, UserService } from 'src/app/services/user/user.service';
-import { map } from 'lodash';
+import { map } from 'lodash-es';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
