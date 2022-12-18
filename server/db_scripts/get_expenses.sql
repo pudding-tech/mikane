@@ -9,7 +9,7 @@ begin
 
   if (@user_id is null)
   begin
-    select ex.*, c.name as category_name, u.name as payer
+    select ex.*, c.name as category_name, u.username as payer
     from
       expense ex
       inner join category c on c.id = ex.category_id
@@ -23,7 +23,7 @@ begin
 
   else
   begin
-    select ex.*, c.name as category_name, u.name as payer
+    select ex.*, c.name as category_name, u.username as payer
     from
       expense ex
       inner join category c on c.id = ex.category_id

@@ -21,7 +21,7 @@ begin
 
   select
     cu.category_id,
-    string_agg(concat(cu.user_id, ',', u.name, ',', uw.weight), ';') as 'user_weight'
+    string_agg(concat(cu.user_id, ',', u.username, ',', uw.weight), ';') as 'user_weight'
   into
     #temp
   from

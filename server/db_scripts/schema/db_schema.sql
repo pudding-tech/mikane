@@ -5,7 +5,7 @@ go
 
 create table [user] (
   id int identity(1,1) primary key,
-  [name] nvarchar(255) not null,
+  username nvarchar(255) not null,
   email nvarchar(255) not null,
   [password] nvarchar(255) not null,
   created datetime not null
@@ -53,5 +53,12 @@ create table category_user (
   user_id int foreign key references [user](id) on delete cascade,
   [weight] numeric(14),
   primary key (category_id, user_id)
+)
+go
+
+create table [session] (
+  [sid] nvarchar(255) not null primary key,
+  [session] nvarchar(max) not null,
+  expires datetime not null
 )
 go

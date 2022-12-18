@@ -3,6 +3,7 @@ import sql from "mssql";
 import { calculateBalance } from "../calculations";
 import { parseBalance, parseCategories, parseExpenses, parseUsers } from "../parsers";
 import { Category, Expense, User, UserBalance } from "../types/types";
+import { isEmail } from "../utils/emailValidator";
 const router = express.Router();
 
 /* --- */
@@ -46,7 +47,7 @@ router.get("/users/balances", async (req, res, next) => {
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
   }
-
+  
   const request = new sql.Request();
   const data = await request
     .input("event_id", sql.Int, req.query.eventId)
@@ -75,12 +76,18 @@ router.get("/users/balances", async (req, res, next) => {
 
 // Create a new user
 router.post("/users", (req, res, next) => {
-  if (!req.body.name || !req.body.eventId) {
-    return res.status(400).send("Name or eventId not provided!");
+  if (!req.body.name || !req.body.eventId || !req.body.password) {
+    return res.status(400).send("Name, password or eventId not provided");
   }
+
+  // Validate email
+  if (!isEmail(req.body.email)) {
+    return res.status(400).send("Not a valid email");
+  }
+
   const request = new sql.Request();
   request
-    .input("name", sql.NVarChar, req.body.name)
+    .input("username", sql.NVarChar, req.body.name)
     .input("event_id", sql.Int, req.body.eventId)
     .input("email", sql.NVarChar, req.body.email)
     .input("password", sql.NVarChar, req.body.password)
@@ -108,7 +115,7 @@ router.put("/users/:id", (req, res, next) => {
   const request = new sql.Request();
   request
     .input("user_id", sql.Int, userId)
-    .input("name", sql.NVarChar, req.body.name)
+    .input("username", sql.NVarChar, req.body.name)
     .execute("edit_user")
     .then(() => {
       res.send({});
