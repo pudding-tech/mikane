@@ -3,7 +3,6 @@ import sql from "mssql";
 import { calculateBalance } from "../calculations";
 import { parseBalance, parseCategories, parseExpenses, parseUsers } from "../parsers";
 import { Category, Expense, User, UserBalance } from "../types/types";
-import { isEmail } from "../utils/emailValidator";
 const router = express.Router();
 
 /* --- */
@@ -69,39 +68,6 @@ router.get("/users/balances", async (req, res, next) => {
   const usersWithBalance: UserBalance[] = parseBalance(users, balance);
   res.send(usersWithBalance);
 });
-
-/* ---- */
-/* POST */
-/* ---- */
-
-// Create a new user
-router.post("/users", (req, res, next) => {
-  if (!req.body.name || !req.body.eventId || !req.body.password) {
-    return res.status(400).send("Name, password or eventId not provided");
-  }
-
-  // Validate email
-  if (!isEmail(req.body.email)) {
-    return res.status(400).send("Not a valid email");
-  }
-
-  const request = new sql.Request();
-  request
-    .input("username", sql.NVarChar, req.body.name)
-    .input("event_id", sql.Int, req.body.eventId)
-    .input("email", sql.NVarChar, req.body.email)
-    .input("password", sql.NVarChar, req.body.password)
-    .execute("new_user")
-    .then(data => {
-      const users: User[] = parseUsers(data.recordset);
-      res.send(users[0]);
-    })
-    .catch(err => next(err));
-});
-
-/* --- */
-/* PUT */
-/* --- */
 
 // Edit user (rename),
 router.put("/users/:id", (req, res, next) => {

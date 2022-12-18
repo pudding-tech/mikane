@@ -1,6 +1,9 @@
 export type User = {
   id: number,
-  name: string,
+  username: string,
+  hash?: string,
+  email?: string,
+  created?: Date,
   eventJoined?: Date
 }
 

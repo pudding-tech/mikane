@@ -62,7 +62,7 @@ export const parseExpenses = (expInput: object[]): Expense[] => {
 			categoryName: expObj["category_name" as keyof typeof expObj],
       payer: {
         id: expObj["payer_id" as keyof typeof expObj],
-        name: expObj["payer" as keyof typeof expObj]
+        username: expObj["payer" as keyof typeof expObj]
       }
 		};
 
@@ -81,7 +81,9 @@ export const parseUsers = (usersInput: object[]): User[] => {
 	usersInput.forEach(userObj => {
 		const user: User = {
       id: userObj["id" as keyof typeof userObj],
-			name: userObj["name" as keyof typeof userObj],
+			username: userObj["name" as keyof typeof userObj],
+      email: userObj["email" as keyof typeof userObj],
+      created: userObj["created" as keyof typeof userObj],
       eventJoined: userObj["joined_date" as keyof typeof userObj]
 		};
 
@@ -89,6 +91,21 @@ export const parseUsers = (usersInput: object[]): User[] => {
 	});
 
 	return users;
+};
+
+/*
+/	Parse single User object
+*/
+export const parseUser = (userObj: object): User => {
+
+  return {
+    id: userObj["id" as keyof typeof userObj],
+    username: userObj["name" as keyof typeof userObj],
+    hash: userObj["password" as keyof typeof userObj],
+    email: userObj["email" as keyof typeof userObj],
+    created: userObj["created" as keyof typeof userObj],
+    eventJoined: userObj["joined_date" as keyof typeof userObj]
+  };
 };
 
 /*

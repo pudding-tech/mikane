@@ -10,9 +10,12 @@
     "dev2": "concurrently \"tsc -w\" \"npx nodemon build/server.js\""
   },
   "dependencies": {
+    "@types/express-session": "^1.17.5",
+    "connect-mssql-v2": "^3.1.4",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "mssql": "^9.0.1"
   },
   "devDependencies": {

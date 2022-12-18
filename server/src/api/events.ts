@@ -20,9 +20,13 @@ router.get("/events", (req, res, next) => {
 
 // Get specific event
 router.get("/events/:id", (req, res, next) => {
+  const eventId = Number(req.params.id);
+  if (isNaN(eventId)) {
+    return res.status(400).json({ err: "Event ID must be a number" });
+  }
   const request = new sql.Request();
   request
-    .input("event_id", sql.Int, req.params.id)
+    .input("event_id", sql.Int, eventId)
     .execute("get_events")
     .then(data => {
       res.send(data.recordset);
