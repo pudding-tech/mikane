@@ -1,0 +1,82 @@
+<mat-card>
+	<mat-card-header>
+		<mat-icon mat-card-avatar aria-hidden="false">person_add</mat-icon>
+		<mat-card-title>Register</mat-card-title>
+	</mat-card-header>
+	<mat-card-content>
+		<form [formGroup]="registerUserForm" (ngSubmit)="register()">
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Email</mat-label>
+                    <input
+                        type="text"
+                        matInput
+                        placeholder="Email"
+                        formControlName="email"
+                    />
+                    <mat-error *ngIf="registerUserForm.get('email')?.invalid">
+                        Invalid email
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div>
+                <mat-form-field appearance="fill">
+					<mat-label>Password</mat-label>
+                    <input
+                        [type]="hide ? 'password' : 'text'"
+                        matInput
+                        placeholder="Password"
+                        formControlName="password"
+                    />
+                    <button
+                        mat-icon-button
+                        matSuffix
+                        (click)="hide = !hide"
+                        [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="hide"
+                    >
+                        <mat-icon>
+                            {{ hide ? "visibility_off" : "visibility" }}
+                        </mat-icon>
+                    </button>
+                    <mat-error *ngIf="registerUserForm.get('password')?.invalid">
+                        Invalid password
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div>
+                <mat-form-field appearance="fill">
+					<mat-label>Retype Password</mat-label>
+                    <input
+                        [type]="hide ? 'password' : 'text'"
+                        matInput
+                        placeholder="Retype Password"
+                        formControlName="passwordRetype"
+                    />
+                    <button
+                        mat-icon-button
+                        matSuffix
+                        (click)="hide = !hide"
+                        [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="hide"
+                    >
+                        <mat-icon>
+                            {{ hide ? "visibility_off" : "visibility" }}
+                        </mat-icon>
+                    </button>
+                    <mat-error *ngIf="registerUserForm.get('passwordRetype')?.invalid">
+                        Invalid password
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <br/>
+            <mat-card-actions class="register-actions">
+                <button type="submit" mat-raised-button color="primary">
+                    Register <mat-icon aria-hidden="false">person_add</mat-icon>
+                </button>
+            </mat-card-actions>
+		</form>
+	</mat-card-content>
+</mat-card>

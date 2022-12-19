@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Expense } from '../expense/expense.service';
 
 export interface User {
@@ -41,5 +41,15 @@ export class UserService {
 
     deleteUser(userId: number): Observable<User[]> {
         return this.httpClient.delete<User[]>(this.apiUrl + `/${userId}`);
+    }
+
+    registerUser(userName: string, password: string): Observable<User> {
+        // TODO: Implement method
+        return of({} as User)
+    }
+
+    forgotPassword(userName: string) {
+        // TODO: Implement method
+        return;
     }
 }

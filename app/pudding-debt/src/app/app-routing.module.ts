@@ -12,10 +12,13 @@ const routes: Routes = [
 		title: 'PuddingDebt',
 		loadChildren: () => import('./pages/events/events.module').then(m => m.EventsModule),
     },
-    
     {
         path: 'login',
         loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule),
+    },
+    {
+        path: 'register',
+        loadChildren: () => import('./pages/register/register-user.module').then(m => m.RegisterUserModule),
     }
 ];
 
