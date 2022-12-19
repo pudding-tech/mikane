@@ -11,7 +11,7 @@ export class AuthService {
 
     constructor(private httpClient: HttpClient) {}
 
-    login(username: string, password: string) {
+    login(email: string, password: string) {
         // TODO: Integrate with endpoint
         return of(true);
     }
