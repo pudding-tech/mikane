@@ -4,7 +4,6 @@ import { Category, Expense, User, UserBalance, BalanceCalculationResult } from "
 /	Build array of Category objects. Format for either client or calculate function
 */
 export const parseCategories = (catInput: object[], target: string) : Category[] => {
-  
   const categories: Category[] = [];
   catInput.forEach( (catObj) => {
 
@@ -50,7 +49,6 @@ export const parseCategories = (catInput: object[], target: string) : Category[]
 /	Build array of Expense objects
 */
 export const parseExpenses = (expInput: object[]): Expense[] => {
-
 	const expenses: Expense[] = [];
 	expInput.forEach( (expObj) => {
 		const expense: Expense = {
@@ -76,12 +74,11 @@ export const parseExpenses = (expInput: object[]): Expense[] => {
 /	Build array of User objects
 */
 export const parseUsers = (usersInput: object[]): User[] => {
-
 	const users: User[] = [];
 	usersInput.forEach(userObj => {
 		const user: User = {
       id: userObj["id" as keyof typeof userObj],
-			username: userObj["name" as keyof typeof userObj],
+			username: userObj["username" as keyof typeof userObj],
       email: userObj["email" as keyof typeof userObj],
       created: userObj["created" as keyof typeof userObj],
       eventJoined: userObj["joined_date" as keyof typeof userObj]
@@ -97,10 +94,9 @@ export const parseUsers = (usersInput: object[]): User[] => {
 /	Parse single User object
 */
 export const parseUser = (userObj: object): User => {
-
   return {
     id: userObj["id" as keyof typeof userObj],
-    username: userObj["name" as keyof typeof userObj],
+    username: userObj["username" as keyof typeof userObj],
     hash: userObj["password" as keyof typeof userObj],
     email: userObj["email" as keyof typeof userObj],
     created: userObj["created" as keyof typeof userObj],
@@ -112,7 +108,6 @@ export const parseUser = (userObj: object): User => {
 / Parse BalanceCalculationResult into a list of UserBalance objects
 */
 export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult) => {
-
   const balances: UserBalance[] = [];
   users.forEach(user => {
     for (let i = 0; i < balanceRes.balance.length; i++) {

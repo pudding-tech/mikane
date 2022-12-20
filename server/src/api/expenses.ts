@@ -1,7 +1,8 @@
 import express from "express";
 import sql from "mssql";
-import { Expense } from "../types/types";
+import { checkAuth } from "./middleware/authMiddleware";
 import { parseExpenses } from "../parsers";
+import { Expense } from "../types/types";
 const router = express.Router();
 
 /* --- */
@@ -9,7 +10,7 @@ const router = express.Router();
 /* --- */
 
 // Get a list of all expenses for a given event
-router.get("/expenses", (req, res, next) => {
+router.get("/expenses", checkAuth, (req, res, next) => {
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
   }
@@ -30,7 +31,7 @@ router.get("/expenses", (req, res, next) => {
 /* ---- */
 
 // Create a new expense
-router.post("/expenses", (req, res, next) => {
+router.post("/expenses", checkAuth, (req, res, next) => {
   if (!req.body.name || !req.body.categoryId || !req.body.payerId) {
     return res.status(400).send("Name, categoryId or payerId not provided!");
   }
@@ -54,7 +55,7 @@ router.post("/expenses", (req, res, next) => {
 /* ------ */
 
 // Delete an expense
-router.delete("/expenses/:expenseId", (req, res, next) => {
+router.delete("/expenses/:expenseId", checkAuth, (req, res, next) => {
   const expId = Number(req.params.expenseId);
   if (isNaN(expId)) {
     return res.status(400).send("Expense ID must be a number!");

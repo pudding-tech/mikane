@@ -49,7 +49,8 @@ app.use(express.json());
 
 // Enable client access
 app.use(cors({
-  origin: "https://pudding-debt.hundseth.com"
+  origin: "https://pudding-debt.hundseth.com",
+  credentials: true
 }));
 
 const store = new MSSQLStore(dbConfig, {
@@ -68,13 +69,14 @@ store.on("error", err => {
 });
 
 // Enable user sessions
-const tenDays = 1000 * 60 * 60 * 24 * 10;
+// const tenDays = 1000 * 60 * 60 * 24 * 10;
+const twentyMinutes = 1000 * 60 * 20;
 app.use(session({
   name: "puddingdebt.sid",
   secret: sessionSecret,
   store: store,
   cookie: {
-    maxAge: tenDays,
+    maxAge: twentyMinutes,
     httpOnly: true,
     secure: inProd,
     sameSite: "lax"

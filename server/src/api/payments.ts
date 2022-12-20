@@ -1,5 +1,6 @@
 import express from "express";
 import sql from "mssql";
+import { checkAuth } from "./middleware/authMiddleware";
 import { calculatePayments } from "../calculations";
 import { parseCategories, parseExpenses, parseUsers } from "../parsers";
 import { User, Category, Expense, Payment } from "../types/types";
@@ -10,7 +11,7 @@ const router = express.Router();
 /* --- */
 
 // Get a list of all payments for a given event
-router.get("/payments", async (req, res, next) => {
+router.get("/payments", checkAuth, async (req, res, next) => {
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
   }

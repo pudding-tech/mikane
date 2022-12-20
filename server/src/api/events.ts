@@ -1,5 +1,6 @@
 import express from "express";
 import sql from "mssql";
+import { checkAuth } from "./middleware/authMiddleware";
 const router = express.Router();
 
 /* --- */
@@ -7,7 +8,7 @@ const router = express.Router();
 /* --- */
 
 // Get a list of all events
-router.get("/events", (req, res, next) => {
+router.get("/events", checkAuth, (req, res, next) => {
   const request = new sql.Request();
   request
     .input("event_id", sql.Int, null)
@@ -19,7 +20,7 @@ router.get("/events", (req, res, next) => {
 });
 
 // Get specific event
-router.get("/events/:id", (req, res, next) => {
+router.get("/events/:id", checkAuth, (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
     return res.status(400).json({ err: "Event ID must be a number" });
@@ -39,7 +40,7 @@ router.get("/events/:id", (req, res, next) => {
 /* ---- */
 
 // Create new event
-router.post("/events", (req, res, next) => {
+router.post("/events", checkAuth, (req, res, next) => {
   if (!req.body.name) {
     return res.status(400).send("Name not provided!");
   }
@@ -58,7 +59,7 @@ router.post("/events", (req, res, next) => {
 /* ------ */
 
 // Delete an event
-router.delete("/events", (req, res, next) => {
+router.delete("/events", checkAuth, (req, res, next) => {
   if (!req.body.id) {
     return res.status(400).send("Event ID not provided!");
   }

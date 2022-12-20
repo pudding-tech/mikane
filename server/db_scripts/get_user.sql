@@ -7,7 +7,7 @@ as
 begin
 
   select
-    id, username, email, [password], created
+    id, username, first_name, last_name, email, phone_number, [password], created, [guid]
   from
     [user]
   where

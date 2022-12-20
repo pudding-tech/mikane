@@ -5,10 +5,14 @@ go
 
 create table [user] (
   id int identity(1,1) primary key,
-  username nvarchar(255) not null,
-  email nvarchar(255) not null,
+  username nvarchar(255) not null unique,
+  first_name nvarchar(255) not null,
+  last_name nvarchar(255),
+  email nvarchar(255) not null unique,
+  phone_number nvarchar(20) not null unique,
   [password] nvarchar(255) not null,
-  created datetime not null
+  created datetime not null,
+  [guid] uniqueidentifier not null default newid()
 )
 go
 

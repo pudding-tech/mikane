@@ -1,7 +1,8 @@
 import express from "express";
 import sql from "mssql";
-import { Category } from "../types/types";
+import { checkAuth } from "./middleware/authMiddleware";
 import { parseCategories } from "../parsers";
+import { Category } from "../types/types";
 const router = express.Router();
 
 /* --- */
@@ -9,7 +10,7 @@ const router = express.Router();
 /* --- */
 
 // Get a list of all categories for a given event
-router.get("/categories", (req, res, next) => {
+router.get("/categories", checkAuth, (req, res, next) => {
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
   }
@@ -30,7 +31,7 @@ router.get("/categories", (req, res, next) => {
 /* ---- */
 
 // Create a new category
-router.post("/categories", (req, res, next) => {
+router.post("/categories", checkAuth, (req, res, next) => {
   if (!req.body.name || !req.body.eventId || req.body.weighted === undefined) {
     return res.status(400).send("Name, event ID or weighted not provided!");
   }
@@ -47,7 +48,7 @@ router.post("/categories", (req, res, next) => {
 });
 
 // Add a user to a category
-router.post("/categories/:catId/user", (req, res) => {
+router.post("/categories/:catId/user", checkAuth, (req, res) => {
   const catId = Number(req.params.catId);
   if (isNaN(catId)) {
     return res.status(400).send("Category ID is not a number!");
@@ -76,7 +77,7 @@ router.post("/categories/:catId/user", (req, res) => {
 /* --- */
 
 // Rename a category
-router.put("/categories/:id/name", (req, res, next) => {
+router.put("/categories/:id/name", checkAuth, (req, res, next) => {
   const catId = Number(req.params.id);
   if (isNaN(catId)) {
     return res.status(400).send("Category ID must be a number!");
@@ -96,7 +97,7 @@ router.put("/categories/:id/name", (req, res, next) => {
 });
 
 // Edit a user's weight for a category
-router.put("/categories/:catId/user/:userId", (req, res, next) => {
+router.put("/categories/:catId/user/:userId", checkAuth, (req, res, next) => {
   const catId = Number(req.params.catId);
   const userId = Number(req.params.userId);
   if (isNaN(catId) || isNaN(userId)) {
@@ -122,7 +123,7 @@ router.put("/categories/:catId/user/:userId", (req, res, next) => {
 });
 
 // Change weight status for a category (weighted or non-weighted)
-router.put("/categories/:catId/weighted", (req, res, next) => {
+router.put("/categories/:catId/weighted", checkAuth, (req, res, next) => {
   const catId = Number(req.params.catId);
   if (isNaN(catId)) {
     return res.status(400).send("Category ID and user ID must be numbers!");
@@ -147,7 +148,7 @@ router.put("/categories/:catId/weighted", (req, res, next) => {
 /* ------ */
 
 // Delete a category
-router.delete("/categories/:catId", (req, res, next) => {
+router.delete("/categories/:catId", checkAuth, (req, res, next) => {
   const catId = Number(req.params.catId);
   if (isNaN(catId)) {
     return res.status(400).send("Category ID must be a number!");
@@ -163,7 +164,7 @@ router.delete("/categories/:catId", (req, res, next) => {
 });
 
 // Remove a user from a category
-router.delete("/categories/:catId/user/:userId", (req, res, next) => {
+router.delete("/categories/:catId/user/:userId", checkAuth, (req, res, next) => {
   const catId = Number(req.params.catId);
   const userId = Number(req.params.userId);
   if (isNaN(catId) || isNaN(userId)) {

@@ -1,5 +1,6 @@
 import express from "express";
 import sql from "mssql";
+import { checkAuth } from "./middleware/authMiddleware";
 import { calculateBalance } from "../calculations";
 import { parseBalance, parseCategories, parseExpenses, parseUsers } from "../parsers";
 import { Category, Expense, User, UserBalance } from "../types/types";
@@ -10,7 +11,7 @@ const router = express.Router();
 /* --- */
 
 // Get a list of all users in a given event
-router.get("/users", (req, res, next) => {
+router.get("/users", checkAuth, (req, res, next) => {
   const request = new sql.Request();
   request
     .input("event_id", sql.Int, req.query.eventId)
@@ -23,7 +24,7 @@ router.get("/users", (req, res, next) => {
 });
 
 // Get a list of a user's expenses
-router.get("/users/:id/expenses/:event", (req, res, next) => {
+router.get("/users/:id/expenses/:event", checkAuth, (req, res, next) => {
   const eventId = Number(req.params.event);
   if (isNaN(eventId)) {
     return res.status(400).json("Event ID must be a number");
@@ -41,7 +42,7 @@ router.get("/users/:id/expenses/:event", (req, res, next) => {
 });
 
 // Get a list of all users' balance information in an event
-router.get("/users/balances", async (req, res, next) => {
+router.get("/users/balances", checkAuth, async (req, res, next) => {
 
   if (!req.query.eventId) {
     return res.status(400).send("EventId not provided!");
@@ -70,7 +71,7 @@ router.get("/users/balances", async (req, res, next) => {
 });
 
 // Edit user (rename),
-router.put("/users/:id", (req, res, next) => {
+router.put("/users/:id", checkAuth, (req, res, next) => {
   const userId = Number(req.params.id);
   if (isNaN(userId)) {
     return res.status(400).send("User ID must be a number!");
@@ -94,7 +95,7 @@ router.put("/users/:id", (req, res, next) => {
 /* ------ */
 
 // Delete a user
-router.delete("/users/:id", (req, res, next) => {
+router.delete("/users/:id", checkAuth, (req, res, next) => {
   const userId = Number(req.params.id);
   if (isNaN(userId)) {
     return res.status(400).send("User ID must be a number!");
