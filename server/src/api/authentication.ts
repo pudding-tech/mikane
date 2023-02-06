@@ -16,7 +16,10 @@ const router = express.Router();
 */
 router.get("/login", (req, res) => {
   if (req.session.authenticated) {
-    return res.status(200).json(req.session);
+    return res.status(200).json({
+      authenticated: req.session.authenticated,
+      username: req.session.username
+    });
   }
   res.set("WWW-Authenticate", "Session");
   res.status(401).json(PUD001);
@@ -63,7 +66,10 @@ router.post("/login", async (req, res, next) => {
     req.session.userId = user.id;
     req.session.username = user.username;
     console.log(`User ${user.username} signing in...`, req.sessionID);
-    return res.status(200).json(req.session);
+    return res.status(200).json({
+      authenticated: req.session.authenticated,
+      username: req.session.username
+    });
   }
   res.status(401).json(PUD003);
 });
@@ -121,7 +127,7 @@ router.post("/register", async (req, res, next) => {
 /*
 * Reset a user's password
 */
-router.post("/resetPassword", async (req, res, next) => {
+router.post("/reset-password", async (req, res, next) => {
   if (!req.body.userId || !req.body.password) {
     return res.status(400).send("User ID or new password not provided");
   }

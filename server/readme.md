@@ -8,16 +8,7 @@
 If successful: Status 200
 ```json
 {
-  "cookie": {
-    "originalMaxAge": 0,
-    "expires": "",
-    "secure": true,
-    "httpOnly": true,
-    "path": "",
-    "sameSite": ""
-  },
   "authenticated": true,
-  "userId": 0,
   "username": ""
 }
 ```
@@ -43,16 +34,7 @@ If not successful: Status 401
 If successful: Status 200
 ```json
 {
-  "cookie": {
-    "originalMaxAge": 0,
-    "expires": "",
-    "secure": true,
-    "httpOnly": true,
-    "path": "",
-    "sameSite": ""
-  },
   "authenticated": true,
-  "userId": 0,
   "username": ""
 }
 ```

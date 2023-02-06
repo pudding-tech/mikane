@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
 export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.session);
   if (req.session.authenticated) {
     return next();
   }
