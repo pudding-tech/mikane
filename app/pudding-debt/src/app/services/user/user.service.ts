@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable, of } from 'rxjs';
 import { Expense } from '../expense/expense.service';
+import { Phonenumber } from 'src/app/types/phonenumber.type';
 
 export interface User {
 	id: number;
@@ -10,18 +11,18 @@ export interface User {
 }
 
 export interface UserBalance {
-    user: User;
-    spending: number,
-    expenses: number,
-    balance: number
+	user: User;
+	spending: number;
+	expenses: number;
+	balance: number;
 }
 
 @Injectable({
-	providedIn: 'root'
+	providedIn: 'root',
 })
-export class UserService {  
-    private apiUrl = environment.apiUrl + 'users';
-    constructor(private httpClient: HttpClient) { }
+export class UserService {
+	private apiUrl = environment.apiUrl + 'users';
+	constructor(private httpClient: HttpClient) {}
 
 	loadUsers(eventId: number) {
 		return this.httpClient.get<User[]>(this.apiUrl + `?eventId=${eventId}`);
@@ -31,25 +32,38 @@ export class UserService {
 		return this.httpClient.post<User>(this.apiUrl, { name: name, eventId: eventId, email: 'email', password: 'password' });
 	}
 
-    loadUserExpenses(userId: number, eventId: number): Observable<Expense[]> {
-        return this.httpClient.get<Expense[]>(this.apiUrl + `/${userId}/expenses/${eventId}`);
-    }
+	loadUserExpenses(userId: number, eventId: number): Observable<Expense[]> {
+		return this.httpClient.get<Expense[]>(this.apiUrl + `/${userId}/expenses/${eventId}`);
+	}
 
-    loadUserBalance(eventId: number): Observable<UserBalance[]> {
-        return this.httpClient.get<UserBalance[]>(this.apiUrl + `/balances?eventId=${eventId}`);
-    }
+	loadUserBalance(eventId: number): Observable<UserBalance[]> {
+		return this.httpClient.get<UserBalance[]>(this.apiUrl + `/balances?eventId=${eventId}`);
+	}
 
-    deleteUser(userId: number): Observable<User[]> {
-        return this.httpClient.delete<User[]>(this.apiUrl + `/${userId}`);
-    }
+	deleteUser(userId: number): Observable<User[]> {
+		return this.httpClient.delete<User[]>(this.apiUrl + `/${userId}`);
+	}
 
-    registerUser(userName: string, password: string): Observable<User> {
-        // TODO: Implement method
-        return of({} as User)
-    }
+	registerUser(
+		username: string,
+		firstName: string,
+		lastName: string,
+		email: string,
+		phonenumber: Phonenumber,
+		password: string
+	): Observable<User> {
+		return this.httpClient.post<User>(this.apiUrl + 'register', {
+			username: username,
+			firstName,
+			lastName: lastName,
+			email: email,
+			phone: phonenumber.number,
+			password: password,
+		});
+	}
 
-    forgotPassword(userName: string) {
-        // TODO: Implement method
-        return;
-    }
+	forgotPassword(userName: string) {
+		// TODO: Implement method
+		return;
+	}
 }

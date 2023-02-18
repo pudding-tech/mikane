@@ -12,42 +12,35 @@ export class LoginComponent {
 	hide = true;
 
 	loginForm = new FormGroup({
-		email: new FormControl<string>('', [Validators.required]),
+		username: new FormControl<string>('', [Validators.required]),
 		password: new FormControl<string>('', [Validators.required]),
 	});
 
-	constructor(
-		private authService: AuthService,
-		private router: Router,
-		private messageService: MessageService
-	) {}
+	constructor(private authService: AuthService, private router: Router, private messageService: MessageService) {}
 
 	login() {
 		if (this.loginForm.valid) {
-			this.authService
-				.login(
-					this.loginForm.get<string>('email')?.value,
-					this.loginForm.get<string>('password')?.value
-				)
-				.subscribe({
-					next: (result) => {
-						if (result) {
-							this.messageService.showSuccess('Login successful');
-							this.router.navigate(['/events']);
-						} else {
-							this.messageService.showError('Login failed');
-							console.error('Could not login');
-						}
-					},
-					error: (error) => {
+			this.authService.login(this.loginForm.get<string>('username')?.value, this.loginForm.get<string>('password')?.value).subscribe({
+				next: (result) => {
+					if (result) {
+						this.messageService.showSuccess('Login successful');
+						this.router.navigate(['/events']);
+					} else {
 						this.messageService.showError('Login failed');
-						console.error('Error occurred while logging in', error);
-					},
-				});
+						console.error('Could not login');
+					}
+				},
+				error: (error) => {
+					this.messageService.showError('Login failed');
+					console.error('Error occurred while logging in', error);
+				},
+			});
 		}
 	}
 
 	registerUser() {
-		this.router.navigate(['/register']);
+		this.router.navigate(['/register'], {
+			state: { username: this.loginForm.get('username')?.value },
+		});
 	}
 }
