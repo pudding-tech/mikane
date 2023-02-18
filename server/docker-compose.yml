@@ -21,7 +21,7 @@ services:
       - .env
     environment:
       - ACCEPT_EULA=Y
-    command: /bin/bash ./entrypoint.sh
+    # command: /bin/bash ./entrypoint.sh
     volumes:
       - ./db_data:/var/opt/mssql/data
       - ./entrypoint.sh:/entrypoint.sh

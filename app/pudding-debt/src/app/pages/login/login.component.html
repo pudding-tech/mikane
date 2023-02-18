@@ -7,36 +7,24 @@
 		<form [formGroup]="loginForm" (ngSubmit)="login()">
 			<div>
 				<mat-form-field appearance="fill">
-					<mat-label>Email</mat-label>
-					<input
-						type="text"
-						matInput
-						placeholder="Email"
-						formControlName="email"
-					/>
-					<mat-error *ngIf="loginForm.get('email')?.invalid">Invalid email</mat-error>
+					<mat-label>Username</mat-label>
+					<input type="text" matInput placeholder="Username" formControlName="username" />
+					<mat-error *ngIf="loginForm.get('username')?.invalid">Invalid username</mat-error>
 				</mat-form-field>
 			</div>
 			<div>
 				<mat-form-field appearance="fill">
 					<mat-label>Password</mat-label>
-					<input
-						[type]="hide ? 'password' : 'text'"
-						matInput
-						placeholder="Password"
-						formControlName="password"
-					/>
+					<input [type]="hide ? 'password' : 'text'" matInput placeholder="Password" formControlName="password" />
 					<button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-						<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+						<mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
 					</button>
 					<mat-error *ngIf="loginForm.get('password')?.invalid">Invalid password</mat-error>
 				</mat-form-field>
 			</div>
-			<br/>
+			<br />
 			<mat-card-actions class="login-actions">
-				<button type="submit" mat-raised-button color="primary">
-					Login <mat-icon aria-hidden="false">login</mat-icon>
-				</button>
+				<button type="submit" mat-raised-button color="primary">Login <mat-icon aria-hidden="false">login</mat-icon></button>
 				<button type="button" (click)="registerUser()" mat-raised-button color="accent">
 					Register <mat-icon aria-hidden="false">person_add</mat-icon>
 				</button>

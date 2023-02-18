@@ -1,11 +1,33 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import {
+	HttpEvent,
+	HttpHandler,
+	HttpInterceptor,
+	HttpRequest,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        // TODO: intercept 401 response, redirect to login page
-        return next.handle(req);
-    }
+	constructor(private router: Router) {}
+
+	intercept(
+		req: HttpRequest<any>,
+		next: HttpHandler
+	): Observable<HttpEvent<any>> {
+		req = req.clone({
+			withCredentials: true,
+		});
+
+		return next.handle(req).pipe(
+			catchError((error) => {
+				if (error?.status === 401) {
+					// User is not authorized, redirecting to login page
+					this.router.navigate(['/login']);
+				}
+				return throwError(() => error);
+			})
+		);
+	}
 }
