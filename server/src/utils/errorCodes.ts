@@ -16,11 +16,11 @@ export const PUD002 = {
 };
 
 /**
- * PUD-003: Username/email or password does not match
+ * PUD-003: Username/email and password does not match
  */
 export const PUD003 = {
   code: "PUD-003",
-  message: "Username/email or password does not match"
+  message: "Username/email and password does not match"
 };
 
 /**

@@ -1,6 +1,7 @@
 import express from "express";
 import sql from "mssql";
-import { checkAuth } from "./middleware/authMiddleware";
+import { getEvents, getEvent, getEventBalances, postEvent, deleteEvent } from "../db/dbEvents";
+import { checkAuth } from "../middleware/authMiddleware";
 const router = express.Router();
 
 /* --- */
@@ -8,31 +9,44 @@ const router = express.Router();
 /* --- */
 
 // Get a list of all events
-router.get("/events", checkAuth, (req, res, next) => {
-  const request = new sql.Request();
-  request
-    .input("event_id", sql.Int, null)
-    .execute("get_events")
-    .then(data => {
-      res.send(data.recordset);
-    })
-    .catch(err => next(err));
+router.get("/events", checkAuth, async (req, res, next) => {
+  try {
+    const events = await getEvents();
+    res.status(200).send(events);
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 // Get specific event
-router.get("/events/:id", checkAuth, (req, res, next) => {
+router.get("/events/:id", checkAuth, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
     return res.status(400).json({ err: "Event ID must be a number" });
   }
-  const request = new sql.Request();
-  request
-    .input("event_id", sql.Int, eventId)
-    .execute("get_events")
-    .then(data => {
-      res.send(data.recordset);
-    })
-    .catch(err => next(err));
+  try {
+    const event = await getEvent(eventId);
+    res.status(200).send(event);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
+// Get a list of all users' balance information for an event
+router.get("/events/:id/balances", checkAuth, async (req, res, next) => {
+  const eventId = Number(req.params.id);
+  if (isNaN(eventId)) {
+    return res.status(400).json("Event ID must be a number");
+  }
+  try {
+    const usersWithBalance = await getEventBalances(eventId);
+    res.send(usersWithBalance);
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 /* ---- */
@@ -40,18 +54,17 @@ router.get("/events/:id", checkAuth, (req, res, next) => {
 /* ---- */
 
 // Create new event
-router.post("/events", checkAuth, (req, res, next) => {
+router.post("/events", checkAuth, async (req, res, next) => {
   if (!req.body.name) {
     return res.status(400).send("Name not provided!");
   }
-  const request = new sql.Request();
-  request
-    .input("name", sql.NVarChar, req.body.name)
-    .execute("new_event")
-    .then(data => {
-      res.send(data.recordset[0]);
-    })
-    .catch(err => next(err));
+  try {
+    const event = await postEvent(req.body.name);
+    res.status(200).send(event);
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 /* ------ */
@@ -59,18 +72,17 @@ router.post("/events", checkAuth, (req, res, next) => {
 /* ------ */
 
 // Delete an event
-router.delete("/events", checkAuth, (req, res, next) => {
+router.delete("/events", checkAuth, async (req, res, next) => {
   if (!req.body.id) {
-    return res.status(400).send("Event ID not provided!");
+    return res.status(400).send("Event ID not provided");
   }
-  const request = new sql.Request();
-  request
-    .input("event_id", sql.Int, req.body.id)
-    .execute("delete_event")
-    .then(() => {
-      res.send({});
-    })
-    .catch(err => next(err));
+  try {
+    await deleteEvent(req.body.id);
+    res.send({});
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 export default router;

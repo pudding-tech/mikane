@@ -8,7 +8,7 @@ begin
 
   insert into [event]([name], created) values (@name, GETDATE())
 
-  select * from [event] where id = @@IDENTITY
+  select id, [name], created, uuid from [event] where id = @@IDENTITY
 
 end
 go

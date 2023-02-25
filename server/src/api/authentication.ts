@@ -1,9 +1,9 @@
 import express from "express";
 import sql from "mssql";
+import { getUser, getUserHash} from "../db/dbUsers";
 import { authenticate, createHash } from "../utils/auth";
-import { isEmail } from "../utils/emailValidator";
-import { PUD001, PUD002, PUD003, PUD004 } from "../utils/errorCodes";
-import { parseUser, parseUsers } from "../parsers";
+import { PUD001, PUD002, PUD003 } from "../utils/errorCodes";
+import { parseUser } from "../parsers";
 import { User } from "../types/types";
 const router = express.Router();
 
@@ -40,38 +40,42 @@ router.post("/login", async (req, res, next) => {
 
   if (req.session.authenticated) {
     console.log(`User ${req.session.username} already authenticated`);
-    return res.status(200).json(req.session);
-  }
-
-  const request = new sql.Request();
-  const user: User | void = await request
-    .input("username", sql.NVarChar, usernameEmail)
-    .execute("get_user")
-    .then(res => {
-      if (!res.recordset[0]) {
-        return;
-      }
-      return parseUser(res.recordset[0]);
-    })
-    .catch(err => next(err));
-
-  if (!user || !user.hash) {
-    return res.status(401).json(PUD003);
-  }
-
-  const isAuthenticated = authenticate(password, user.hash);
-
-  if (isAuthenticated) {
-    req.session.authenticated = true;
-    req.session.userId = user.id;
-    req.session.username = user.username;
-    console.log(`User ${user.username} signing in...`, req.sessionID);
     return res.status(200).json({
       authenticated: req.session.authenticated,
       username: req.session.username
     });
   }
-  res.status(401).json(PUD003);
+
+  try {
+    const userPW = await getUserHash(usernameEmail);
+
+    if (!userPW || !userPW.hash) {
+      return res.status(401).json(PUD003);
+    }
+
+    const isAuthenticated = authenticate(password, userPW.hash);
+
+    if (isAuthenticated) {
+      const user = await getUser(userPW.id);
+      if (!user) {
+        return next(new Error);
+      }
+      req.session.authenticated = true;
+      req.session.userId = user.id;
+      req.session.username = user.username;
+      console.log(`User ${user.username} signing in...`, req.sessionID);
+      res.status(200).json({
+        authenticated: req.session.authenticated,
+        username: req.session.username
+      });
+    }
+    else {
+      res.status(401).json(PUD003);
+    }
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 /*
@@ -81,51 +85,19 @@ router.post("/logout", (req, res) => {
   if (!req.session.authenticated) {
     return res.status(400).json(PUD001);
   }
-
+  const username = req.session.username;
   req.session.destroy(err => {
     if (err) {
       console.log(err);
-      return res.status(500).json("Unable to sign out");
+      return res.status(500).json({ err: "Unable to sign out" });
     }
-    console.log(`User ${req.session.username} successfully signed out`);
+    console.log(`User ${username} successfully signed out`);
     res.status(200).json({ msg: "Signed out successfully" });
   });
 });
 
 /*
-* Register a new user
-*/
-router.post("/register", async (req, res, next) => {
-  if (!req.body.username || !req.body.firstName || !req.body.phone || !req.body.password) {
-    return res.status(400).json("Name, first name, phone number or password not provided");
-  }
-
-  // Validate email
-  if (!isEmail(req.body.email)) {
-    return res.status(400).json(PUD004);
-  }
-
-  const hash = createHash(req.body.password);
-  
-  const request = new sql.Request();
-  const user = await request
-    .input("username", sql.NVarChar, req.body.username)
-    .input("first_name", sql.NVarChar, req.body.firstName)
-    .input("last_name", sql.NVarChar, req.body.lastName)
-    .input("email", sql.NVarChar, req.body.email)
-    .input("password", sql.NVarChar, hash)
-    .execute("new_user")
-    .then(res => {
-      const users: User[] = parseUsers(res.recordset);
-      return users[0];
-    })
-    .catch(err => next(err));
-
-  res.send(user);
-});
-
-/*
-* Reset a user's password
+* Request a password reset
 */
 router.post("/reset-password", async (req, res, next) => {
   if (!req.body.userId || !req.body.password) {
@@ -147,7 +119,14 @@ router.post("/reset-password", async (req, res, next) => {
     })
     .catch(err => next(err));
 
-  res.send(user);
+  res.status(200).send(user);
+});
+
+/*
+* Reset a user's password
+*/
+router.post("/confirm-reset-password", async (req, res) => {
+  res.status(200).send();
 });
 
 export default router;

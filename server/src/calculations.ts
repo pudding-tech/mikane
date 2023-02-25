@@ -7,6 +7,13 @@ import {
 	BalanceCalculationResult,
 } from "./types/types";
 
+/**
+ * Calculate an event's balance
+ * @param expenses List of expenses in event
+ * @param categories List of categories in event
+ * @param users List of users in event
+ * @returns Balance Calculation Result
+ */
 export const calculateBalance = (
 	expenses: Expense[],
 	categories: Category[],
@@ -77,6 +84,13 @@ export const calculateBalance = (
 	};
 };
 
+/**
+ * Calculate payments for an event
+ * @param expenses List of expenses in event
+ * @param categories List of categories in event
+ * @param users List of users in event
+ * @returns List of payments for event
+ */
 export const calculatePayments = (
 	expenses: Expense[],
 	categories: Category[],

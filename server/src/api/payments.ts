@@ -1,6 +1,6 @@
 import express from "express";
 import sql from "mssql";
-import { checkAuth } from "./middleware/authMiddleware";
+import { checkAuth } from "../middleware/authMiddleware";
 import { calculatePayments } from "../calculations";
 import { parseCategories, parseExpenses, parseUsers } from "../parsers";
 import { User, Category, Expense, Payment } from "../types/types";

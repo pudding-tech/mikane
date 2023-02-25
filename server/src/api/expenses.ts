@@ -1,6 +1,6 @@
 import express from "express";
 import sql from "mssql";
-import { checkAuth } from "./middleware/authMiddleware";
+import { checkAuth } from "../middleware/authMiddleware";
 import { parseExpenses } from "../parsers";
 import { Expense } from "../types/types";
 const router = express.Router();
