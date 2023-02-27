@@ -51,7 +51,7 @@ router.get("/events/:id/balances", checkAuth, async (req, res, next) => {
 
 // Get a list of all payments for a given event
 router.get("events/:id/payments", checkAuth, async (req, res, next) => {
-  const eventId = Number(req.params.eventId);
+  const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
     return res.status(400).json({ error: "Event ID must be a number" });
   }
@@ -87,13 +87,14 @@ router.post("/events", checkAuth, async (req, res, next) => {
 /* ------ */
 
 // Delete an event
-router.delete("/events", checkAuth, async (req, res, next) => {
-  if (!req.body.id) {
-    return res.status(400).json({ error: "Event ID not provided" });
+router.delete("/events/:id", checkAuth, async (req, res, next) => {
+  const eventId = Number(req.params.id);
+  if (isNaN(eventId)) {
+    return res.status(400).json({ error: "Event ID must be a number" });
   }
   try {
-    const success = await db.deleteEvent(req.body.id);
-    res.status(200).send(success);
+    const success = await db.deleteEvent(eventId);
+    res.status(200).send({ success: success });
   }
   catch (err) {
     next(err);

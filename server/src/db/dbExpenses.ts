@@ -12,11 +12,30 @@ export const getExpenses = async (eventId: number) => {
   const expenses: Expense[] = await request
     .input("event_id", sql.Int, eventId)
     .input("user_id", sql.Int, null)
+    .input("expense_id", sql.Int, null)
     .execute("get_expenses")
     .then(data => {
       return parseExpenses(data.recordset);
     });
   return expenses;
+};
+
+/**
+ * DB interface: Get a specific expense
+ * @param expenseId 
+ * @returns Expense object
+ */
+export const getExpense = async (expenseId: number) => {
+  const request = new sql.Request();
+  const expenses: Expense[] = await request
+    .input("event_id", sql.Int, null)
+    .input("user_id", sql.Int, null)
+    .input("expense_id", sql.Int, expenseId)
+    .execute("get_expenses")
+    .then(data => {
+      return parseExpenses(data.recordset);
+    });
+  return expenses[0];
 };
 
 /**

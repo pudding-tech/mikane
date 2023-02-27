@@ -1,6 +1,7 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import session from "express-session";
 import cors from "cors";
+import helmet from "helmet";
 import sql from "mssql";
 import MSSQLStore from "connect-mssql-v2";
 import dotenv from "dotenv";
@@ -14,7 +15,7 @@ dotenv.config();
 import { dbConfig } from "./config";
 
 const port = process.env.PORT || 3002;
-const inProd = process.env.ENVIRONMENT === "prod" ? true : false;
+const inProd = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "prod" ? true : false;
 const sessionSecret = process.env.SESSION_SECRET || "abcdef";
 
 const app = express();
@@ -28,7 +29,7 @@ const connectDB = () => {
         console.log("Still connecting to database...");
       }
       if (pool.connected) {
-        console.log("Connected to SQL database");
+        console.log(`Connected to SQL database: ${dbConfig.server} - ${dbConfig.database}`);
       }
     })
     .catch(err => {
@@ -46,12 +47,16 @@ app.use(express.static("public"));
 // Body parser
 app.use(express.json());
 
+// Helmet protection
+app.use(helmet());
+
 // Enable client access
 app.use(cors({
-  origin: "https://pudding-debt.hundseth.com",
+  origin: inProd ? "https://pudding-debt.hundseth.com" : "http://localhost:4200",
   credentials: true
 }));
 
+// Session storage
 const store = new MSSQLStore(dbConfig, {
   table: "[session]",
   autoRemove: true,
@@ -77,7 +82,7 @@ app.use(session({
   cookie: {
     maxAge: twentyMinutes,
     httpOnly: true,
-    secure: inProd,
+    secure: false, //inProd,
     sameSite: "lax"
   },
   saveUninitialized: false,
@@ -87,7 +92,7 @@ app.use(session({
 }));
 
 app.post("*", (req, res, next) => {
-  if (!req.is("application/json")) {
+  if (!req.is("application/json") && req.headers["content-type"] !== undefined) {
     return res.status(400).json({ msg: "Wrong content-type"});
   }
   next();
@@ -106,6 +111,15 @@ app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", expenseRoutes);
 app.use("/api", authRoutes);
+
+// Error handler
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message || "Something broke :(" });
+  }
+  next();
+});
 
 // Send not found message back to client if route not found
 app.use(((req, res) => {

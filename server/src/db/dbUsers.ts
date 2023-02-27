@@ -85,11 +85,11 @@ export const createUser = async (username: string, firstName: string, lastName: 
  * @param name New name of user
  * @returns Edited user
  */
-export const editUser = async (userId: number, name: string) => {
+export const editUser = async (userId: number, username: string) => {
   const request = new sql.Request();
   const user: User = await request
     .input("user_id", sql.Int, userId)
-    .input("username", sql.NVarChar, name)
+    .input("username", sql.NVarChar, username)
     .execute("edit_user")
     .then(data => {
       return parseUser(data.recordset[0]);

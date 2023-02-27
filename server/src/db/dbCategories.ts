@@ -21,6 +21,23 @@ export const getCategories = async (eventId: number) => {
 };
 
 /**
+ * DB interface: Get a category
+ * @param categoryId 
+ * @returns Category object
+ */
+export const getCategory = async (categoryId: number) => {
+  const request = new sql.Request();
+  const categories: Category[] = await request
+    .input("event_id", sql.Int, null)
+    .input("category_id", sql.Int, categoryId)
+    .execute("get_categories")
+    .then(data => {
+      return parseCategories(data.recordset, CategoryTarget.CLIENT);
+    });
+  return categories[0];
+};
+
+/**
  * DB interface: Add new category to the database
  * @param name Name of category
  * @param eventId 
@@ -29,7 +46,7 @@ export const getCategories = async (eventId: number) => {
  */
 export const createCategory = async (name: string, eventId: number, weighted: boolean) => {
   const request = new sql.Request();
-  const category = await request
+  const category: Category = await request
     .input("name", sql.NVarChar, name)
     .input("event_id", sql.Int, eventId)
     .input("weighted", sql.Bit, weighted)

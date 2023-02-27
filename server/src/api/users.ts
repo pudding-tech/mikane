@@ -90,11 +90,11 @@ router.put("/users/:id", checkAuth, async (req, res, next) => {
   if (isNaN(userId)) {
     return res.status(400).json({ error: "User ID must be a number" });
   }
-  if (!req.body.name) {
-    return res.status(400).json({ error: "Name not provided" });
+  if (!req.body.username) {
+    return res.status(400).json({ error: "Username not provided" });
   }
   try {
-    const user: User = await db.editUser(userId, req.body.name);
+    const user: User = await db.editUser(userId, req.body.username);
     res.status(200).send(user);
   }
   catch (err) {
@@ -114,7 +114,7 @@ router.delete("/users/:id", checkAuth, async (req, res, next) => {
   }
   try {
     const success = await db.deleteUser(userId);
-    res.status(200).send(success);
+    res.status(200).send({ success: success });
   }
   catch (err) {
     next(err);

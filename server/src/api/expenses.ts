@@ -23,6 +23,21 @@ router.get("/expenses", checkAuth, async (req, res, next) => {
   }
 });
 
+// Get a specific expense
+router.get("/expenses/:id", checkAuth, async (req, res, next) => {
+  const expenseId = Number(req.params.id);
+  if (isNaN(expenseId)) {
+    return res.status(400).json({ error: "Expense ID must be a number" });
+  }
+  try {
+    const expense: Expense = await db.getExpense(expenseId);
+    res.status(200).send(expense);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
 /* ---- */
 /* POST */
 /* ---- */
@@ -46,14 +61,14 @@ router.post("/expenses", checkAuth, async (req, res, next) => {
 /* ------ */
 
 // Delete an expense
-router.delete("/expenses/:expenseId", checkAuth, async (req, res, next) => {
-  const expenseId = Number(req.params.expenseId);
+router.delete("/expenses/:id", checkAuth, async (req, res, next) => {
+  const expenseId = Number(req.params.id);
   if (isNaN(expenseId)) {
     return res.status(400).json({ error: "Expense ID must be a number" });
   }
   try {
     const success = await db.deleteExpense(expenseId);
-    res.status(200).send(success);
+    res.status(200).send({ success: success });
   }
   catch (err) {
     next(err);
