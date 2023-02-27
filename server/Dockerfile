@@ -1,4 +1,5 @@
-FROM node:18-alpine
+### BUILDER ###
+FROM node:18-alpine as builder
 
 # Use directory
 WORKDIR /usr/src/app
@@ -14,8 +15,20 @@ COPY ./ ./
 # Build to js
 RUN tsc -p ./
 
+### FINAL APP ###
+FROM node:18-alpine
+
+WORKDIR /usr/src/app
+ENV NODE_ENV=production
+
+COPY package.json ./
+RUN npm install --production
+COPY --from=builder /usr/app/build ./build
+
+EXPOSE 3002
+
 # Run build
-CMD ["npm", "run", "startbuild"]
+CMD ["node", "build/server.js"]
 
 # Commands for building image and running container (substitute latest with version if building a release):
 #   docker build -t puddingdebt:latest ./
