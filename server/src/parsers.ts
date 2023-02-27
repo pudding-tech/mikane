@@ -1,12 +1,13 @@
 import { Category, Expense, User, UserBalance, BalanceCalculationResult } from "./types/types";
+import { CategoryTarget } from "./types/enums";
 
 /**
  * Build array of Category objects. Format for either client or calculate function
  * @param catInput List of objects
- * @param target Choose if categories are meant for client presentation or calculations. Valid targets are "client" and "calc"
+ * @param target Choose if categories are meant for client presentation or calculations
  * @returns List of Category objects
  */
-export const parseCategories = (catInput: object[], target: string) : Category[] => {
+export const parseCategories = (catInput: object[], target: CategoryTarget) : Category[] => {
   const categories: Category[] = [];
   catInput.forEach( (catObj) => {
 
@@ -16,18 +17,18 @@ export const parseCategories = (catInput: object[], target: string) : Category[]
       weighted: catObj["weighted" as keyof typeof catObj]
     };
 
-    if (target === "client") {
+    if (target === CategoryTarget.CLIENT) {
       category.users = [];
     }
-    else if (target === "calc") {
+    else if (target === CategoryTarget.CALC) {
       category.userWeights = new Map<number, number>();
     }
 
     if (catObj["user_weight" as keyof typeof catObj] !== null) {
       const userWeightString: string[] = (catObj["user_weight" as keyof typeof catObj] as string).split(";");
-      userWeightString.forEach( userWeight => {
+      userWeightString.forEach(userWeight => {
         const userWeightProps = userWeight.split(",");
-        if (target === "client" && category.users) {
+        if (target === CategoryTarget.CLIENT && category.users) {
           category.users.push(
             {
               id: parseInt(userWeightProps[0]),
@@ -36,7 +37,7 @@ export const parseCategories = (catInput: object[], target: string) : Category[]
             }
           );
         }
-        else if (target === "calc" && category.userWeights) {
+        else if (target === CategoryTarget.CALC && category.userWeights) {
           category.userWeights.set(parseInt(userWeightProps[0]), parseInt(userWeightProps[2]));
         }
       });

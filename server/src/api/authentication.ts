@@ -1,6 +1,7 @@
 import express from "express";
 import sql from "mssql";
-import { getUser, getUserHash} from "../db/dbUsers";
+import * as dbUsers from "../db/dbUsers";
+import * as dbAuth from "../db/dbAuthentication";
 import { authenticate, createHash } from "../utils/auth";
 import { PUD001, PUD002, PUD003 } from "../utils/errorCodes";
 import { parseUser } from "../parsers";
@@ -47,8 +48,7 @@ router.post("/login", async (req, res, next) => {
   }
 
   try {
-    const userPW = await getUserHash(usernameEmail);
-
+    const userPW = await dbAuth.getUserHash(usernameEmail);
     if (!userPW || !userPW.hash) {
       return res.status(401).json(PUD003);
     }
@@ -56,9 +56,9 @@ router.post("/login", async (req, res, next) => {
     const isAuthenticated = authenticate(password, userPW.hash);
 
     if (isAuthenticated) {
-      const user = await getUser(userPW.id);
+      const user: User = await dbUsers.getUser(userPW.id);
       if (!user) {
-        return next(new Error);
+        return next(new Error("Error getting user for authentication"));
       }
       req.session.authenticated = true;
       req.session.userId = user.id;
@@ -101,7 +101,7 @@ router.post("/logout", (req, res) => {
 */
 router.post("/reset-password", async (req, res, next) => {
   if (!req.body.userId || !req.body.password) {
-    return res.status(400).send("User ID or new password not provided");
+    return res.status(400).json({ error: "User ID or new password not provided" });
   }
 
   const hash = createHash(req.body.password);

@@ -1,6 +1,6 @@
 import sql from "mssql";
-import { parseUser, parseUsers } from "../parsers";
-import { User } from "../types/types";
+import { parseExpenses, parseUser, parseUsers } from "../parsers";
+import { Expense, User } from "../types/types";
 
 /**
  * DB interface: Get user information
@@ -10,15 +10,12 @@ import { User } from "../types/types";
  */
 export const getUser = async (userId: number | null, username?: string | null) => {
   const request = new sql.Request();
-  const user: User | null = await request
+  const user: User = await request
     .input("user_id", sql.Int, userId)
     .input("username", sql.NVarChar, username)
     .execute("get_user")
-    .then(res => {
-      if (!res.recordset[0]) {
-        return null;
-      }
-      return parseUser(res.recordset[0]);
+    .then(data => {
+      return parseUser(data.recordset[0]);
     });
   return user;
 };
@@ -40,23 +37,78 @@ export const getUsers = async (eventId: number) => {
 };
 
 /**
- * DB interface: Get user password hash
- * @param usernameEmail 
- * @returns User's hashed password
+ * DB interface: Get list of a user's expenses in an event
+ * @param userId 
+ * @param eventId 
+ * @returns List of expenses
  */
-export const getUserHash = async (usernameEmail: string) => {
+export const getUserExpenses = async (userId: number, eventId: number) => {
   const request = new sql.Request();
-  const userHash = await request
-    .input("usernameEmail", sql.NVarChar, usernameEmail)
-    .execute("get_user_hash")
+  const expenses: Expense[] = await request
+    .input("event_id", sql.Int, eventId)
+    .input("user_id", sql.Int, userId)
+    .execute("get_expenses")
     .then(data => {
-      if (data.recordset.length < 1) {
-        return null;
-      }
-      return {
-        id: data.recordset[0].id as number,
-        hash: data.recordset[0].password as string
-      };
+      return parseExpenses(data.recordset);
     });
-  return userHash;
+  return expenses;
+};
+
+/**
+ * DB interface: Add a new user to the database
+ * @param username 
+ * @param firstName 
+ * @param lastName 
+ * @param email 
+ * @param hash 
+ * @returns Newly created user
+ */
+export const createUser = async (username: string, firstName: string, lastName: string, email: string, phone: string, hash: string) => {
+  const request = new sql.Request();
+  const user: User = await request
+    .input("username", sql.NVarChar, username)
+    .input("first_name", sql.NVarChar, firstName)
+    .input("last_name", sql.NVarChar, lastName)
+    .input("email", sql.NVarChar, email)
+    .input("phone_number", sql.NVarChar, phone)
+    .input("password", sql.NVarChar, hash)
+    .execute("new_user")
+    .then(data => {
+      return parseUser(data.recordset[0]);
+    });
+  return user;
+};
+
+/**
+ * DB interface: Edit a user
+ * @param userId User ID to edit
+ * @param name New name of user
+ * @returns Edited user
+ */
+export const editUser = async (userId: number, name: string) => {
+  const request = new sql.Request();
+  const user: User = await request
+    .input("user_id", sql.Int, userId)
+    .input("username", sql.NVarChar, name)
+    .execute("edit_user")
+    .then(data => {
+      return parseUser(data.recordset[0]);
+    });
+  return user;
+};
+
+/**
+ * DB interface: Delete a user
+ * @param userId 
+ * @returns True if successful
+ */
+export const deleteUser = async (userId: number) => {
+  const request = new sql.Request();
+  const success = request
+    .input("user_id", sql.Int, userId)
+    .execute("delete_user")
+    .then(() => {
+      return true;
+    });
+  return success;
 };

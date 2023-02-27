@@ -1,7 +1,7 @@
 import express from "express";
-import sql from "mssql";
-import { getEvents, getEvent, getEventBalances, postEvent, deleteEvent } from "../db/dbEvents";
+import * as db from "../db/dbEvents";
 import { checkAuth } from "../middleware/authMiddleware";
+import { Event, Payment, UserBalance } from "../types/types";
 const router = express.Router();
 
 /* --- */
@@ -11,7 +11,7 @@ const router = express.Router();
 // Get a list of all events
 router.get("/events", checkAuth, async (req, res, next) => {
   try {
-    const events = await getEvents();
+    const events: Event[] = await db.getEvents();
     res.status(200).send(events);
   }
   catch (err) {
@@ -26,7 +26,7 @@ router.get("/events/:id", checkAuth, async (req, res, next) => {
     return res.status(400).json({ err: "Event ID must be a number" });
   }
   try {
-    const event = await getEvent(eventId);
+    const event: Event = await db.getEvent(eventId);
     res.status(200).send(event);
   }
   catch (err) {
@@ -38,11 +38,26 @@ router.get("/events/:id", checkAuth, async (req, res, next) => {
 router.get("/events/:id/balances", checkAuth, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
-    return res.status(400).json("Event ID must be a number");
+    return res.status(400).json({ error: "Event ID must be a number" });
   }
   try {
-    const usersWithBalance = await getEventBalances(eventId);
-    res.send(usersWithBalance);
+    const usersWithBalance: UserBalance[] = await db.getEventBalances(eventId);
+    res.status(200).send(usersWithBalance);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
+// Get a list of all payments for a given event
+router.get("events/:id/payments", checkAuth, async (req, res, next) => {
+  const eventId = Number(req.params.eventId);
+  if (isNaN(eventId)) {
+    return res.status(400).json({ error: "Event ID must be a number" });
+  }
+  try {
+    const payments: Payment[] = await db.getEventPayments(eventId);
+    res.status(200).send(payments);
   }
   catch (err) {
     next(err);
@@ -56,10 +71,10 @@ router.get("/events/:id/balances", checkAuth, async (req, res, next) => {
 // Create new event
 router.post("/events", checkAuth, async (req, res, next) => {
   if (!req.body.name) {
-    return res.status(400).send("Name not provided!");
+    return res.status(400).json({ error: "Name not provided!" });
   }
   try {
-    const event = await postEvent(req.body.name);
+    const event: Event = await db.createEvent(req.body.name);
     res.status(200).send(event);
   }
   catch (err) {
@@ -74,11 +89,11 @@ router.post("/events", checkAuth, async (req, res, next) => {
 // Delete an event
 router.delete("/events", checkAuth, async (req, res, next) => {
   if (!req.body.id) {
-    return res.status(400).send("Event ID not provided");
+    return res.status(400).json({ error: "Event ID not provided" });
   }
   try {
-    await deleteEvent(req.body.id);
-    res.send({});
+    const success = await db.deleteEvent(req.body.id);
+    res.status(200).send(success);
   }
   catch (err) {
     next(err);

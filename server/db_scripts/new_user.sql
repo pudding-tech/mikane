@@ -14,9 +14,7 @@ begin
   insert into [user](username, first_name, last_name, email, phone_number, [password], created) values (@username, @first_name, @last_name, @email, @phone_number, @password, GETDATE())
 
   declare @user_id int = @@IDENTITY
-  -- exec add_user_to_event @user_id, @event_id, 0
-
-  select id, username, first_name, last_name, email, phone_number, created from [user] where id = @user_id
+  exec get_user @user_id
 
 end
 go

@@ -8,7 +8,6 @@ import eventRoutes from "./api/events";
 import userRoutes from "./api/users";
 import categoryRoutes from "./api/categories";
 import expenseRoutes from "./api/expenses";
-import paymentRoutes from "./api/payments";
 import authRoutes from "./api/authentication";
 
 dotenv.config();
@@ -106,7 +105,6 @@ app.use("/api", eventRoutes);
 app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", expenseRoutes);
-app.use("/api", paymentRoutes);
 app.use("/api", authRoutes);
 
 // Send not found message back to client if route not found

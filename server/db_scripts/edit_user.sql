@@ -9,7 +9,7 @@ begin
 
   update [user] set username = @username where id = @user_id
   
-  select * from [user] where id = @user_id
+  exec get_user @user_id
 
 end
 go

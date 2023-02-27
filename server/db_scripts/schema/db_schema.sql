@@ -20,6 +20,7 @@ create table [event] (
   id int identity(1,1) primary key,
   [name] nvarchar(255) not null unique,
   created datetime not null,
+  [private] bit not null,
   uuid uniqueidentifier not null default newid()
 )
 go

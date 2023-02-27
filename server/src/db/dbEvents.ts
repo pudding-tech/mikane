@@ -1,7 +1,8 @@
 import sql from "mssql";
-import { calculateBalance } from "../calculations";
+import { calculateBalance, calculatePayments } from "../calculations";
 import { parseBalance, parseCategories, parseExpenses, parseUsers } from "../parsers";
-import { BalanceCalculationResult, Category, Event, Expense, User, UserBalance } from "../types/types";
+import { CategoryTarget } from "../types/enums";
+import { BalanceCalculationResult, Category, Event, Expense, Payment, User, UserBalance } from "../types/types";
 
 /**
  * DB interface: Get all events
@@ -53,7 +54,7 @@ export const getEventBalances = async (eventId: number) => {
   }
 
   const users: User[] = parseUsers(data[0]);
-  const categories: Category[] = parseCategories(data[1], "calc");
+  const categories: Category[] = parseCategories(data[1], CategoryTarget.CALC);
   const expenses: Expense[] = parseExpenses(data[2]);
 
   const balance: BalanceCalculationResult = calculateBalance(expenses, categories, users);
@@ -62,11 +63,37 @@ export const getEventBalances = async (eventId: number) => {
 };
 
 /**
+ * DB interface: Get an event payments information
+ * @param eventId Event ID
+ * @returns List of payments for an event
+ */
+export const getEventPayments = async (eventId: number) => {
+  const request = new sql.Request();
+  const data = await request
+    .input("event_id", sql.Int, eventId)
+    .execute("get_event_payment_data")
+    .then(res => {
+      return res.recordsets as sql.IRecordSet<object>[];
+    });
+  
+  if (!data || data.length < 3) {
+    throw new Error("Something went wrong getting users, categories or expenses");
+  }
+
+  const users: User[] = parseUsers(data[0]);
+  const categories: Category[] = parseCategories(data[1], CategoryTarget.CALC);
+  const expenses: Expense[] = parseExpenses(data[2]);
+
+  const payments: Payment[] = calculatePayments(expenses, categories, users);
+  return payments;
+};
+
+/**
  * DB interface: Add a new event to the database
  * @param name Name of event
  * @returns Newly created event
  */
-export const postEvent = async (name: string) => {
+export const createEvent = async (name: string) => {
   const request = new sql.Request();
   const event: Event = await request
     .input("name", sql.NVarChar, name)
@@ -80,11 +107,15 @@ export const postEvent = async (name: string) => {
 /**
  * DB interface: Delete an event from the database
  * @param id Event ID
+ * @returns True if successful
  */
 export const deleteEvent = async (id: number) => {
   const request = new sql.Request();
-  await request
+  const success = await request
     .input("event_id", sql.Int, id)
-    .execute("delete_event");
-  return;
+    .execute("delete_event")
+    .then(() => {
+      return true;
+    });
+  return success;
 };

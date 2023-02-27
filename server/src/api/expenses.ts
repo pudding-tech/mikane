@@ -1,7 +1,6 @@
 import express from "express";
-import sql from "mssql";
+import * as db from "../db/dbExpenses";
 import { checkAuth } from "../middleware/authMiddleware";
-import { parseExpenses } from "../parsers";
 import { Expense } from "../types/types";
 const router = express.Router();
 
@@ -10,20 +9,18 @@ const router = express.Router();
 /* --- */
 
 // Get a list of all expenses for a given event
-router.get("/expenses", checkAuth, (req, res, next) => {
-  if (!req.query.eventId) {
-    return res.status(400).send("EventId not provided!");
+router.get("/expenses", checkAuth, async (req, res, next) => {
+  const eventId = Number(req.query.eventId);
+  if (!req.query.eventId || isNaN(eventId)) {
+    return res.status(400).json({ error: "Event ID is not provided, or is not a number" });
   }
-  const request = new sql.Request();
-  request
-    .input("event_id", sql.Int, req.query.eventId)
-    .input("user_id", sql.Int, null)
-    .execute("get_expenses")
-    .then(data => {
-      const expenses: Expense[] = parseExpenses(data.recordset);
-      res.send(expenses);
-    })
-    .catch(err => next(err));
+  try {
+    const expenses: Expense[] = await db.getExpenses(eventId);
+    res.status(200).send(expenses);
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 /* ---- */
@@ -31,23 +28,17 @@ router.get("/expenses", checkAuth, (req, res, next) => {
 /* ---- */
 
 // Create a new expense
-router.post("/expenses", checkAuth, (req, res, next) => {
-  if (!req.body.name || !req.body.categoryId || !req.body.payerId) {
-    return res.status(400).send("Name, categoryId or payerId not provided!");
+router.post("/expenses", checkAuth, async (req, res, next) => {
+  if (!req.body.name || !req.body.amount || !req.body.categoryId || !req.body.payerId) {
+    return res.status(400).json({ error: "Name, amount, category ID or payer ID not provided" });
   }
-  const request = new sql.Request();
-  request
-    .input("name", sql.NVarChar, req.body.name)
-    .input("description", sql.NVarChar, req.body.description)
-    .input("amount", sql.Numeric(16, 2), req.body.amount)
-    .input("category_id", sql.Int, req.body.categoryId)
-    .input("payer_id", sql.Int, req.body.payerId)
-    .execute("new_expense")
-    .then(data => {
-      const expenses: Expense[] = parseExpenses(data.recordset);
-      res.send(expenses[0]);
-    })
-    .catch(err => next(err));
+  try {
+    const expense: Expense = await db.createExpense(req.body.name, req.body.description, req.body.amount, req.body.categoryId, req.body.payerId);
+    res.status(200).send(expense);
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 /* ------ */
@@ -55,19 +46,18 @@ router.post("/expenses", checkAuth, (req, res, next) => {
 /* ------ */
 
 // Delete an expense
-router.delete("/expenses/:expenseId", checkAuth, (req, res, next) => {
-  const expId = Number(req.params.expenseId);
-  if (isNaN(expId)) {
-    return res.status(400).send("Expense ID must be a number!");
+router.delete("/expenses/:expenseId", checkAuth, async (req, res, next) => {
+  const expenseId = Number(req.params.expenseId);
+  if (isNaN(expenseId)) {
+    return res.status(400).json({ error: "Expense ID must be a number" });
   }
-  const request = new sql.Request();
-  request
-    .input("expense_id", sql.Int, expId)
-    .execute("delete_expense")
-    .then(() => {
-      res.send({});
-    })
-    .catch(err => next(err));
+  try {
+    const success = await db.deleteExpense(expenseId);
+    res.status(200).send(success);
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 export default router;
