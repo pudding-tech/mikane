@@ -119,3 +119,39 @@ export const deleteEvent = async (id: number) => {
     });
   return success;
 };
+
+/**
+ * DB interface: Add user to an event
+ * @param userId 
+ * @param eventId 
+ * @returns Affected event
+ */
+export const addUserToEvent = async (userId: number, eventId: number) => {
+  const request = new sql.Request();
+  const event: Event = await request
+    .input("user_id", sql.Int, userId)
+    .input("event_id", sql.Int, eventId)
+    .execute("add_user_to_event")
+    .then(data => {
+      return data.recordset[0];
+    });
+  return event;
+};
+
+/**
+ * DB interface: Remove a user from an event
+ * @param userId 
+ * @param eventId  
+ * @returns Affected event
+ */
+export const removeUserFromEvent = async (userId: number, eventId: number) => {
+  const request = new sql.Request();
+  const event: Event = await request
+    .input("user_id", sql.Int, userId)
+    .input("category_id", sql.Int, eventId)
+    .execute("remove_user_from_event")
+    .then(data => {
+      return data.recordset[0];
+    });
+  return event;
+};

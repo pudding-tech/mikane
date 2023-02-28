@@ -38,7 +38,7 @@ router.get("/events/:id", checkAuth, async (req, res, next) => {
 router.get("/events/:id/balances", checkAuth, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
-    return res.status(400).json({ error: "Event ID must be a number" });
+    return res.status(400).json({ error: "ID must be a number" });
   }
   try {
     const usersWithBalance: UserBalance[] = await db.getEventBalances(eventId);
@@ -53,7 +53,7 @@ router.get("/events/:id/balances", checkAuth, async (req, res, next) => {
 router.get("events/:id/payments", checkAuth, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
-    return res.status(400).json({ error: "Event ID must be a number" });
+    return res.status(400).json({ error: "ID must be a number" });
   }
   try {
     const payments: Payment[] = await db.getEventPayments(eventId);
@@ -82,6 +82,23 @@ router.post("/events", checkAuth, async (req, res, next) => {
   }
 });
 
+// Add a user to an event
+router.post("/events/:id/user/:userId", checkAuth, async (req, res, next) => {
+  const eventId = Number(req.params.id);
+  const userId = Number(req.params.userId);
+
+  if (isNaN(eventId) || isNaN(userId)) {
+    return res.status(400).json({ error: "Event ID and user ID must be numbers" });
+  }
+  try {
+    const event: Event = await db.addUserToEvent(userId, eventId);
+    res.send(event);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
 /* ------ */
 /* DELETE */
 /* ------ */
@@ -95,6 +112,22 @@ router.delete("/events/:id", checkAuth, async (req, res, next) => {
   try {
     const success = await db.deleteEvent(eventId);
     res.status(200).send({ success: success });
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
+// Remove a user from an event
+router.delete("/events/:id/user/:userId", checkAuth, async (req, res, next) => {
+  const eventId = Number(req.params.id);
+  const userId = Number(req.params.userId);
+  if (isNaN(eventId) || isNaN(userId)) {
+    return res.status(400).json({ error: "Event ID and user ID must be numbers!" });
+  }
+  try {
+    const event: Event = await db.removeUserFromEvent(eventId, userId);
+    res.status(200).send(event);
   }
   catch (err) {
     next(err);

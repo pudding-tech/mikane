@@ -13,7 +13,7 @@ begin
 
   execute get_users @event_id
   execute get_categories @event_id, null
-  execute get_expenses @event_id, null
+  execute get_expenses @event_id, null, null
 
 end
 go

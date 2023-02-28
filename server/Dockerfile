@@ -25,6 +25,7 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install --omit=dev
 COPY --from=builder /app/build ./build
+COPY ./public ./public
 
 # Expose port 3002
 EXPOSE 3002

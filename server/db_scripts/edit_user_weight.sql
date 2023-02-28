@@ -8,10 +8,10 @@ create procedure edit_user_weight
 as
 begin
 
-  update category_user
+  update user_category
   set [weight] = @weight
-  where category_id = @category_id
-    and user_id = @user_id
+  where user_id = @user_id
+    and category_id = @category_id
 
   declare @event_id int
   select @event_id = event_id from category where id = @category_id

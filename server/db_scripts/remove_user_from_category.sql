@@ -7,7 +7,7 @@ create procedure remove_user_from_category
 as
 begin
 
-  delete from category_user where category_id = @category_id and user_id = @user_id
+  delete from user_category where category_id = @category_id and user_id = @user_id
 
   declare @event_id int
 

@@ -14,7 +14,7 @@ begin
   insert into [user](username, first_name, last_name, email, phone_number, [password], created) values (@username, @first_name, @last_name, @email, @phone_number, @password, GETDATE())
 
   declare @user_id int = @@IDENTITY
-  exec get_user @user_id
+  exec get_user @user_id, null
 
 end
 go

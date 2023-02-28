@@ -20,6 +20,7 @@ create table [event] (
   id int identity(1,1) primary key,
   [name] nvarchar(255) not null unique,
   created datetime not null,
+  admin_id int foreign key references [user](id) on delete set null,
   [private] bit not null,
   uuid uniqueidentifier not null default newid()
 )
@@ -28,7 +29,6 @@ go
 create table user_event (
   user_id int foreign key references [user](id) on delete cascade,
   event_id int foreign key references [event](id) on delete cascade,
-  [admin] bit not null,
   joined_date datetime not null,
   primary key (user_id, event_id)
 )
@@ -53,11 +53,11 @@ create table expense (
 )
 go
 
-create table category_user (
-  category_id int foreign key references category(id) on delete cascade,
+create table user_category (
   user_id int foreign key references [user](id) on delete cascade,
+  category_id int foreign key references category(id) on delete cascade,
   [weight] numeric(14),
-  primary key (category_id, user_id)
+  primary key (user_id, category_id)
 )
 go
 

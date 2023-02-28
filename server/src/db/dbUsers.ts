@@ -47,6 +47,7 @@ export const getUserExpenses = async (userId: number, eventId: number) => {
   const expenses: Expense[] = await request
     .input("event_id", sql.Int, eventId)
     .input("user_id", sql.Int, userId)
+    .input("expense_id", sql.Int, null)
     .execute("get_expenses")
     .then(data => {
       return parseExpenses(data.recordset);

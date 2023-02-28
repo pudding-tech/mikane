@@ -2,13 +2,16 @@ if object_id ('new_event') is not null
   drop procedure new_event
 go
 create procedure new_event
-  @name nvarchar(255)
+  @name nvarchar(255),
+  @user_id int,
+  @private bit
 as
 begin
 
-  insert into [event]([name], created) values (@name, GETDATE())
+  insert into [event]([name], created, admin_id, [private]) values (@name, GETDATE(), @user_id, @private)
 
-  select id, [name], created, [private], uuid from [event] where id = @@IDENTITY
+  declare @event_id int = @@IDENTITY
+  exec get_events @event_id
 
 end
 go
