@@ -72,7 +72,7 @@ router.post("/categories/:id/user/:userId", checkAuth, async (req, res, next) =>
     return res.status(400).json({ error: "Weight can not be less than 1" });
   }
   try {
-    const category: Category = await db.addUserToCategory(catId, userId, weight);
+    const category: Category = await db.addUserToCategory(userId, catId, weight);
     res.send(category);
   }
   catch (err) {
@@ -168,7 +168,7 @@ router.delete("/categories/:id/user/:userId", checkAuth, async (req, res, next) 
     return res.status(400).json({ error: "Category ID and user ID must be numbers!" });
   }
   try {
-    const category: Category = await db.removeUserFromCategory(catId, userId);
+    const category: Category = await db.removeUserFromCategory(userId, catId);
     res.status(200).send(category);
   }
   catch (err) {

@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import session from "express-session";
+import swaggerUi from "swagger-ui-express";
 import cors from "cors";
 import helmet from "helmet";
 import sql from "mssql";
@@ -13,6 +14,7 @@ import authRoutes from "./api/authentication";
 
 dotenv.config();
 import { dbConfig } from "./config";
+import apiDocument from "./api.json";
 
 const port = process.env.PORT || 3002;
 const inProd = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "prod" ? true : false;
@@ -42,7 +44,7 @@ const connectDB = () => {
 connectDB();
 
 // Set static folder
-app.use(express.static("public"));
+app.use(express.static("public", { index: false }));
 
 // Body parser
 app.use(express.json());
@@ -55,6 +57,18 @@ app.use(cors({
   origin: inProd ? "https://pudding-debt.hundseth.com" : "http://localhost:4200",
   credentials: true
 }));
+
+// API docs
+const apiDocsOptions = {
+  customCssUrl: "/SwaggerDark.css",
+  customCss: ".swagger-ui .topbar { display: none }",
+  swaggerOptions: {
+    supportedSubmitMethods: ["get", "post"]
+  }
+};
+app.use("/", swaggerUi.serve);
+app.get("/", swaggerUi.setup(apiDocument, apiDocsOptions));
+// console.log(__dirname);
 
 // Session storage
 const store = new MSSQLStore(dbConfig, {

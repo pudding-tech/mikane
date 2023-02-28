@@ -19,11 +19,11 @@ begin
     end
   else if (@weighted = 1)
     begin
-      insert into category_user (category_id, user_id, [weight]) values (@category_id, @user_id, @weight)
+      insert into user_category (user_id, category_id, [weight]) values (@user_id, @category_id, @weight)
     end
   else
     begin
-      insert into category_user (category_id, user_id) values (@category_id, @user_id)
+      insert into user_category (user_id, category_id) values (@user_id, @category_id)
     end
 
   select @event_id = event_id from category where id = @category_id

@@ -8,31 +8,31 @@ as
 begin
 
   select
-    cu.user_id,
+    uc.user_id,
     c.id as 'category_id',
     c.weighted,
     'weight' = case
-      when c.weighted = 1 then cu.weight
+      when c.weighted = 1 then uc.weight
       when c.weighted = 0 then 1 end
   into
     #weights_temp
-  from category_user cu
-    inner join category c on c.id = cu.category_id
+  from user_category uc
+    inner join category c on c.id = uc.category_id
 
   select
-    cu.category_id,
-    string_agg(concat(cu.user_id, ',', u.username, ',', uw.weight), ';') as 'user_weight'
+    uc.category_id,
+    string_agg(concat(uc.user_id, ',', u.username, ',', uw.weight), ';') as 'user_weight'
   into
     #temp
   from
-    category_user cu
-    inner join [user] u on u.id = cu.user_id
-    inner join category c on c.id = cu.category_id
+    user_category uc
+    inner join [user] u on u.id = uc.user_id
+    inner join category c on c.id = uc.category_id
     inner join #weights_temp uw
-      on uw.user_id = cu.user_id and
+      on uw.user_id = uc.user_id and
           uw.category_id = c.id
   group by
-    cu.category_id
+    uc.category_id
 
   if (@category_id is not null)
   begin

@@ -18,7 +18,7 @@ begin
   else
     begin
         
-      select u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, ue.admin, ue.joined_date, u.uuid from
+      select u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, ue.joined_date, u.uuid from
         [user] u
         inner join user_event ue on ue.user_id = u.id
       where
