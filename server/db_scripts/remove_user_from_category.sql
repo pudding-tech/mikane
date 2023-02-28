@@ -11,11 +11,7 @@ begin
 
   declare @event_id int
 
-  select top 1
-    @event_id = e.id
-  from [event] e
-    inner join category c on c.event_id = e.id
-  where c.id = @category_id
+  select @event_id = event_id from category where id = @category_id
 
   exec get_categories @event_id, @category_id
 

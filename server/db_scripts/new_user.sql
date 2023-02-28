@@ -2,19 +2,19 @@ if object_id ('new_user') is not null
   drop procedure new_user
 go
 create procedure new_user
-  @name nvarchar(255),
+  @username nvarchar(255),
+  @first_name nvarchar(255),
+  @last_name nvarchar(255),
   @email nvarchar(255),
-  @password nvarchar(255),
-  @event_id int
+  @phone_number nvarchar(20),
+  @password nvarchar(255)
 as
 begin
 
-  insert into [user]([name], email, [password], created) values (@name, @email, @password, GETDATE())
+  insert into [user](username, first_name, last_name, email, phone_number, [password], created) values (@username, @first_name, @last_name, @email, @phone_number, @password, GETDATE())
 
   declare @user_id int = @@IDENTITY
-  exec add_user_to_event @user_id, @event_id, 0
-
-  select id, [name], email, created from [user] where id = @user_id
+  exec get_user @user_id
 
 end
 go

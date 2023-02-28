@@ -21,7 +21,7 @@ begin
 
   select
     cu.category_id,
-    string_agg(concat(cu.user_id, ',', u.name, ',', uw.weight), ';') as 'user_weight'
+    string_agg(concat(cu.user_id, ',', u.username, ',', uw.weight), ';') as 'user_weight'
   into
     #temp
   from
@@ -34,7 +34,7 @@ begin
   group by
     cu.category_id
 
-  if (@category_id is null)
+  if (@category_id is not null)
   begin
 
     select
@@ -42,10 +42,11 @@ begin
       #temp.user_weight
     from category c
       left join #temp on c.id = #temp.category_id
-    where c.event_id = @event_id
+    where
+      c.id = @category_id
 
   end
-  else
+  else if (@event_id is not null)
   begin
 
     select
@@ -53,8 +54,8 @@ begin
       #temp.user_weight
     from category c
       left join #temp on c.id = #temp.category_id
-    where c.event_id = @event_id
-      and c.id = @category_id
+    where
+      c.event_id = @event_id
 
   end
 

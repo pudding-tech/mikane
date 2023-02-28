@@ -1,8 +1,19 @@
 export type User = {
   id: number,
-  name: string,
-  eventJoined?: Date
+  username: string,
+  email?: string,
+  created?: Date,
+  eventJoined?: Date,
+  uuid?: string
 }
+
+export type Event = {
+  id: number,
+  name: string,
+  created: Date,
+  private: boolean,
+  uuid: string
+};
 
 export type Category = {
   id: number,

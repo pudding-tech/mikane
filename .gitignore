@@ -108,3 +108,6 @@ dist
 
 # db_data
 server/db_data*
+
+# SQL procedures combined into one file for deployment
+all_procs.sql

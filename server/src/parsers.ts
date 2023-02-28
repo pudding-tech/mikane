@@ -1,10 +1,13 @@
 import { Category, Expense, User, UserBalance, BalanceCalculationResult } from "./types/types";
+import { CategoryTarget } from "./types/enums";
 
-/*
-/	Build array of Category objects. Format for either client or calculate function
-*/
-export const parseCategories = (catInput: object[], target: string) : Category[] => {
-  
+/**
+ * Build array of Category objects. Format for either client or calculate function
+ * @param catInput List of objects
+ * @param target Choose if categories are meant for client presentation or calculations
+ * @returns List of Category objects
+ */
+export const parseCategories = (catInput: object[], target: CategoryTarget) : Category[] => {
   const categories: Category[] = [];
   catInput.forEach( (catObj) => {
 
@@ -14,18 +17,18 @@ export const parseCategories = (catInput: object[], target: string) : Category[]
       weighted: catObj["weighted" as keyof typeof catObj]
     };
 
-    if (target === "client") {
+    if (target === CategoryTarget.CLIENT) {
       category.users = [];
     }
-    else if (target === "calc") {
+    else if (target === CategoryTarget.CALC) {
       category.userWeights = new Map<number, number>();
     }
 
     if (catObj["user_weight" as keyof typeof catObj] !== null) {
       const userWeightString: string[] = (catObj["user_weight" as keyof typeof catObj] as string).split(";");
-      userWeightString.forEach( userWeight => {
+      userWeightString.forEach(userWeight => {
         const userWeightProps = userWeight.split(",");
-        if (target === "client" && category.users) {
+        if (target === CategoryTarget.CLIENT && category.users) {
           category.users.push(
             {
               id: parseInt(userWeightProps[0]),
@@ -34,7 +37,7 @@ export const parseCategories = (catInput: object[], target: string) : Category[]
             }
           );
         }
-        else if (target === "calc" && category.userWeights) {
+        else if (target === CategoryTarget.CALC && category.userWeights) {
           category.userWeights.set(parseInt(userWeightProps[0]), parseInt(userWeightProps[2]));
         }
       });
@@ -46,11 +49,12 @@ export const parseCategories = (catInput: object[], target: string) : Category[]
   return categories;
 };
 
-/*
-/	Build array of Expense objects
-*/
+/**
+ * Build array of Expense objects
+ * @param expInput List of objects
+ * @returns List of Expense objects
+ */
 export const parseExpenses = (expInput: object[]): Expense[] => {
-
 	const expenses: Expense[] = [];
 	expInput.forEach( (expObj) => {
 		const expense: Expense = {
@@ -62,7 +66,7 @@ export const parseExpenses = (expInput: object[]): Expense[] => {
 			categoryName: expObj["category_name" as keyof typeof expObj],
       payer: {
         id: expObj["payer_id" as keyof typeof expObj],
-        name: expObj["payer" as keyof typeof expObj]
+        username: expObj["payer" as keyof typeof expObj]
       }
 		};
 
@@ -72,17 +76,21 @@ export const parseExpenses = (expInput: object[]): Expense[] => {
 	return expenses;
 };
 
-/*
-/	Build array of User objects
-*/
+/**
+ * Build array of User objects
+ * @param usersInput List of objects
+ * @returns List of User objects
+ */
 export const parseUsers = (usersInput: object[]): User[] => {
-
 	const users: User[] = [];
 	usersInput.forEach(userObj => {
 		const user: User = {
       id: userObj["id" as keyof typeof userObj],
-			name: userObj["name" as keyof typeof userObj],
-      eventJoined: userObj["joined_date" as keyof typeof userObj]
+			username: userObj["username" as keyof typeof userObj],
+      email: userObj["email" as keyof typeof userObj],
+      created: userObj["created" as keyof typeof userObj],
+      eventJoined: userObj["joined_date" as keyof typeof userObj],
+      uuid: userObj["uuid" as keyof typeof userObj]
 		};
 
 		users.push(user);
@@ -91,11 +99,28 @@ export const parseUsers = (usersInput: object[]): User[] => {
 	return users;
 };
 
-/*
-/ Parse BalanceCalculationResult into a list of UserBalance objects
-*/
-export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult) => {
+/**
+ * Parse single User object
+ * @param userObj
+ * @returns User object
+ */
+export const parseUser = (userObj: object): User => {
+  return {
+    id: userObj["id" as keyof typeof userObj],
+    username: userObj["username" as keyof typeof userObj],
+    email: userObj["email" as keyof typeof userObj],
+    created: userObj["created" as keyof typeof userObj],
+    eventJoined: userObj["joined_date" as keyof typeof userObj],
+    uuid: userObj["uuid" as keyof typeof userObj]
+  };
+};
 
+/**
+ * Parse BalanceCalculationResult into a list of UserBalance objects
+ * @param users List of Users
+ * @param balanceRes Balance Calculation Result
+ */
+export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult) => {
   const balances: UserBalance[] = [];
   users.forEach(user => {
     for (let i = 0; i < balanceRes.balance.length; i++) {
