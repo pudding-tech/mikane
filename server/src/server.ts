@@ -14,7 +14,7 @@ import authRoutes from "./api/authentication";
 
 dotenv.config();
 import { dbConfig } from "./config";
-import apiDocument from "../api.json";
+import apiDocument from "./api.json";
 
 const port = process.env.PORT || 3002;
 const inProd = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "prod" ? true : false;
