@@ -513,6 +513,14 @@
                   "name": {
                     "type": "string",
                     "example": "Example event"
+                  },
+                  "userId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "private": {
+                    "type": "boolean",
+                    "example": false
                   }
                 }
               }
@@ -1726,6 +1734,14 @@
           "created": {
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
+          },
+          "adminId": {
+            "type": "integer",
+            "example": 1
+          },
+          "private": {
+            "type": "boolean",
+            "example": false
           },
           "uuid": {
             "type": "string",

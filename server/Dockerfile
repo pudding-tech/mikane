@@ -19,7 +19,7 @@ RUN npx tsc -p ./
 FROM node:18-alpine
 
 # Set default environment
-ENV NODE_ENV=production
+ENV NODE_ENV=dev
 
 WORKDIR /app
 COPY package.json ./

@@ -50,7 +50,8 @@ router.get("/events/:id/balances", checkAuth, async (req, res, next) => {
 });
 
 // Get a list of all payments for a given event
-router.get("events/:id/payments", checkAuth, async (req, res, next) => {
+router.get("/events/:id/payments", checkAuth, async (req, res, next) => {
+  console.log("ttt");
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
     return res.status(400).json({ error: "ID must be a number" });
@@ -70,11 +71,17 @@ router.get("events/:id/payments", checkAuth, async (req, res, next) => {
 
 // Create new event
 router.post("/events", checkAuth, async (req, res, next) => {
-  if (!req.body.name) {
-    return res.status(400).json({ error: "Name not provided!" });
+  const userId = Number(req.body.userId);
+  console.log(req.body.name);
+  console.log(req.body.private);
+  if (!req.body.name || (req.body.private === null || req.body.private === undefined)) {
+    return res.status(400).json({ error: "Name or private not provided!" });
+  }
+  if (isNaN(userId)) {
+    return res.status(400).json({ error: "User ID must be a number"});
   }
   try {
-    const event: Event = await db.createEvent(req.body.name);
+    const event: Event = await db.createEvent(req.body.name, userId, req.body.private);
     res.status(200).send(event);
   }
   catch (err) {

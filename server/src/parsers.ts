@@ -1,4 +1,4 @@
-import { Category, Expense, User, UserBalance, BalanceCalculationResult } from "./types/types";
+import { Category, Event, Expense, User, UserBalance, BalanceCalculationResult } from "./types/types";
 import { CategoryTarget } from "./types/enums";
 
 /**
@@ -113,6 +113,27 @@ export const parseUser = (userObj: object): User => {
     eventJoined: userObj["joined_date" as keyof typeof userObj],
     uuid: userObj["uuid" as keyof typeof userObj]
   };
+};
+
+/**
+ * Build array of Event objects
+ * @param usersInput List of objects
+ * @returns List of Event objects
+ */
+export const parseEvents = (eventsInput: object[]) => {
+  const events: Event[] = [];
+  for (const eventObj of eventsInput) {
+    const event: Event = {
+      id: eventObj["id" as keyof typeof eventObj],
+      name: eventObj["name" as keyof typeof eventObj],
+      created: eventObj["created" as keyof typeof eventObj],
+      adminId: eventObj["admin_id" as keyof typeof eventObj],
+      private: eventObj["private" as keyof typeof eventObj],
+      uuid: eventObj["uuid" as keyof typeof eventObj]
+    };
+    events.push(event);
+  }
+  return events;
 };
 
 /**
