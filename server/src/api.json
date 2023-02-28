@@ -203,9 +203,6 @@
         "summary": "Create new user",
         "description": "Register a new user",
         "operationId": "postUsers",
-        "security": [
-          { "cookieAuth": [] }
-        ],
         "requestBody": {
           "description": "User details",
           "content": {
@@ -513,10 +510,6 @@
                   "name": {
                     "type": "string",
                     "example": "Example event"
-                  },
-                  "userId": {
-                    "type": "integer",
-                    "example": 1
                   },
                   "private": {
                     "type": "boolean",

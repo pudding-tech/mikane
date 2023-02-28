@@ -71,14 +71,12 @@ router.get("/events/:id/payments", checkAuth, async (req, res, next) => {
 
 // Create new event
 router.post("/events", checkAuth, async (req, res, next) => {
-  const userId = Number(req.body.userId);
-  console.log(req.body.name);
-  console.log(req.body.private);
   if (!req.body.name || (req.body.private === null || req.body.private === undefined)) {
-    return res.status(400).json({ error: "Name or private not provided!" });
+    return res.status(400).json({ error: "'name' and/or 'private' properties not provided in body" });
   }
-  if (isNaN(userId)) {
-    return res.status(400).json({ error: "User ID must be a number"});
+  const userId = req.session.userId;
+  if (!userId) {
+    return next(new Error("Something went wrong retrieving user ID from session"));
   }
   try {
     const event: Event = await db.createEvent(req.body.name, userId, req.body.private);
