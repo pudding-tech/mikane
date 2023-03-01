@@ -15,6 +15,9 @@ export const getUser = async (userId: number | null, username?: string | null) =
     .input("username", sql.NVarChar, username)
     .execute("get_user")
     .then(data => {
+      if (!data.recordset[0]) {
+        throw new Error(":(");
+      }
       return parseUser(data.recordset[0]);
     });
   return user;

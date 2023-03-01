@@ -66,7 +66,10 @@ export const parseExpenses = (expInput: object[]): Expense[] => {
 			categoryName: expObj["category_name" as keyof typeof expObj],
       payer: {
         id: expObj["payer_id" as keyof typeof expObj],
-        username: expObj["payer" as keyof typeof expObj]
+        username: expObj["payer_username" as keyof typeof expObj],
+        name: expObj["payer_first_name" as keyof typeof expObj],
+        firstName: expObj["payer_first_name" as keyof typeof expObj],
+        lastName: expObj["payer_last_name" as keyof typeof expObj]
       }
 		};
 
@@ -87,6 +90,9 @@ export const parseUsers = (usersInput: object[]): User[] => {
 		const user: User = {
       id: userObj["id" as keyof typeof userObj],
 			username: userObj["username" as keyof typeof userObj],
+      name: userObj["first_name" as keyof typeof userObj],
+      firstName: userObj["first_name" as keyof typeof userObj],
+      lastName: userObj["last_name" as keyof typeof userObj],
       email: userObj["email" as keyof typeof userObj],
       created: userObj["created" as keyof typeof userObj],
       eventJoined: userObj["joined_date" as keyof typeof userObj],
@@ -95,6 +101,16 @@ export const parseUsers = (usersInput: object[]): User[] => {
 
 		users.push(user);
 	});
+
+  // Set display name as first and last names for users where first names are identical
+  for (const user of users) {
+    const otherUsers = users.filter(otherUser => otherUser.id !== user.id);
+    for (const otherUser of otherUsers) {
+      if (user.firstName === otherUser.firstName) {
+        user.name = user.firstName + " " + user.lastName;
+      }
+    }
+  }
 
 	return users;
 };
@@ -108,6 +124,9 @@ export const parseUser = (userObj: object): User => {
   return {
     id: userObj["id" as keyof typeof userObj],
     username: userObj["username" as keyof typeof userObj],
+    name: userObj["first_name" as keyof typeof userObj],
+    firstName: userObj["first_name" as keyof typeof userObj],
+    lastName: userObj["last_name" as keyof typeof userObj],
     email: userObj["email" as keyof typeof userObj],
     created: userObj["created" as keyof typeof userObj],
     eventJoined: userObj["joined_date" as keyof typeof userObj],
