@@ -10,7 +10,10 @@ begin
 
   if (@event_id is not null and @user_id is null)
   begin
-    select ex.*, c.name as category_name, u.username as payer
+    select
+      ex.*,
+      c.name as category_name,
+      u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.uuid as payer_uuid
     from
       expense ex
       inner join category c on c.id = ex.category_id
@@ -24,7 +27,10 @@ begin
 
   else if (@event_id is not null and @user_id is not null)
   begin
-    select ex.*, c.name as category_name, u.username as payer
+    select
+      ex.*,
+      c.name as category_name,
+      u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.uuid as payer_uuid
     from
       expense ex
       inner join category c on c.id = ex.category_id
@@ -39,7 +45,10 @@ begin
 
   else if (@expense_id is not null)
   begin
-    select ex.*, c.name as category_name, u.username as payer
+    select
+      ex.*,
+      c.name as category_name,
+      u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.uuid as payer_uuid
     from
       expense ex
       inner join category c on c.id = ex.category_id

@@ -3,7 +3,7 @@ import * as db from "../db/dbUsers";
 import { checkAuth } from "../middleware/authMiddleware";
 import { createHash } from "../utils/auth";
 import { isEmail } from "../utils/emailValidator";
-import { PUD004 } from "../utils/errorCodes";
+import { PUD004 } from "../types/errorCodes";
 import { Expense, User } from "../types/types";
 const router = express.Router();
 
@@ -13,8 +13,17 @@ const router = express.Router();
 
 // Get a list of all users in a given event
 router.get("/users", checkAuth, async (req, res, next) => {
+  const filter: { eventId?: number, excludeUserId?: number } = {
+    eventId: req.query.eventId ? Number(req.query.eventId) : undefined
+  };
+
+  const excludeSelf = req.query.exclude === "self";
+  if (excludeSelf) {
+    filter.excludeUserId = Number(req.session.userId);
+  }
+
   try {
-    const users: User[] = await db.getUsers(Number(req.query.eventId));
+    const users: User[] = await db.getUsers(filter);
     res.status(200).send(users);
   }
   catch (err) {
@@ -29,7 +38,7 @@ router.get("/users/:id", checkAuth, async (req, res, next) => {
     return res.status(400).json({ error: "User ID must be a number" });
   }
   try {
-    const user: User = await db.getUser(userId);
+    const user: User | null = await db.getUser(userId);
     res.status(200).send(user);
   }
   catch (err) {
@@ -90,11 +99,18 @@ router.put("/users/:id", checkAuth, async (req, res, next) => {
   if (isNaN(userId)) {
     return res.status(400).json({ error: "User ID must be a number" });
   }
-  if (!req.body.username) {
-    return res.status(400).json({ error: "Username not provided" });
+  if (!req.body.username || !req.body.firstName || !req.body.lastName || !req.body.email || !req.body.phone) {
+    return res.status(400).json({ error: "Request body must include at least one user property" });
   }
+  const data = {
+    username: req.body.username,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    phone: req.body.phone
+  };
   try {
-    const user: User = await db.editUser(userId, req.body.username);
+    const user: User = await db.editUser(userId, data);
     res.status(200).send(user);
   }
   catch (err) {

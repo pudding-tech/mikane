@@ -10,25 +10,29 @@ import { Expense, User } from "../types/types";
  */
 export const getUser = async (userId: number | null, username?: string | null) => {
   const request = new sql.Request();
-  const user: User = await request
+  const user: User | null = await request
     .input("user_id", sql.Int, userId)
     .input("username", sql.NVarChar, username)
     .execute("get_user")
     .then(data => {
+      if (!data.recordset[0]) {
+        return null;
+      }
       return parseUser(data.recordset[0]);
     });
   return user;
 };
 
 /**
- * DB interface: Get all users, optionally for an event
- * @param eventId Event ID for event to get users for
+ * DB interface: Get all users, optionally filtered
+ * @param filter Object containing filters (event ID, and user ID to exclude)
  * @returns List of users
  */
-export const getUsers = async (eventId: number) => {
+export const getUsers = async (filter?: { eventId?: number, excludeUserId?: number }) => {
   const request = new sql.Request();
   return request
-    .input("event_id", sql.Int, eventId)
+    .input("event_id", sql.Int, filter?.eventId)
+    .input("exclude_user_id", sql.Int, filter?.excludeUserId)
     .execute("get_users")
     .then(data => {
       const users: User[] = parseUsers(data.recordset);
@@ -83,14 +87,18 @@ export const createUser = async (username: string, firstName: string, lastName: 
 /**
  * DB interface: Edit a user
  * @param userId User ID to edit
- * @param name New name of user
+ * @param data Data object
  * @returns Edited user
  */
-export const editUser = async (userId: number, username: string) => {
+export const editUser = async (userId: number, data: { username?: string, firstName?: string, lastName?: string, email?: string, phone?: string }) => {
   const request = new sql.Request();
   const user: User = await request
     .input("user_id", sql.Int, userId)
-    .input("username", sql.NVarChar, username)
+    .input("username", sql.NVarChar, data.username)
+    .input("first_name", sql.NVarChar, data.firstName)
+    .input("last_name", sql.NVarChar, data.lastName)
+    .input("email", sql.NVarChar, data.email)
+    .input("phone_number", sql.NVarChar, data.phone)
     .execute("edit_user")
     .then(data => {
       return parseUser(data.recordset[0]);

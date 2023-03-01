@@ -11,7 +11,7 @@ begin
   insert into [event]([name], created, admin_id, [private]) values (@name, GETDATE(), @user_id, @private)
 
   declare @event_id int = @@IDENTITY
-  exec get_events @event_id
+  exec add_user_to_event @event_id, @user_id
 
 end
 go

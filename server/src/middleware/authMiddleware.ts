@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { PUD001 } from "../utils/errorCodes";
+import { PUD001 } from "../types/errorCodes";
 
 /**
  * Only allow authenticated users to progress
