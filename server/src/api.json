@@ -193,12 +193,21 @@
           {
             "name": "eventId",
             "in": "query",
-            "description": "Event ID",
+            "description": "Get only users connected to this event",
             "required": false,
             "schema": {
               "type": "integer"
-            },
-            "example": 1
+            }
+          },
+          {
+            "name": "exclude",
+            "in": "query",
+            "description": "Set this to 'self' to remove logged in user from response",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+            
           }
         ],
         "responses": {
@@ -319,7 +328,7 @@
           "Users"
         ],
         "summary": "Edit user",
-        "description": "Edit a user (change username)",
+        "description": "Edit a user",
         "operationId": "putUser",
         "security": [
           { "cookieAuth": [] }
@@ -341,13 +350,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "username": {
-                    "type": "string",
-                    "example": "New username"
-                  }
-                }
+                "$ref": "#/components/schemas/EditUserObject"
               }
             }
           }
@@ -1683,6 +1686,10 @@
             "type": "string",
             "example": "test@user.com"
           },
+          "phone": {
+            "type": "string",
+            "example": "12131415"
+          },
           "created": {
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
@@ -1915,6 +1922,31 @@
           "password": {
             "type": "string",
             "example": "secret"
+          }
+        }
+      },
+      "EditUserObject": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "testuser2"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Albert"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Pooh"
+          },
+          "email": {
+            "type": "string",
+            "example": "albert@user.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "12131415"
           }
         }
       },

@@ -5,6 +5,7 @@ export type User = {
   firstName?: string,
   lastName?: string,
   email?: string,
+  phone?: string,
   created?: Date,
   uuid: string
 }
@@ -37,7 +38,7 @@ export type Expense = {
   amount: number,
   categoryId: number,
   categoryName: string,
-  time: Date,
+  dateAdded: Date,
   payer: User
 }
 

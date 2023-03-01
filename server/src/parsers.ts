@@ -65,7 +65,7 @@ export const parseExpenses = (expInput: object[]): Expense[] => {
 			amount: expObj["amount" as keyof typeof expObj],
 			categoryId: expObj["category_id" as keyof typeof expObj],
 			categoryName: expObj["category_name" as keyof typeof expObj],
-      time: expObj["date_added" as keyof typeof expObj],
+      dateAdded: expObj["date_added" as keyof typeof expObj],
       payer: {
         id: expObj["payer_id" as keyof typeof expObj],
         username: expObj["payer_username" as keyof typeof expObj],
@@ -133,6 +133,7 @@ export const parseUser = (userObj: object): User => {
     firstName: userObj["first_name" as keyof typeof userObj],
     lastName: userObj["last_name" as keyof typeof userObj],
     email: userObj["email" as keyof typeof userObj],
+    phone: userObj["phone_number" as keyof typeof userObj],
     created: userObj["created" as keyof typeof userObj],
     uuid: userObj["uuid" as keyof typeof userObj]
   };
