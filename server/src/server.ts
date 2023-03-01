@@ -130,7 +130,7 @@ app.use("/api", authRoutes);
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {
     console.error(err);
-    return res.status(500).json({ error: err.message || "Something broke :(" });
+    return res.status(500).json({ error: "Something broke :(" });
   }
   next();
 });

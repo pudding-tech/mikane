@@ -30,7 +30,25 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserAuthResponse"
+                  "type": "object",
+                  "properties": {
+                    "authenticated": {
+                      "type": "boolean",
+                      "example": "true"
+                    },
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "testuser"
+                    },
+                    "uuid": {
+                      "type": "string",
+                      "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
+                    }
+                  }
                 }
               }
             }
@@ -59,7 +77,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserLogin"
+                "type": "object",
+                "properties": {
+                  "usernameEmail": {
+                    "type": "string",
+                    "example": "testuser"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "secret"
+                  }
+                }
               }
             }
           }
@@ -78,7 +106,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserAuthResponse"
+                  "$ref": "#/components/schemas/UserLoginResponse"
                 }
               }
             }
@@ -179,7 +207,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
                 }
               }
             }
@@ -219,7 +250,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegisterUserObject"
+                  "$ref": "#/components/schemas/UserDetailed"
                 }
               }
             }
@@ -266,7 +297,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "$ref": "#/components/schemas/UserDetailed"
                 }
               }
             }
@@ -327,7 +358,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "$ref": "#/components/schemas/UserDetailed"
                 }
               }
             }
@@ -372,13 +403,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": true
-                    }
-                  }
+                  "$ref": "#/components/schemas/DeleteSuccess"
                 }
               }
             }
@@ -638,13 +663,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": true
-                    }
-                  }
+                  "$ref": "#/components/schemas/DeleteSuccess"
                 }
               }
             }
@@ -1116,13 +1135,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": true
-                    }
-                  }
+                  "$ref": "#/components/schemas/DeleteSuccess"
                 }
               }
             }
@@ -1501,7 +1514,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Event"
+                  "$ref": "#/components/schemas/Expense"
                 }
               }
             }
@@ -1593,13 +1606,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": true
-                    }
-                  }
+                  "$ref": "#/components/schemas/DeleteSuccess"
                 }
               }
             }
@@ -1620,74 +1627,6 @@
   },
   "components": {
     "schemas": {
-      "ErrorResponse": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "example": "PUD-XXX"
-          },
-          "message": {
-            "type": "string",
-            "example": "Error message"
-          }
-        }
-      },
-      "UserLogin": {
-        "type": "object",
-        "properties": {
-          "usernameEmail": {
-            "type": "string",
-            "example": "testuser"
-          },
-          "password": {
-            "type": "string",
-            "example": "123"
-          }
-        }
-      },
-      "UserAuthResponse": {
-        "type": "object",
-        "properties": {
-          "authenticated": {
-            "type": "boolean",
-            "example": "true"
-          },
-          "username": {
-            "type": "string",
-            "example": "testuser"
-          }
-        }
-      },
-      "RegisterUserObject": {
-        "type": "object",
-        "properties": {
-          "username": {
-            "type": "string",
-            "example": "testuser"
-          },
-          "firstName": {
-            "type": "string",
-            "example": "Test"
-          },
-          "lastName": {
-            "type": "string",
-            "example": "User"
-          },
-          "email": {
-            "type": "string",
-            "example": "test@user.com"
-          },
-          "phone": {
-            "type": "string",
-            "example": "12131415"
-          },
-          "password": {
-            "type": "string",
-            "example": "secret"
-          }
-        }
-      },
       "User": {
         "type": "object",
         "properties": {
@@ -1698,6 +1637,88 @@
           "username": {
             "type": "string",
             "example": "testuser"
+          },
+          "name": {
+            "type": "string",
+            "example": "Test"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@user.com"
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "uuid": {
+            "type": "string",
+            "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
+          }
+        }
+      },
+      "UserDetailed": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "name": {
+            "type": "string",
+            "example": "Test"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Test"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "McTesty"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@user.com"
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "uuid": {
+            "type": "string",
+            "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
+          }
+        }
+      },
+      "UserLoginResponse": {
+        "type": "object",
+        "properties": {
+          "authenticated": {
+            "type": "boolean",
+            "example": "true"
+          },
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "name": {
+            "type": "string",
+            "example": "Test"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Test"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "McTesty"
           },
           "email": {
             "type": "string",
@@ -1769,6 +1790,10 @@
             "type": "string",
             "example": "Example category"
           },
+          "time": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
           "payer": {
             "type": "object",
             "properties": {
@@ -1779,6 +1804,14 @@
               "username": {
                 "type": "string",
                 "example": "Example user"
+              },
+              "name": {
+                "type": "string",
+                "example": "Test"
+              },
+              "uuid": {
+                "type": "string",
+                "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
               }
             }
           }
@@ -1853,6 +1886,57 @@
           "amount": {
             "type": "number",
             "example": 100
+          }
+        }
+      },
+      "RegisterUserObject": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Test"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "User"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@user.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "12131415"
+          },
+          "password": {
+            "type": "string",
+            "example": "secret"
+          }
+        }
+      },
+      "DeleteSuccess": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "PUD-XXX"
+          },
+          "message": {
+            "type": "string",
+            "example": "Error message"
           }
         }
       }

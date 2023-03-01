@@ -10,13 +10,13 @@ import { Expense, User } from "../types/types";
  */
 export const getUser = async (userId: number | null, username?: string | null) => {
   const request = new sql.Request();
-  const user: User = await request
+  const user: User | null = await request
     .input("user_id", sql.Int, userId)
     .input("username", sql.NVarChar, username)
     .execute("get_user")
     .then(data => {
       if (!data.recordset[0]) {
-        throw new Error(":(");
+        return null;
       }
       return parseUser(data.recordset[0]);
     });
@@ -28,7 +28,7 @@ export const getUser = async (userId: number | null, username?: string | null) =
  * @param eventId Event ID for event to get users for
  * @returns List of users
  */
-export const getUsers = async (eventId: number) => {
+export const getUsers = async (eventId?: number) => {
   const request = new sql.Request();
   return request
     .input("event_id", sql.Int, eventId)

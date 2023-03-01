@@ -51,7 +51,6 @@ router.get("/events/:id/balances", checkAuth, async (req, res, next) => {
 
 // Get a list of all payments for a given event
 router.get("/events/:id/payments", checkAuth, async (req, res, next) => {
-  console.log("ttt");
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
     return res.status(400).json({ error: "ID must be a number" });

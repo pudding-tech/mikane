@@ -2,12 +2,11 @@ export type User = {
   id: number,
   username: string,
   name: string,
-  firstName: string,
-  lastName: string,
+  firstName?: string,
+  lastName?: string,
   email?: string,
   created?: Date,
-  eventJoined?: Date,
-  uuid?: string
+  uuid: string
 }
 
 export type Event = {
@@ -38,6 +37,7 @@ export type Expense = {
   amount: number,
   categoryId: number,
   categoryName: string,
+  time: Date,
   payer: User
 }
 

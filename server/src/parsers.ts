@@ -1,3 +1,4 @@
+import { setUserUniqueNames } from "./utils/setUserDisplayNames";
 import { Category, Event, Expense, User, UserBalance, BalanceCalculationResult } from "./types/types";
 import { CategoryTarget } from "./types/enums";
 
@@ -9,7 +10,7 @@ import { CategoryTarget } from "./types/enums";
  */
 export const parseCategories = (catInput: object[], target: CategoryTarget) : Category[] => {
   const categories: Category[] = [];
-  catInput.forEach( (catObj) => {
+  catInput.forEach(catObj => {
 
     const category: Category = {
       id: catObj["id" as keyof typeof catObj],
@@ -56,7 +57,7 @@ export const parseCategories = (catInput: object[], target: CategoryTarget) : Ca
  */
 export const parseExpenses = (expInput: object[]): Expense[] => {
 	const expenses: Expense[] = [];
-	expInput.forEach( (expObj) => {
+	expInput.forEach(expObj => {
 		const expense: Expense = {
 			id: expObj["id" as keyof typeof expObj],
 			name: expObj["name" as keyof typeof expObj],
@@ -64,17 +65,26 @@ export const parseExpenses = (expInput: object[]): Expense[] => {
 			amount: expObj["amount" as keyof typeof expObj],
 			categoryId: expObj["category_id" as keyof typeof expObj],
 			categoryName: expObj["category_name" as keyof typeof expObj],
+      time: expObj["date_added" as keyof typeof expObj],
       payer: {
         id: expObj["payer_id" as keyof typeof expObj],
         username: expObj["payer_username" as keyof typeof expObj],
         name: expObj["payer_first_name" as keyof typeof expObj],
         firstName: expObj["payer_first_name" as keyof typeof expObj],
-        lastName: expObj["payer_last_name" as keyof typeof expObj]
+        lastName: expObj["payer_last_name" as keyof typeof expObj],
+        uuid: expObj["payer_uuid" as keyof typeof expObj]
       }
 		};
-
 		expenses.push(expense);
 	});
+
+  // Set unique names of users where they are shared
+  const users: User[] = expenses.map(expense => expense.payer);
+  setUserUniqueNames(users);
+  for (const user of users) {
+    delete user.firstName;
+    delete user.lastName;
+  }
 
 	return expenses;
 };
@@ -95,21 +105,16 @@ export const parseUsers = (usersInput: object[]): User[] => {
       lastName: userObj["last_name" as keyof typeof userObj],
       email: userObj["email" as keyof typeof userObj],
       created: userObj["created" as keyof typeof userObj],
-      eventJoined: userObj["joined_date" as keyof typeof userObj],
       uuid: userObj["uuid" as keyof typeof userObj]
 		};
-
 		users.push(user);
 	});
 
-  // Set display name as first and last names for users where first names are identical
+  // Set unique names of users where they are shared
+  setUserUniqueNames(users);
   for (const user of users) {
-    const otherUsers = users.filter(otherUser => otherUser.id !== user.id);
-    for (const otherUser of otherUsers) {
-      if (user.firstName === otherUser.firstName) {
-        user.name = user.firstName + " " + user.lastName;
-      }
-    }
+    delete user.firstName;
+    delete user.lastName;
   }
 
 	return users;
@@ -129,7 +134,6 @@ export const parseUser = (userObj: object): User => {
     lastName: userObj["last_name" as keyof typeof userObj],
     email: userObj["email" as keyof typeof userObj],
     created: userObj["created" as keyof typeof userObj],
-    eventJoined: userObj["joined_date" as keyof typeof userObj],
     uuid: userObj["uuid" as keyof typeof userObj]
   };
 };
@@ -152,6 +156,7 @@ export const parseEvents = (eventsInput: object[]) => {
     };
     events.push(event);
   }
+
   return events;
 };
 
@@ -182,12 +187,12 @@ export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult
     });
   });
 
-  balances.sort((a, b) => {
-    if (!a.user.eventJoined || !b.user.eventJoined) {
-      return 0;
-    }
-    return a.user.eventJoined.getTime() - b.user.eventJoined.getTime();
-  });
+  // balances.sort((a, b) => {
+  //   if (!a.user.eventJoined || !b.user.eventJoined) {
+  //     return 0;
+  //   }
+  //   return a.user.eventJoined.getTime() - b.user.eventJoined.getTime();
+  // });
   
   return balances;
 };

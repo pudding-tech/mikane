@@ -3,7 +3,7 @@ import sql from "mssql";
 import * as dbUsers from "../db/dbUsers";
 import * as dbAuth from "../db/dbAuthentication";
 import { authenticate, createHash } from "../utils/auth";
-import { PUD001, PUD002, PUD003 } from "../utils/errorCodes";
+import { PUD001, PUD002, PUD003 } from "../types/errorCodes";
 import { parseUser } from "../parsers";
 import { User } from "../types/types";
 const router = express.Router();
@@ -19,7 +19,9 @@ router.get("/login", (req, res) => {
   if (req.session.authenticated) {
     return res.status(200).json({
       authenticated: req.session.authenticated,
-      username: req.session.username
+      username: req.session.username,
+      id: req.session.userId,
+      uuid: req.session.uuid
     });
   }
   res.set("WWW-Authenticate", "Session");
@@ -39,15 +41,19 @@ router.post("/login", async (req, res, next) => {
     return res.status(400).json(PUD002);
   }
 
-  if (req.session.authenticated) {
-    console.log(`User ${req.session.username} already authenticated`);
-    return res.status(200).json({
-      authenticated: req.session.authenticated,
-      username: req.session.username
-    });
-  }
-
   try {
+    if (req.session.authenticated && req.session.userId) {
+      console.log(`User ${req.session.username} already authenticated`);
+      const user: User | null = await dbUsers.getUser(req.session.userId);
+      if (!user) {
+        return next(new Error("Error getting user for authentication"));
+      }
+      return res.status(200).json({
+        authenticated: req.session.authenticated,
+        ...user
+      });
+    }
+
     const userPW = await dbAuth.getUserHash(usernameEmail);
     if (!userPW || !userPW.hash) {
       return res.status(401).json(PUD003);
@@ -56,17 +62,18 @@ router.post("/login", async (req, res, next) => {
     const isAuthenticated = authenticate(password, userPW.hash);
 
     if (isAuthenticated) {
-      const user: User = await dbUsers.getUser(userPW.id);
+      const user: User | null = await dbUsers.getUser(userPW.id);
       if (!user) {
         return next(new Error("Error getting user for authentication"));
       }
       req.session.authenticated = true;
       req.session.userId = user.id;
+      req.session.uuid = user.uuid;
       req.session.username = user.username;
       console.log(`User ${user.username} signing in...`, req.sessionID);
       res.status(200).json({
         authenticated: req.session.authenticated,
-        username: req.session.username
+        ...user
       });
     }
     else {

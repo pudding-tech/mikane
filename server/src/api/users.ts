@@ -3,7 +3,7 @@ import * as db from "../db/dbUsers";
 import { checkAuth } from "../middleware/authMiddleware";
 import { createHash } from "../utils/auth";
 import { isEmail } from "../utils/emailValidator";
-import { PUD004 } from "../utils/errorCodes";
+import { PUD004 } from "../types/errorCodes";
 import { Expense, User } from "../types/types";
 const router = express.Router();
 
@@ -29,7 +29,7 @@ router.get("/users/:id", checkAuth, async (req, res, next) => {
     return res.status(400).json({ error: "User ID must be a number" });
   }
   try {
-    const user: User = await db.getUser(userId);
+    const user: User | null = await db.getUser(userId);
     res.status(200).send(user);
   }
   catch (err) {
