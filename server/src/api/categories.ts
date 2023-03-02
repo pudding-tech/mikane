@@ -72,7 +72,7 @@ router.post("/categories/:id/user/:userId", checkAuth, async (req, res, next) =>
     return res.status(400).json({ error: "Weight can not be less than 1" });
   }
   try {
-    const category: Category = await db.addUserToCategory(userId, catId, weight);
+    const category: Category = await db.addUserToCategory(catId, userId, weight);
     res.send(category);
   }
   catch (err) {
@@ -111,11 +111,11 @@ router.put("/categories/:id/user/:userId", checkAuth, async (req, res, next) => 
   if (isNaN(catId) || isNaN(userId)) {
     return res.status(400).json({ error: "Category ID and user ID must be numbers" });
   }
-  if ((weight && weight < 1) || (weight && isNaN(weight))) {
+  if (!weight || weight < 1 || isNaN(weight)) {
     return res.status(400).json({ error: "Weight cannot be less than 1" });
   }
   try {
-    const category: Category = await db.editUserWeight(catId, userId, req.body.weight);
+    const category: Category = await db.editUserWeight(catId, userId, weight);
     res.status(200).send(category);
   }
   catch (err) {
@@ -133,7 +133,7 @@ router.put("/categories/:id/weighted", checkAuth, async (req, res, next) => {
     return res.status(400).json({ error: "Weighted boolean not provided" });
   }
   try {
-    const category: Category = await db.editWeightStatus(catId, req.body.weighted);
+    const category: Category = await db.editWeightStatus(catId, Boolean(req.body.weighted));
     res.status(200).send(category);
   }
   catch (err) {
@@ -168,7 +168,7 @@ router.delete("/categories/:id/user/:userId", checkAuth, async (req, res, next) 
     return res.status(400).json({ error: "Category ID and user ID must be numbers!" });
   }
   try {
-    const category: Category = await db.removeUserFromCategory(userId, catId);
+    const category: Category = await db.removeUserFromCategory(catId, userId);
     res.status(200).send(category);
   }
   catch (err) {

@@ -11,7 +11,7 @@ begin
     return
   end
 
-  execute get_users @event_id
+  execute get_users @event_id, null
   execute get_categories @event_id, null
   execute get_expenses @event_id, null, null
 

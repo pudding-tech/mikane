@@ -1,8 +1,9 @@
 import sql from "mssql";
 import { calculateBalance, calculatePayments } from "../calculations";
 import { parseBalance, parseEvents, parseCategories, parseExpenses, parseUsers } from "../parsers";
-import { CategoryTarget } from "../types/enums";
 import { BalanceCalculationResult, Category, Event, Expense, Payment, User, UserBalance } from "../types/types";
+import { CategoryTarget } from "../types/enums";
+import { ErrorExt } from "../types/errorExt";
 
 /**
  * DB interface: Get all events
@@ -126,33 +127,41 @@ export const deleteEvent = async (id: number) => {
 
 /**
  * DB interface: Add user to an event
- * @param userId 
  * @param eventId 
+ * @param userId 
  * @returns Affected event
  */
-export const addUserToEvent = async (userId: number, eventId: number) => {
+export const addUserToEvent = async (eventId: number, userId: number) => {
   const request = new sql.Request();
   const events: Event[] = await request
-    .input("user_id", sql.Int, userId)
     .input("event_id", sql.Int, eventId)
+    .input("user_id", sql.Int, userId)
     .execute("add_user_to_event")
     .then(data => {
       return parseEvents(data.recordset);
+    })
+    .catch(err => {
+      if (err.number === 51010) {
+        throw new ErrorExt(err.message, 400);
+      }
+      else {
+        throw err;
+      }
     });
   return events[0];
 };
 
 /**
  * DB interface: Remove a user from an event
- * @param userId 
  * @param eventId  
+ * @param userId 
  * @returns Affected event
  */
-export const removeUserFromEvent = async (userId: number, eventId: number) => {
+export const removeUserFromEvent = async (eventId: number, userId: number) => {
   const request = new sql.Request();
   const events: Event[] = await request
-    .input("user_id", sql.Int, userId)
-    .input("category_id", sql.Int, eventId)
+    .input("event_id", sql.Int, eventId)  
+    .input("user_id", sql.Int, userId)  
     .execute("remove_user_from_event")
     .then(data => {
       return parseEvents(data.recordset);

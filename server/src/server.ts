@@ -11,6 +11,7 @@ import userRoutes from "./api/users";
 import categoryRoutes from "./api/categories";
 import expenseRoutes from "./api/expenses";
 import authRoutes from "./api/authentication";
+import { ErrorExt } from "./types/errorExt";
 
 dotenv.config();
 import { dbConfig } from "./config";
@@ -63,7 +64,7 @@ const apiDocsOptions = {
   customCssUrl: "/SwaggerDark.css",
   customCss: ".swagger-ui .topbar { display: none }",
   swaggerOptions: {
-    supportedSubmitMethods: ["get", "post"]
+    // supportedSubmitMethods: ["get", "post"]
   }
 };
 app.use("/", swaggerUi.serve);
@@ -127,10 +128,16 @@ app.use("/api", expenseRoutes);
 app.use("/api", authRoutes);
 
 // Error handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: ErrorExt | Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {
-    console.error(err);
-    return res.status(500).json({ error: "Something broke :(" });
+    if (err instanceof ErrorExt) {
+      console.log(err);
+      return res.status(err.code ? err.code : 500).json({ error: err.message ? err.message : "Something broke :(" });
+    }
+    else {
+      console.log(err);
+      return res.status(500).json({ error: "Something broke :(" });
+    }
   }
   next();
 });

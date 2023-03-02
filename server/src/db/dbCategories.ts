@@ -2,6 +2,7 @@ import sql from "mssql";
 import { parseCategories } from "../parsers";
 import { CategoryTarget } from "../types/enums";
 import { Category } from "../types/types";
+import { ErrorExt } from "../types/errorExt";
 
 /**
  * DB interface: Get categories for an event
@@ -73,6 +74,14 @@ export const addUserToCategory = async (categoryId: number, userId: number, weig
     .execute("add_user_to_category")
     .then(data => {
       return parseCategories(data.recordset, CategoryTarget.CLIENT);
+    })
+    .catch(err => {
+      if (err.number === 51010) {
+        throw new ErrorExt(err.message, 400);
+      }
+      else {
+        throw err;
+      }
     });
   return categories[0];
 };

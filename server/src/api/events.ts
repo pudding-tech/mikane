@@ -95,7 +95,7 @@ router.post("/events/:id/user/:userId", checkAuth, async (req, res, next) => {
     return res.status(400).json({ error: "Event ID and user ID must be numbers" });
   }
   try {
-    const event: Event = await db.addUserToEvent(userId, eventId);
+    const event: Event = await db.addUserToEvent(eventId, userId);
     res.send(event);
   }
   catch (err) {
