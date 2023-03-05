@@ -3,8 +3,8 @@ import * as db from "../db/dbUsers";
 import { checkAuth } from "../middleware/authMiddleware";
 import { createHash } from "../utils/auth";
 import { isEmail } from "../utils/emailValidator";
-import { PUD004 } from "../types/errorCodes";
 import { Expense, User } from "../types/types";
+import * as ec from "../types/errorCodes";
 const router = express.Router();
 
 /* --- */
@@ -35,7 +35,7 @@ router.get("/users", checkAuth, async (req, res, next) => {
 router.get("/users/:id", checkAuth, async (req, res, next) => {
   const userId = Number(req.params.id);
   if (isNaN(userId)) {
-    return res.status(400).json({ error: "User ID must be a number" });
+    return res.status(400).json(ec.PUD016);
   }
   try {
     const user: User | null = await db.getUser(userId);
@@ -51,7 +51,7 @@ router.get("/users/:id/expenses/:event", checkAuth, async (req, res, next) => {
   const userId = Number(req.params.id);
   const eventId = Number(req.params.event);
   if (isNaN(userId) || isNaN(eventId)) {
-    return res.status(400).json({ error: "User ID and event ID must be numbers" });
+    return res.status(400).json(ec.PUD015);
   }
   try {
     const expenses: Expense[] = await db.getUserExpenses(userId, eventId);
@@ -76,7 +76,7 @@ router.post("/users", async (req, res, next) => {
 
   // Validate email
   if (!isEmail(req.body.email)) {
-    return res.status(400).json(PUD004);
+    return res.status(400).json(ec.PUD004);
   }
 
   try {

@@ -9,7 +9,7 @@ begin
   if (@event_id is null)
     begin
       select
-        id, [name], created, admin_id, [private], uuid
+        id, [name], [description], created, admin_id, [private], uuid
       from
         [event]
       order by id desc
@@ -18,7 +18,7 @@ begin
   else
     begin
       select
-        id, [name], created, admin_id, [private], uuid
+        id, [name], [description], created, admin_id, [private], uuid
       from
         [event]
       where

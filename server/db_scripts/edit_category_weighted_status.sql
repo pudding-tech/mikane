@@ -7,14 +7,10 @@ create procedure edit_category_weighted_status
 as
 begin
 
-  declare @event_id int
-  declare @currently_weighted bit
-
-  select @currently_weighted = weighted from category where id = @category_id
-
   update category set weighted = @weighted where id = @category_id
   --update user_category set [weight] = 1 where category_id = @category_id
 
+  declare @event_id int
   select @event_id = event_id from category where id = @category_id
 
   exec get_categories @event_id, @category_id

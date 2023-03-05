@@ -1,8 +1,10 @@
 import sql from "mssql";
 import { calculateBalance, calculatePayments } from "../calculations";
 import { parseBalance, parseEvents, parseCategories, parseExpenses, parseUsers } from "../parsers";
-import { CategoryTarget } from "../types/enums";
 import { BalanceCalculationResult, Category, Event, Expense, Payment, User, UserBalance } from "../types/types";
+import { Target } from "../types/enums";
+import { ErrorExt } from "../types/errorExt";
+import * as ec from "../types/errorCodes";
 
 /**
  * DB interface: Get all events
@@ -54,7 +56,7 @@ export const getEventBalances = async (eventId: number) => {
   }
 
   const users: User[] = parseUsers(data[0]);
-  const categories: Category[] = parseCategories(data[1], CategoryTarget.CALC);
+  const categories: Category[] = parseCategories(data[1], Target.CALC);
   const expenses: Expense[] = parseExpenses(data[2]);
 
   const balance: BalanceCalculationResult = calculateBalance(expenses, categories, users);
@@ -81,7 +83,7 @@ export const getEventPayments = async (eventId: number) => {
   }
 
   const users: User[] = parseUsers(data[0]);
-  const categories: Category[] = parseCategories(data[1], CategoryTarget.CALC);
+  const categories: Category[] = parseCategories(data[1], Target.CALC);
   const expenses: Expense[] = parseExpenses(data[2]);
 
   const payments: Payment[] = calculatePayments(expenses, categories, users);
@@ -93,17 +95,25 @@ export const getEventPayments = async (eventId: number) => {
  * @param name Name of event
  * @param userId ID of user creating event
  * @param private Whether event should be open for all or invite only
+ * @param description Description of event (optional)
  * @returns Newly created event
  */
-export const createEvent = async (name: string, userId: number, privateEvent: boolean) => {
+export const createEvent = async (name: string, userId: number, privateEvent: boolean, description?: string) => {
   const request = new sql.Request();
   const events: Event[] = await request
     .input("name", sql.NVarChar, name)
+    .input("description", sql.NVarChar, description)
     .input("user_id", sql.Int, userId)
     .input("private", sql.Bit, privateEvent)
     .execute("new_event")
     .then(data => {
       return parseEvents(data.recordset);
+    })
+    .catch(err => {
+      if (err.number === 50005)
+        throw new ErrorExt(ec.PUD005, 400);
+      else
+        throw err;
     });
   return events[0];
 };
@@ -126,33 +136,43 @@ export const deleteEvent = async (id: number) => {
 
 /**
  * DB interface: Add user to an event
- * @param userId 
  * @param eventId 
+ * @param userId 
  * @returns Affected event
  */
-export const addUserToEvent = async (userId: number, eventId: number) => {
+export const addUserToEvent = async (eventId: number, userId: number) => {
   const request = new sql.Request();
   const events: Event[] = await request
-    .input("user_id", sql.Int, userId)
     .input("event_id", sql.Int, eventId)
+    .input("user_id", sql.Int, userId)
     .execute("add_user_to_event")
     .then(data => {
       return parseEvents(data.recordset);
+    })
+    .catch(err => {
+      if (err.number === 50006) 
+        throw new ErrorExt(ec.PUD006, 400);
+      else if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, 400);
+      else if (err.number === 50009)
+        throw new ErrorExt(ec.PUD009, 400);
+      else
+        throw err;
     });
   return events[0];
 };
 
 /**
  * DB interface: Remove a user from an event
- * @param userId 
  * @param eventId  
+ * @param userId 
  * @returns Affected event
  */
-export const removeUserFromEvent = async (userId: number, eventId: number) => {
+export const removeUserFromEvent = async (eventId: number, userId: number) => {
   const request = new sql.Request();
   const events: Event[] = await request
-    .input("user_id", sql.Int, userId)
-    .input("category_id", sql.Int, eventId)
+    .input("event_id", sql.Int, eventId)  
+    .input("user_id", sql.Int, userId)  
     .execute("remove_user_from_event")
     .then(data => {
       return parseEvents(data.recordset);

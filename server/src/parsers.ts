@@ -1,6 +1,6 @@
 import { setUserUniqueNames } from "./utils/setUserDisplayNames";
 import { Category, Event, Expense, User, UserBalance, BalanceCalculationResult } from "./types/types";
-import { CategoryTarget } from "./types/enums";
+import { Target } from "./types/enums";
 
 /**
  * Build array of Category objects. Format for either client or calculate function
@@ -8,7 +8,7 @@ import { CategoryTarget } from "./types/enums";
  * @param target Choose if categories are meant for client presentation or calculations
  * @returns List of Category objects
  */
-export const parseCategories = (catInput: object[], target: CategoryTarget) : Category[] => {
+export const parseCategories = (catInput: object[], target: Target) : Category[] => {
   const categories: Category[] = [];
   catInput.forEach(catObj => {
 
@@ -18,10 +18,10 @@ export const parseCategories = (catInput: object[], target: CategoryTarget) : Ca
       weighted: catObj["weighted" as keyof typeof catObj]
     };
 
-    if (target === CategoryTarget.CLIENT) {
+    if (target === Target.CLIENT) {
       category.users = [];
     }
-    else if (target === CategoryTarget.CALC) {
+    else if (target === Target.CALC) {
       category.userWeights = new Map<number, number>();
     }
 
@@ -29,7 +29,7 @@ export const parseCategories = (catInput: object[], target: CategoryTarget) : Ca
       const userWeightString: string[] = (catObj["user_weight" as keyof typeof catObj] as string).split(";");
       userWeightString.forEach(userWeight => {
         const userWeightProps = userWeight.split(",");
-        if (target === CategoryTarget.CLIENT && category.users) {
+        if (target === Target.CLIENT && category.users) {
           category.users.push(
             {
               id: parseInt(userWeightProps[0]),
@@ -38,7 +38,7 @@ export const parseCategories = (catInput: object[], target: CategoryTarget) : Ca
             }
           );
         }
-        else if (target === CategoryTarget.CALC && category.userWeights) {
+        else if (target === Target.CALC && category.userWeights) {
           category.userWeights.set(parseInt(userWeightProps[0]), parseInt(userWeightProps[2]));
         }
       });
@@ -150,6 +150,7 @@ export const parseEvents = (eventsInput: object[]) => {
     const event: Event = {
       id: eventObj["id" as keyof typeof eventObj],
       name: eventObj["name" as keyof typeof eventObj],
+      description: eventObj["description" as keyof typeof eventObj],
       created: eventObj["created" as keyof typeof eventObj],
       adminId: eventObj["admin_id" as keyof typeof eventObj],
       private: eventObj["private" as keyof typeof eventObj],

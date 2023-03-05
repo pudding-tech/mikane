@@ -11,6 +11,21 @@ create procedure new_user
 as
 begin
 
+  if exists (select id from [user] where [username] = @username)
+  begin
+    throw 50017, 'Username already taken', 1
+  end
+
+  if exists (select id from [user] where email = @email)
+  begin
+    throw 50018, 'Email address already taken', 1
+  end
+
+  if exists (select id from [user] where phone_number = @phone_number)
+  begin
+    throw 50019, 'Phone number already taken', 1
+  end
+
   insert into [user](username, first_name, last_name, email, phone_number, [password], created) values (@username, @first_name, @last_name, @email, @phone_number, @password, GETDATE())
 
   declare @user_id int = @@IDENTITY

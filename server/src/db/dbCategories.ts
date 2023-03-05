@@ -1,7 +1,9 @@
 import sql from "mssql";
 import { parseCategories } from "../parsers";
-import { CategoryTarget } from "../types/enums";
+import { Target } from "../types/enums";
 import { Category } from "../types/types";
+import { ErrorExt } from "../types/errorExt";
+import * as ec from "../types/errorCodes";
 
 /**
  * DB interface: Get categories for an event
@@ -15,7 +17,7 @@ export const getCategories = async (eventId: number) => {
     .input("category_id", sql.Int, null)
     .execute("get_categories")
     .then(data => {
-      return parseCategories(data.recordset, CategoryTarget.CLIENT);
+      return parseCategories(data.recordset, Target.CLIENT);
     });
   return categories;
 };
@@ -32,7 +34,7 @@ export const getCategory = async (categoryId: number) => {
     .input("category_id", sql.Int, categoryId)
     .execute("get_categories")
     .then(data => {
-      return parseCategories(data.recordset, CategoryTarget.CLIENT);
+      return parseCategories(data.recordset, Target.CLIENT);
     });
   return categories[0];
 };
@@ -72,7 +74,21 @@ export const addUserToCategory = async (categoryId: number, userId: number, weig
     .input("weight", sql.Numeric(14), weight)
     .execute("add_user_to_category")
     .then(data => {
-      return parseCategories(data.recordset, CategoryTarget.CLIENT);
+      return parseCategories(data.recordset, Target.CLIENT);
+    })
+    .catch(err => {
+      if (err.number === 50007)
+        throw new ErrorExt(ec.PUD007, 400);
+      else if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, 400);
+      else if (err.number === 50010)
+        throw new ErrorExt(ec.PUD010, 400);
+      else if (err.number === 50011)
+        throw new ErrorExt(ec.PUD011, 400);
+      else if (err.number === 50012)
+        throw new ErrorExt(ec.PUD012, 400);
+      else
+        throw err;
     });
   return categories[0];
 };
@@ -110,7 +126,7 @@ export const editUserWeight = async (categoryId: number, userId: number, weight:
     .input("weight", sql.Int, weight)
     .execute("edit_user_weight")
     .then(data => {
-      return parseCategories(data.recordset, CategoryTarget.CLIENT);
+      return parseCategories(data.recordset, Target.CLIENT);
     });
   return categories[0];
 };
@@ -128,7 +144,7 @@ export const editWeightStatus = async (categoryId: number, weighted: boolean) =>
     .input("weighted", sql.Bit, weighted)
     .execute("edit_category_weighted_status")
     .then(data => {
-      return parseCategories(data.recordset, CategoryTarget.CLIENT);
+      return parseCategories(data.recordset, Target.CLIENT);
     });
   return categories[0];
 };
@@ -162,7 +178,7 @@ export const removeUserFromCategory = async (categoryId: number, userId: number)
     .input("user_id", sql.Int, userId)
     .execute("remove_user_from_category")
     .then(data => {
-      return parseCategories(data.recordset, CategoryTarget.CLIENT);
+      return parseCategories(data.recordset, Target.CLIENT);
     });
   return categories[0];
 };
