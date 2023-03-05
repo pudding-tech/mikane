@@ -2,8 +2,9 @@ import sql from "mssql";
 import { calculateBalance, calculatePayments } from "../calculations";
 import { parseBalance, parseEvents, parseCategories, parseExpenses, parseUsers } from "../parsers";
 import { BalanceCalculationResult, Category, Event, Expense, Payment, User, UserBalance } from "../types/types";
-import { CategoryTarget } from "../types/enums";
+import { Target } from "../types/enums";
 import { ErrorExt } from "../types/errorExt";
+import * as ec from "../types/errorCodes";
 
 /**
  * DB interface: Get all events
@@ -55,7 +56,7 @@ export const getEventBalances = async (eventId: number) => {
   }
 
   const users: User[] = parseUsers(data[0]);
-  const categories: Category[] = parseCategories(data[1], CategoryTarget.CALC);
+  const categories: Category[] = parseCategories(data[1], Target.CALC);
   const expenses: Expense[] = parseExpenses(data[2]);
 
   const balance: BalanceCalculationResult = calculateBalance(expenses, categories, users);
@@ -82,7 +83,7 @@ export const getEventPayments = async (eventId: number) => {
   }
 
   const users: User[] = parseUsers(data[0]);
-  const categories: Category[] = parseCategories(data[1], CategoryTarget.CALC);
+  const categories: Category[] = parseCategories(data[1], Target.CALC);
   const expenses: Expense[] = parseExpenses(data[2]);
 
   const payments: Payment[] = calculatePayments(expenses, categories, users);
@@ -105,6 +106,12 @@ export const createEvent = async (name: string, userId: number, privateEvent: bo
     .execute("new_event")
     .then(data => {
       return parseEvents(data.recordset);
+    })
+    .catch(err => {
+      if (err.number === 50005)
+        throw new ErrorExt(ec.PUD005, 400);
+      else
+        throw err;
     });
   return events[0];
 };
@@ -141,12 +148,14 @@ export const addUserToEvent = async (eventId: number, userId: number) => {
       return parseEvents(data.recordset);
     })
     .catch(err => {
-      if (err.number === 51010) {
-        throw new ErrorExt(err.message, 400);
-      }
-      else {
+      if (err.number === 50006) 
+        throw new ErrorExt(ec.PUD006, 400);
+      else if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, 400);
+      else if (err.number === 50009)
+        throw new ErrorExt(ec.PUD009, 400);
+      else
         throw err;
-      }
     });
   return events[0];
 };

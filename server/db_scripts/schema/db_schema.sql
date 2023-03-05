@@ -19,6 +19,7 @@ go
 create table [event] (
   id int identity(1,1) primary key,
   [name] nvarchar(255) not null unique,
+  [description] nvarchar(400) not null,
   created datetime not null,
   admin_id int foreign key references [user](id) on delete set null,
   [private] bit not null,

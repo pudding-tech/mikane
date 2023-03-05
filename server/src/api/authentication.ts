@@ -2,8 +2,8 @@ import express from "express";
 import sql from "mssql";
 import * as dbUsers from "../db/dbUsers";
 import * as dbAuth from "../db/dbAuthentication";
+import * as ec from "../types/errorCodes";
 import { authenticate, createHash } from "../utils/auth";
-import { PUD001, PUD002, PUD003 } from "../types/errorCodes";
 import { parseUser } from "../parsers";
 import { User } from "../types/types";
 const router = express.Router();
@@ -25,7 +25,7 @@ router.get("/login", (req, res) => {
     });
   }
   res.set("WWW-Authenticate", "Session");
-  res.status(401).json(PUD001);
+  res.status(401).json(ec.PUD001);
 });
 
 /* ---- */
@@ -38,7 +38,7 @@ router.get("/login", (req, res) => {
 router.post("/login", async (req, res, next) => {
   const {usernameEmail, password} = req.body;
   if (!usernameEmail || !password) {
-    return res.status(400).json(PUD002);
+    return res.status(400).json(ec.PUD002);
   }
 
   try {
@@ -56,7 +56,7 @@ router.post("/login", async (req, res, next) => {
 
     const userPW = await dbAuth.getUserHash(usernameEmail);
     if (!userPW || !userPW.hash) {
-      return res.status(401).json(PUD003);
+      return res.status(401).json(ec.PUD003);
     }
 
     const isAuthenticated = authenticate(password, userPW.hash);
@@ -77,7 +77,7 @@ router.post("/login", async (req, res, next) => {
       });
     }
     else {
-      res.status(401).json(PUD003);
+      res.status(401).json(ec.PUD003);
     }
   }
   catch (err) {
@@ -90,7 +90,7 @@ router.post("/login", async (req, res, next) => {
 */
 router.post("/logout", (req, res) => {
   if (!req.session.authenticated) {
-    return res.status(400).json(PUD001);
+    return res.status(400).json(ec.PUD001);
   }
   const username = req.session.username;
   req.session.destroy(err => {

@@ -1,6 +1,8 @@
 import sql from "mssql";
 import { parseExpenses, parseUser, parseUsers } from "../parsers";
 import { Expense, User } from "../types/types";
+import { ErrorExt } from "../types/errorExt";
+import * as ec from "../types/errorCodes";
 
 /**
  * DB interface: Get user information
@@ -80,6 +82,16 @@ export const createUser = async (username: string, firstName: string, lastName: 
     .execute("new_user")
     .then(data => {
       return parseUser(data.recordset[0]);
+    })
+    .catch(err => {
+      if (err.number === 50017)
+        throw new ErrorExt(ec.PUD017);
+      else if (err.number === 50018)
+        throw new ErrorExt(ec.PUD018);
+      else if (err.number === 50019)
+        throw new ErrorExt(ec.PUD019);
+      else
+        throw err;
     });
   return user;
 };

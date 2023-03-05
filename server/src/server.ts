@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import session from "express-session";
 import swaggerUi from "swagger-ui-express";
 import cors from "cors";
@@ -11,7 +11,7 @@ import userRoutes from "./api/users";
 import categoryRoutes from "./api/categories";
 import expenseRoutes from "./api/expenses";
 import authRoutes from "./api/authentication";
-import { ErrorExt } from "./types/errorExt";
+import { errorHandler } from "./errorHandler";
 
 dotenv.config();
 import { dbConfig } from "./config";
@@ -64,7 +64,7 @@ const apiDocsOptions = {
   customCssUrl: "/SwaggerDark.css",
   customCss: ".swagger-ui .topbar { display: none }",
   swaggerOptions: {
-    // supportedSubmitMethods: ["get", "post"]
+    supportedSubmitMethods: ["get", "post"]
   }
 };
 app.use("/", swaggerUi.serve);
@@ -128,19 +128,7 @@ app.use("/api", expenseRoutes);
 app.use("/api", authRoutes);
 
 // Error handler
-app.use((err: ErrorExt | Error, req: Request, res: Response, next: NextFunction) => {
-  if (err) {
-    if (err instanceof ErrorExt) {
-      console.log(err);
-      return res.status(err.code ? err.code : 500).json({ error: err.message ? err.message : "Something broke :(" });
-    }
-    else {
-      console.log(err);
-      return res.status(500).json({ error: "Something broke :(" });
-    }
-  }
-  next();
-});
+app.use(errorHandler);
 
 // Send not found message back to client if route not found
 app.use(((req, res) => {

@@ -8,6 +8,11 @@ create procedure new_event
 as
 begin
 
+  if exists (select id from [event] where [name] = @name)
+  begin
+    throw 50005, 'Another event already has this name', 1
+  end
+
   insert into [event]([name], created, admin_id, [private]) values (@name, GETDATE(), @user_id, @private)
 
   declare @event_id int = @@IDENTITY

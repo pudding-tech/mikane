@@ -8,6 +8,16 @@ create procedure add_user_to_category
 as
 begin
 
+  if not exists (select id from category where id = @category_id)
+  begin
+    throw 50007, 'Category does not exist', 1
+  end
+
+  if not exists (select id from [user] where id = @user_id)
+  begin
+    throw 50008, 'User does not exist', 1
+  end
+
   declare @event_id int
   declare @weighted bit
 
@@ -15,17 +25,17 @@ begin
 
   if not exists (select user_id from user_event where event_id = @event_id and user_id = @user_id)
   begin
-    throw 51010, 'User not in event, cannot be added to category', 1
+    throw 50010, 'User not in event, cannot be added to category', 7
   end
 
   if exists (select user_id from user_category where category_id = @category_id and user_id = @user_id)
   begin
-    throw 51010, 'User is already in this category', 1
+    throw 50011, 'User is already in this category', 8
   end
 
   if (@weighted = 1 and @weight is null)
     begin;
-      throw 51010, 'Weight required when adding user to weighted category', 1
+      throw 50012, 'Weight required when adding user to weighted category', 9
     end
   else if (@weighted = 1)
     begin

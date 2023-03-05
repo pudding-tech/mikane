@@ -13,6 +13,7 @@ export type User = {
 export type Event = {
   id: number,
   name: string,
+  description: string,
   created: Date,
   adminId: number,
   private: boolean,
