@@ -80,7 +80,7 @@ router.post("/events", checkAuth, async (req, res, next) => {
     return next(new ErrorExt("Something went wrong retrieving user ID from session"));
   }
   try {
-    const event: Event = await db.createEvent(req.body.name, userId, req.body.private);
+    const event: Event = await db.createEvent(req.body.name, userId, req.body.private, req.body.description);
     res.status(200).send(event);
   }
   catch (err) {

@@ -549,6 +549,10 @@
                     "type": "string",
                     "example": "Example event"
                   },
+                  "description": {
+                    "type": "string",
+                    "example": "Example description"
+                  },
                   "private": {
                     "type": "boolean",
                     "example": false
@@ -1761,6 +1765,10 @@
           "name": {
             "type": "string",
             "example": "Example Event"
+          },
+          "description": {
+            "type": "string",
+            "example": "Example description"
           },
           "created": {
             "type": "date-time",

@@ -95,12 +95,14 @@ export const getEventPayments = async (eventId: number) => {
  * @param name Name of event
  * @param userId ID of user creating event
  * @param private Whether event should be open for all or invite only
+ * @param description Description of event (optional)
  * @returns Newly created event
  */
-export const createEvent = async (name: string, userId: number, privateEvent: boolean) => {
+export const createEvent = async (name: string, userId: number, privateEvent: boolean, description?: string) => {
   const request = new sql.Request();
   const events: Event[] = await request
     .input("name", sql.NVarChar, name)
+    .input("description", sql.NVarChar, description)
     .input("user_id", sql.Int, userId)
     .input("private", sql.Bit, privateEvent)
     .execute("new_event")
