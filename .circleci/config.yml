@@ -5,25 +5,26 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  frontend-build:
-    working_directory: ~/project/app/pudding-debt
-    docker:
-      - image: circleci/node:16-browsers
-    steps:
-      - checkout:
-          path: ~/project
-      - restore_cache:
-          key: pudding-debt-{{ .Branch }}-{{ checksum "package.json" }}
-      - run: npm install
-      - save_cache:
-          key: pudding-debt-{{ .Branch }}-{{ checksum "package.json" }}
-          paths:
-            - "node_modules"
-      - run: xvfb-run -a npm run build
+    frontend-build:
+        working_directory: ~/project/app/pudding-debt
+        docker:
+            - image: circleci/node:16-browsers
+        steps:
+            - checkout:
+                  path: ~/project
+            - restore_cache:
+                  key: pudding-debt-{{ .Branch }}-{{ checksum "package.json" }}
+            - run: npm install
+            - save_cache:
+                  key: pudding-debt-{{ .Branch }}-{{ checksum "package.json" }}
+                  paths:
+                      - "node_modules"
+            - run: xvfb-run -a npm run build
+            - run: xvfb-run -a npm run test
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  build-workflow:
-    jobs:
-      - frontend-build
+    build-workflow:
+        jobs:
+            - frontend-build

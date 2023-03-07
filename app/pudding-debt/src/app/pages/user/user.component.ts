@@ -47,7 +47,7 @@ export class UserComponent implements OnInit, OnDestroy {
 	) {}
 
 	ngOnInit() {
-		this.route.parent?.parent?.params.subscribe((params) => {
+		this.route?.parent?.parent?.params.subscribe((params) => {
 			this.eventId = params['eventId'];
 			this.loadUsers();
 		});
