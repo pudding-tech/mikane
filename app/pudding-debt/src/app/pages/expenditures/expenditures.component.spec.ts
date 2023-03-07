@@ -17,8 +17,13 @@ describe('ExpendituresComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule, MockModule(MatDialogModule), MockModule(MatIconModule)],
-			declarations: [ExpendituresComponent, MockComponent(ProgressSpinnerComponent)],
+			imports: [
+				HttpClientTestingModule,
+				MockModule(MatDialogModule),
+				MockModule(MatIconModule),
+				ExpendituresComponent,
+				MockComponent(ProgressSpinnerComponent),
+			],
 			providers: [
 				{ provide: ActivatedRoute, useValue: activatedRouteStub },
 				{ provide: MessageService, useValue: messageServiceStub },

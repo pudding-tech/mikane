@@ -1,16 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { map, combineLatest, find } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ApiError } from 'src/app/types/apiError.type';
+import { NgFor } from '@angular/common';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
 	selector: 'app-event',
 	templateUrl: './event.component.html',
 	styleUrls: ['./event.component.scss'],
+	standalone: true,
+	imports: [MatToolbarModule, MatButtonModule, RouterLink, MatIconModule, MatTabsModule, NgFor, RouterOutlet],
 })
 export class EventComponent implements OnInit {
 	event: PuddingEvent = {

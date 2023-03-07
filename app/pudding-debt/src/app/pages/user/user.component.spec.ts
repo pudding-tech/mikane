@@ -17,8 +17,13 @@ describe('UserComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule, MockModule(MatDialogModule), MockModule(MatIconModule), MockModule(MatCardModule)],
-			declarations: [UserComponent],
+			imports: [
+				HttpClientTestingModule,
+				MockModule(MatDialogModule),
+				MockModule(MatIconModule),
+				MockModule(MatCardModule),
+				UserComponent,
+			],
 			providers: [
 				{ provide: ActivatedRoute, useValue: activatedRouteStub },
 				{ provide: MessageService, useValue: messageServiceStub },

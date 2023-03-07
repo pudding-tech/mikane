@@ -7,18 +7,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ConfirmDialogModule } from 'src/app/features/confirm-dialog/confirm-dialog.module';
-import { SharedModule } from 'src/app/shared/shared.module';
+
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { SettingsRoutingModule } from './settings-routing.module';
 import { SettingsComponent } from './settings.component';
 import { UserSettingsComponent } from './user/user-settings.component';
 
 @NgModule({
-	declarations: [SettingsComponent, ResetPasswordComponent, UserSettingsComponent],
 	imports: [
 		SettingsRoutingModule,
-		SharedModule,
 		FormsModule,
 		ReactiveFormsModule,
 		MatInputModule,
@@ -28,7 +25,9 @@ import { UserSettingsComponent } from './user/user-settings.component';
 		MatFormFieldModule,
 		MatToolbarModule,
 		MatCardModule,
-		ConfirmDialogModule,
+		SettingsComponent,
+		ResetPasswordComponent,
+		UserSettingsComponent,
 	],
 })
 export class SettingsModule {}

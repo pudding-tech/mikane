@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatAccordion } from '@angular/material/expansion';
+import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'lodash-es';
 import { BehaviorSubject } from 'rxjs';
@@ -7,11 +7,30 @@ import { EventService, Payment } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
+import { MatCardModule } from '@angular/material/card';
+import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
 
 @Component({
 	selector: 'app-payment-structure',
 	templateUrl: './payment-structure.component.html',
 	styleUrls: ['./payment-structure.component.scss'],
+	standalone: true,
+	imports: [
+		NgIf,
+		MatButtonModule,
+		MatIconModule,
+		MatExpansionModule,
+		NgFor,
+		MatTableModule,
+		ProgressSpinnerComponent,
+		MatCardModule,
+		AsyncPipe,
+		CurrencyPipe,
+	],
 })
 export class PaymentStructureComponent implements OnInit {
 	@ViewChild(MatAccordion) accordion!: MatAccordion;

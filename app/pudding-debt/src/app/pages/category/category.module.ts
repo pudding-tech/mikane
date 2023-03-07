@@ -9,18 +9,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
-import { ConfirmDialogModule } from 'src/app/features/confirm-dialog/confirm-dialog.module';
-import { SharedModule } from 'src/app/shared/shared.module';
+
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
 import { CategoryRoutingModule } from './category-routing.module';
 import { CategoryComponent } from './category.component';
 
 @NgModule({
-	declarations: [CategoryComponent, CategoryEditDialogComponent, CategoryDialogComponent],
 	imports: [
 		CategoryRoutingModule,
-		SharedModule,
 		FormsModule,
 		ReactiveFormsModule,
 		MatCheckboxModule,
@@ -32,7 +29,9 @@ import { CategoryComponent } from './category.component';
 		MatTableModule,
 		MatExpansionModule,
 		MatDialogModule,
-		ConfirmDialogModule,
+		CategoryComponent,
+		CategoryEditDialogComponent,
+		CategoryDialogComponent,
 	],
 })
 export class CategoryModule {}

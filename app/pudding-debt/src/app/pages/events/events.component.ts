@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PuddingEvent, EventService } from 'src/app/services/event/event.service';
 import { EventDialogComponent } from './event-dialog/event-dialog.component';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -8,11 +8,29 @@ import { BehaviorSubject, NEVER, Subscription, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
+import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { MatCardModule } from '@angular/material/card';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
 	selector: 'app-events',
 	templateUrl: './events.component.html',
 	styleUrls: ['./events.component.scss'],
+	standalone: true,
+	imports: [
+		MatToolbarModule,
+		MatButtonModule,
+		RouterLink,
+		MatIconModule,
+		NgIf,
+		MatCardModule,
+		NgFor,
+		ProgressSpinnerComponent,
+		AsyncPipe,
+	],
 })
 export class EventsComponent implements OnInit, OnDestroy {
 	events: PuddingEvent[] = [];

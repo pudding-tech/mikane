@@ -8,9 +8,9 @@ export interface Expense {
 	id?: number;
 	name: string;
 	description: string;
-    categoryName: string;
-    amount: number;
-    payer: User;
+	categoryName: string;
+	amount: number;
+	payer: User;
 }
 
 @Injectable({
@@ -22,28 +22,26 @@ export class ExpenseService {
 	constructor(private httpClient: HttpClient) {}
 
 	loadExpenses(eventId: number): Observable<Expense[]> {
-		return this.httpClient.get<Expense[]>(
-			this.apiUrl + `?eventId=${eventId}`
-		);
+		return this.httpClient.get<Expense[]>(this.apiUrl + `?eventId=${eventId}`);
 	}
 
 	createExpense(
 		expenseName: string,
-        expenseDescription: string,
-        amount: number,
+		expenseDescription: string,
+		amount: number,
 		categoryId: number,
 		payerId: number
 	): Observable<Expense> {
 		return this.httpClient.post<Expense>(this.apiUrl, {
 			name: expenseName,
 			description: expenseDescription,
-            amount: amount,
+			amount: amount,
 			categoryId: categoryId,
 			payerId: payerId,
 		});
 	}
 
-    deleteExpense(expenseId: number): Observable<void> {
-        return this.httpClient.delete<void>(this.apiUrl + `/${expenseId}`);
-    }
+	deleteExpense(expenseId: number): Observable<void> {
+		return this.httpClient.delete<void>(this.apiUrl + `/${expenseId}`);
+	}
 }

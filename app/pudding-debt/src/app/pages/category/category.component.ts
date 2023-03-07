@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { map } from 'lodash-es';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -12,11 +12,36 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 import { BehaviorSubject } from 'rxjs';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
+import { MatCardModule } from '@angular/material/card';
+import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTableModule } from '@angular/material/table';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
 	selector: 'app-category',
 	templateUrl: './category.component.html',
 	styleUrls: ['./category.component.scss'],
+	standalone: true,
+	imports: [
+		MatButtonModule,
+		MatIconModule,
+		NgIf,
+		MatExpansionModule,
+		NgFor,
+		MatTableModule,
+		FormsModule,
+		ReactiveFormsModule,
+		MatFormFieldModule,
+		MatInputModule,
+		ProgressSpinnerComponent,
+		MatCardModule,
+		AsyncPipe,
+	],
 })
 export class CategoryComponent implements OnInit, AfterViewChecked {
 	private eventId!: number;

@@ -9,16 +9,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
-import { SharedModule } from 'src/app/shared/shared.module';
+
 import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dialog.component';
 import { ExpenditureRoutingModule } from './expenditures-routing.module';
 import { ExpendituresComponent } from './expenditures.component';
 
 @NgModule({
-	declarations: [ExpendituresComponent, ExpenditureDialogComponent],
 	imports: [
 		ExpenditureRoutingModule,
-		SharedModule,
 		FormsModule,
 		ReactiveFormsModule,
 		MatInputModule,
@@ -30,6 +28,8 @@ import { ExpendituresComponent } from './expenditures.component';
 		MatFormFieldModule,
 		MatAutocompleteModule,
 		MatListModule,
+		ExpendituresComponent,
+		ExpenditureDialogComponent,
 	],
 })
 export class ExpendituresModule {}

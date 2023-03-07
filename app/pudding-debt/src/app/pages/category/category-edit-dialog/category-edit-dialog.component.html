@@ -3,22 +3,13 @@
 	<form [formGroup]="editCategoryForm">
 		<mat-form-field appearance="fill">
 			<mat-label>Weight</mat-label>
-			<input
-				matInput
-				type="number"
-				name="weight"
-				formControlName="weight"
-			/>
+			<input matInput type="number" name="weight" formControlName="weight" />
 		</mat-form-field>
 	</form>
 </div>
 <div mat-dialog-actions>
 	<button mat-button (click)="onNoClick()">Cancel</button>
-	<button
-		mat-button
-		[mat-dialog-close]="editCategoryForm.value"
-		[disabled]="editCategoryForm.invalid || !editCategoryForm.dirty"
-	>
+	<button mat-button [mat-dialog-close]="editCategoryForm.value" [disabled]="editCategoryForm.invalid || !editCategoryForm.dirty">
 		Save
 	</button>
 </div>

@@ -10,18 +10,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
-import { SharedModule } from 'src/app/shared/shared.module';
+
 import { UserDialogComponent } from './user-dialog/user-dialog.component';
 import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './user.component';
 import { ExpendituresModule } from '../expenditures/expenditures.module';
-import { ConfirmDialogModule } from 'src/app/features/confirm-dialog/confirm-dialog.module';
 
 @NgModule({
-	declarations: [UserComponent, UserDialogComponent],
 	imports: [
 		UserRoutingModule,
-		SharedModule,
 		FormsModule,
 		ReactiveFormsModule,
 		MatInputModule,
@@ -35,7 +32,8 @@ import { ConfirmDialogModule } from 'src/app/features/confirm-dialog/confirm-dia
 		MatFormFieldModule,
 		MatTableModule,
 		ExpendituresModule,
-		ConfirmDialogModule,
+		UserComponent,
+		UserDialogComponent,
 	],
 })
 export class UserModule {}

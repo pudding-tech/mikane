@@ -8,13 +8,11 @@ export class ExpenseDataSource implements DataSource<Expense> {
 	private loadingSubject = new BehaviorSubject<boolean>(false);
 
 	public loading$ = this.loadingSubject.asObservable();
-    public notEmpty = new BehaviorSubject<boolean>(false);
+	public notEmpty = new BehaviorSubject<boolean>(false);
 
 	constructor(private userService: UserService) {}
 
-	connect(
-		collectionViewer: CollectionViewer
-	): Observable<readonly Expense[]> {
+	connect(collectionViewer: CollectionViewer): Observable<readonly Expense[]> {
 		return this.expenseSubject.asObservable();
 	}
 
@@ -33,23 +31,23 @@ export class ExpenseDataSource implements DataSource<Expense> {
 				finalize(() => this.loadingSubject.next(false))
 			)
 			.subscribe((expenses) => {
-                this.notEmpty.next(expenses.length > 0);
-                this.expenseSubject.next(expenses);
-            });
+				this.notEmpty.next(expenses.length > 0);
+				this.expenseSubject.next(expenses);
+			});
 	}
 
-    removeExpense(expenseId: number) {
-        const expenses = this.expenseSubject.value;
-        const index = expenses.findIndex((expense) => {
-            return expense.id === expenseId;
-        });
-        if (index > -1) {
-            expenses.splice(index, 1);
-            this.expenseSubject.next(expenses);
-        }
-    }
+	removeExpense(expenseId: number) {
+		const expenses = this.expenseSubject.value;
+		const index = expenses.findIndex((expense) => {
+			return expense.id === expenseId;
+		});
+		if (index > -1) {
+			expenses.splice(index, 1);
+			this.expenseSubject.next(expenses);
+		}
+	}
 
-    addExpense(expense: Expense) {
-        this.expenseSubject.next([...this.expenseSubject.value, expense]);
-    }
+	addExpense(expense: Expense) {
+		this.expenseSubject.next([...this.expenseSubject.value, expense]);
+	}
 }

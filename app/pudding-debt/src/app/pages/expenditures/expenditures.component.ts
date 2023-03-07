@@ -7,11 +7,19 @@ import { Expense, ExpenseService } from 'src/app/services/expense/expense.servic
 import { MessageService } from 'src/app/services/message/message.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dialog.component';
+import { MatCardModule } from '@angular/material/card';
+import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { MatTableModule } from '@angular/material/table';
+import { NgIf, AsyncPipe, CurrencyPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
 	selector: 'app-expenditures',
 	templateUrl: './expenditures.component.html',
 	styleUrls: ['./expenditures.component.scss'],
+	standalone: true,
+	imports: [MatButtonModule, MatIconModule, NgIf, MatTableModule, ProgressSpinnerComponent, MatCardModule, AsyncPipe, CurrencyPipe],
 })
 export class ExpendituresComponent implements OnInit {
 	private eventId!: number;

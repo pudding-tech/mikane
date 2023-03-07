@@ -20,8 +20,13 @@ describe('CategoryComponent', () => {
 		messageServiceStub = {} as MessageService;
 
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule, MockModule(MatDialogModule), MockModule(MatIconModule), MockModule(MatCardModule)],
-			declarations: [CategoryComponent],
+			imports: [
+				HttpClientTestingModule,
+				MockModule(MatDialogModule),
+				MockModule(MatIconModule),
+				MockModule(MatCardModule),
+				CategoryComponent,
+			],
 			providers: [
 				{ provide: ActivatedRoute, useValue: activatedRouteStub },
 				{ provide: MessageService, useValue: messageServiceStub },
