@@ -11,6 +11,8 @@ jobs:
       - image: circleci/node:16-browsers
     steps:
       - checkout
+      - run: pwd
+      - run: ls 
       - restore_cache:
           key: pudding-debt-{{ .Branch }}-{{ checksum "package.json" }}
       - run: npm install
