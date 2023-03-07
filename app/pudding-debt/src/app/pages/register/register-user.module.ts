@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RegisterUserRoutingModule } from './register-user-routing.module';
 import { RegisterUserComponent } from './register-user.component';
@@ -21,6 +22,7 @@ import { RegisterUserComponent } from './register-user.component';
 		MatCardModule,
 		MatFormFieldModule,
 		MatIconModule,
+		MatToolbarModule,
 	],
 })
 export class RegisterUserModule {}

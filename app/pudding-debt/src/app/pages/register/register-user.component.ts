@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { ApiError } from 'src/app/types/apiError.type';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
 
 @Component({
@@ -15,15 +16,15 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	private userSub: Subscription;
 
-	private phonenumber!: Phonenumber;
+	private phone!: Phonenumber;
 	private phoneCtrl$: Subscription | undefined;
 
 	registerUserForm = new FormGroup({
 		username: new FormControl<string>('', [Validators.required]),
 		firstName: new FormControl<string>('', [Validators.required]),
-		lastName: new FormControl<string>('', [Validators.required]),
+		lastName: new FormControl<string>(''),
 		email: new FormControl<string>('', [Validators.required, Validators.email]),
-		phonenumber: new FormControl<string>('', [Validators.required]),
+		phone: new FormControl<string>('', [Validators.required]),
 		passwordGroup: new FormGroup({
 			password: new FormControl<string>('', [Validators.required]),
 			passwordRetype: new FormControl<string>('', [Validators.required]),
@@ -44,9 +45,9 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	ngAfterViewInit(): void {
-		this.phoneCtrl$ = this.registerUserForm.get('phonenumber')?.valueChanges.subscribe((number) => {
+		this.phoneCtrl$ = this.registerUserForm.get('phone')?.valueChanges.subscribe((number) => {
 			// TODO: Phonenumber validation
-			this.phonenumber = {
+			this.phone = {
 				number: number ? number : '',
 			};
 		});
@@ -60,8 +61,8 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 					this.registerUserForm.get<string>('firstName')?.value,
 					this.registerUserForm.get<string>('lastName')?.value,
 					this.registerUserForm.get<string>('email')?.value,
-					this.phonenumber,
-					this.registerUserForm.get<string>('password')?.value
+					this.phone,
+					this.registerUserForm.get('passwordGroup').get<string>('password')?.value
 				)
 				.subscribe({
 					next: (user: User) => {
@@ -73,9 +74,9 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 							console.error('Something went wrong while registering user');
 						}
 					},
-					error: (err) => {
+					error: (err: ApiError) => {
 						this.messageService.showError('Failed to register');
-						console.error('Error occurred while registering user', err);
+						console.error('Error occurred while registering user: ', err.error.message);
 					},
 				});
 		}

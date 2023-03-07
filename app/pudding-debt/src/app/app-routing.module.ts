@@ -21,9 +21,10 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/register/register-user.module').then((m) => m.RegisterUserModule),
 	},
 	{
-		path: 'reset-password',
-		loadChildren: () => import('./pages/reset-password/reset-password.module').then((m) => m.ForgotPasswordsModule),
+		path: 'settings',
+		loadChildren: () => import('./pages/settings/settings.module').then((m) => m.SettingsModule),
 	},
+	{ path: '**', redirectTo: '/events' },
 ];
 
 @NgModule({

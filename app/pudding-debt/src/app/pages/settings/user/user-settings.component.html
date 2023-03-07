@@ -1,0 +1,48 @@
+<div class="user-settings">
+	<mat-card>
+		<mat-card-header>
+			<mat-icon mat-card-avatar>person</mat-icon>
+			<mat-card-title>Edit user info</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+			<form [formGroup]="editUserForm" (ngSubmit)="editUser()">
+				<mat-form-field appearance="fill">
+					<mat-label>Username</mat-label>
+					<input type="text" matInput placeholder="Username" formControlName="username" />
+					<mat-error *ngIf="editUserForm.get('username')?.invalid">Username required</mat-error>
+				</mat-form-field>
+				<mat-form-field appearance="fill">
+					<mat-label>First Name</mat-label>
+					<input type="text" matInput placeholder="First name" formControlName="firstName" />
+					<mat-error *ngIf="editUserForm.get('firstName')?.invalid">First name required</mat-error>
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Last Name</mat-label>
+					<input type="text" matInput placeholder="Last name" formControlName="lastName" />
+					<mat-error *ngIf="editUserForm.get('lastName')?.invalid">Last name invalid</mat-error>
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Email</mat-label>
+					<input type="text" matInput placeholder="Email" formControlName="email" />
+					<mat-error *ngIf="editUserForm.get('email')?.invalid">Invalid email</mat-error>
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Phonenumber</mat-label>
+					<input type="text" matInput placeholder="Phonenumber" formControlName="phone" />
+					<mat-error *ngIf="editUserForm.get('phone')?.invalid">Invalid phonenumber</mat-error>
+				</mat-form-field>
+				<br />
+				<mat-card-actions class="user-settings-actions">
+					<button type="submit" mat-raised-button color="primary">
+						<mat-icon>edit</mat-icon>
+						Edit
+					</button>
+					<button type="button" mat-raised-button color="warn" (click)="deleteUser()">
+						<mat-icon>delete</mat-icon>
+						Delete user
+					</button>
+				</mat-card-actions>
+			</form>
+		</mat-card-content>
+	</mat-card>
+</div>

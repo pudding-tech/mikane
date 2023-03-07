@@ -1,27 +1,21 @@
-<div class="payment-actions">
+<div class="payment-actions" *ngIf="senders.length > 0">
 	<button mat-raised-button color="primary" (click)="accordion.openAll()">
+		<mat-icon>visibility</mat-icon>
 		Show all payments
 	</button>
 	<button mat-raised-button color="primary" (click)="accordion.closeAll()">
+		<mat-icon>visibility_off</mat-icon>
 		Collapse all payments
 	</button>
 </div>
 <div *ngIf="(loading | async) === false; else loadingSpinner">
-	<mat-accordion
-		class="payments"
-		multi
-		*ngIf="senders.length > 0; else noPayments"
-	>
+	<mat-accordion class="payments" multi *ngIf="senders.length > 0; else noPayments">
 		<mat-expansion-panel *ngFor="let sender of senders" expanded="true">
 			<mat-expansion-panel-header>
 				<mat-panel-title>{{ sender.sender.name }}</mat-panel-title>
 			</mat-expansion-panel-header>
 			<ng-template matExpansionPanelContent>
-				<table
-					mat-table
-					class="expense-table"
-					[dataSource]="sender.receivers"
-				>
+				<table mat-table class="expense-table" [dataSource]="sender.receivers">
 					<!-- Name Column -->
 					<ng-container matColumnDef="name">
 						<th mat-header-cell *matHeaderCellDef>Owes money to</th>
@@ -34,25 +28,15 @@
 					<ng-container matColumnDef="amount">
 						<th mat-header-cell *matHeaderCellDef>Amount</th>
 						<td mat-cell *matCellDef="let receiver">
-							{{
-								receiver.amount | currency: "":"":"1.2-2":"no"
-							}}
+							{{ receiver.amount | currency : "" : "" : "1.2-2" : "no" }}
 							kr
 						</td></ng-container
 					>
 
 					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-					<tr
-						mat-row
-						*matRowDef="let row; columns: displayedColumns"
-					></tr>
+					<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 					<tr class="mat-row" *matNoDataRow>
-						<td
-							class="mat-cell"
-							[attr.colspan]="displayedColumns.length"
-						>
-							No payments
-						</td>
+						<td class="mat-cell" [attr.colspan]="displayedColumns.length">No payments</td>
 					</tr>
 				</table>
 			</ng-template>
@@ -65,5 +49,9 @@
 </ng-template>
 
 <ng-template #noPayments>
-	<mat-card appearance="outlined"> No payments </mat-card>
+	<div class="payments-empty">
+		<mat-card appearance="outlined">
+			<mat-card-content> <h1>No payments</h1></mat-card-content>
+		</mat-card>
+	</div>
 </ng-template>
