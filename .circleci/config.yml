@@ -10,18 +10,14 @@ jobs:
       - image: circleci/node:16-browsers
     steps:
       - checkout
-      - run: ls
-      - run: cd ~/project/app/pudding-debt
-      - run: pwd
-      - run: ls 
       - restore_cache:
           key: pudding-debt-{{ .Branch }}-{{ checksum "package.json" }}
-      - run: npm install
+      - run: cd ~/project/app/pudding-debt && npm install
       - save_cache:
           key: pudding-debt-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - "node_modules"
-      - run: xvfb-run -a npm run build
+      - run: cd ~/project/app/pudding-debt && xvfb-run -a npm run build
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
