@@ -56,11 +56,12 @@ export const calculateBalance = (
 			expenseCategory.forEach((userWeight: number, userId: number) => {
 				spendingMap.set(
 					userId,
-					(spendingMap.get(userId) ?? 0) - (expense.amount * userWeight)
+					(spendingMap.get(userId) ?? 0) - expense.amount * userWeight
 				);
 				userNetExpense.set(
 					userId,
-					(userNetExpense.get(userId) ?? 0) - (expense.amount * userWeight)
+					(userNetExpense.get(userId) ?? 0) -
+						expense.amount * userWeight
 				);
 			});
 		}
@@ -71,8 +72,14 @@ export const calculateBalance = (
 			return user.id == userId;
 		});
 		if (user !== undefined) {
-			spending.push({ user: user, amount: roundAmount(spendingMap.get(userId) ?? 0) });
-			expensesOutput.push({ user: user, amount: roundAmount(expensesOutputMap.get(userId) ?? 0) });
+			spending.push({
+				user: user,
+				amount: roundAmount(spendingMap.get(userId) ?? 0),
+			});
+			expensesOutput.push({
+				user: user,
+				amount: roundAmount(expensesOutputMap.get(userId) ?? 0),
+			});
 			balance.push({ user: user, amount: roundAmount(netExpense) });
 		}
 	});
@@ -80,7 +87,7 @@ export const calculateBalance = (
 	return {
 		balance: balance,
 		spending: spending,
-		expenses: expensesOutput
+		expenses: expensesOutput,
 	};
 };
 
@@ -106,7 +113,10 @@ export const calculatePayments = (
 		if (record.amount > 0) {
 			lenders.push(record);
 		} else if (record.amount < 0) {
-			debtors.push({ user: record.user, amount: Math.abs(record.amount) });
+			debtors.push({
+				user: record.user,
+				amount: Math.abs(record.amount),
+			});
 		}
 	});
 
@@ -147,6 +157,6 @@ export const calculatePayments = (
 	return payments;
 };
 
-const roundAmount = (amount: number) : number => {
+const roundAmount = (amount: number): number => {
 	return +amount.toFixed(2);
 };

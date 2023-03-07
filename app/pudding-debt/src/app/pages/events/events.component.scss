@@ -1,0 +1,33 @@
+.toolbar-spacer {
+	flex: 1 1 auto;
+}
+
+mat-toolbar button {
+	margin-left: 1em;
+}
+
+.events-container {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+
+	margin-top: 2em;
+
+	.event-card {
+		min-width: 30em;
+	}
+}
+
+.event-item {
+	margin-bottom: 0.5em;
+
+	.event-header {
+		align-items: center;
+		.clickable {
+			cursor: pointer;
+		}
+		.event-actions {
+			margin-left: auto;
+		}
+	}
+}

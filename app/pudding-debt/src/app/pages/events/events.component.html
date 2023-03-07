@@ -1,20 +1,54 @@
-<mat-toolbar>PUDDING DEBT</mat-toolbar>
-<div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div class="events-container">
-		<button
-			*ngFor="let event of events"
-			mat-flat-button
-			type="button"
-			color="secondary"
-			(click)="clickEvent(event)"
-		>
-			{{ event.name }}
+<mat-toolbar>
+	<span>PUDDING DEBT</span>
+	<span class="toolbar-spacer"></span>
+	<div class="settings">
+		<a mat-flat-button color="accent" [routerLink]="['/settings']">
+			<mat-icon>person</mat-icon>
+			Account Settings
+		</a>
+	</div>
+	<div class="logout">
+		<button mat-flat-button color="primary" (click)="logout()">
+			<mat-icon aria-hidden="true" fontIcon="logout"></mat-icon>
+			<span>Logout</span>
 		</button>
 	</div>
-	<div class="add-button">
-		<button mat-raised-button color="primary" (click)="openDialog()">
-			New event
-		</button>
+</mat-toolbar>
+<div *ngIf="(loading | async) === false; else loadingSpinner">
+	<div class="events-container">
+		<mat-card class="event-card">
+			<mat-card-header>
+				<mat-card-title> Events </mat-card-title>
+			</mat-card-header>
+			<mat-card-content>
+				<mat-card *ngFor="let event of events" class="event-item">
+					<mat-card-header class="event-header">
+						<div class="clickable" (click)="clickEvent(event)">
+							<mat-card-title class="event-title">
+								<span class="event-name">
+									{{ event.name }}
+								</span>
+							</mat-card-title>
+							<mat-card-subtitle>
+								{{ event.description }}
+							</mat-card-subtitle>
+						</div>
+						<span class="event-actions">
+							<button mat-icon-button (click)="editEvent(event)"><mat-icon>edit</mat-icon></button>
+							<button mat-icon-button (click)="deleteEvent(event)"><mat-icon>delete</mat-icon></button>
+						</span>
+					</mat-card-header>
+				</mat-card>
+			</mat-card-content>
+			<mat-card-actions>
+				<div class="add-button">
+					<button mat-raised-button color="primary" (click)="openDialog()">
+						<mat-icon>edit_calendar</mat-icon>
+						New event
+					</button>
+				</div>
+			</mat-card-actions>
+		</mat-card>
 	</div>
 </div>
 

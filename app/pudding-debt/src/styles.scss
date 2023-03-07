@@ -1,126 +1,132 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
+html,
 body {
-    background-color: #303030;
+	height: 100%;
+}
+body {
+	margin: 0;
+	font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 #app {
-    display: grid;
-    grid-template-rows: 1fr auto;
-    min-height: 100vh;
+	display: grid;
+	grid-template-rows: 1fr auto;
+	min-height: 100vh;
+}
+
+a.nostyle:link {
+	text-decoration: inherit;
+	color: inherit;
+}
+
+a.nostyle:visited {
+	text-decoration: inherit;
+	color: inherit;
 }
 
 .content {
-    margin-left: 10%;
-    padding-bottom: 3em;
-    width: 80%;
+	margin-left: 10%;
+	padding-bottom: 3em;
+	width: 80%;
 }
 
 .navbar {
-    background-color: #202020;
+	background-color: #202020;
+}
+
+.flex-spacer {
+	flex: 1 1 auto;
 }
 
 .expense-table {
-    width: 100%;
-    caption {
-        text-align: left;
-    }
+	width: 100%;
+	caption {
+		text-align: left;
+	}
 }
 
 .back-button {
-    margin-right: 1em !important;
+	margin-right: 1em !important;
 }
 
 .user-actions {
-    button {
-        margin: 1em;
-    }
+	button {
+		margin: 1em;
+	}
 }
 
 .mat-mdc-dialog-content {
-    overflow: initial !important;
+	overflow: initial !important;
 }
 
 #category-actions {
-    button {
-        margin: 1em;
-    }
+	button {
+		margin: 1em;
+	}
 }
 
 .category-table {
-    width: 30%;
-}
-
-.events-container {
-    min-width: 20em;
-    margin: 1em;
-    width: auto;
-    display: inline-block;
-    button { 
-        margin: 1em;
-    }
+	width: 30%;
 }
 
 .category-actions {
-    display: flex;
+	display: flex;
 }
 
 .loading-spinner-container {
-    margin: {
-        top: 60px;
-        bottom: 60px;
-    };
+	margin: {
+		top: 60px;
+		bottom: 60px;
+	}
 
-    .progress-spinner {
-        margin: auto;
-        position: relative;
-    }
-}
-
-.add-button {
-    margin: 2em;
+	.progress-spinner {
+		margin: auto;
+		position: relative;
+	}
 }
 
 .payment-actions {
-    margin: 1em 0 1em 1em;
-    button {
-        margin: 0 2em 0 0;
-    }
+	margin: 1em 0 1em 1em;
+	button {
+		margin: 0 2em 0 0;
+	}
 }
 
 .user-list {
-    mat-panel-title {
-        display: contents;
-        div {
-            width: 30%;
-            text-align: right;
-        }
-        div.first {
-            width: 10%;
-            text-align: left;
-        }
-    }
+	mat-panel-title {
+		display: contents;
+		div {
+			width: 30%;
+			text-align: right;
+		}
+		div.first {
+			width: 10%;
+			text-align: left;
+		}
+	}
 }
 
 .user-panel-title {
-    color:#242424
+	color: #242424;
 }
 
 .category-amount {
-    text-align: right;
-    justify-content: flex-end;
-    div {
-        margin-right: 1.5em;
-    }
+	text-align: right;
+	justify-content: flex-end;
+	div {
+		margin-right: 1.5em;
+	}
 }
 
 .category-user-name {
-    width: 90%;
+	width: 90%;
 }
 
 .user-list {
-    background-color: #242424;
+	background-color: #242424;
+}
+
+.add-button {
+	margin: 2em;
 }

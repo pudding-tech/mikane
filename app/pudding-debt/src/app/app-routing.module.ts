@@ -1,45 +1,30 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CategoryComponent } from './pages/category/category.component';
-import { EventComponent } from './pages/events/event/event.component';
-import { EventsComponent } from './pages/events/events.component';
-import { ExpendituresComponent } from './pages/expenditures/expenditures.component';
-import { PaymentStructureComponent } from './pages/payment-structure/payment-structure.component';
-import { UserComponent } from './pages/user/user.component';
 
 const routes: Routes = [
-    {
-        path: '',
-        redirectTo: '/events',
-        pathMatch: 'full'
-    },
+	{
+		path: '',
+		redirectTo: '/events',
+		pathMatch: 'full',
+	},
 	{
 		path: 'events',
 		title: 'PuddingDebt',
-		component: EventsComponent,
-    },
-    {
-        path: 'events/:eventId',
-        component: EventComponent,
-        children: [
-            {
-                path: 'users',
-                component: UserComponent
-            },
-            {
-                path: 'expenses',
-                component: ExpendituresComponent,
-            },
-            {
-                path: 'categories',
-                component: CategoryComponent
-            },
-            {
-                path: 'payment',
-                component: PaymentStructureComponent,
-            },
-        ]
-    }
+		loadChildren: () => import('./pages/events/events.module').then((m) => m.EventsModule),
+	},
+	{
+		path: 'login',
+		loadChildren: () => import('./pages/login/login.module').then((m) => m.LoginModule),
+	},
+	{
+		path: 'register',
+		loadChildren: () => import('./pages/register/register-user.module').then((m) => m.RegisterUserModule),
+	},
+	{
+		path: 'settings',
+		loadChildren: () => import('./pages/settings/settings.module').then((m) => m.SettingsModule),
+	},
+	{ path: '**', redirectTo: '/events' },
 ];
 
 @NgModule({

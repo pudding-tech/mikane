@@ -1,0 +1,16 @@
+<mat-toolbar>
+	<a mat-icon-button routerLink="/events" class="back-button">
+		<mat-icon>arrow_back</mat-icon>
+	</a>
+	<span class="toolbar-spacer"></span>
+	<div class="logout">
+		<button mat-flat-button color="primary" (click)="logout()">
+			<mat-icon aria-hidden="true" fontIcon="logout"></mat-icon>
+			<span>Logout</span>
+		</button>
+	</div>
+</mat-toolbar>
+<div class="settings">
+	<user-settings class="section"></user-settings>
+	<reset-password class="section"></reset-password>
+</div>

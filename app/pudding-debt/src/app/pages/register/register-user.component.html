@@ -1,0 +1,104 @@
+<mat-toolbar>
+	<span>PUDDING DEBT</span>
+</mat-toolbar>
+<div class="register-user-section">
+	<mat-card>
+		<mat-card-header>
+			<mat-icon mat-card-avatar aria-hidden="false">person_add</mat-icon>
+			<mat-card-title>Register</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+			<form [formGroup]="registerUserForm" (ngSubmit)="register()">
+				<div>
+					<mat-form-field appearance="fill">
+						<mat-label>Username</mat-label>
+						<input type="text" matInput placeholder="Username" formControlName="username" />
+						<mat-error *ngIf="registerUserForm.get('username')?.invalid"> Username required </mat-error>
+					</mat-form-field>
+				</div>
+				<div>
+					<mat-form-field appearance="fill">
+						<mat-label>First Name</mat-label>
+						<input type="text" matInput placeholder="First name" formControlName="firstName" />
+						<mat-error *ngIf="registerUserForm.get('firstName')?.invalid"> First name required </mat-error>
+					</mat-form-field>
+				</div>
+				<div>
+					<mat-form-field appearance="fill">
+						<mat-label>Last Name</mat-label>
+						<input type="text" matInput placeholder="Last name" formControlName="lastName" />
+						<mat-error *ngIf="registerUserForm.get('lastName')?.invalid"> Invalid last name </mat-error>
+					</mat-form-field>
+				</div>
+				<div>
+					<mat-form-field appearance="fill">
+						<mat-label>Email</mat-label>
+						<input type="text" matInput placeholder="Email" formControlName="email" />
+						<mat-error *ngIf="registerUserForm.get('email')?.invalid"> Invalid email </mat-error>
+					</mat-form-field>
+				</div>
+				<div>
+					<mat-form-field appearance="fill">
+						<mat-label>Phonenumber</mat-label>
+						<input type="tel" matInput placeholder="Phonenumber" formControlName="phone" />
+						<mat-error *ngIf="registerUserForm.get('phone')?.invalid"> Invalid phonenumber </mat-error>
+					</mat-form-field>
+				</div>
+				<div formGroupName="passwordGroup">
+					<div>
+						<mat-form-field appearance="fill">
+							<mat-label>Password</mat-label>
+							<input [type]="hide ? 'password' : 'text'" matInput placeholder="Password" formControlName="password" />
+							<button
+								mat-icon-button
+								matSuffix
+								(click)="hide = !hide"
+								[attr.aria-label]="'Hide password'"
+								[attr.aria-pressed]="hide"
+								type="button"
+							>
+								<mat-icon>
+									{{ hide ? "visibility_off" : "visibility" }}
+								</mat-icon>
+							</button>
+							<mat-error *ngIf="registerUserForm.get('passwordGroup').get('password')?.invalid"> Invalid password </mat-error>
+						</mat-form-field>
+					</div>
+
+					<div>
+						<mat-form-field appearance="fill">
+							<mat-label>Retype Password</mat-label>
+							<input
+								[type]="hide ? 'password' : 'text'"
+								matInput
+								placeholder="Retype Password"
+								formControlName="passwordRetype"
+							/>
+							<button
+								mat-icon-button
+								matSuffix
+								(click)="hide = !hide"
+								[attr.aria-label]="'Hide password'"
+								[attr.aria-pressed]="hide"
+								type="button"
+							>
+								<mat-icon>
+									{{ hide ? "visibility_off" : "visibility" }}
+								</mat-icon>
+							</button>
+							<mat-error *ngIf="registerUserForm.get('passwordGroup').get('passwordRetype')?.invalid">
+								Password does not match
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<br />
+				<mat-card-actions class="register-actions">
+					<button type="submit" mat-raised-button color="primary">
+						Register <mat-icon aria-hidden="false">person_add</mat-icon>
+					</button>
+				</mat-card-actions>
+			</form>
+		</mat-card-content>
+	</mat-card>
+</div>
