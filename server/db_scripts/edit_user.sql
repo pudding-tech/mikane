@@ -22,7 +22,7 @@ begin
   where
     id = @user_id
   
-  exec get_user @user_id
+  exec get_user @user_id, null
 
 end
 go

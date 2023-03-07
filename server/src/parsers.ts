@@ -56,15 +56,15 @@ export const parseCategories = (catInput: object[], target: Target) : Category[]
  * @returns List of Expense objects
  */
 export const parseExpenses = (expInput: object[]): Expense[] => {
-	const expenses: Expense[] = [];
-	expInput.forEach(expObj => {
-		const expense: Expense = {
-			id: expObj["id" as keyof typeof expObj],
-			name: expObj["name" as keyof typeof expObj],
-			description: expObj["description" as keyof typeof expObj],
-			amount: expObj["amount" as keyof typeof expObj],
-			categoryId: expObj["category_id" as keyof typeof expObj],
-			categoryName: expObj["category_name" as keyof typeof expObj],
+  const expenses: Expense[] = [];
+  expInput.forEach(expObj => {
+    const expense: Expense = {
+      id: expObj["id" as keyof typeof expObj],
+      name: expObj["name" as keyof typeof expObj],
+      description: expObj["description" as keyof typeof expObj],
+      amount: expObj["amount" as keyof typeof expObj],
+      categoryId: expObj["category_id" as keyof typeof expObj],
+      categoryName: expObj["category_name" as keyof typeof expObj],
       dateAdded: expObj["date_added" as keyof typeof expObj],
       payer: {
         id: expObj["payer_id" as keyof typeof expObj],
@@ -95,20 +95,20 @@ export const parseExpenses = (expInput: object[]): Expense[] => {
  * @returns List of User objects
  */
 export const parseUsers = (usersInput: object[]): User[] => {
-	const users: User[] = [];
-	usersInput.forEach(userObj => {
-		const user: User = {
+  const users: User[] = [];
+  usersInput.forEach(userObj => {
+    const user: User = {
       id: userObj["id" as keyof typeof userObj],
-			username: userObj["username" as keyof typeof userObj],
+      username: userObj["username" as keyof typeof userObj],
       name: userObj["first_name" as keyof typeof userObj],
       firstName: userObj["first_name" as keyof typeof userObj],
       lastName: userObj["last_name" as keyof typeof userObj],
       email: userObj["email" as keyof typeof userObj],
       created: userObj["created" as keyof typeof userObj],
       uuid: userObj["uuid" as keyof typeof userObj]
-		};
-		users.push(user);
-	});
+    };
+    users.push(user);
+  });
 
   // Set unique names of users where they are shared
   setUserUniqueNames(users);
@@ -117,7 +117,7 @@ export const parseUsers = (usersInput: object[]): User[] => {
     delete user.lastName;
   }
 
-	return users;
+  return users;
 };
 
 /**
