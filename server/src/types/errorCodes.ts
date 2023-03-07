@@ -346,3 +346,11 @@ export const PUD043: ErrorCode = {
   code: "PUD-043",
   message: "Something went wrong while creating new expense"
 };
+
+/**
+ * PUD-044: edit_event
+ */
+export const PUD044: ErrorCode = {
+  code: "PUD-044",
+  message: "Something went wrong while editing event"
+};

@@ -14,6 +14,7 @@ echo "Running db_schema script"
 /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/delete_expense.sql
 /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/delete_user.sql
 /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/edit_category_weighted_status.sql
+/opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/edit_event.sql
 /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/edit_user_weight.sql
 /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/edit_user.sql
 /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U sa -P ${DB_PASSWORD} -d puddingdebt -i db_scripts/get_categories.sql
