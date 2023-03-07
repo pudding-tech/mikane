@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, combineLatest } from 'rxjs';
-import {
-	EventService,
-	PuddingEvent,
-} from 'src/app/services/event/event.service';
+import { map, combineLatest, find } from 'rxjs';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { ApiError } from 'src/app/types/apiError.type';
 
 @Component({
 	selector: 'app-event',
@@ -42,10 +41,10 @@ export class EventComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		private messageService: MessageService,
-		private titleService: Title
+		private titleService: Title,
+		private authService: AuthService
 	) {
-		const event =
-			this.router.getCurrentNavigation()?.extras.state?.['event'];
+		const event = this.router.getCurrentNavigation()?.extras.state?.['event'];
 		if (event) {
 			this.event = event;
 			this.titleService.setTitle(event.name);
@@ -54,11 +53,7 @@ export class EventComponent implements OnInit {
 
 	ngOnInit() {
 		// Set active link based on current URL
-		this.activeLink =
-			'./' +
-			window.location.href.substring(
-				window.location.href.lastIndexOf('/') + 1
-			);
+		this.activeLink = './' + window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
 
 		combineLatest([this.eventService.loadEvents(), this.route.params])
 			.pipe(
@@ -79,5 +74,17 @@ export class EventComponent implements OnInit {
 					this.messageService.showError('Error loading events');
 				},
 			});
+	}
+
+	logout() {
+		this.authService.logout().subscribe({
+			next: () => {
+				this.router.navigate(['/login']);
+			},
+			error: (err: ApiError) => {
+				this.messageService.showError('Failed to log out');
+				console.error('something went wrong while trying to log out', err?.error?.message);
+			},
+		});
 	}
 }

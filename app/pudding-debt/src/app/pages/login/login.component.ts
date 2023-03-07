@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { ApiError } from 'src/app/types/apiError.type';
 
 @Component({
 	templateUrl: 'login.component.html',
@@ -30,9 +31,14 @@ export class LoginComponent {
 						console.error('Could not login');
 					}
 				},
-				error: (error) => {
-					this.messageService.showError('Login failed');
-					console.error('Error occurred while logging in', error);
+				error: (error: ApiError) => {
+					// User not found
+					if (error?.error?.code === 'PUD-003') {
+						this.messageService.showError('Wrong username or password');
+					} else {
+						this.messageService.showError('Login failed');
+						console.error('Error occurred while logging in', error?.error?.message);
+					}
 				},
 			});
 		}

@@ -1,17 +1,13 @@
-<h1 mat-dialog-title>Add participant to event</h1>
+<h1 mat-dialog-title>Add user to event</h1>
 <div mat-dialog-content>
-    <form [formGroup]="addUserForm">
-        <mat-form-field appearance="fill">
-            <mat-label>Participant name</mat-label>
-            <input
-                type="text"
-                placholder="Enter participant name"
-                aria-label="Participant name"
-                matInput
-                formControlName="name"
-            />
-        </mat-form-field>
-    </form>
+	<form [formGroup]="addUserForm">
+		<mat-form-field appearance="fill">
+			<mat-label>User</mat-label>
+			<mat-select formControlName="users" multiple>
+				<mat-option *ngFor="let user of users" [value]="user">{{ user.name }}</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</form>
 </div>
 <div mat-dialog-actions>
 	<button mat-button (click)="onNoClick()">Cancel</button>

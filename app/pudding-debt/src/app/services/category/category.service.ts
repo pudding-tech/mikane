@@ -7,7 +7,6 @@ export interface Category {
 	id: number;
 	name: string;
 	weighted: boolean;
-	// users: [...{ id: number; name: string; weight: number }[]];
 	users: {
 		id: number;
 		name: string;
@@ -24,16 +23,10 @@ export class CategoryService {
 	constructor(private httpClient: HttpClient) {}
 
 	loadCategories(eventId: number): Observable<Category[]> {
-		return this.httpClient.get<Category[]>(
-			this.apiUrl + `?eventId=${eventId}`
-		);
+		return this.httpClient.get<Category[]>(this.apiUrl + `?eventId=${eventId}`);
 	}
 
-	createCategory(
-		name: string,
-		eventId: number,
-		weighted: boolean
-	): Observable<Category> {
+	createCategory(name: string, eventId: number, weighted: boolean): Observable<Category> {
 		return this.httpClient.post<Category>(this.apiUrl, {
 			name,
 			eventId,
@@ -41,45 +34,24 @@ export class CategoryService {
 		});
 	}
 
-	addUser(
-		categoryId: number,
-		userId: string,
-		weight: number
-	): Observable<Category> {
-		return this.httpClient.post<Category>(
-			this.apiUrl + `/${categoryId}/user`,
-			{ userId, weight }
-		);
+	addUser(categoryId: number, userId: string, weight: number): Observable<Category> {
+		return this.httpClient.post<Category>(this.apiUrl + `/${categoryId}/user/${userId}`, { weight });
 	}
 
 	deleteUser(categoryId: number, userId: number): Observable<Category> {
-		return this.httpClient.delete<Category>(
-			this.apiUrl + `/${categoryId}/user/${userId}`
-		);
+		return this.httpClient.delete<Category>(this.apiUrl + `/${categoryId}/user/${userId}`);
 	}
 
-	editUser(
-		categoryId: number,
-		userId: number,
-		weight: number
-	): Observable<Category> {
-		return this.httpClient.put<Category>(
-			this.apiUrl + `/${categoryId}/user/${userId}`,
-			{ weight }
-		);
+	editUser(categoryId: number, userId: number, weight: number): Observable<Category> {
+		return this.httpClient.put<Category>(this.apiUrl + `/${categoryId}/user/${userId}`, { weight });
 	}
 
 	setWeighted(categoryId: number, weighted: boolean): Observable<Category> {
-		return this.httpClient.put<Category>(
-			this.apiUrl + `/${categoryId}/weighted`,
-			{ weighted }
-		);
+		return this.httpClient.put<Category>(this.apiUrl + `/${categoryId}/weighted`, { weighted });
 	}
 
 	deleteCategory(categoryId: number): Observable<Category[]> {
-		return this.httpClient.delete<Category[]>(
-			this.apiUrl + `/${categoryId}`
-		);
+		return this.httpClient.delete<Category[]>(this.apiUrl + `/${categoryId}`);
 	}
 
 	findOrCreate(eventId: number, categoryName: string): Observable<Category> {

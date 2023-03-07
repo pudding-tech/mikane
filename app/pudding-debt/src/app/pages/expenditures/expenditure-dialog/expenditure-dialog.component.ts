@@ -9,37 +9,38 @@ import { User, UserService } from 'src/app/services/user/user.service';
 	templateUrl: 'expenditure-dialog.component.html',
 })
 export class ExpenditureDialogComponent implements OnInit {
-    categories: Category[] = [];
-    users: User[] = [];
-    expense: any = {};
+	categories: Category[] = [];
+	users: User[] = [];
+	expense: any = {};
 
-    addExpenseForm = new FormGroup({
-        name: new FormControl('', [Validators.required]),
-        description: new FormControl(''),
-        category: new FormControl('', [Validators.required]),
-        amount: new FormControl('', [Validators.required]),
-        payer: new FormControl({value: this.data.userId, disabled: this.data.userId !== undefined}, [Validators.required])
-    });
-    
+	addExpenseForm = new FormGroup({
+		name: new FormControl('', [Validators.required]),
+		description: new FormControl(''),
+		category: new FormControl('', [Validators.required]),
+		amount: new FormControl('', [Validators.required]),
+		payer: new FormControl({ value: this.data.userId, disabled: this.data.userId !== undefined }, [Validators.required]),
+	});
+
 	constructor(
 		public dialogRef: MatDialogRef<ExpenditureDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: {
-            eventId: number,
-            userId: number
-        },
-        private categoryService: CategoryService,
-        private userService: UserService,
+		@Inject(MAT_DIALOG_DATA)
+		public data: {
+			eventId: number;
+			userId: number;
+		},
+		private categoryService: CategoryService,
+		private userService: UserService
 	) {}
 
-    ngOnInit() {
-        this.categoryService.loadCategories(this.data.eventId).subscribe((categories) => {
-            this.categories = categories;
-        });
+	ngOnInit() {
+		this.categoryService.loadCategories(this.data.eventId).subscribe((categories) => {
+			this.categories = categories;
+		});
 
-        this.userService.loadUsers(this.data.eventId).subscribe((users) => {
-            this.users = users;
-        });
-    }
+		this.userService.loadUsersByEvent(this.data.eventId).subscribe((users) => {
+			this.users = users;
+		});
+	}
 
 	onNoClick(): void {
 		this.dialogRef.close();

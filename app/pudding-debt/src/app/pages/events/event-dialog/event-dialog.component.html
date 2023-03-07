@@ -1,13 +1,15 @@
-<h1 mat-dialog-title>Add Event</h1>
+<h1 mat-dialog-title>{{ data?.edit ? "Edit Event" : "Add Event" }}</h1>
 <div mat-dialog-content>
 	<mat-form-field appearance="fill">
 		<mat-label>Event Name</mat-label>
-		<input matInput [(ngModel)]="event" required />
+		<input matInput [(ngModel)]="event.name" required />
+	</mat-form-field>
+	<mat-form-field appearance="fill">
+		<mat-label>Event Description</mat-label>
+		<input matInput [(ngModel)]="event.description" required />
 	</mat-form-field>
 </div>
 <div mat-dialog-actions>
 	<button mat-button (click)="onNoClick()">Cancel</button>
-	<button mat-button [mat-dialog-close]="event" cdkFocusInitial>
-		Create
-	</button>
+	<button mat-button [mat-dialog-close]="event" cdkFocusInitial>{{ data?.edit ? "Save" : "Create" }}</button>
 </div>
