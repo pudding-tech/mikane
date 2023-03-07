@@ -6,7 +6,7 @@ import { User, UserBalance } from '../user/user.service';
 
 export interface PuddingEvent {
 	id: number;
-	guid: string;
+	uuid: string;
 	name: string;
 	description: string;
 	public: boolean;

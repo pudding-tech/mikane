@@ -105,6 +105,24 @@ router.post("/events/:id/user/:userId", checkAuth, async (req, res, next) => {
   }
 });
 
+/* --- */
+/* PUT */
+/* --- */
+
+router.put("/events/:id", checkAuth, async (req, res, next) => {
+  const eventId = Number(req.params.id);
+  if (isNaN(eventId)) {
+    return res.status(400).json(ec.PUD013);
+  }
+  try {
+    const event: Event = await db.editEvent(eventId, req.body.name, req.body.description, req.body.adminId, req.body.private);
+    res.status(200).send(event);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
 /* ------ */
 /* DELETE */
 /* ------ */

@@ -47,9 +47,9 @@ router.get("/users/:id", checkAuth, async (req, res, next) => {
 });
 
 // Get a list of a user's expenses
-router.get("/users/:id/expenses/:event", checkAuth, async (req, res, next) => {
+router.get("/users/:id/expenses/:eventId", checkAuth, async (req, res, next) => {
   const userId = Number(req.params.id);
-  const eventId = Number(req.params.event);
+  const eventId = Number(req.params.eventId);
   if (isNaN(userId) || isNaN(eventId)) {
     return res.status(400).json(ec.PUD015);
   }

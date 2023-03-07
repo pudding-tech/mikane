@@ -207,3 +207,37 @@ export const removeUserFromEvent = async (eventId: number, userId: number) => {
     });
   return events[0];
 };
+
+/**
+ * DB interface: Edit event
+ * @param eventId ID of event to edit
+ * @param name New name
+ * @param description New description
+ * @param adminId New admin user ID
+ * @param privateEvent Whether event should be open for all or invite only
+ * @returns Edited event
+ */
+export const editEvent = async (eventId: number, name?: string, description?: string, adminId?: number, privateEvent?: boolean) => {
+  const request = new sql.Request();
+  const events: Event[] = await request
+    .input("event_id", sql.Int, eventId)
+    .input("name", sql.NVarChar, name)
+    .input("description", sql.NVarChar, description)
+    .input("admin_id", sql.Int, adminId)
+    .input("private", sql.Bit, privateEvent)
+    .execute("edit_event")
+    .then(data => {
+      return parseEvents(data.recordset);
+    })
+    .catch(err => {
+      if (err.number === 50005)
+        throw new ErrorExt(ec.PUD005, 400);
+      if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, 400);
+      else {
+        console.log(err);
+        throw new ErrorExt(ec.PUD044);
+      }
+    });
+  return events[0];
+};

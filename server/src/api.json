@@ -434,7 +434,7 @@
         }
       }
     },
-    "/users/{id}/expenses/{event}": {
+    "/users/{id}/expenses/{eventId}": {
       "get": {
         "tags": [
           "Users"
@@ -457,7 +457,7 @@
             "example": 1
           },
           {
-            "name": "event",
+            "name": "eventId",
             "in": "path",
             "description": "Event ID",
             "required": true,
@@ -636,6 +636,79 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Edit event",
+        "description": "Edit an event",
+        "operationId": "putEvent",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "description": "Event details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "New event name"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "New event description"
+                  },
+                  "adminId": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "private": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
                 }
               }
             }
