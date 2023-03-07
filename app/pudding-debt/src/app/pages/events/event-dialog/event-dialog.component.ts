@@ -20,7 +20,6 @@ export class EventDialogComponent {
 		public dialogRef: MatDialogRef<EventDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: { edit: boolean; event: PuddingEvent }
 	) {
-		console.log('data', data);
 		if (data?.event) {
 			this.event.name = data.event.name;
 			this.event.description = data.event.description;

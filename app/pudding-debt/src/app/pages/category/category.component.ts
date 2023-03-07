@@ -4,7 +4,7 @@ import { Category, CategoryService } from 'src/app/services/category/category.se
 import { User, UserService } from 'src/app/services/user/user.service';
 import { map } from 'lodash-es';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -41,6 +41,7 @@ import { MatButtonModule } from '@angular/material/button';
 		ProgressSpinnerComponent,
 		MatCardModule,
 		AsyncPipe,
+		MatDialogModule,
 	],
 })
 export class CategoryComponent implements OnInit, AfterViewChecked {

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, map, merge, Observable, of, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
@@ -39,6 +39,7 @@ import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
 		MatCardModule,
 		AsyncPipe,
 		CurrencyPipe,
+		MatDialogModule,
 	],
 })
 export class UserComponent implements OnInit, OnDestroy {

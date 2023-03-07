@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, switchMap, takeUntil } from 'rxjs';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
@@ -19,7 +19,17 @@ import { MatButtonModule } from '@angular/material/button';
 	templateUrl: './expenditures.component.html',
 	styleUrls: ['./expenditures.component.scss'],
 	standalone: true,
-	imports: [MatButtonModule, MatIconModule, NgIf, MatTableModule, ProgressSpinnerComponent, MatCardModule, AsyncPipe, CurrencyPipe],
+	imports: [
+		MatButtonModule,
+		MatIconModule,
+		NgIf,
+		MatTableModule,
+		ProgressSpinnerComponent,
+		MatCardModule,
+		AsyncPipe,
+		CurrencyPipe,
+		MatDialogModule,
+	],
 })
 export class ExpendituresComponent implements OnInit {
 	private eventId!: number;

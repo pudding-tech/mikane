@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PuddingEvent, EventService } from 'src/app/services/event/event.service';
 import { EventDialogComponent } from './event-dialog/event-dialog.component';
@@ -30,6 +30,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 		NgFor,
 		ProgressSpinnerComponent,
 		AsyncPipe,
+		MatDialogModule,
 	],
 })
 export class EventsComponent implements OnInit, OnDestroy {
