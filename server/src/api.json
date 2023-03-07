@@ -193,7 +193,7 @@
         "tags": [
           "Users"
         ],
-        "summary": "Get users (in event)",
+        "summary": "Get users",
         "description": "Get a list of all users, optionally in an event",
         "operationId": "getUsers",
         "security": [

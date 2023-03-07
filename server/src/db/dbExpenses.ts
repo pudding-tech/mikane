@@ -1,6 +1,8 @@
 import sql from "mssql";
 import { parseExpenses } from "../parsers";
+import { ErrorExt } from "../types/errorExt";
 import { Expense } from "../types/types";
+import * as ec from "../types/errorCodes";
 
 /**
  * DB interface: Get all expenses in a given event
@@ -16,6 +18,10 @@ export const getExpenses = async (eventId: number) => {
     .execute("get_expenses")
     .then(data => {
       return parseExpenses(data.recordset);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD032);
     });
   return expenses;
 };
@@ -34,6 +40,10 @@ export const getExpense = async (expenseId: number) => {
     .execute("get_expenses")
     .then(data => {
       return parseExpenses(data.recordset);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD032);
     });
   return expenses[0];
 };
@@ -58,6 +68,10 @@ export const createExpense = async (name: string, description: string, amount: n
     .execute("new_expense")
     .then(data => {
       return parseExpenses(data.recordset);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD043);
     });
   return expenses[0];
 };
@@ -74,6 +88,10 @@ export const deleteExpense = async (expenseId: number) => {
     .execute("delete_expense")
     .then(() => {
       return true;
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD024);
     });
   return success;
 };

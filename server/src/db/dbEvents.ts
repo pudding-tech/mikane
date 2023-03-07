@@ -17,6 +17,10 @@ export const getEvents = async () => {
     .execute("get_events")
     .then(data => {
       return parseEvents(data.recordset);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD031);
     });
   return events;
 };
@@ -33,6 +37,10 @@ export const getEvent = async (eventId: number) => {
     .execute("get_events")
     .then(data => {
       return parseEvents(data.recordset);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD031);
     });
   return events[0];
 };
@@ -49,10 +57,14 @@ export const getEventBalances = async (eventId: number) => {
     .execute("get_event_payment_data")
     .then(res => {
       return res.recordsets as sql.IRecordSet<object>[];
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD030);
     });
   
   if (!data || data.length < 3) {
-    throw new Error("Something went wrong getting users, categories or expenses");
+    throw new ErrorExt("Something went wrong getting users, categories or expenses");
   }
 
   const users: User[] = parseUsers(data[0]);
@@ -76,10 +88,14 @@ export const getEventPayments = async (eventId: number) => {
     .execute("get_event_payment_data")
     .then(res => {
       return res.recordsets as sql.IRecordSet<object>[];
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD030);
     });
   
   if (!data || data.length < 3) {
-    throw new Error("Something went wrong getting users, categories or expenses");
+    throw new ErrorExt("Something went wrong getting users, categories or expenses");
   }
 
   const users: User[] = parseUsers(data[0]);
@@ -112,8 +128,10 @@ export const createEvent = async (name: string, userId: number, privateEvent: bo
     .catch(err => {
       if (err.number === 50005)
         throw new ErrorExt(ec.PUD005, 400);
-      else
-        throw err;
+      else {
+        console.log(err);
+        throw new ErrorExt(ec.PUD037);
+      }
     });
   return events[0];
 };
@@ -130,6 +148,10 @@ export const deleteEvent = async (id: number) => {
     .execute("delete_event")
     .then(() => {
       return true;
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD023);
     });
   return success;
 };
@@ -156,8 +178,10 @@ export const addUserToEvent = async (eventId: number, userId: number) => {
         throw new ErrorExt(ec.PUD008, 400);
       else if (err.number === 50009)
         throw new ErrorExt(ec.PUD009, 400);
-      else
-        throw err;
+      else {
+        console.log(err);
+        throw new ErrorExt(ec.PUD021);
+      }
     });
   return events[0];
 };
@@ -176,6 +200,10 @@ export const removeUserFromEvent = async (eventId: number, userId: number) => {
     .execute("remove_user_from_event")
     .then(data => {
       return parseEvents(data.recordset);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD040);
     });
   return events[0];
 };
