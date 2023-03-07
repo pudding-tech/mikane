@@ -10,7 +10,8 @@ jobs:
       - image: circleci/node:16-browsers
     steps:
       - checkout
-      - run: cd ~/app/pudding-debt
+      - run: ls
+      - run: cd ~/app
       - run: pwd
       - run: ls 
       - restore_cache:
