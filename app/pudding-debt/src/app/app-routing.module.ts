@@ -10,19 +10,19 @@ const routes: Routes = [
 	{
 		path: 'events',
 		title: 'PuddingDebt',
-		loadChildren: () => import('./pages/events/events.module').then((m) => m.EventsModule),
+		loadChildren: () => import('./pages/events/events.routes'),
 	},
 	{
 		path: 'login',
-		loadChildren: () => import('./pages/login/login.module').then((m) => m.LoginModule),
+		loadChildren: () => import('./pages/login/login.routes'),
 	},
 	{
 		path: 'register',
-		loadChildren: () => import('./pages/register/register-user.module').then((m) => m.RegisterUserModule),
+		loadChildren: () => import('./pages/register/register-user.routes'),
 	},
 	{
 		path: 'settings',
-		loadChildren: () => import('./pages/settings/settings.module').then((m) => m.SettingsModule),
+		loadChildren: () => import('./pages/settings/settings.routes'),
 	},
 	{ path: '**', redirectTo: '/events' },
 ];

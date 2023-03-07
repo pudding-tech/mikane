@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, map, merge, Observable, of, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
@@ -13,11 +13,34 @@ import { ApiError } from 'src/app/types/apiError.type';
 import { ExpenditureDialogComponent } from '../expenditures/expenditure-dialog/expenditure-dialog.component';
 import { ExpenseDataSource } from './expense.datasource';
 import { UserDialogComponent } from './user-dialog/user-dialog.component';
+import { MatCardModule } from '@angular/material/card';
+import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
 
 @Component({
 	selector: 'app-users',
 	templateUrl: './user.component.html',
 	styleUrls: ['./user.component.scss'],
+	standalone: true,
+	imports: [
+		NgIf,
+		MatButtonModule,
+		MatIconModule,
+		MatExpansionModule,
+		NgFor,
+		MatProgressSpinnerModule,
+		MatTableModule,
+		ProgressSpinnerComponent,
+		MatCardModule,
+		AsyncPipe,
+		CurrencyPipe,
+		MatDialogModule,
+	],
 })
 export class UserComponent implements OnInit, OnDestroy {
 	private eventId!: number;

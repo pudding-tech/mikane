@@ -15,8 +15,7 @@ describe('PaymentStructureComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule, MockModule(MatCardModule)],
-			declarations: [PaymentStructureComponent],
+			imports: [HttpClientTestingModule, MockModule(MatCardModule), PaymentStructureComponent],
 			providers: [
 				{ provide: ActivatedRoute, useValue: activatedRouteStub },
 				{ provide: MessageService, useValue: messageServiceStub },

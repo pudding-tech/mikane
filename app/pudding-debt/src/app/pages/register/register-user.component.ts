@@ -1,15 +1,43 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {
+	AbstractControl,
+	FormControl,
+	FormGroup,
+	ValidationErrors,
+	ValidatorFn,
+	Validators,
+	FormsModule,
+	ReactiveFormsModule,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
 	templateUrl: './register-user.component.html',
 	styleUrls: ['./register-user.component.scss'],
+	standalone: true,
+	imports: [
+		MatToolbarModule,
+		MatCardModule,
+		MatIconModule,
+		FormsModule,
+		ReactiveFormsModule,
+		MatFormFieldModule,
+		MatInputModule,
+		NgIf,
+		MatButtonModule,
+	],
 })
 export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 	hide = true;

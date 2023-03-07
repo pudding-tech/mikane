@@ -1,10 +1,16 @@
 import { Component, Inject } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
 	selector: 'category-dialog',
 	templateUrl: 'category-dialog.component.html',
+	standalone: true,
+	imports: [MatDialogModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatButtonModule],
 })
 export class CategoryDialogComponent {
 	weighted = new FormControl(false);
@@ -20,9 +26,7 @@ export class CategoryDialogComponent {
 	) {}
 
 	getErrorMessage() {
-		return this.addCategoryForm.get('categoryName')?.hasError('required')
-			? 'You must enter a value'
-			: '';
+		return this.addCategoryForm.get('categoryName')?.hasError('required') ? 'You must enter a value' : '';
 	}
 
 	onNoClick(): void {

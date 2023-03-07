@@ -1,12 +1,30 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { NgFor } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
 	selector: 'expenditure-dialog',
 	templateUrl: 'expenditure-dialog.component.html',
+	standalone: true,
+	imports: [
+		MatDialogModule,
+		FormsModule,
+		ReactiveFormsModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatAutocompleteModule,
+		NgFor,
+		MatOptionModule,
+		MatButtonModule,
+	],
 })
 export class ExpenditureDialogComponent implements OnInit {
 	categories: Category[] = [];

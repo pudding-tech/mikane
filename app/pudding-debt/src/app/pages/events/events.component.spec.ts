@@ -24,8 +24,9 @@ describe('EventComponent', () => {
 				MockModule(MatToolbarModule),
 				MockModule(MatIconModule),
 				MockModule(RouterModule),
+				EventsComponent,
+				MockComponent(ProgressSpinnerComponent),
 			],
-			declarations: [EventsComponent, MockComponent(ProgressSpinnerComponent)],
 			providers: [
 				{ provide: ActivatedRoute, useValue: activatedRouteStub },
 				{ provide: MessageService, useValue: messageServiceStub },
