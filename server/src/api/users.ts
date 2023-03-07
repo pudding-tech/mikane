@@ -130,6 +130,19 @@ router.delete("/users/:id", checkAuth, async (req, res, next) => {
   }
   try {
     const success = await db.deleteUser(userId);
+
+    // Delete current session if deleted user is logged in
+    if (req.session.authenticated && req.session.userId === userId) {
+      const username = req.session.username;
+      req.session.destroy(err => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ err: "Unable to sign out" });
+        }
+        console.log(`User ${username} successfully signed out`);
+      });
+    }
+
     res.status(200).send({ success: success });
   }
   catch (err) {

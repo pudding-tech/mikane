@@ -21,13 +21,17 @@ export const getUser = async (userId: number | null, username?: string | null) =
         return null;
       }
       return parseUser(data.recordset[0]);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD034);
     });
   return user;
 };
 
 /**
  * DB interface: Get all users, optionally filtered
- * @param filter Object containing filters (event ID, and user ID to exclude)
+ * @param filter Object containing filters (event ID, user ID to exclude)
  * @returns List of users
  */
 export const getUsers = async (filter?: { eventId?: number, excludeUserId?: number }) => {
@@ -39,6 +43,10 @@ export const getUsers = async (filter?: { eventId?: number, excludeUserId?: numb
     .then(data => {
       const users: User[] = parseUsers(data.recordset);
       return users;
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD035);
     });
 };
 
@@ -57,6 +65,10 @@ export const getUserExpenses = async (userId: number, eventId: number) => {
     .execute("get_expenses")
     .then(data => {
       return parseExpenses(data.recordset);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD032);
     });
   return expenses;
 };
@@ -85,13 +97,15 @@ export const createUser = async (username: string, firstName: string, lastName: 
     })
     .catch(err => {
       if (err.number === 50017)
-        throw new ErrorExt(ec.PUD017);
+        throw new ErrorExt(ec.PUD017, 400);
       else if (err.number === 50018)
-        throw new ErrorExt(ec.PUD018);
+        throw new ErrorExt(ec.PUD018, 400);
       else if (err.number === 50019)
-        throw new ErrorExt(ec.PUD019);
-      else
-        throw err;
+        throw new ErrorExt(ec.PUD019, 400);
+      else {
+        console.log(err);
+        throw new ErrorExt(ec.PUD038);
+      }
     });
   return user;
 };
@@ -114,6 +128,10 @@ export const editUser = async (userId: number, data: { username?: string, firstN
     .execute("edit_user")
     .then(data => {
       return parseUser(data.recordset[0]);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD028);
     });
   return user;
 };
@@ -130,6 +148,10 @@ export const deleteUser = async (userId: number) => {
     .execute("delete_user")
     .then(() => {
       return true;
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD025);
     });
   return success;
 };

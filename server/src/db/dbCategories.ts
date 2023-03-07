@@ -18,6 +18,10 @@ export const getCategories = async (eventId: number) => {
     .execute("get_categories")
     .then(data => {
       return parseCategories(data.recordset, Target.CLIENT);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD029);
     });
   return categories;
 };
@@ -35,6 +39,10 @@ export const getCategory = async (categoryId: number) => {
     .execute("get_categories")
     .then(data => {
       return parseCategories(data.recordset, Target.CLIENT);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD029);
     });
   return categories[0];
 };
@@ -55,6 +63,10 @@ export const createCategory = async (name: string, eventId: number, weighted: bo
     .execute("new_category")
     .then(data => {
       return data.recordset[0];
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD036);
     });
   return category;
 };
@@ -87,8 +99,10 @@ export const addUserToCategory = async (categoryId: number, userId: number, weig
         throw new ErrorExt(ec.PUD011, 400);
       else if (err.number === 50012)
         throw new ErrorExt(ec.PUD012, 400);
-      else
-        throw err;
+      else {
+        console.log(err);
+        throw new ErrorExt(ec.PUD020);
+      }
     });
   return categories[0];
 };
@@ -107,6 +121,10 @@ export const renameCategory = async (categoryId: number, name: string) => {
     .execute("rename_category")
     .then(data => {
       return data.recordset[0];
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD041);
     });
   return category;
 };
@@ -127,6 +145,10 @@ export const editUserWeight = async (categoryId: number, userId: number, weight:
     .execute("edit_user_weight")
     .then(data => {
       return parseCategories(data.recordset, Target.CLIENT);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD027);
     });
   return categories[0];
 };
@@ -145,6 +167,10 @@ export const editWeightStatus = async (categoryId: number, weighted: boolean) =>
     .execute("edit_category_weighted_status")
     .then(data => {
       return parseCategories(data.recordset, Target.CLIENT);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD026);
     });
   return categories[0];
 };
@@ -161,6 +187,10 @@ export const deleteCategory = async (categoryId: number) => {
     .execute("delete_category")
     .then( () => {
       return true;
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD022);
     });
   return success;
 };
@@ -179,6 +209,10 @@ export const removeUserFromCategory = async (categoryId: number, userId: number)
     .execute("remove_user_from_category")
     .then(data => {
       return parseCategories(data.recordset, Target.CLIENT);
+    })
+    .catch(err => {
+      console.log(err);
+      throw new ErrorExt(ec.PUD039);
     });
   return categories[0];
 };
