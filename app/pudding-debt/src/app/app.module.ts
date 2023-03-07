@@ -1,11 +1,8 @@
 import { registerLocaleData } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule, HttpClient } from '@angular/common/http';
 import localeNo from '@angular/common/locales/no';
 import { LOCALE_ID, NgModule } from '@angular/core';
-import {
-	MAT_SNACK_BAR_DEFAULT_OPTIONS,
-	MatSnackBarModule,
-} from '@angular/material/snack-bar';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -13,7 +10,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FooterComponent } from './features/footer/footer.component';
+import { FooterModule } from './features/footer/footer.module';
 import { AuthInterceptor } from './services/auth/auth.interceptor';
 import { ErrorMessageComponent } from './services/message/error/error-message.component';
 import { SuccessMessageComponent } from './services/message/success/success-message.component';
@@ -21,12 +18,7 @@ import { SuccessMessageComponent } from './services/message/success/success-mess
 registerLocaleData(localeNo);
 
 @NgModule({
-	declarations: [
-		AppComponent,
-		SuccessMessageComponent,
-		ErrorMessageComponent,
-		FooterComponent,
-	],
+	declarations: [AppComponent, SuccessMessageComponent, ErrorMessageComponent],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
@@ -39,6 +31,7 @@ registerLocaleData(localeNo);
 		BrowserAnimationsModule,
 		HttpClientModule,
 		MatSnackBarModule,
+		FooterModule,
 	],
 	providers: [
 		{

@@ -1,23 +1,39 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute } from '@angular/router';
+import { MockModule } from 'ng-mocks';
+import { MessageService } from 'src/app/services/message/message.service';
 
 import { CategoryComponent } from './category.component';
 
 describe('CategoryComponent', () => {
-  let component: CategoryComponent;
-  let fixture: ComponentFixture<CategoryComponent>;
+	let component: CategoryComponent;
+	let fixture: ComponentFixture<CategoryComponent>;
+	let activatedRouteStub: ActivatedRoute;
+	let messageServiceStub: MessageService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ CategoryComponent ]
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		activatedRouteStub = {} as ActivatedRoute;
+		messageServiceStub = {} as MessageService;
 
-    fixture = TestBed.createComponent(CategoryComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		await TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule, MockModule(MatDialogModule), MockModule(MatIconModule), MockModule(MatCardModule)],
+			declarations: [CategoryComponent],
+			providers: [
+				{ provide: ActivatedRoute, useValue: activatedRouteStub },
+				{ provide: MessageService, useValue: messageServiceStub },
+			],
+		}).compileComponents();
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+		fixture = TestBed.createComponent(CategoryComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });
