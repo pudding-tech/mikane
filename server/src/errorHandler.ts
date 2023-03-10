@@ -7,10 +7,10 @@ export const errorHandler = (err: ErrorExt | Error, req: Request, res: Response,
   }
   if (err instanceof ErrorExt) {
     if (err.errorCode) {
-      return res.status(err.code).json(err.errorCode);
+      return res.status(err.status).json(err.errorCode);
     }
     console.log(err);
-    return res.status(err.code).json({ error: err.message ? err.message : "Something broke :(" });
+    return res.status(err.status).json({ error: err.message ? err.message : "Something broke :(" });
   }
   else {
     console.log(err);

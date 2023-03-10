@@ -1165,7 +1165,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "weighted": {
+                  "name": {
                     "type": "string",
                     "example": "New category name"
                   }
