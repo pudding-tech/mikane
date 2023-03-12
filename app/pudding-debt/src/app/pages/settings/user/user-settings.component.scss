@@ -1,3 +1,35 @@
-.user-settings-actions button {
+.user-settings-actions {
 	margin-right: 1em;
+}
+
+.setting-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.user-details {
+	font-size: large;
+}
+
+.user-padding {
+	display: flex;
+	height: 48px;
+	align-items: center;
+}
+
+.title {
+	padding-left: 0px !important;
+}
+
+.mdc-card__actions {
+	padding: 0px !important;
+}
+
+.mat-mdc-card-content {
+	padding: 0 55px 16px !important;
+}
+
+.mat-mdc-card-header {
+	padding: 16px 16px 0;
 }

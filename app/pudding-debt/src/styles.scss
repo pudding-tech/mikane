@@ -1,5 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 
+:root {
+	color-scheme: dark;
+}
+
 html,
 body {
 	height: 100%;
@@ -129,4 +133,15 @@ a.nostyle:visited {
 
 .add-button {
 	margin: 2em;
+}
+
+.dialog-buttons {
+  padding-left: 24px !important;
+  padding-bottom: 20px !important;
+}
+
+.snackbar {
+  margin-bottom: 90px !important;
+	justify-content: center;
+	text-align: center;
 }

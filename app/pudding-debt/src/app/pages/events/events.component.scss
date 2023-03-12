@@ -6,6 +6,10 @@ mat-toolbar button {
 	margin-left: 1em;
 }
 
+#header {
+	padding: 16px;
+}
+
 .events-container {
 	display: flex;
 	align-items: center;
@@ -15,6 +19,8 @@ mat-toolbar button {
 
 	.event-card {
 		min-width: 30em;
+		max-width: 40em;
+		width: 70vw;
 	}
 }
 
@@ -23,6 +29,7 @@ mat-toolbar button {
 
 	.event-header {
 		align-items: center;
+		padding: 8px 16px 8px;
 		.clickable {
 			cursor: pointer;
 		}

@@ -32,6 +32,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	private phoneCtrl$: Subscription | undefined;
 
 	currentUser: User;
+	editMode: boolean = false;
 
 	editUserForm = new FormGroup({
 		username: new FormControl<string>('', [Validators.required]),
@@ -92,6 +93,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 				next: (user) => {
 					this.messageService.showSuccess('User edited');
 					this.currentUser = user;
+					this.toggleEditMode();
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to edit user');
@@ -102,12 +104,13 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 
 	deleteUser() {
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-			width: '350px',
+			width: '400px',
 			data: {
 				title: 'Delete account',
-				content: 'Are you sure you want to delete your account?',
-				confirm: 'I am sure',
+				content: 'Are you sure you want to delete your account? Warning: This is not reversible!',
+				confirm: 'Yes, delete my account',
 			},
+			autoFocus: false
 		});
 
 		this.deleteSubscription = dialogRef
@@ -131,6 +134,10 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 					console.error('something went wrong while deleting user', err?.error?.message);
 				},
 			});
+	}
+
+	toggleEditMode() {
+		this.editMode = !this.editMode;
 	}
 
 	ngOnDestroy(): void {

@@ -232,7 +232,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
 	createExpenseDialog(userId: number, dataSource: ExpenseDataSource) {
 		const dialogRef = this.dialog.open(ExpenditureDialogComponent, {
-			width: '350px',
+			width: '400px',
 			data: {
 				eventId: this.eventId,
 				userId,

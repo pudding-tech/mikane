@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
 	templateUrl: 'login.component.html',
@@ -24,24 +25,28 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 		ReactiveFormsModule,
 		MatFormFieldModule,
 		MatInputModule,
+		MatProgressSpinnerModule,
 		NgIf,
 		MatButtonModule,
 	],
 })
 export class LoginComponent {
 	hide = true;
+	loading = false;
 
 	loginForm = new FormGroup({
-		username: new FormControl<string>('', [Validators.required]),
-		password: new FormControl<string>('', [Validators.required]),
+		username: new FormControl<string>(''),
+		password: new FormControl<string>(''),
 	});
 
 	constructor(private authService: AuthService, private router: Router, private messageService: MessageService) {}
 
 	login() {
 		if (this.loginForm.valid) {
+			this.loading = true;
 			this.authService.login(this.loginForm.get<string>('username')?.value, this.loginForm.get<string>('password')?.value).subscribe({
 				next: (result) => {
+					this.loading = false;
 					if (result) {
 						this.messageService.showSuccess('Login successful');
 						this.router.navigate(['/events']);
@@ -52,12 +57,13 @@ export class LoginComponent {
 				},
 				error: (error: ApiError) => {
 					// User not found
-					if (error?.error?.code === 'PUD-003') {
+					if (error?.error?.code === 'PUD-003' || error?.error?.code === 'PUD-002') {
 						this.messageService.showError('Wrong username or password');
 					} else {
 						this.messageService.showError('Login failed');
 						console.error('Error occurred while logging in', error?.error?.message);
 					}
+					this.loading = false;
 				},
 			});
 		}

@@ -4,20 +4,20 @@
 	<div class="settings">
 		<a mat-flat-button color="accent" [routerLink]="['/settings']">
 			<mat-icon>person</mat-icon>
-			Account Settings
+			Account
 		</a>
 	</div>
 	<div class="logout">
 		<button mat-flat-button color="primary" (click)="logout()">
 			<mat-icon aria-hidden="true" fontIcon="logout"></mat-icon>
-			<span>Logout</span>
+			<span>Log out</span>
 		</button>
 	</div>
 </mat-toolbar>
 <div *ngIf="(loading | async) === false; else loadingSpinner">
 	<div class="events-container">
 		<mat-card class="event-card">
-			<mat-card-header>
+			<mat-card-header id="header">
 				<mat-card-title> Events </mat-card-title>
 			</mat-card-header>
 			<mat-card-content>

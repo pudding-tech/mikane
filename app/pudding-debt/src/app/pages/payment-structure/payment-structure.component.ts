@@ -40,6 +40,7 @@ export class PaymentStructureComponent implements OnInit {
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
 	displayedColumns: string[] = ['name', 'amount'];
+	allExpanded = true;
 
 	payments: Payment[] = [];
 	senders: {
@@ -99,5 +100,26 @@ export class PaymentStructureComponent implements OnInit {
 				console.error('something went wrong whikle loading payments', err?.error?.message);
 			},
 		});
+	}
+
+	toggleExpand() {
+		if (this.allExpanded) {
+			this.accordion.closeAll();
+			// this.allExpanded = false;
+		}
+		else {
+			this.accordion.openAll();
+			// this.allExpanded = true;
+		}
+	}
+
+	panelToggled() {
+		console.log("panel toggled");
+		if (this.accordion._headers.toArray().every(panel => panel._isExpanded())) {
+			this.allExpanded = true;
+		}
+		else if (!this.accordion._headers.some(panel => panel._isExpanded())) {
+			this.allExpanded = false;
+		}
 	}
 }

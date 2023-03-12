@@ -2,25 +2,26 @@
 	<span>PUDDING DEBT</span>
 </mat-toolbar>
 <div class="login-section">
-	<mat-card>
-		<mat-card-header>
+	<mat-card class="login-content">
+		<mat-card-header class="card-header">
 			<mat-icon mat-card-avatar aria-hidden="false">account_circle</mat-icon>
 			<mat-card-title>Login</mat-card-title>
 		</mat-card-header>
-		<mat-card-content>
+		<mat-card-content class="card-content">
 			<form [formGroup]="loginForm" (ngSubmit)="login()">
 				<div>
-					<mat-form-field appearance="fill">
+					<mat-form-field appearance="fill" class="login-input">
 						<mat-label>Username</mat-label>
 						<input type="text" matInput placeholder="Username" formControlName="username" />
 						<mat-error *ngIf="loginForm.get('username')?.invalid">Invalid username</mat-error>
 					</mat-form-field>
 				</div>
 				<div>
-					<mat-form-field appearance="fill">
+					<mat-form-field appearance="fill" class="login-input">
 						<mat-label>Password</mat-label>
 						<input [type]="hide ? 'password' : 'text'" matInput placeholder="Password" formControlName="password" />
 						<button
+							type="button"
 							mat-icon-button
 							matSuffix
 							(click)="hide = !hide"
@@ -34,11 +35,17 @@
 				</div>
 				<br />
 				<mat-card-actions class="login-actions">
-					<button type="submit" mat-raised-button color="primary">Login <mat-icon aria-hidden="false">login</mat-icon></button>
-					<button type="button" (click)="registerUser()" mat-raised-button color="accent">
-						Register <mat-icon aria-hidden="false">person_add</mat-icon>
+					<button type="submit" mat-raised-button color="primary" class="login-input">
+						<span *ngIf="!loading">Log in</span>
+						<mat-icon *ngIf="!loading" aria-hidden="false">login</mat-icon>
+						<mat-spinner *ngIf="loading" diameter="25" class="mat-spinner-color"></mat-spinner>
 					</button>
 				</mat-card-actions>
+				<div class="forgot-password">
+					<button type="button" class="forgot-password-button">
+						Forgot password?
+					</button>
+				</div>
 			</form>
 		</mat-card-content>
 	</mat-card>

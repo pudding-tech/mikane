@@ -75,7 +75,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
 	editEvent(event: PuddingEvent) {
 		const dialogRef = this.dialog.open(EventDialogComponent, {
-			width: '350px',
+			width: '400px',
 			data: {
 				edit: true,
 				event,

@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
 	selector: 'user-dialog',
 	templateUrl: './user-dialog.component.html',
+	styleUrls: ['./user-dialog.component.scss'],
 	standalone: true,
 	imports: [
 		MatDialogModule,
