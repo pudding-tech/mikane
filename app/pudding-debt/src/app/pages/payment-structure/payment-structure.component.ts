@@ -105,20 +105,17 @@ export class PaymentStructureComponent implements OnInit {
 	toggleExpand() {
 		if (this.allExpanded) {
 			this.accordion.closeAll();
-			// this.allExpanded = false;
-		}
-		else {
+			this.allExpanded = false;
+		} else {
 			this.accordion.openAll();
-			// this.allExpanded = true;
+			this.allExpanded = true;
 		}
 	}
 
 	panelToggled() {
-		console.log("panel toggled");
-		if (this.accordion._headers.toArray().every(panel => panel._isExpanded())) {
+		if (this.accordion._headers.toArray().every((panel) => panel._isExpanded())) {
 			this.allExpanded = true;
-		}
-		else if (!this.accordion._headers.some(panel => panel._isExpanded())) {
+		} else if (!this.accordion._headers.some((panel) => panel._isExpanded())) {
 			this.allExpanded = false;
 		}
 	}
