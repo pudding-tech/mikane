@@ -1,11 +1,11 @@
 .category-table {
   width: 40%;
-  min-width: 40%;
+  min-width: 100px;
+  max-width: 400px;
 }
 
 .category-table-weighted {
-  width: 50%;
-  min-width: 50%;
+  min-width: 600px;
 }
 
 .category-user-input {
