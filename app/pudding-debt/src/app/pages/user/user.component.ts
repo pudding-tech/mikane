@@ -148,6 +148,7 @@ export class UserComponent implements OnInit, OnDestroy {
 					})
 				),
 			},
+			autoFocus: false
 		});
 
 		dialogRef

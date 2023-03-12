@@ -145,3 +145,18 @@ a.nostyle:visited {
 	justify-content: center;
 	text-align: center;
 }
+
+mat-card-title.mat-mdc-card-title {
+	padding-left: 0px !important;
+}
+
+mat-icon.mat-mdc-card-avatar {
+  width: 40px !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+	-webkit-background-clip: text;
+}
