@@ -65,7 +65,7 @@ const apiDocsOptions = {
   customCssUrl: "/SwaggerDark.css",
   customCss: ".swagger-ui .topbar { display: none }",
   swaggerOptions: {
-    supportedSubmitMethods: inProd ? [] : ["get", "post", "put", "delete"],
+    supportedSubmitMethods: inProd ? ["get"] : ["get", "post", "put", "delete"],
   },
 };
 app.use("/", swaggerUi.serve);

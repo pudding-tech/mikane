@@ -76,11 +76,11 @@ export const PUD009: ErrorCode = {
 };
 
 /**
- * PUD-010: User not in event, cannot be added to category
+ * PUD-010: User not in event, thus cannot be added to category
  */
 export const PUD010: ErrorCode = {
   code: "PUD-010",
-  message: "User not in event, cannot be added to category"
+  message: "User not in event, thus cannot be added to category"
 };
 
 /**
@@ -353,4 +353,60 @@ export const PUD043: ErrorCode = {
 export const PUD044: ErrorCode = {
   code: "PUD-044",
   message: "Something went wrong while editing event"
+};
+
+/**
+ * PUD-045: Category ID must be a number
+ */
+export const PUD045: ErrorCode = {
+  code: "PUD-045",
+  message: "Category ID must be a number"
+};
+
+/**
+ * PUD-046: 'name', 'eventId' and/or 'weighted' properties not provided in body
+ */
+export const PUD046: ErrorCode = {
+  code: "PUD-046",
+  message: "'name', 'eventId' and/or 'weighted' properties not provided in body"
+};
+
+/**
+ * PUD-047: Category ID and user ID must be numbers
+ */
+export const PUD047: ErrorCode = {
+  code: "PUD-047",
+  message: "Category ID and user ID must be numbers"
+};
+
+/**
+ * PUD-048: Weight must be a number
+ */
+export const PUD048: ErrorCode = {
+  code: "PUD-048",
+  message: "Weight must be a number"
+};
+
+/**
+ * PUD-049: Weight cannot be less than 1
+ */
+export const PUD049: ErrorCode = {
+  code: "PUD-049",
+  message: "Weight cannot be less than 1"
+};
+
+/**
+ * PUD-050: Category name not provided
+ */
+export const PUD050: ErrorCode = {
+  code: "PUD-050",
+  message: "Category name not provided"
+};
+
+/**
+ * PUD-051: Weighted boolean not provided
+ */
+export const PUD051: ErrorCode = {
+  code: "PUD-051",
+  message: "Weighted boolean not provided"
 };
