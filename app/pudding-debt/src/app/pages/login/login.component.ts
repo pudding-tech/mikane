@@ -51,11 +51,11 @@ export class LoginComponent {
 				this.loading = true;
 				this.authService.login(username, password).subscribe({
 					next: (result) => {
-						this.loading = false;
 						if (result) {
 							this.messageService.showSuccess('Login successful');
 							this.router.navigate(['/events']);
 						} else {
+							this.loading = false;
 							this.messageService.showError('Login failed');
 							console.error('Could not login');
 						}
