@@ -31,24 +31,24 @@
 }
 
 .forgot-password {
-  text-align: center;
-  font-size: small;
-  margin-top: 20px;
+	text-align: center;
+	font-size: small;
+	margin-top: 20px;
 	margin-bottom: 8px;
 }
 
 .forgot-password-button {
-  opacity: 60%;
-  background: none;
+	opacity: 60%;
+	background: none;
 	color: white;
-  border: none;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
+	border: none;
+	margin: 0;
+	padding: 0;
+	cursor: pointer;
 }
 
 .forgot-password-button:hover {
-  opacity: 100%;
+	opacity: 100%;
 }
 
 .mat-spinner-color::ng-deep circle{

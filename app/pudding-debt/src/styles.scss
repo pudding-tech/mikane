@@ -136,22 +136,18 @@ a.nostyle:visited {
 }
 
 .dialog-buttons {
-  padding-left: 24px !important;
-  padding-bottom: 20px !important;
+	padding-left: 24px !important;
+	padding-bottom: 20px !important;
 }
 
 .snackbar {
-  margin-bottom: 90px !important;
+	margin-bottom: 90px !important;
 	justify-content: center;
 	text-align: center;
 }
 
 mat-card-title.mat-mdc-card-title {
 	padding-left: 0px !important;
-}
-
-mat-icon.mat-mdc-card-avatar {
-  width: 40px !important;
 }
 
 input:-webkit-autofill,
