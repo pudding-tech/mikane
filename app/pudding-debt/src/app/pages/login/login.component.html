@@ -11,9 +11,8 @@
 			<form [formGroup]="loginForm" (ngSubmit)="login()">
 				<div>
 					<mat-form-field appearance="fill" class="login-input">
-						<mat-label>Username</mat-label>
-						<input type="text" matInput placeholder="Username" formControlName="username" />
-						<mat-error *ngIf="loginForm.get('username')?.invalid">Invalid username</mat-error>
+						<mat-label>Username or Email</mat-label>
+						<input type="text" matInput placeholder="Username or Email" formControlName="username" #usernameField />
 					</mat-form-field>
 				</div>
 				<div>
@@ -30,7 +29,6 @@
 						>
 							<mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
 						</button>
-						<mat-error *ngIf="loginForm.get('password')?.invalid">Invalid password</mat-error>
 					</mat-form-field>
 				</div>
 				<br />
