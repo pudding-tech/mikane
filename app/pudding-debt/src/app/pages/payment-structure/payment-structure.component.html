@@ -1,17 +1,13 @@
 <div class="payment-actions" *ngIf="senders.length > 0">
-	<button mat-raised-button color="primary" (click)="accordion.openAll()">
-		<mat-icon>visibility</mat-icon>
-		Show all payments
-	</button>
-	<button mat-raised-button color="primary" (click)="accordion.closeAll()">
-		<mat-icon>visibility_off</mat-icon>
-		Collapse all payments
+	<button mat-button color="accent" (click)="toggleExpand()">
+		<mat-icon>{{ allExpanded ? "visibility_off" : "visibility" }}</mat-icon>
+		{{ allExpanded ? "Collapse all payments" : "Show all payments" }}
 	</button>
 </div>
 <div *ngIf="(loading | async) === false; else loadingSpinner">
-	<mat-accordion class="payments" multi *ngIf="senders.length > 0; else noPayments">
+	<mat-accordion *ngIf="senders.length > 0; else noPayments" class="payments" multi>
 		<mat-expansion-panel *ngFor="let sender of senders" expanded="true">
-			<mat-expansion-panel-header>
+			<mat-expansion-panel-header (click)="panelToggled()">
 				<mat-panel-title>{{ sender.sender.name }}</mat-panel-title>
 			</mat-expansion-panel-header>
 			<ng-template matExpansionPanelContent>

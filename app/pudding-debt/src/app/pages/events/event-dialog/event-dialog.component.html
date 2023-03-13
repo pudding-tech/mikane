@@ -6,10 +6,10 @@
 	</mat-form-field>
 	<mat-form-field appearance="fill">
 		<mat-label>Event Description</mat-label>
-		<input matInput [(ngModel)]="event.description" required />
+		<textarea matInput [(ngModel)]="event.description" cdkTextareaAutosize required></textarea>
 	</mat-form-field>
 </div>
-<div mat-dialog-actions>
+<div mat-dialog-actions class="dialog-buttons">
 	<button mat-button (click)="onNoClick()">Cancel</button>
 	<button mat-button [mat-dialog-close]="event" cdkFocusInitial>{{ data?.edit ? "Save" : "Create" }}</button>
 </div>

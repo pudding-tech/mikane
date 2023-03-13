@@ -122,7 +122,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 
 	openDialog() {
 		const dialogRef = this.dialog.open(CategoryDialogComponent, {
-			width: '350px',
+			width: '380px',
 			data: { weighted: false },
 		});
 
@@ -188,7 +188,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 
 	openEditDialog(categoryId: number, userId: number) {
 		const dialogRef = this.dialog.open(CategoryEditDialogComponent, {
-			width: '350px',
+			width: '300px',
 			data: { categoryId, userId },
 		});
 

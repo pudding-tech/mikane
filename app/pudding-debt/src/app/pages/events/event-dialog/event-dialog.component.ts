@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
 	selector: 'event-dialog',
 	templateUrl: 'event-dialog.component.html',
+	styleUrls: ['event-dialog.component.scss'],
 	standalone: true,
 	imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule],
 })

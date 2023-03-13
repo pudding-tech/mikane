@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
 	selector: 'category-dialog',
 	templateUrl: 'category-dialog.component.html',
+	styleUrls: ['category-dialog.component.scss'],
 	standalone: true,
 	imports: [MatDialogModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatButtonModule],
 })

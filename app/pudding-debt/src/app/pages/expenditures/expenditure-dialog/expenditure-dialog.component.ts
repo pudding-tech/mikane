@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
 	selector: 'expenditure-dialog',
 	templateUrl: 'expenditure-dialog.component.html',
+	styleUrls: ['expenditure-dialog.component.scss'],
 	standalone: true,
 	imports: [
 		MatDialogModule,

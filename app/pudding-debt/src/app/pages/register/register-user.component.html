@@ -2,12 +2,12 @@
 	<span>PUDDING DEBT</span>
 </mat-toolbar>
 <div class="register-user-section">
-	<mat-card>
-		<mat-card-header>
+	<mat-card class="register-content">
+		<mat-card-header class="card-header">
 			<mat-icon mat-card-avatar aria-hidden="false">person_add</mat-icon>
 			<mat-card-title>Register</mat-card-title>
 		</mat-card-header>
-		<mat-card-content>
+		<mat-card-content class="card-content">
 			<form [formGroup]="registerUserForm" (ngSubmit)="register()">
 				<div>
 					<mat-form-field appearance="fill">

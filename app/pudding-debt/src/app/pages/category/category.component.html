@@ -14,7 +14,7 @@
 
 			<ng-template matExpansionPanelContent>
 				<!-- Deferred initialization until the panel is open. -->
-				<table mat-table class="category-table" [dataSource]="category.users">
+				<table mat-table [class]="category.weighted ? 'category-table-weighted' : 'category-table'" [dataSource]="category.users">
 					<form [formGroup]="addUserForm">
 						<!-- Name Column -->
 						<ng-container matColumnDef="name">
@@ -23,7 +23,7 @@
 								{{ user.name }}
 							</td>
 							<td mat-footer-cell *matFooterCellDef>
-								<mat-form-field class="category-user-name">
+								<mat-form-field class="category-user-input add-user" subscriptSizing="dynamic">
 									<select matNativeControl formControlName="participantName" name="participantName" required>
 										<option value="" disabled selected>Choose participant</option>
 										<option *ngFor="let user of filterUsers(category.id)" [value]="user.id">
@@ -43,7 +43,7 @@
 								{{ category.weighted ? user.weight : "" }}
 							</td>
 							<td mat-footer-cell *matFooterCellDef>
-								<mat-form-field *ngIf="category.weighted">
+								<mat-form-field *ngIf="category.weighted" subscriptSizing="dynamic" class="category-weight-input add-user">
 									<input
 										matInput
 										type="text"
@@ -84,6 +84,7 @@
 										!addUserForm.get('participantName')?.dirty ||
 										(category.weighted && addUserForm.get('weight')?.invalid)
 									"
+									class="add-user"
 								>
 									<mat-icon>add_circle</mat-icon>
 								</button>
@@ -98,7 +99,7 @@
 				</table>
 				<div id="category-actions">
 					<button mat-raised-button type="button" color="accent" (click)="toggleWeighted(category.id, category.weighted)">
-						Toggle category weighted
+						Toggle weighted
 					</button>
 					<button mat-raised-button type="button" color="warn" (click)="deleteCategoryDialog(category.id)">
 						Delete category

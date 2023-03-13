@@ -10,7 +10,7 @@
 		</div>
 	</form>
 </div>
-<div mat-dialog-actions>
+<div mat-dialog-actions class="dialog-buttons">
 	<button mat-button (click)="onNoClick()">Cancel</button>
 	<button mat-button [mat-dialog-close]="addCategoryForm.value" [disabled]="addCategoryForm.invalid || !addCategoryForm.dirty">
 		Save
