@@ -36,15 +36,17 @@
 				<br />
 				<mat-card-actions class="login-actions">
 					<button type="submit" mat-raised-button color="primary" class="login-input">
-						<span *ngIf="!loading">Log in</span>
-						<mat-icon *ngIf="!loading" aria-hidden="false">login</mat-icon>
-						<mat-spinner *ngIf="loading" diameter="25" class="mat-spinner-color"></mat-spinner>
+						<ng-container matButtonIcon *ngIf="!loading; else loadingSpinner">
+							<mat-icon aria-hidden="false">login</mat-icon>
+							<span>Log in</span>
+						</ng-container>
+						<ng-template #loadingSpinner>
+							<mat-spinner diameter="25" class="mat-spinner-color"></mat-spinner>
+						</ng-template>
 					</button>
 				</mat-card-actions>
 				<div class="forgot-password">
-					<button type="button" class="forgot-password-button">
-						Forgot password?
-					</button>
+					<button type="button" class="forgot-password-button">Forgot password?</button>
 				</div>
 			</form>
 		</mat-card-content>
