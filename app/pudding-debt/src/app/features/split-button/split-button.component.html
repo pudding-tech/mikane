@@ -1,0 +1,12 @@
+<mat-button-toggle-group>
+	<mat-button-toggle (click)="onClick($event)" class="split-button">
+		<ng-content></ng-content>
+	</mat-button-toggle>
+	<mat-button-toggle class="split-button drop-down-button" [matMenuTriggerFor]="dropdownMenu">
+		<mat-icon>arrow_drop_down</mat-icon>
+	</mat-button-toggle>
+</mat-button-toggle-group>
+
+<mat-menu #dropdownMenu="matMenu">
+	<ng-content select="[menuItems]"></ng-content>
+</mat-menu>

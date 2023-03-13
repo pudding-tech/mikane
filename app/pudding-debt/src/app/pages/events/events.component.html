@@ -1,7 +1,17 @@
 <mat-toolbar>
 	<span>PUDDING DEBT</span>
 	<span class="toolbar-spacer"></span>
-	<div class="settings">
+	<div>
+		<split-button [onClick]="onClick">
+			<mat-icon>person</mat-icon>
+			Account
+			<button mat-menu-item menuItems (click)="logout()">
+				<mat-icon aria-hidden="true" fontIcon="logout"></mat-icon>
+				Log out
+			</button>
+		</split-button>
+	</div>
+	<!-- <div class="settings">
 		<a mat-flat-button color="accent" [routerLink]="['/settings']">
 			<mat-icon>person</mat-icon>
 			Account
@@ -12,7 +22,7 @@
 			<mat-icon aria-hidden="true" fontIcon="logout"></mat-icon>
 			<span>Log out</span>
 		</button>
-	</div>
+	</div> -->
 </mat-toolbar>
 <div *ngIf="(loading | async) === false; else loadingSpinner">
 	<div class="events-container">

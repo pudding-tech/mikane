@@ -14,6 +14,8 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { SplitButtonComponent } from 'src/app/features/split-button/split-button.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
 	selector: 'app-events',
@@ -31,6 +33,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 		ProgressSpinnerComponent,
 		AsyncPipe,
 		MatDialogModule,
+		SplitButtonComponent,
+		MatMenuModule,
 	],
 })
 export class EventsComponent implements OnInit, OnDestroy {
@@ -169,6 +173,10 @@ export class EventsComponent implements OnInit, OnDestroy {
 			},
 		});
 	}
+
+	onClick = () => {
+		this.router.navigate(['/settings']);
+	};
 
 	ngOnDestroy(): void {
 		this.editSubscription?.unsubscribe();
