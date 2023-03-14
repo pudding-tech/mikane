@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 	templateUrl: './menu.component.html',
 	styleUrls: ['./menu.component.scss'],
 	standalone: true,
-  animations: [
+	animations: [
 		trigger('overlayAnimation', [
 			transition(':enter', [style({ opacity: 0, transform: 'scaleY(0.8)' }), animate('{{showTransitionParams}}')]),
 			transition(':leave', [animate('{{hideTransitionParams}}', style({ opacity: 0 }))])
@@ -28,17 +28,17 @@ export class MenuComponent {
 	@ViewChild('dropdown') private dropdown: ElementRef;
 	@ViewChild('splitButton', { read: ElementRef }) private splitButton: ElementRef;
 
-  toggled = false;
+	toggled = false;
 	showTransitionOptions = '.12s cubic-bezier(0, 0, 0.2, 1)';
 	hideTransitionOptions = '.1s linear';
 
-  constructor(
-    private router: Router,
-    private messageService: MessageService,
-    private authService: AuthService
-  ) {}
+	constructor(
+		private router: Router,
+		private messageService: MessageService,
+		private authService: AuthService
+	) {}
 
-  onAccountClick = () => {
+	onAccountClick = () => {
 		this.router.navigate(['/settings']);
 	};
 
@@ -55,7 +55,7 @@ export class MenuComponent {
 		}
 	}
 
-  logout() {
+	logout() {
 		this.authService.logout().subscribe({
 			next: () => {
 				this.router.navigate(['/login']);
