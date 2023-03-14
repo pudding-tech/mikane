@@ -1,11 +1,12 @@
-:host {
-	margin: 0 2em;
+.button-group {
+	border: none;
 }
 
-.mat-button-appearance-standard {
-	background-color: #424242;
+.split-button {
+	background-color: #212121;
+	color: #d5d5d5;
 }
 
-.mat-button-toggle-checked {
-	background-color: #424242;
+.main-button {
+	width: 74px;
 }

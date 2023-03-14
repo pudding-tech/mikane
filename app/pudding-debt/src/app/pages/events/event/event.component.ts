@@ -5,19 +5,19 @@ import { map, combineLatest, find } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
-import { ApiError } from 'src/app/types/apiError.type';
 import { NgFor } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MenuComponent } from 'src/app/features/menu/menu.component';
 
 @Component({
 	selector: 'app-event',
 	templateUrl: './event.component.html',
 	styleUrls: ['./event.component.scss'],
 	standalone: true,
-	imports: [MatToolbarModule, MatButtonModule, RouterLink, MatIconModule, MatTabsModule, NgFor, RouterOutlet],
+	imports: [MatToolbarModule, MatButtonModule, RouterLink, MatIconModule, MatTabsModule, NgFor, RouterOutlet, MenuComponent],
 })
 export class EventComponent implements OnInit {
 	event: PuddingEvent = {
@@ -49,7 +49,6 @@ export class EventComponent implements OnInit {
 		private router: Router,
 		private messageService: MessageService,
 		private titleService: Title,
-		private authService: AuthService
 	) {
 		const event = this.router.getCurrentNavigation()?.extras.state?.['event'];
 		if (event) {
@@ -81,17 +80,5 @@ export class EventComponent implements OnInit {
 					this.messageService.showError('Error loading events');
 				},
 			});
-	}
-
-	logout() {
-		this.authService.logout().subscribe({
-			next: () => {
-				this.router.navigate(['/login']);
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Failed to log out');
-				console.error('something went wrong while trying to log out', err?.error?.message);
-			},
-		});
 	}
 }

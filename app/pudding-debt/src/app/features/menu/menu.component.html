@@ -1,0 +1,33 @@
+<div>
+  <span class="name">
+    Username
+  </span>
+  <split-button #splitButton [onClick]="onAccountClick" [toggleDropdown]="toggleDropdown">
+    <div>
+      <mat-icon class="cog">settings</mat-icon>
+    </div>
+    <div
+      dropdown
+      #dropdown
+      *ngIf="toggled"
+      class="dropdown"
+      [@overlayAnimation]="{ value: 'toggled', params: { showTransitionParams: showTransitionOptions, hideTransitionParams: hideTransitionOptions } }"
+    >
+      <ul class="menu-list">
+        <li>
+          <a class="link" (click)="onAccountClick()">
+            <mat-icon aria-hidden="true" fontIcon="settings" class="icon"></mat-icon>
+            <span class="text">Settings</span>
+          </a>
+        </li>
+        <!-- <li class="menu-separator"></li> -->
+        <li>
+          <a class="link" (click)="logout()">
+            <mat-icon aria-hidden="true" fontIcon="logout" class="icon"></mat-icon>
+            <span class="text">Log out</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </split-button>
+</div>

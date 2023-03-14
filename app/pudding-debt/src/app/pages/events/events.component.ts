@@ -5,7 +5,6 @@ import { PuddingEvent, EventService } from 'src/app/services/event/event.service
 import { EventDialogComponent } from './event-dialog/event-dialog.component';
 import { MessageService } from 'src/app/services/message/message.service';
 import { BehaviorSubject, NEVER, Subscription, switchMap } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
@@ -14,8 +13,7 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { SplitButtonComponent } from 'src/app/features/split-button/split-button.component';
-import { MatMenuModule } from '@angular/material/menu';
+import { MenuComponent } from 'src/app/features/menu/menu.component';
 
 @Component({
 	selector: 'app-events',
@@ -33,8 +31,7 @@ import { MatMenuModule } from '@angular/material/menu';
 		ProgressSpinnerComponent,
 		AsyncPipe,
 		MatDialogModule,
-		SplitButtonComponent,
-		MatMenuModule,
+		MenuComponent,
 	],
 })
 export class EventsComponent implements OnInit, OnDestroy {
@@ -51,8 +48,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 		private router: Router,
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
-		private messageService: MessageService,
-		private authService: AuthService
+		private messageService: MessageService
 	) {}
 
 	ngOnInit() {
@@ -84,6 +80,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 				edit: true,
 				event,
 			},
+			autoFocus: false
 		});
 
 		this.editSubscription = dialogRef.afterClosed().subscribe({
@@ -112,7 +109,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 			data: {
 				title: 'Delete event',
 				content: 'Are you sure you want to delete this event? This can not be undone.',
-				confirm: 'I am sure',
+				confirm: 'Yes, I am sure',
 			},
 		});
 
@@ -161,22 +158,6 @@ export class EventsComponent implements OnInit, OnDestroy {
 			}
 		});
 	}
-
-	logout() {
-		this.authService.logout().subscribe({
-			next: () => {
-				this.router.navigate(['/login']);
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Failed to log out');
-				console.error('something went wrong while trying to log out', err?.error?.message);
-			},
-		});
-	}
-
-	onClick = () => {
-		this.router.navigate(['/settings']);
-	};
 
 	ngOnDestroy(): void {
 		this.editSubscription?.unsubscribe();

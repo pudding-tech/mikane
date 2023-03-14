@@ -108,7 +108,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 			data: {
 				title: 'Delete account',
 				content: 'Are you sure you want to delete your account? Warning: This is not reversible!',
-				confirm: 'Yes, delete my account',
+				confirm: 'Yes, I am sure',
 			},
 			autoFocus: false
 		});
