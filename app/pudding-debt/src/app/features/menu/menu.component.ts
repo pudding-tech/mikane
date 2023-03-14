@@ -39,6 +39,10 @@ export class MenuComponent {
 	) {}
 
 	onAccountClick = () => {
+		if (this.router.url === '/settings') {
+			this.toggled = false;
+			return;
+		}
 		this.router.navigate(['/settings']);
 	};
 
