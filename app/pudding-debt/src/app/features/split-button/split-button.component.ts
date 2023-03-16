@@ -24,14 +24,13 @@ export class SplitButtonComponent {
 	@Input() onClick: () => void;
 	@Output() onDropdownClick: EventEmitter<any> = new EventEmitter();
 
-	self: ElementRef;
 	toggled = false;
 	showTransitionOptions = '.12s cubic-bezier(0, 0, 0.2, 1)';
 	hideTransitionOptions = '.1s linear';
 
-	constructor (element: ElementRef) {
-		this.self = element;
-	};
+	constructor (
+		private self: ElementRef
+	) {};
 
 	toggleDropdown = () => {
 		this.toggled = !this.toggled;
