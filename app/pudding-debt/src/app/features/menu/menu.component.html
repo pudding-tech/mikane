@@ -1,0 +1,18 @@
+<div>
+	<span class="name">
+		Username
+	</span>
+	<split-button #splitButton [onClick]="onAccountClick" (onDropdownClick)="onDropdownClick($event)">
+		<div button>
+			<mat-icon class="cog">settings</mat-icon>
+		</div>
+		<div dropdown1>
+			<mat-icon aria-hidden="true" class="icon">settings</mat-icon>
+			<span class="text">Settings</span>
+		</div>
+		<div dropdown2>
+			<mat-icon aria-hidden="true" class="icon">logout</mat-icon>
+			<span class="text">Log out</span>
+		</div>
+	</split-button>
+</div>

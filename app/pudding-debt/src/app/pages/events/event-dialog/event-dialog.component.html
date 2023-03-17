@@ -11,5 +11,5 @@
 </div>
 <div mat-dialog-actions class="dialog-buttons">
 	<button mat-button (click)="onNoClick()">Cancel</button>
-	<button mat-button [mat-dialog-close]="event" cdkFocusInitial>{{ data?.edit ? "Save" : "Create" }}</button>
+	<button mat-button [mat-dialog-close]="event" [disabled]="!isChanged()">{{ data?.edit ? "Save" : "Create" }}</button>
 </div>

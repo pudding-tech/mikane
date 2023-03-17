@@ -16,6 +16,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 export class EventDialogComponent {
 	event: { id?: number; name: string; description: string } = { name: '', description: '' };
 	edit: boolean;
+	currentName: string;
+	currentDescription: string;
 
 	constructor(
 		public dialogRef: MatDialogRef<EventDialogComponent>,
@@ -25,6 +27,8 @@ export class EventDialogComponent {
 			this.event.name = data.event.name;
 			this.event.description = data.event.description;
 			this.event.id = data.event.id;
+			this.currentName = data.event.name;
+			this.currentDescription = data.event.description;
 		}
 	}
 
@@ -34,5 +38,9 @@ export class EventDialogComponent {
 
 	onSave() {
 		this.dialogRef.close(this.event);
+	}
+
+	isChanged() {
+		return this.event.name !== this.currentName || this.event.description !== this.currentDescription;
 	}
 }

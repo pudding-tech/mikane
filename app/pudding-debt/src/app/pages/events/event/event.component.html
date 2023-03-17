@@ -8,18 +8,7 @@
 		{{ event.name }}
 	</div>
 	<span class="toolbar-spacer"></span>
-	<div class="settings">
-		<a mat-flat-button color="accent" [routerLink]="['/settings']">
-			<mat-icon>person</mat-icon>
-			Account
-		</a>
-	</div>
-	<div class="logout">
-		<button mat-flat-button color="primary" (click)="logout()">
-			<mat-icon aria-hidden="true" fontIcon="logout"></mat-icon>
-			<span>Log out</span>
-		</button>
-	</div>
+	<menu></menu>
 </mat-toolbar>
 <nav class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
 	<a
