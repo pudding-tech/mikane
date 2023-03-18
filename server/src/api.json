@@ -1273,7 +1273,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "weight": {
+                  "weighted": {
                     "type": "boolean",
                     "example": true
                   }
