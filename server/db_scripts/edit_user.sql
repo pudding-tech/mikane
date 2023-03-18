@@ -16,7 +16,7 @@ begin
   set
     username = isnull(@username, username),
     first_name = isnull(@first_name, first_name),
-    last_name = isnull(@last_name, last_name),
+    last_name = nullif(isnull(@last_name, last_name), ''),
     email = isnull(@email, email),
     phone_number = isnull(@phone_number, phone_number)
   where

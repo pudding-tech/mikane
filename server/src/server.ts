@@ -51,6 +51,9 @@ app.use(express.static("public", { index: false }));
 // Body parser
 app.use(express.json());
 
+// Trust proxy
+app.enable("trust proxy");
+
 // Helmet protection
 app.use(helmet());
 
@@ -97,7 +100,7 @@ app.use(session({
     cookie: {
       maxAge: tenDays,
       httpOnly: true,
-      secure: false, //inProd,
+      secure: inProd,
       sameSite: "lax",
     },
     saveUninitialized: false,
@@ -111,14 +114,14 @@ app.post("*", (req, res, next) => {
     !req.is("application/json") &&
     req.headers["content-type"] !== undefined
   ) {
-    return res.status(400).json({ msg: "Wrong content-type" });
+    return res.status(400).json({ err: "Wrong content-type" });
   }
   next();
 });
 
 app.put("*", (req, res, next) => {
   if (!req.is("application/json")) {
-    return res.status(400).json({ msg: "Wrong content-type" });
+    return res.status(400).json({ err: "Wrong content-type" });
   }
   next();
 });

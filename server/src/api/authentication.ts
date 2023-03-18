@@ -46,7 +46,7 @@ router.post("/login", async (req, res, next) => {
       console.log(`User ${req.session.username} already authenticated`);
       const user: User | null = await dbUsers.getUser(req.session.userId);
       if (!user) {
-        return next(new Error("Error getting user for authentication"));
+        return res.status(500).json(ec.PUD054);
       }
       return res.status(200).json({
         authenticated: req.session.authenticated,
@@ -64,7 +64,7 @@ router.post("/login", async (req, res, next) => {
     if (isAuthenticated) {
       const user: User | null = await dbUsers.getUser(userPW.id);
       if (!user) {
-        return next(new Error("Error getting user for authentication"));
+        return res.status(500).json(ec.PUD054);
       }
       req.session.authenticated = true;
       req.session.userId = user.id;
@@ -96,7 +96,7 @@ router.post("/logout", (req, res) => {
   req.session.destroy(err => {
     if (err) {
       console.log(err);
-      return res.status(500).json({ err: "Unable to sign out" });
+      return res.status(500).json(ec.PUD060);
     }
     console.log(`User ${username} successfully signed out`);
     res.status(200).json({ msg: "Signed out successfully" });

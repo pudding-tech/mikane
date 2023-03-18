@@ -13,6 +13,14 @@ begin
   declare @event_id int
   select @event_id = event_id from category where id = @category_id
 
+  if (@weighted = 1)
+  begin
+    if exists (select * from user_category where category_id = @category_id and [weight] is null)
+    begin
+      update user_category set [weight] = 1 where category_id = @category_id and [weight] is null
+    end
+  end
+
   exec get_categories @event_id, @category_id
 
 end
