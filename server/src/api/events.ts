@@ -1,8 +1,7 @@
 import express from "express";
 import * as db from "../db/dbEvents";
-import { checkAuth } from "../middleware/authMiddleware";
+import { authCheck } from "../middlewares/authCheck";
 import { Event, Payment, UserBalance } from "../types/types";
-import { ErrorExt } from "../types/errorExt";
 import * as ec from "../types/errorCodes";
 const router = express.Router();
 
@@ -11,7 +10,7 @@ const router = express.Router();
 /* --- */
 
 // Get a list of all events
-router.get("/events", checkAuth, async (req, res, next) => {
+router.get("/events", authCheck, async (req, res, next) => {
   try {
     const events: Event[] = await db.getEvents();
     res.status(200).send(events);
@@ -22,7 +21,7 @@ router.get("/events", checkAuth, async (req, res, next) => {
 });
 
 // Get specific event
-router.get("/events/:id", checkAuth, async (req, res, next) => {
+router.get("/events/:id", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
     return res.status(400).json(ec.PUD013);
@@ -37,7 +36,7 @@ router.get("/events/:id", checkAuth, async (req, res, next) => {
 });
 
 // Get a list of all users' balance information for an event
-router.get("/events/:id/balances", checkAuth, async (req, res, next) => {
+router.get("/events/:id/balances", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
     return res.status(400).json(ec.PUD013);
@@ -52,7 +51,7 @@ router.get("/events/:id/balances", checkAuth, async (req, res, next) => {
 });
 
 // Get a list of all payments for a given event
-router.get("/events/:id/payments", checkAuth, async (req, res, next) => {
+router.get("/events/:id/payments", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
     return res.status(400).json(ec.PUD013);
@@ -71,13 +70,16 @@ router.get("/events/:id/payments", checkAuth, async (req, res, next) => {
 /* ---- */
 
 // Create new event
-router.post("/events", checkAuth, async (req, res, next) => {
+router.post("/events", authCheck, async (req, res, next) => {
   if (!req.body.name || (req.body.private === null || req.body.private === undefined)) {
     return res.status(400).json(ec.PUD014);
   }
+  if (req.body.name.length < 1) {
+    return res.status(400).json(ec.PUD053);
+  }
   const userId = req.session.userId;
   if (!userId) {
-    return next(new ErrorExt("Something went wrong retrieving user ID from session"));
+    return res.status(500).json(ec.PUD055);
   }
   try {
     const event: Event = await db.createEvent(req.body.name, userId, req.body.private, req.body.description);
@@ -89,7 +91,7 @@ router.post("/events", checkAuth, async (req, res, next) => {
 });
 
 // Add a user to an event
-router.post("/events/:id/user/:userId", checkAuth, async (req, res, next) => {
+router.post("/events/:id/user/:userId", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   const userId = Number(req.params.userId);
 
@@ -109,10 +111,13 @@ router.post("/events/:id/user/:userId", checkAuth, async (req, res, next) => {
 /* PUT */
 /* --- */
 
-router.put("/events/:id", checkAuth, async (req, res, next) => {
+router.put("/events/:id", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
     return res.status(400).json(ec.PUD013);
+  }
+  if (![undefined, null].includes(req.body.name) && req.body.name.length < 1) {
+    return res.status(400).json(ec.PUD053);
   }
   try {
     const event: Event = await db.editEvent(eventId, req.body.name, req.body.description, req.body.adminId, req.body.private);
@@ -128,7 +133,7 @@ router.put("/events/:id", checkAuth, async (req, res, next) => {
 /* ------ */
 
 // Delete an event
-router.delete("/events/:id", checkAuth, async (req, res, next) => {
+router.delete("/events/:id", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
     return res.status(400).json(ec.PUD013);
@@ -143,7 +148,7 @@ router.delete("/events/:id", checkAuth, async (req, res, next) => {
 });
 
 // Remove a user from an event
-router.delete("/events/:id/user/:userId", checkAuth, async (req, res, next) => {
+router.delete("/events/:id/user/:userId", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   const userId = Number(req.params.userId);
   if (isNaN(eventId) || isNaN(userId)) {

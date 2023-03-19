@@ -1,6 +1,6 @@
 import express from "express";
 import * as db from "../db/dbCategories";
-import { checkAuth } from "../middleware/authMiddleware";
+import { authCheck } from "../middlewares/authCheck";
 import { Category } from "../types/types";
 import * as ec from "../types/errorCodes";
 const router = express.Router();
@@ -10,7 +10,7 @@ const router = express.Router();
 /* --- */
 
 // Get a list of all categories for a given event
-router.get("/categories", checkAuth, async (req, res, next) => {
+router.get("/categories", authCheck, async (req, res, next) => {
   const eventId = Number(req.query.eventId);
   if (isNaN(eventId)) {
     return res.status(400).json(ec.PUD013);
@@ -25,7 +25,7 @@ router.get("/categories", checkAuth, async (req, res, next) => {
 });
 
 // Get a specific category
-router.get("/categories/:id", checkAuth, async (req, res, next) => {
+router.get("/categories/:id", authCheck, async (req, res, next) => {
   const id = Number(req.params.id);
   if (isNaN(id)) {
     return res.status(400).json(ec.PUD045);
@@ -44,7 +44,7 @@ router.get("/categories/:id", checkAuth, async (req, res, next) => {
 /* ---- */
 
 // Create a new category
-router.post("/categories", checkAuth, async (req, res, next) => {
+router.post("/categories", authCheck, async (req, res, next) => {
   if (!req.body.name || !req.body.eventId || req.body.weighted === undefined) {
     return res.status(400).json(ec.PUD046);
   }
@@ -58,7 +58,7 @@ router.post("/categories", checkAuth, async (req, res, next) => {
 });
 
 // Add a user to a category
-router.post("/categories/:id/user/:userId", checkAuth, async (req, res, next) => {
+router.post("/categories/:id/user/:userId", authCheck, async (req, res, next) => {
   const catId = Number(req.params.id);
   const userId = Number(req.params.userId);
   const weight = req.body.weight ? Number(req.body.weight) : undefined;
@@ -86,7 +86,7 @@ router.post("/categories/:id/user/:userId", checkAuth, async (req, res, next) =>
 /* --- */
 
 // Rename a category
-router.put("/categories/:id", checkAuth, async (req, res, next) => {
+router.put("/categories/:id", authCheck, async (req, res, next) => {
   const catId = Number(req.params.id);
   if (isNaN(catId)) {
     return res.status(400).json(ec.PUD045);
@@ -104,7 +104,7 @@ router.put("/categories/:id", checkAuth, async (req, res, next) => {
 });
 
 // Change weight status for a category (weighted or non-weighted)
-router.put("/categories/:id/weighted", checkAuth, async (req, res, next) => {
+router.put("/categories/:id/weighted", authCheck, async (req, res, next) => {
   const catId = Number(req.params.id);
   if (isNaN(catId)) {
     return res.status(400).json(ec.PUD045);
@@ -122,7 +122,7 @@ router.put("/categories/:id/weighted", checkAuth, async (req, res, next) => {
 });
 
 // Edit a user's weight for a category
-router.put("/categories/:id/user/:userId", checkAuth, async (req, res, next) => {
+router.put("/categories/:id/user/:userId", authCheck, async (req, res, next) => {
   const catId = Number(req.params.id);
   const userId = Number(req.params.userId);
   const weight = req.body.weight ? Number(req.body.weight) : undefined;
@@ -150,7 +150,7 @@ router.put("/categories/:id/user/:userId", checkAuth, async (req, res, next) => 
 /* ------ */
 
 // Delete a category
-router.delete("/categories/:id", checkAuth, async (req, res, next) => {
+router.delete("/categories/:id", authCheck, async (req, res, next) => {
   const catId = Number(req.params.id);
   if (isNaN(catId)) {
     return res.status(400).json(ec.PUD045);
@@ -165,7 +165,7 @@ router.delete("/categories/:id", checkAuth, async (req, res, next) => {
 });
 
 // Remove a user from a category
-router.delete("/categories/:id/user/:userId", checkAuth, async (req, res, next) => {
+router.delete("/categories/:id/user/:userId", authCheck, async (req, res, next) => {
   const catId = Number(req.params.id);
   const userId = Number(req.params.userId);
   if (isNaN(catId) || isNaN(userId)) {

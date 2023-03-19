@@ -410,3 +410,75 @@ export const PUD051: ErrorCode = {
   code: "PUD-051",
   message: "Weighted boolean not provided"
 };
+
+/**
+ * PUD-052: 'username', 'firstName', 'email', 'phone' and/or 'password' not provided in body
+ */
+export const PUD052: ErrorCode = {
+  code: "PUD-052",
+  message: "'username', 'firstName', 'email', 'phone' and/or 'password' not provided in body"
+};
+
+/**
+ * PUD-053: Name cannot be empty
+ */
+export const PUD053: ErrorCode = {
+  code: "PUD-053",
+  message: "Name cannot be empty"
+};
+
+/**
+ * PUD-054: Error getting user for authentication
+ */
+export const PUD054: ErrorCode = {
+  code: "PUD-054",
+  message: "Error getting user for authentication"
+};
+
+/**
+ * PUD-055: Something went wrong retrieving user ID from session
+ */
+export const PUD055: ErrorCode = {
+  code: "PUD-055",
+  message: "Something went wrong retrieving user ID from session"
+};
+
+/**
+ * PUD-056: Expense ID must be a number
+ */
+export const PUD056: ErrorCode = {
+  code: "PUD-056",
+  message: "Expense ID must be a number"
+};
+
+/**
+ * PUD-057: 'name', 'amount', 'categoryId' and/or 'payerId' not provided in body
+ */
+export const PUD057: ErrorCode = {
+  code: "PUD-057",
+  message: "'name', 'amount', 'categoryId' and/or 'payerId' not provided in body"
+};
+
+/**
+ * PUD-058: Request body must include at least one user property
+ */
+export const PUD058: ErrorCode = {
+  code: "PUD-058",
+  message: "Request body must include at least one user property"
+};
+
+/**
+ * PUD-059: Empty strings are not allowed
+ */
+export const PUD059: ErrorCode = {
+  code: "PUD-059",
+  message: "Empty strings are not allowed"
+};
+
+/**
+ * PUD-060: Unable to sign out
+ */
+export const PUD060: ErrorCode = {
+  code: "PUD-060",
+  message: "Unable to sign out"
+};

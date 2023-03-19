@@ -1,6 +1,6 @@
 import express from "express";
 import * as db from "../db/dbUsers";
-import { checkAuth } from "../middleware/authMiddleware";
+import { authCheck } from "../middlewares/authCheck";
 import { createHash } from "../utils/auth";
 import { isEmail } from "../utils/emailValidator";
 import { Expense, User } from "../types/types";
@@ -12,7 +12,7 @@ const router = express.Router();
 /* --- */
 
 // Get a list of all users in a given event
-router.get("/users", checkAuth, async (req, res, next) => {
+router.get("/users", authCheck, async (req, res, next) => {
   const filter: { eventId?: number, excludeUserId?: number } = {
     eventId: req.query.eventId ? Number(req.query.eventId) : undefined
   };
@@ -32,7 +32,7 @@ router.get("/users", checkAuth, async (req, res, next) => {
 });
 
 // Get a specific user
-router.get("/users/:id", checkAuth, async (req, res, next) => {
+router.get("/users/:id", authCheck, async (req, res, next) => {
   const userId = Number(req.params.id);
   if (isNaN(userId)) {
     return res.status(400).json(ec.PUD016);
@@ -47,7 +47,7 @@ router.get("/users/:id", checkAuth, async (req, res, next) => {
 });
 
 // Get a list of a user's expenses
-router.get("/users/:id/expenses/:eventId", checkAuth, async (req, res, next) => {
+router.get("/users/:id/expenses/:eventId", authCheck, async (req, res, next) => {
   const userId = Number(req.params.id);
   const eventId = Number(req.params.eventId);
   if (isNaN(userId) || isNaN(eventId)) {
@@ -71,7 +71,10 @@ router.get("/users/:id/expenses/:eventId", checkAuth, async (req, res, next) => 
 */
 router.post("/users", async (req, res, next) => {
   if (!req.body.username || !req.body.firstName || !req.body.email || !req.body.phone || !req.body.password) {
-    return res.status(400).json({ error: "Name, first name, phone number or password not provided" });
+    return res.status(400).json(ec.PUD052);
+  }
+  if (req.body.username.trim() === "" || req.body.firstName.trim() === "" || req.body.email.trim() === "" || req.body.phone.trim() === "" || req.body.password.trim() === "") {
+    return res.status(400).json(ec.PUD059);
   }
 
   // Validate email
@@ -93,14 +96,17 @@ router.post("/users", async (req, res, next) => {
 /* PUT */
 /* --- */
 
-// Edit user (rename),
-router.put("/users/:id", checkAuth, async (req, res, next) => {
+// Edit user
+router.put("/users/:id", authCheck, async (req, res, next) => {
   const userId = Number(req.params.id);
   if (isNaN(userId)) {
-    return res.status(400).json({ error: "User ID must be a number" });
+    return res.status(400).json(ec.PUD016);
   }
-  if (!req.body.username || !req.body.firstName || !req.body.lastName || !req.body.email || !req.body.phone) {
-    return res.status(400).json({ error: "Request body must include at least one user property" });
+  if (!req.body.username && !req.body.firstName && !req.body.lastName && !req.body.email && !req.body.phone) {
+    return res.status(400).json(ec.PUD058);
+  }
+  if (req.body.username?.trim() === "" || req.body.firstName?.trim() === "" || req.body.email?.trim() === "" || req.body.phone?.trim() === "") {
+    return res.status(400).json(ec.PUD059);
   }
   const data = {
     username: req.body.username,
@@ -123,10 +129,10 @@ router.put("/users/:id", checkAuth, async (req, res, next) => {
 /* ------ */
 
 // Delete a user
-router.delete("/users/:id", checkAuth, async (req, res, next) => {
+router.delete("/users/:id", authCheck, async (req, res, next) => {
   const userId = Number(req.params.id);
   if (isNaN(userId)) {
-    return res.status(400).json({ error: "User ID must be a number" });
+    return res.status(400).json(ec.PUD016);
   }
   try {
     const success = await db.deleteUser(userId);
@@ -137,7 +143,7 @@ router.delete("/users/:id", checkAuth, async (req, res, next) => {
       req.session.destroy(err => {
         if (err) {
           console.log(err);
-          return res.status(500).json({ err: "Unable to sign out" });
+          return res.status(500).json(ec.PUD060);
         }
         console.log(`User ${username} successfully signed out`);
       });
