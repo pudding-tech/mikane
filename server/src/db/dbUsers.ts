@@ -23,8 +23,7 @@ export const getUser = async (userId: number | null, username?: string | null) =
       return parseUser(data.recordset[0]);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD034);
+      throw new ErrorExt(ec.PUD034, err);
     });
   return user;
 };
@@ -45,8 +44,7 @@ export const getUsers = async (filter?: { eventId?: number, excludeUserId?: numb
       return users;
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD035);
+      throw new ErrorExt(ec.PUD035, err);
     });
 };
 
@@ -67,8 +65,7 @@ export const getUserExpenses = async (userId: number, eventId: number) => {
       return parseExpenses(data.recordset);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD032);
+      throw new ErrorExt(ec.PUD032, err);
     });
   return expenses;
 };
@@ -97,15 +94,13 @@ export const createUser = async (username: string, firstName: string, lastName: 
     })
     .catch(err => {
       if (err.number === 50017)
-        throw new ErrorExt(ec.PUD017, 400);
+        throw new ErrorExt(ec.PUD017, err, 400);
       else if (err.number === 50018)
-        throw new ErrorExt(ec.PUD018, 400);
+        throw new ErrorExt(ec.PUD018, err, 400);
       else if (err.number === 50019)
-        throw new ErrorExt(ec.PUD019, 400);
-      else {
-        console.log(err);
-        throw new ErrorExt(ec.PUD038);
-      }
+        throw new ErrorExt(ec.PUD019, err, 400);
+      else
+        throw new ErrorExt(ec.PUD038, err);
     });
   return user;
 };
@@ -130,8 +125,14 @@ export const editUser = async (userId: number, data: { username?: string, firstN
       return parseUser(data.recordset[0]);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD028);
+      if (err.number === 50017)
+        throw new ErrorExt(ec.PUD017, err, 400);
+      else if (err.number === 50018)
+        throw new ErrorExt(ec.PUD018, err, 400);
+      else if (err.number === 50019)
+        throw new ErrorExt(ec.PUD019, err, 400);
+      else
+        throw new ErrorExt(ec.PUD028, err);
     });
   return user;
 };
@@ -150,8 +151,7 @@ export const deleteUser = async (userId: number) => {
       return true;
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD025);
+      throw new ErrorExt(ec.PUD025, err);
     });
   return success;
 };

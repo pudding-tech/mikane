@@ -11,8 +11,9 @@ const router = express.Router();
 
 // Get a list of all events
 router.get("/events", authCheck, async (req, res, next) => {
+  const userId = req.session.userId;
   try {
-    const events: Event[] = await db.getEvents();
+    const events: Event[] = await db.getEvents(userId);
     res.status(200).send(events);
   }
   catch (err) {
@@ -23,11 +24,12 @@ router.get("/events", authCheck, async (req, res, next) => {
 // Get specific event
 router.get("/events/:id", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
+  const userId = req.session.userId;
   if (isNaN(eventId)) {
     return res.status(400).json(ec.PUD013);
   }
   try {
-    const event: Event = await db.getEvent(eventId);
+    const event: Event = await db.getEvent(eventId, userId);
     res.status(200).send(event);
   }
   catch (err) {

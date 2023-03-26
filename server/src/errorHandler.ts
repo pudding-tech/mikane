@@ -6,11 +6,13 @@ export const errorHandler = (err: ErrorExt | Error, req: Request, res: Response,
     return next();
   }
   if (err instanceof ErrorExt) {
-    if (err.errorCode) {
-      return res.status(err.status).json(err.errorCode);
+    if (err.log) {
+      console.log(err.error || err);
     }
-    console.log(err);
-    return res.status(err.status).json({ error: err.message ? err.message : "Something broke :(" });
+    return res.status(err.status).json({
+      code: err.code,
+      message: err.message
+    });
   }
   else {
     console.log(err);
