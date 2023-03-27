@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { map, combineLatest, find } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { NgFor } from '@angular/common';

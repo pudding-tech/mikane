@@ -18,7 +18,7 @@
 				</mat-panel-title>
 			</mat-expansion-panel-header>
 		</mat-expansion-panel>
-		<mat-expansion-panel *ngFor="let userWithBalance of usersWithBalance" (opened)="getExpenses(userWithBalance.user)" hideToggle>
+		<mat-expansion-panel *ngFor="let userWithBalance of usersWithBalance; let i = index" (opened)="getExpenses(userWithBalance.user, i)" hideToggle>
 			<mat-expansion-panel-header>
 				<mat-panel-title>
 					<div class="first">
@@ -31,10 +31,10 @@
 			</mat-expansion-panel-header>
 			<ng-template matExpansionPanelContent>
 				<!-- Deferred initialization until the panel is open. -->
-				<div class="spinner-container" *ngIf="dataSource.loading$ | async">
-					<mat-spinner></mat-spinner>
+				<div class="spinner-container" *ngIf="dataSources[i].loading$ | async">
+					<mat-spinner class="spinner"></mat-spinner>
 				</div>
-				<table mat-table class="expense-table" [dataSource]="dataSource">
+				<table mat-table class="expense-table" [dataSource]="dataSources[i]">
 					<caption>
 						Expenses:
 					</caption>
@@ -74,7 +74,7 @@
 					<ng-container matColumnDef="actions">
 						<th mat-header-cell *matHeaderCellDef></th>
 						<td mat-cell *matCellDef="let expense">
-							<button mat-icon-button type="button" (click)="deleteExpense(expense.id, dataSource)">
+							<button mat-icon-button type="button" (click)="deleteExpense(expense.id, dataSources[i])">
 								<mat-icon>delete</mat-icon>
 							</button>
 						</td>
@@ -83,11 +83,11 @@
 					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 					<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 					<tr class="mat-row" *matNoDataRow>
-						<td class="mat-cell" [attr.colspan]="displayedColumns.length">No expenses found</td>
+						<td class="mat-cell no-expenses" [attr.colspan]="displayedColumns.length">No expenses found</td>
 					</tr>
 				</table>
 				<div class="user-actions">
-					<button mat-raised-button color="accent" (click)="createExpenseDialog(userWithBalance.user.id, dataSource)">
+					<button mat-raised-button color="accent" (click)="createExpenseDialog(userWithBalance.user.id, dataSources[i])">
 						Add expense
 					</button>
 					<button mat-raised-button type="button" color="warn" (click)="deleteUserDialog(userWithBalance.user.id)">
