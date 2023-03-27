@@ -40,7 +40,7 @@ export const getUsers = async (filter?: { eventId?: number, excludeUserId?: numb
     .input("exclude_user_id", sql.Int, filter?.excludeUserId)
     .execute("get_users")
     .then(data => {
-      const users: User[] = parseUsers(data.recordset);
+      const users: User[] = parseUsers(data.recordset, true);
       return users;
     })
     .catch(err => {

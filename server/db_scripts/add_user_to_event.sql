@@ -24,7 +24,7 @@ begin
 
   insert into user_event (user_id, event_id, joined_date) values (@user_id, @event_id, GETDATE())
 
-  exec get_events @event_id
+  exec get_events @event_id, null
 
 end
 go

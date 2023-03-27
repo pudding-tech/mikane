@@ -10,7 +10,7 @@ create procedure edit_event
 as
 begin
 
-  if exists (select id from [event] where [name] = @name)
+  if exists (select id from [event] where [name] = @name and id != @event_id)
   begin
     throw 50005, 'Another event already has this name', 1
   end
@@ -27,7 +27,7 @@ begin
     [event]
   set
     [name] = isnull(@name, [name]),
-    [description] = isnull(@description, [description]),
+    [description] = nullif(isnull(@description, [description]), ''),
     admin_id = isnull(@admin_id, admin_id),
     [private] = isnull(@private, [private])
   where
@@ -38,7 +38,7 @@ begin
     update [event] set [description] = null where id = @event_id
   end
   
-  exec get_events @event_id
+  exec get_events @event_id, null
 
 end
 go

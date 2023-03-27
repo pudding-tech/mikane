@@ -7,7 +7,11 @@ export type User = {
   email?: string,
   phone?: string,
   created?: Date,
-  uuid: string
+  uuid: string,
+  event?: {
+    id: number,
+    joinedDate: Date
+  }
 }
 
 export type Event = {
@@ -17,7 +21,12 @@ export type Event = {
   created: Date,
   adminId: number,
   private: boolean,
-  uuid: string
+  uuid: string,
+  user?: {
+    id: number,
+    inEvent: boolean,
+    isAdmin: boolean
+  }
 };
 
 export type Category = {

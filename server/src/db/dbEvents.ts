@@ -68,7 +68,7 @@ export const getEventBalances = async (eventId: number) => {
     throw new ErrorExt(ec.PUD061);
   }
 
-  const users: User[] = parseUsers(data[0]);
+  const users: User[] = parseUsers(data[0], true);
   const categories: Category[] = parseCategories([data[1], data[2]], Target.CALC);
   const expenses: Expense[] = parseExpenses(data[3]);
 
@@ -98,7 +98,7 @@ export const getEventPayments = async (eventId: number) => {
     throw new ErrorExt(ec.PUD061);
   }
 
-  const users: User[] = parseUsers(data[0]);
+  const users: User[] = parseUsers(data[0], false);
   const categories: Category[] = parseCategories([data[1], data[2]], Target.CALC);
   const expenses: Expense[] = parseExpenses(data[3]);
 
