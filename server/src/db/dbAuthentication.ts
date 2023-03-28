@@ -22,8 +22,7 @@ export const getUserHash = async (usernameEmail: string) => {
       };
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(PUD033);
+      throw new ErrorExt(PUD033, err);
     });
   return userHash;
 };

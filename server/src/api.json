@@ -222,13 +222,13 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Success - 'event' property is only present when eventId is given as input parameter",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/User"
+                    "$ref": "#/components/schemas/UserWithEvent"
                   }
                 }
               }
@@ -504,13 +504,13 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Success - 'user' property is only present when a logged in user makes the request",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Event"
+                    "$ref": "#/components/schemas/EventWithUser"
                   }
                 }
               }
@@ -621,11 +621,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Success - 'user' property is only present when a logged in user makes the request",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Event"
+                  "$ref": "#/components/schemas/EventWithUser"
                 }
               }
             }
@@ -1340,7 +1340,7 @@
           }
         ],
         "requestBody": {
-          "description": "User ID and weight",
+          "description": "Weight",
           "content": {
             "application/json": {
               "schema": {
@@ -1411,7 +1411,7 @@
           }
         ],
         "requestBody": {
-          "description": "User ID and weight",
+          "description": "Weight",
           "required": true,
           "content": {
             "application/json": {
@@ -1746,6 +1746,56 @@
           }
         }
       },
+      "UserWithEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "name": {
+            "type": "string",
+            "example": "Test"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@user.com"
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "uuid": {
+            "type": "string",
+            "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
+          },
+          "event": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "joinedDate": {
+                "type": "date-time",
+                "example": "2023-01-20T19:00:00"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "name",
+          "email",
+          "created",
+          "uuid"
+        ]
+      },
       "UserDetailed": {
         "type": "object",
         "properties": {
@@ -1861,6 +1911,65 @@
           }
         }
       },
+      "EventWithUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Example Event"
+          },
+          "description": {
+            "type": "string",
+            "example": "Example description"
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "adminId": {
+            "type": "integer",
+            "example": 1
+          },
+          "private": {
+            "type": "boolean",
+            "example": false
+          },
+          "uuid": {
+            "type": "string",
+            "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 2
+              },
+              "inEvent": {
+                "type": "boolean",
+                "example": true
+              },
+              "isAdmin": {
+                "type": "boolean",
+                "example": false
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "created",
+          "adminId",
+          "private",
+          "uuid"
+        ]
+      },
       "Expense": {
         "type": "object",
         "properties": {
@@ -1941,7 +2050,7 @@
                 },
                 "name": {
                   "type": "string",
-                  "example": "Test username"
+                  "example": "Test name"
                 },
                 "weight": {
                   "type": "number",

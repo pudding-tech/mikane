@@ -1,6 +1,7 @@
 export type ErrorCode = {
   code: string,
-  message: string
+  message: string,
+  log?: boolean
 }
 
 /**
@@ -160,7 +161,8 @@ export const PUD019: ErrorCode = {
  */
 export const PUD020: ErrorCode = {
   code: "PUD-020",
-  message: "Something went wrong while adding user to category"
+  message: "Something went wrong while adding user to category",
+  log: true
 };
 
 /**
@@ -168,7 +170,8 @@ export const PUD020: ErrorCode = {
  */
 export const PUD021: ErrorCode = {
   code: "PUD-021",
-  message: "Something went wrong while adding user to event"
+  message: "Something went wrong while adding user to event",
+  log: true
 };
 
 /**
@@ -176,7 +179,8 @@ export const PUD021: ErrorCode = {
  */
 export const PUD022: ErrorCode = {
   code: "PUD-022",
-  message: "Something went wrong while deleting category"
+  message: "Something went wrong while deleting category",
+  log: true
 };
 
 /**
@@ -184,7 +188,8 @@ export const PUD022: ErrorCode = {
  */
 export const PUD023: ErrorCode = {
   code: "PUD-023",
-  message: "Something went wrong while deleting event"
+  message: "Something went wrong while deleting event",
+  log: true
 };
 
 /**
@@ -192,7 +197,8 @@ export const PUD023: ErrorCode = {
  */
 export const PUD024: ErrorCode = {
   code: "PUD-024",
-  message: "Something went wrong while deleting expense"
+  message: "Something went wrong while deleting expense",
+  log: true
 };
 
 /**
@@ -200,7 +206,8 @@ export const PUD024: ErrorCode = {
  */
 export const PUD025: ErrorCode = {
   code: "PUD-025",
-  message: "Something went wrong while deleting user"
+  message: "Something went wrong while deleting user",
+  log: true
 };
 
 /**
@@ -208,7 +215,8 @@ export const PUD025: ErrorCode = {
  */
 export const PUD026: ErrorCode = {
   code: "PUD-026",
-  message: "Something went wrong while editing category's weighted status"
+  message: "Something went wrong while editing category's weighted status",
+  log: true
 };
 
 /**
@@ -216,7 +224,8 @@ export const PUD026: ErrorCode = {
  */
 export const PUD027: ErrorCode = {
   code: "PUD-027",
-  message: "Something went wrong while editing user's weight in category"
+  message: "Something went wrong while editing user's weight in category",
+  log: true
 };
 
 /**
@@ -224,7 +233,8 @@ export const PUD027: ErrorCode = {
  */
 export const PUD028: ErrorCode = {
   code: "PUD-028",
-  message: "Something went wrong while editing user"
+  message: "Something went wrong while editing user",
+  log: true
 };
 
 /**
@@ -232,7 +242,8 @@ export const PUD028: ErrorCode = {
  */
 export const PUD029: ErrorCode = {
   code: "PUD-029",
-  message: "Something went wrong while getting categories"
+  message: "Something went wrong while getting categories",
+  log: true
 };
 
 /**
@@ -240,7 +251,8 @@ export const PUD029: ErrorCode = {
  */
 export const PUD030: ErrorCode = {
   code: "PUD-030",
-  message: "Something went wrong while getting event payment data"
+  message: "Something went wrong while getting event payment data",
+  log: true
 };
 
 /**
@@ -248,7 +260,8 @@ export const PUD030: ErrorCode = {
  */
 export const PUD031: ErrorCode = {
   code: "PUD-031",
-  message: "Something went wrong while getting events"
+  message: "Something went wrong while getting events",
+  log: true
 };
 
 /**
@@ -256,7 +269,8 @@ export const PUD031: ErrorCode = {
  */
 export const PUD032: ErrorCode = {
   code: "PUD-032",
-  message: "Something went wrong while getting expenses"
+  message: "Something went wrong while getting expenses",
+  log: true
 };
 
 /**
@@ -264,7 +278,8 @@ export const PUD032: ErrorCode = {
  */
 export const PUD033: ErrorCode = {
   code: "PUD-033",
-  message: "Something went wrong while getting user's hashed password"
+  message: "Something went wrong while getting user's hashed password",
+  log: true
 };
 
 /**
@@ -272,7 +287,8 @@ export const PUD033: ErrorCode = {
  */
 export const PUD034: ErrorCode = {
   code: "PUD-034",
-  message: "Something went wrong while getting user"
+  message: "Something went wrong while getting user",
+  log: true
 };
 
 /**
@@ -280,7 +296,8 @@ export const PUD034: ErrorCode = {
  */
 export const PUD035: ErrorCode = {
   code: "PUD-035",
-  message: "Something went wrong while getting users"
+  message: "Something went wrong while getting users",
+  log: true
 };
 
 /**
@@ -288,7 +305,8 @@ export const PUD035: ErrorCode = {
  */
 export const PUD036: ErrorCode = {
   code: "PUD-036",
-  message: "Something went wrong while creating new category"
+  message: "Something went wrong while creating new category",
+  log: true
 };
 
 /**
@@ -296,7 +314,8 @@ export const PUD036: ErrorCode = {
  */
 export const PUD037: ErrorCode = {
   code: "PUD-037",
-  message: "Something went wrong while creating new event"
+  message: "Something went wrong while creating new event",
+  log: true
 };
 
 /**
@@ -304,7 +323,8 @@ export const PUD037: ErrorCode = {
  */
 export const PUD038: ErrorCode = {
   code: "PUD-038",
-  message: "Something went wrong while creating new user"
+  message: "Something went wrong while creating new user",
+  log: true
 };
 
 /**
@@ -312,7 +332,8 @@ export const PUD038: ErrorCode = {
  */
 export const PUD039: ErrorCode = {
   code: "PUD-039",
-  message: "Something went wrong while removing user from category"
+  message: "Something went wrong while removing user from category",
+  log: true
 };
 
 /**
@@ -320,7 +341,8 @@ export const PUD039: ErrorCode = {
  */
 export const PUD040: ErrorCode = {
   code: "PUD-040",
-  message: "Something went wrong while removing user from event"
+  message: "Something went wrong while removing user from event",
+  log: true
 };
 
 /**
@@ -328,7 +350,8 @@ export const PUD040: ErrorCode = {
  */
 export const PUD041: ErrorCode = {
   code: "PUD-041",
-  message: "Something went wrong while renaming category"
+  message: "Something went wrong while renaming category",
+  log: true
 };
 
 /**
@@ -336,7 +359,8 @@ export const PUD041: ErrorCode = {
  */
 export const PUD042: ErrorCode = {
   code: "PUD-042",
-  message: "Something went wrong while resetting password"
+  message: "Something went wrong while resetting password",
+  log: true
 };
 
 /**
@@ -344,7 +368,8 @@ export const PUD042: ErrorCode = {
  */
 export const PUD043: ErrorCode = {
   code: "PUD-043",
-  message: "Something went wrong while creating new expense"
+  message: "Something went wrong while creating new expense",
+  log: true
 };
 
 /**
@@ -352,7 +377,8 @@ export const PUD043: ErrorCode = {
  */
 export const PUD044: ErrorCode = {
   code: "PUD-044",
-  message: "Something went wrong while editing event"
+  message: "Something went wrong while editing event",
+  log: true
 };
 
 /**
@@ -480,5 +506,23 @@ export const PUD059: ErrorCode = {
  */
 export const PUD060: ErrorCode = {
   code: "PUD-060",
-  message: "Unable to sign out"
+  message: "Unable to sign out",
+  log: true
+};
+
+/**
+ * PUD-061: Something went wrong getting users, categories or expenses
+ */
+export const PUD061: ErrorCode = {
+  code: "PUD-061",
+  message: "Something went wrong getting users, categories or expenses",
+  log: true
+};
+
+/**
+ * PUD-062: User cannot pay for expense as user is not in event
+ */
+export const PUD062: ErrorCode = {
+  code: "PUD-062",
+  message: "User cannot pay for expense as user is not in event"
 };

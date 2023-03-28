@@ -17,11 +17,10 @@ export const getCategories = async (eventId: number) => {
     .input("category_id", sql.Int, null)
     .execute("get_categories")
     .then(data => {
-      return parseCategories(data.recordset, Target.CLIENT);
+      return parseCategories(data.recordsets as sql.IRecordSet<object>[], Target.CLIENT);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD029);
+      throw new ErrorExt(ec.PUD029, err);
     });
   return categories;
 };
@@ -38,11 +37,10 @@ export const getCategory = async (categoryId: number) => {
     .input("category_id", sql.Int, categoryId)
     .execute("get_categories")
     .then(data => {
-      return parseCategories(data.recordset, Target.CLIENT);
+      return parseCategories(data.recordsets as sql.IRecordSet<object>[], Target.CLIENT);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD029);
+      throw new ErrorExt(ec.PUD029, err);
     });
   return categories[0];
 };
@@ -65,8 +63,7 @@ export const createCategory = async (name: string, eventId: number, weighted: bo
       return data.recordset[0];
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD036);
+      throw new ErrorExt(ec.PUD036, err);
     });
   return category;
 };
@@ -90,19 +87,17 @@ export const addUserToCategory = async (categoryId: number, userId: number, weig
     })
     .catch(err => {
       if (err.number === 50007)
-        throw new ErrorExt(ec.PUD007, 400);
+        throw new ErrorExt(ec.PUD007, err, 400);
       else if (err.number === 50008)
-        throw new ErrorExt(ec.PUD008, 400);
+        throw new ErrorExt(ec.PUD008, err, 400);
       else if (err.number === 50010)
-        throw new ErrorExt(ec.PUD010, 400);
+        throw new ErrorExt(ec.PUD010, err, 400);
       else if (err.number === 50011)
-        throw new ErrorExt(ec.PUD011, 400);
+        throw new ErrorExt(ec.PUD011, err, 400);
       else if (err.number === 50012)
-        throw new ErrorExt(ec.PUD012, 400);
-      else {
-        console.log(err);
-        throw new ErrorExt(ec.PUD020);
-      }
+        throw new ErrorExt(ec.PUD012, err, 400);
+      else
+        throw new ErrorExt(ec.PUD020, err);
     });
   return categories[0];
 };
@@ -123,8 +118,7 @@ export const renameCategory = async (categoryId: number, name: string) => {
       return data.recordset[0];
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD041);
+      throw new ErrorExt(ec.PUD041, err);
     });
   return category;
 };
@@ -147,8 +141,7 @@ export const editUserWeight = async (categoryId: number, userId: number, weight:
       return parseCategories(data.recordset, Target.CLIENT);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD027);
+      throw new ErrorExt(ec.PUD027, err);
     });
   return categories[0];
 };
@@ -169,8 +162,7 @@ export const editWeightStatus = async (categoryId: number, weighted: boolean) =>
       return parseCategories(data.recordset, Target.CLIENT);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD026);
+      throw new ErrorExt(ec.PUD026, err);
     });
   return categories[0];
 };
@@ -189,8 +181,7 @@ export const deleteCategory = async (categoryId: number) => {
       return true;
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD022);
+      throw new ErrorExt(ec.PUD022, err);
     });
   return success;
 };
@@ -211,8 +202,7 @@ export const removeUserFromCategory = async (categoryId: number, userId: number)
       return parseCategories(data.recordset, Target.CLIENT);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD039);
+      throw new ErrorExt(ec.PUD039, err);
     });
   return categories[0];
 };

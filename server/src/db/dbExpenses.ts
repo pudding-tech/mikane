@@ -20,8 +20,7 @@ export const getExpenses = async (eventId: number) => {
       return parseExpenses(data.recordset);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD032);
+      throw new ErrorExt(ec.PUD032, err);
     });
   return expenses;
 };
@@ -42,8 +41,7 @@ export const getExpense = async (expenseId: number) => {
       return parseExpenses(data.recordset);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD032);
+      throw new ErrorExt(ec.PUD032, err);
     });
   return expenses[0];
 };
@@ -70,8 +68,10 @@ export const createExpense = async (name: string, description: string, amount: n
       return parseExpenses(data.recordset);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD043);
+      if (err.number === 50062)
+        throw new ErrorExt(ec.PUD062, err);
+      else
+        throw new ErrorExt(ec.PUD043, err);
     });
   return expenses[0];
 };
@@ -90,8 +90,7 @@ export const deleteExpense = async (expenseId: number) => {
       return true;
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD024);
+      throw new ErrorExt(ec.PUD024, err);
     });
   return success;
 };

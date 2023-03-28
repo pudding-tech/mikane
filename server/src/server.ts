@@ -69,6 +69,7 @@ const apiDocsOptions = {
   customCss: ".swagger-ui .topbar { display: none }",
   swaggerOptions: {
     supportedSubmitMethods: inProd ? ["get"] : ["get", "post", "put", "delete"],
+    validatorUrl: null
   },
 };
 app.use("/", swaggerUi.serve);

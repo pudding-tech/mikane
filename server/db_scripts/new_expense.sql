@@ -10,10 +10,13 @@ create procedure new_expense
 as
 begin
   
-  set @description = isnull(@description, '')
+  if not exists (select ue.user_id from user_event ue inner join category c on ue.event_id = c.event_id where c.id = @category_id and ue.user_id = @payer_id)
+  begin
+    throw 50062, 'User cannot pay for expense as user is not in event', 7
+  end
 
   insert into expense([name], [description], amount, category_id, payer_id, date_added)
-    values (@name, @description, @amount, @category_id, @payer_id, GETDATE())
+    values (@name, nullif(@description, ''), @amount, @category_id, @payer_id, GETDATE())
 
   exec get_expenses null, null, @@IDENTITY
 

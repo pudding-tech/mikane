@@ -8,19 +8,20 @@ import * as ec from "../types/errorCodes";
 
 /**
  * DB interface: Get all events
+ * @param userId Get user specific information about events (optional)
  * @returns List of events
  */
-export const getEvents = async () => {
+export const getEvents = async (userId?: number) => {
   const request = new sql.Request();
   const events: Event[] = await request
     .input("event_id", sql.Int, null)
+    .input("user_id", sql.Int, userId)
     .execute("get_events")
     .then(data => {
       return parseEvents(data.recordset);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD031);
+      throw new ErrorExt(ec.PUD031, err);
     });
   return events;
 };
@@ -28,19 +29,20 @@ export const getEvents = async () => {
 /**
  * DB interface: Get specific event
  * @param eventId Event ID
+ * @param userId Get user specific information about events (optional)
  * @returns Events
  */
-export const getEvent = async (eventId: number) => {
+export const getEvent = async (eventId: number, userId?: number) => {
   const request = new sql.Request();
   const events: Event[] = await request
     .input("event_id", sql.Int, eventId)
+    .input("user_id", sql.Int, userId)
     .execute("get_events")
     .then(data => {
       return parseEvents(data.recordset);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD031);
+      throw new ErrorExt(ec.PUD031, err);
     });
   return events[0];
 };
@@ -59,17 +61,16 @@ export const getEventBalances = async (eventId: number) => {
       return res.recordsets as sql.IRecordSet<object>[];
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD030);
+      throw new ErrorExt(ec.PUD030, err);
     });
   
-  if (!data || data.length < 3) {
-    throw new ErrorExt("Something went wrong getting users, categories or expenses");
+  if (!data || data.length < 4) {
+    throw new ErrorExt(ec.PUD061);
   }
 
-  const users: User[] = parseUsers(data[0]);
-  const categories: Category[] = parseCategories(data[1], Target.CALC);
-  const expenses: Expense[] = parseExpenses(data[2]);
+  const users: User[] = parseUsers(data[0], true);
+  const categories: Category[] = parseCategories([data[1], data[2]], Target.CALC);
+  const expenses: Expense[] = parseExpenses(data[3]);
 
   const balance: BalanceCalculationResult = calculateBalance(expenses, categories, users);
   const usersWithBalance: UserBalance[] = parseBalance(users, balance);
@@ -90,17 +91,16 @@ export const getEventPayments = async (eventId: number) => {
       return res.recordsets as sql.IRecordSet<object>[];
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD030);
+      throw new ErrorExt(ec.PUD030, err);
     });
   
-  if (!data || data.length < 3) {
-    throw new ErrorExt("Something went wrong getting users, categories or expenses");
+  if (!data || data.length < 4) {
+    throw new ErrorExt(ec.PUD061);
   }
 
-  const users: User[] = parseUsers(data[0]);
-  const categories: Category[] = parseCategories(data[1], Target.CALC);
-  const expenses: Expense[] = parseExpenses(data[2]);
+  const users: User[] = parseUsers(data[0], false);
+  const categories: Category[] = parseCategories([data[1], data[2]], Target.CALC);
+  const expenses: Expense[] = parseExpenses(data[3]);
 
   const payments: Payment[] = calculatePayments(expenses, categories, users);
   return payments;
@@ -121,17 +121,19 @@ export const createEvent = async (name: string, userId: number, privateEvent: bo
     .input("description", sql.NVarChar, description)
     .input("user_id", sql.Int, userId)
     .input("private", sql.Bit, privateEvent)
+    .input("active", sql.Bit, 1)
+    .input("use_real_names", sql.Bit, 1)
     .execute("new_event")
     .then(data => {
       return parseEvents(data.recordset);
     })
     .catch(err => {
       if (err.number === 50005)
-        throw new ErrorExt(ec.PUD005, 400);
-      else {
-        console.log(err);
-        throw new ErrorExt(ec.PUD037);
-      }
+        throw new ErrorExt(ec.PUD005, err, 400);
+      if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, err, 400);
+      else
+        throw new ErrorExt(ec.PUD037, err);
     });
   return events[0];
 };
@@ -150,8 +152,7 @@ export const deleteEvent = async (id: number) => {
       return true;
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD023);
+      throw new ErrorExt(ec.PUD023, err);
     });
   return success;
 };
@@ -173,15 +174,13 @@ export const addUserToEvent = async (eventId: number, userId: number) => {
     })
     .catch(err => {
       if (err.number === 50006) 
-        throw new ErrorExt(ec.PUD006, 400);
+        throw new ErrorExt(ec.PUD006, err, 400);
       else if (err.number === 50008)
-        throw new ErrorExt(ec.PUD008, 400);
+        throw new ErrorExt(ec.PUD008, err, 400);
       else if (err.number === 50009)
-        throw new ErrorExt(ec.PUD009, 400);
-      else {
-        console.log(err);
-        throw new ErrorExt(ec.PUD021);
-      }
+        throw new ErrorExt(ec.PUD009, err, 400);
+      else
+        throw new ErrorExt(ec.PUD021, err);
     });
   return events[0];
 };
@@ -202,8 +201,7 @@ export const removeUserFromEvent = async (eventId: number, userId: number) => {
       return parseEvents(data.recordset);
     })
     .catch(err => {
-      console.log(err);
-      throw new ErrorExt(ec.PUD040);
+      throw new ErrorExt(ec.PUD040, err);
     });
   return events[0];
 };
@@ -231,13 +229,11 @@ export const editEvent = async (eventId: number, name?: string, description?: st
     })
     .catch(err => {
       if (err.number === 50005)
-        throw new ErrorExt(ec.PUD005, 400);
+        throw new ErrorExt(ec.PUD005, err, 400);
       if (err.number === 50008)
-        throw new ErrorExt(ec.PUD008, 400);
-      else {
-        console.log(err);
-        throw new ErrorExt(ec.PUD044);
-      }
+        throw new ErrorExt(ec.PUD008, err, 400);
+      else
+        throw new ErrorExt(ec.PUD044, err);
     });
   return events[0];
 };

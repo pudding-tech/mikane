@@ -8,9 +8,11 @@ import { Target } from "./types/enums";
  * @param target Choose if categories are meant for client presentation or calculations
  * @returns List of Category objects
  */
-export const parseCategories = (catInput: object[], target: Target) : Category[] => {
+export const parseCategories = (catInput: object[][], target: Target) : Category[] => {
   const categories: Category[] = [];
-  catInput.forEach(catObj => {
+  const categoryList = catInput[0]; // List of categories
+  const weightList = catInput[1]; // List of user weights
+  categoryList.forEach(catObj => {
 
     const category: Category = {
       id: catObj["id" as keyof typeof catObj],
@@ -25,24 +27,23 @@ export const parseCategories = (catInput: object[], target: Target) : Category[]
       category.userWeights = new Map<number, number>();
     }
 
-    if (catObj["user_weight" as keyof typeof catObj] !== null) {
-      const userWeightString: string[] = (catObj["user_weight" as keyof typeof catObj] as string).split(";");
-      userWeightString.forEach(userWeight => {
-        const userWeightProps = userWeight.split(",");
-        if (target === Target.CLIENT && category.users) {
-          category.users.push(
-            {
-              id: parseInt(userWeightProps[0]),
-              name: userWeightProps[1],
-              weight: parseInt(userWeightProps[2])
-            }
-          );
-        }
-        else if (target === Target.CALC && category.userWeights) {
-          category.userWeights.set(parseInt(userWeightProps[0]), parseInt(userWeightProps[2]));
-        }
-      });
-    }
+    weightList.forEach(weight => {
+      if (weight["category_id" as keyof typeof weight] != catObj["id" as keyof typeof catObj]) {
+        return;
+      }
+      if (target === Target.CLIENT && category.users) {
+        category.users.push(
+          {
+            id: parseInt(weight["user_id" as keyof typeof weight]),
+            name: weight["username" as keyof typeof weight],
+            weight: parseInt(weight["weight" as keyof typeof weight])
+          }
+        );
+      }
+      else if (target === Target.CALC && category.userWeights) {
+        category.userWeights.set(parseInt(weight["user_id" as keyof typeof weight]), parseInt(weight["weight" as keyof typeof weight]));
+      }
+    });
 
     categories.push(category);
   });
@@ -92,9 +93,10 @@ export const parseExpenses = (expInput: object[]): Expense[] => {
 /**
  * Build array of User objects
  * @param usersInput List of objects
+ * @param withEventData Whether to include user-event data (if present)
  * @returns List of User objects
  */
-export const parseUsers = (usersInput: object[]): User[] => {
+export const parseUsers = (usersInput: object[], withEventData: boolean): User[] => {
   const users: User[] = [];
   usersInput.forEach(userObj => {
     const user: User = {
@@ -105,7 +107,11 @@ export const parseUsers = (usersInput: object[]): User[] => {
       lastName: userObj["last_name" as keyof typeof userObj],
       email: userObj["email" as keyof typeof userObj],
       created: userObj["created" as keyof typeof userObj],
-      uuid: userObj["uuid" as keyof typeof userObj]
+      uuid: userObj["uuid" as keyof typeof userObj],
+      event: withEventData && userObj["event_id" as keyof typeof userObj] ? {
+        id: userObj["event_id" as keyof typeof userObj],
+        joinedDate: userObj["event_joined_date" as keyof typeof userObj]
+      } : undefined
     };
     users.push(user);
   });
@@ -116,6 +122,14 @@ export const parseUsers = (usersInput: object[]): User[] => {
     delete user.firstName;
     delete user.lastName;
   }
+
+  // Sort users by date joined event
+  users.sort((a, b) => {
+    if (!a.event?.joinedDate || !b.event?.joinedDate) {
+      return 0;
+    }
+    return a.event?.joinedDate.getTime() - b.event?.joinedDate.getTime();
+  });
 
   return users;
 };
@@ -154,7 +168,12 @@ export const parseEvents = (eventsInput: object[]) => {
       created: eventObj["created" as keyof typeof eventObj],
       adminId: eventObj["admin_id" as keyof typeof eventObj],
       private: eventObj["private" as keyof typeof eventObj],
-      uuid: eventObj["uuid" as keyof typeof eventObj]
+      uuid: eventObj["uuid" as keyof typeof eventObj],
+      user: eventObj["user_id" as keyof typeof eventObj] ? {
+          id: eventObj["user_id" as keyof typeof eventObj],
+          inEvent: eventObj["in_event" as keyof typeof eventObj],
+          isAdmin: eventObj["is_admin" as keyof typeof eventObj]
+        } : undefined
     };
     events.push(event);
   }
@@ -189,12 +208,18 @@ export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult
     });
   });
 
-  // balances.sort((a, b) => {
-  //   if (!a.user.eventJoined || !b.user.eventJoined) {
-  //     return 0;
-  //   }
-  //   return a.user.eventJoined.getTime() - b.user.eventJoined.getTime();
-  // });
+  // Sort users by date joined event
+  balances.sort((a, b) => {
+    if (!a.user.event?.joinedDate || !b.user.event?.joinedDate) {
+      return 0;
+    }
+    return a.user.event?.joinedDate.getTime() - b.user.event?.joinedDate.getTime();
+  });
+
+  // Remove event information
+  for (const balance of balances) {
+    delete balance.user.event;
+  }
   
   return balances;
 };

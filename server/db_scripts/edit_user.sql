@@ -11,6 +11,21 @@ create procedure edit_user
 as
 begin
 
+  if @username is not null and exists (select id from [user] where [username] = @username and id != @user_id) 
+  begin
+    throw 50017, 'Username already taken', 1
+  end
+
+  if @email is not null and exists (select id from [user] where email = @email and id != @user_id) 
+  begin
+    throw 50018, 'Email address already taken', 1
+  end
+
+  if @phone_number is not null and exists (select id from [user] where phone_number = @phone_number and id != @user_id)
+  begin
+    throw 50019, 'Phone number already taken', 1
+  end
+
   update
     [user]
   set
