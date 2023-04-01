@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, forkJoin, map, merge, Observable, of, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, map, Observable, of, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
@@ -54,7 +54,7 @@ export class UserComponent implements OnInit, OnDestroy {
 	usersWithBalance: UserBalance[] = [];
 
 	displayedColumns: string[] = ['name', 'amount', 'category', 'description', 'actions'];
-	dataSource!: ExpenseDataSource;
+	dataSources: ExpenseDataSource[] = [];
 
 	showJoinEvent = false;
 
@@ -74,8 +74,6 @@ export class UserComponent implements OnInit, OnDestroy {
 			this.eventId = params['eventId'];
 			this.loadUsers();
 		});
-
-		this.dataSource = new ExpenseDataSource(this.userService);
 	}
 
 	loadUsers() {
@@ -95,6 +93,9 @@ export class UserComponent implements OnInit, OnDestroy {
 					next: (usersWithBalance) => {
 						this.usersWithBalance = usersWithBalance;
 						this.loading.next(false);
+						for (let i = 0; i < usersWithBalance.length; i++) {
+							this.dataSources.push(new ExpenseDataSource(this.userService));
+						}
 					},
 					error: () => {
 						this.messageService.showError('Error loading users and user balance');
@@ -198,7 +199,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
 	deleteUserDialog(userId: number) {
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-			width: '350px',
+			width: '380px',
 			data: {
 				title: 'Remove User',
 				content: 'Are you sure you want to remove this user? All of their expenses will be permanently deleted!',
@@ -227,8 +228,8 @@ export class UserComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	getExpenses(user: User): void {
-		this.dataSource.loadExpenses(user.id, this.eventId);
+	getExpenses(user: User, index: number): void {
+		this.dataSources[index].loadExpenses(user.id, this.eventId);
 	}
 
 	createExpenseDialog(userId: number, dataSource: ExpenseDataSource) {
