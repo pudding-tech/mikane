@@ -57,7 +57,7 @@ export default class MSSQLSessionStore extends Store {
       const res = await request
         .input("sid", sql.NVarChar, sid)
         .query(`
-          SELECT [session] from ${this.table} where sid = @sid
+          SELECT [session] from ${this.table} where sid = @sid and expires > GETDATE()
         `);
       callback(null, (res.recordset.length > 0 && res.recordset[0].session) ? JSON.parse(res.recordset[0].session) : null);
     }
