@@ -35,7 +35,9 @@ export const parseCategories = (catInput: object[][], target: Target) : Category
         category.users.push(
           {
             id: parseInt(weight["user_id" as keyof typeof weight]),
-            name: weight["username" as keyof typeof weight],
+            name: weight["first_name" as keyof typeof weight],
+            firstName: weight["first_name" as keyof typeof weight],
+            lastName: weight["last_name" as keyof typeof weight],
             weight: parseInt(weight["weight" as keyof typeof weight])
           }
         );
@@ -47,6 +49,17 @@ export const parseCategories = (catInput: object[][], target: Target) : Category
 
     categories.push(category);
   });
+
+  for (const category of categories) {
+    if (category.users) {
+      // Set unique names of users where they are shared
+      setUserUniqueNames(category.users);
+      for (const user of category.users) {
+        delete user.firstName;
+        delete user.lastName;
+      }
+    }
+  }
 
   return categories;
 };

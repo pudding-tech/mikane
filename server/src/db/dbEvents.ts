@@ -122,7 +122,7 @@ export const createEvent = async (name: string, userId: number, privateEvent: bo
     .input("user_id", sql.Int, userId)
     .input("private", sql.Bit, privateEvent)
     .input("active", sql.Bit, 1)
-    .input("use_real_names", sql.Bit, 1)
+    .input("usernames_only", sql.Bit, 0)
     .execute("new_event")
     .then(data => {
       return parseEvents(data.recordset);

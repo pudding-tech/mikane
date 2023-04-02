@@ -24,7 +24,7 @@ create table [event] (
   admin_id int foreign key references [user](id) on delete set null,
   [private] bit not null,
   active bit not null default 1,
-  use_real_names bit not null,
+  usernames_only bit not null,
   uuid uniqueidentifier not null default newid()
 )
 go
@@ -67,6 +67,7 @@ go
 create table [session] (
   [sid] nvarchar(255) not null primary key,
   [session] nvarchar(max) not null,
-  expires datetime not null
+  expires datetime not null,
+  user_id int not null
 )
 go
