@@ -33,21 +33,6 @@ export default class MSSQLSessionStore extends Store {
       }, this.autoDeleteInterval);
     }
   }
-
-  private async connectionCheck() {
-    try {
-      if (!this.pool.connected && !this.pool.connecting) {
-        await this.connect();
-      }
-      if (this.pool.connected) {
-        return true;
-      }
-      throw new Error("Not connected to session store");
-    }
-    catch(err) {
-      throw err;
-    }
-  }
   
   async get(sid: string, callback: (err: any, session?: SessionData | null | undefined) => void) {
     try {
@@ -112,13 +97,12 @@ export default class MSSQLSessionStore extends Store {
         callback();
       }
     }
-    catch(err) {
+    catch (err) {
       this.errorhandler(err, callback);
     }
   }
 
   async destroy(sid: string, callback?: ((err?: any) => void) | undefined) {
-    console.log("destroy");
     try {
       await this.connectionCheck();
 
@@ -132,11 +116,14 @@ export default class MSSQLSessionStore extends Store {
         callback();
       }
     }
-    catch(err) {
+    catch (err) {
       this.errorhandler(err, callback);
     }
   }
 
+  /**
+   * Delete all expired sessions from the database
+   */
   async deleteExpired() {
     try {
       await this.connectionCheck();
@@ -147,15 +134,40 @@ export default class MSSQLSessionStore extends Store {
           DELETE FROM ${this.table} WHERE expires <= GETDATE()
         `);
     }
-    catch(err) {
+    catch (err) {
       this.errorhandler(err);
     }
   }
 
+  /**
+   * Check if database is connected. If not - try to connect before proceeding.
+   * @returns `true` if database is connected
+   */
+  private async connectionCheck() {
+    try {
+      if (!this.pool.connected && !this.pool.connecting) {
+        await this.connect();
+      }
+      if (this.pool.connected) {
+        return true;
+      }
+      throw new Error("Not connected to session store");
+    }
+    catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * Handle errors
+   * @param err 
+   * @param callback
+   */
   private errorhandler(err: any, callback?: (err: any) => void) {
     if (callback) {
-      callback(err);
+      return callback(err);
     }
+    console.error(err);
   }
 
   /**
@@ -170,7 +182,7 @@ export default class MSSQLSessionStore extends Store {
       await store.connect();
       return store;
     }
-    catch(err) {
+    catch (err) {
       throw err;
     }
   }

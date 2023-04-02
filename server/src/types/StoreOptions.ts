@@ -13,14 +13,14 @@ export interface StoreOptions {
 
   /**
    * Determines if expired sessions should be automatically deleted.
-   * If value is `true` then a new function, `destroyExpired()`,
+   * If value is `true` then a function, `deleteExpired()`,
    * will delete expired sessions on a set interval.
    * Default: `false`
    */
   autoDelete?: boolean;
 
   /**
-   * Sets the timer interval for each call to `destroyExpired()`.
+   * Sets the timer interval for each call to `deleteExpired()`.
    * Default: `1000 * 60 * 60 * 24` (24 hours)
    */
   autoDeleteInterval?: number;
