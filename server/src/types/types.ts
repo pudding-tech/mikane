@@ -37,6 +37,8 @@ export type Category = {
   users?: {
     id: number,
     name: string,
+    firstName?: string,
+    lastName?: string,
     weight?: number
   }[]
 }

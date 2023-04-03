@@ -12,7 +12,7 @@ begin
     c.name,
     c.weighted,
     c.event_id,
-    e.use_real_names
+    e.usernames_only
   from category c
     inner join [event] e on c.event_id = e.id
   where

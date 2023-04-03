@@ -9,10 +9,6 @@
     {
       "url": "http://localhost:3002/api",
       "description": "Local test server"
-    },
-    {
-      "url": "https://pudding-debt-api.hundseth.com/api",
-      "description": "Production server"
     }
   ],
   "paths": {
@@ -217,7 +213,6 @@
             "schema": {
               "type": "string"
             }
-            
           }
         ],
         "responses": {
@@ -473,7 +468,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Expense"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Expense"
+                  }
                 }
               }
             }

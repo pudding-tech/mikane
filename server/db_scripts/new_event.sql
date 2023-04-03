@@ -7,7 +7,7 @@ create procedure new_event
   @user_id int,
   @private bit,
   @active bit,
-  @use_real_names bit
+  @usernames_only bit
 as
 begin
 
@@ -21,7 +21,7 @@ begin
     throw 50008, 'User does not exist', 1
   end
 
-  insert into [event]([name], [description], created, admin_id, [private], active, use_real_names) values (@name, @description, GETDATE(), @user_id, @private, @active, @use_real_names)
+  insert into [event]([name], [description], created, admin_id, [private], active, usernames_only) values (@name, @description, GETDATE(), @user_id, @private, @active, @usernames_only)
 
   declare @event_id int = @@IDENTITY
   exec add_user_to_event @event_id, @user_id

@@ -4,7 +4,7 @@ import swaggerUi from "swagger-ui-express";
 import cors from "cors";
 import helmet from "helmet";
 import sql from "mssql";
-import MSSQLStore from "connect-mssql-v2";
+import MSSQLSessionStore from "./session-store/MSSQLSessionStore";
 import dotenv from "dotenv";
 import eventRoutes from "./api/events";
 import userRoutes from "./api/users";
@@ -63,7 +63,7 @@ app.use(cors({
     credentials: true,
 }));
 
-// API docs
+// API documentation
 const apiDocsOptions = {
   customCssUrl: "/SwaggerDark.css",
   customCss: ".swagger-ui .topbar { display: none }",
@@ -76,20 +76,12 @@ app.use("/", swaggerUi.serve);
 app.get("/", swaggerUi.setup(apiDocument, apiDocsOptions));
 
 // Session storage
-const store = new MSSQLStore(dbConfig, {
+const store = new MSSQLSessionStore(dbConfig, {
   table: "[session]",
-  autoRemove: true,
-  autoRemoveInterval: 1000 * 60 * 60 * 24,
-  useUTC: false,
+  autoDelete: true,
+  autoDeleteInterval: 1000 * 60 * 60 * 24
 });
-
-store.on("connect", () => {
-  console.log("Session store connected at " + new Date());
-});
-
-store.on("error", (err) => {
-  console.log("Session store error:", err);
-});
+store.connect().catch(err => console.error("Error connecting to session store\n", err));
 
 // Enable user sessions
 const tenDays = 1000 * 60 * 60 * 24 * 10;

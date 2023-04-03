@@ -7,7 +7,7 @@ export const errorHandler = (err: ErrorExt | Error, req: Request, res: Response,
   }
   if (err instanceof ErrorExt) {
     if (err.log) {
-      console.log(err.error || err);
+      console.error(err.error || err);
     }
     return res.status(err.status).json({
       code: err.code,
@@ -15,7 +15,7 @@ export const errorHandler = (err: ErrorExt | Error, req: Request, res: Response,
     });
   }
   else {
-    console.log(err);
+    console.error(err);
     return res.status(500).json({ error: "Something broke :(" });
   }
 };
