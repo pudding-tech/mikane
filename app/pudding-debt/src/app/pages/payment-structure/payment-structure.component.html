@@ -23,7 +23,7 @@
 					<!-- Amount Column -->
 					<ng-container matColumnDef="amount">
 						<th mat-header-cell *matHeaderCellDef>Amount</th>
-						<td mat-cell *matCellDef="let receiver">
+						<td mat-cell *matCellDef="let receiver" class="amount-cell">
 							{{ receiver.amount | currency : "" : "" : "1.2-2" : "no" }}
 							kr
 						</td></ng-container
