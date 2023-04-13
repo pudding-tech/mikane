@@ -2,9 +2,12 @@ version: "3.8"
 # name: puddingdebt
 services:
   server:
-    depends_on:
-      - db
-    build: ./
+    build:
+      context: ./
+      args:
+        SERVER_URL: 
+        SERVER_DESCRIPTION: 
+    image: puddingdebt:latest
     container_name: api
     ports:
       - "3002:3002"

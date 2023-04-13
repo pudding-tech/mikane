@@ -6,8 +6,8 @@ WORKDIR /app
 
 # Copy packages file and install dependencies
 COPY package.json ./
-COPY tsconfig.json ./
-RUN npm install
+COPY package-lock.json ./
+RUN npm ci
 
 # Copy everything
 COPY ./ ./
@@ -23,11 +23,24 @@ ENV NODE_ENV=dev
 
 WORKDIR /app
 COPY package.json ./
-RUN npm install --omit=dev
+COPY package-lock.json ./
+RUN npm ci --omit=dev
 COPY --from=builder /app/build ./build
 # COPY ./db_scripts ./db_scripts
 # COPY ./entrypoint.sh ./
 COPY ./public ./public
+
+# Update server API documentation file
+ARG SERVER_URL
+ARG SERVER_DESCRIPTION
+RUN if [ "${SERVER_URL}" ] ; \
+  then \
+    sed -i "s,http://localhost:3002/api,${SERVER_URL},g" ./build/api.json ; \
+  fi
+RUN if [ "${SERVER_DESCRIPTION}" ] ; \
+  then \
+    sed -i "s,Local test server,${SERVER_DESCRIPTION},g" ./build/api.json ; \
+  fi
 
 # Expose port 3002
 EXPOSE 3002
