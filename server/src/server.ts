@@ -31,9 +31,7 @@ const connectDB = () => {
         console.log("Still connecting to database...");
       }
       if (pool.connected) {
-        console.log(
-          `Connected to SQL database: ${dbConfig.server} - ${dbConfig.database}`
-        );
+        console.log(`Connected to SQL database: ${dbConfig.server} - ${dbConfig.database}`);
       }
     })
     .catch(err => {
@@ -103,10 +101,7 @@ app.use(session({
 }));
 
 app.post("*", (req, res, next) => {
-  if (
-    !req.is("application/json") &&
-    req.headers["content-type"] !== undefined
-  ) {
+  if (req.headers["content-type"] !== undefined && !req.is("application/json")) {
     return res.status(400).json({ err: "Wrong content-type" });
   }
   next();

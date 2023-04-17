@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import sql from "mssql";
 import { Store, SessionData } from "express-session";
 import { StoreOptions } from "../types/StoreOptions";
