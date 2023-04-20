@@ -1,23 +1,22 @@
 import { setUserUniqueNames } from "./utils/setUserDisplayNames";
 import { Category, Event, Expense, User, UserBalance, BalanceCalculationResult } from "./types/types";
+import { CategoryDB, UserWeightDB, ExpenseDB, UserDB, EventDB } from "./types/typesDB";
 import { Target } from "./types/enums";
 
 /**
  * Build array of Category objects. Format for either client or calculate function
- * @param catInput List of objects
+ * @param catInput List of CategoryDB objects
  * @param target Choose if categories are meant for client presentation or calculations
  * @returns List of Category objects
  */
-export const parseCategories = (catInput: object[][], target: Target) : Category[] => {
+export const parseCategories = (catInput: CategoryDB[], target: Target) : Category[] => {
   const categories: Category[] = [];
-  const categoryList = catInput[0]; // List of categories
-  const weightList = catInput[1]; // List of user weights
-  categoryList.forEach(catObj => {
+  catInput.forEach(catObj => {
 
     const category: Category = {
-      id: catObj["id" as keyof typeof catObj],
-      name: catObj["name" as keyof typeof catObj],
-      weighted: catObj["weighted" as keyof typeof catObj]
+      id: catObj.id,
+      name: catObj.name,
+      weighted: catObj.weighted
     };
 
     if (target === Target.CLIENT) {
@@ -27,25 +26,29 @@ export const parseCategories = (catInput: object[][], target: Target) : Category
       category.userWeights = new Map<number, number>();
     }
 
-    weightList.forEach(weight => {
-      if (weight["category_id" as keyof typeof weight] != catObj["id" as keyof typeof catObj]) {
-        return;
-      }
-      if (target === Target.CLIENT && category.users) {
-        category.users.push(
-          {
-            id: parseInt(weight["user_id" as keyof typeof weight]),
-            name: weight["first_name" as keyof typeof weight],
-            firstName: weight["first_name" as keyof typeof weight],
-            lastName: weight["last_name" as keyof typeof weight],
-            weight: parseInt(weight["weight" as keyof typeof weight])
-          }
-        );
-      }
-      else if (target === Target.CALC && category.userWeights) {
-        category.userWeights.set(parseInt(weight["user_id" as keyof typeof weight]), parseInt(weight["weight" as keyof typeof weight]));
-      }
-    });
+    try {
+      const userWeights: UserWeightDB[] = JSON.parse(catObj.user_weights);
+
+      userWeights.forEach(weight => {
+        if (target === Target.CLIENT && category.users) {
+          category.users.push(
+            {
+              id: weight.user_id,
+              name: weight.first_name,
+              firstName: weight.first_name,
+              lastName: weight.last_name,
+              weight: weight.weight
+            }
+          );
+        }
+        else if (target === Target.CALC && category.userWeights) {
+          category.userWeights.set(weight.user_id, weight.weight);
+        }
+      });
+    }
+    catch (err) {
+      console.error(err);
+    }
 
     categories.push(category);
   });
@@ -66,27 +69,27 @@ export const parseCategories = (catInput: object[][], target: Target) : Category
 
 /**
  * Build array of Expense objects
- * @param expInput List of objects
+ * @param expInput List of ExpenseDB objects
  * @returns List of Expense objects
  */
-export const parseExpenses = (expInput: object[]): Expense[] => {
+export const parseExpenses = (expInput: ExpenseDB[]): Expense[] => {
   const expenses: Expense[] = [];
   expInput.forEach(expObj => {
     const expense: Expense = {
-      id: expObj["id" as keyof typeof expObj],
-      name: expObj["name" as keyof typeof expObj],
-      description: expObj["description" as keyof typeof expObj],
-      amount: expObj["amount" as keyof typeof expObj],
-      categoryId: expObj["category_id" as keyof typeof expObj],
-      categoryName: expObj["category_name" as keyof typeof expObj],
-      dateAdded: expObj["date_added" as keyof typeof expObj],
+      id: expObj.id,
+      name: expObj.name,
+      description: expObj.description,
+      amount: expObj.amount,
+      categoryId: expObj.category_id,
+      categoryName: expObj.category_name,
+      dateAdded: expObj.date_added,
       payer: {
-        id: expObj["payer_id" as keyof typeof expObj],
-        username: expObj["payer_username" as keyof typeof expObj],
-        name: expObj["payer_first_name" as keyof typeof expObj],
-        firstName: expObj["payer_first_name" as keyof typeof expObj],
-        lastName: expObj["payer_last_name" as keyof typeof expObj],
-        uuid: expObj["payer_uuid" as keyof typeof expObj]
+        id: expObj.payer_id,
+        username: expObj.payer_username,
+        name: expObj.payer_first_name,
+        firstName: expObj.payer_first_name,
+        lastName: expObj.payer_last_name,
+        uuid: expObj.payer_uuid
       }
 		};
 		expenses.push(expense);
@@ -105,25 +108,25 @@ export const parseExpenses = (expInput: object[]): Expense[] => {
 
 /**
  * Build array of User objects
- * @param usersInput List of objects
+ * @param usersInput List of UserDB objects
  * @param withEventData Whether to include user-event data (if present)
  * @returns List of User objects
  */
-export const parseUsers = (usersInput: object[], withEventData: boolean): User[] => {
+export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[] => {
   const users: User[] = [];
   usersInput.forEach(userObj => {
     const user: User = {
-      id: userObj["id" as keyof typeof userObj],
-      username: userObj["username" as keyof typeof userObj],
-      name: userObj["first_name" as keyof typeof userObj],
-      firstName: userObj["first_name" as keyof typeof userObj],
-      lastName: userObj["last_name" as keyof typeof userObj],
-      email: userObj["email" as keyof typeof userObj],
-      created: userObj["created" as keyof typeof userObj],
-      uuid: userObj["uuid" as keyof typeof userObj],
-      event: withEventData && userObj["event_id" as keyof typeof userObj] ? {
-        id: userObj["event_id" as keyof typeof userObj],
-        joinedDate: userObj["event_joined_date" as keyof typeof userObj]
+      id: userObj.id,
+      username: userObj.username,
+      name: userObj.first_name,
+      firstName: userObj.first_name,
+      lastName: userObj.last_name,
+      email: userObj.email,
+      created: userObj.created,
+      uuid: userObj.uuid,
+      event: withEventData && userObj.event_id && userObj.event_joined_date ? {
+        id: userObj.event_id,
+        joinedDate: userObj.event_joined_date
       } : undefined
     };
     users.push(user);
@@ -149,43 +152,43 @@ export const parseUsers = (usersInput: object[], withEventData: boolean): User[]
 
 /**
  * Parse single User object
- * @param userObj
+ * @param userObj UserDB object
  * @returns User object
  */
-export const parseUser = (userObj: object): User => {
+export const parseUser = (userObj: UserDB): User => {
   return {
-    id: userObj["id" as keyof typeof userObj],
-    username: userObj["username" as keyof typeof userObj],
-    name: userObj["first_name" as keyof typeof userObj],
-    firstName: userObj["first_name" as keyof typeof userObj],
-    lastName: userObj["last_name" as keyof typeof userObj],
-    email: userObj["email" as keyof typeof userObj],
-    phone: userObj["phone_number" as keyof typeof userObj],
-    created: userObj["created" as keyof typeof userObj],
-    uuid: userObj["uuid" as keyof typeof userObj]
+    id: userObj.id,
+    username: userObj.username,
+    name: userObj.first_name,
+    firstName: userObj.first_name,
+    lastName: userObj.last_name,
+    email: userObj.email,
+    phone: userObj.phone_number,
+    created: userObj.created,
+    uuid: userObj.uuid
   };
 };
 
 /**
  * Build array of Event objects
- * @param usersInput List of objects
+ * @param usersInput List of EventDB objects
  * @returns List of Event objects
  */
-export const parseEvents = (eventsInput: object[]) => {
+export const parseEvents = (eventsInput: EventDB[]) => {
   const events: Event[] = [];
   for (const eventObj of eventsInput) {
     const event: Event = {
-      id: eventObj["id" as keyof typeof eventObj],
-      name: eventObj["name" as keyof typeof eventObj],
-      description: eventObj["description" as keyof typeof eventObj],
-      created: eventObj["created" as keyof typeof eventObj],
-      adminId: eventObj["admin_id" as keyof typeof eventObj],
-      private: eventObj["private" as keyof typeof eventObj],
-      uuid: eventObj["uuid" as keyof typeof eventObj],
-      user: eventObj["user_id" as keyof typeof eventObj] ? {
-          id: eventObj["user_id" as keyof typeof eventObj],
-          inEvent: eventObj["in_event" as keyof typeof eventObj],
-          isAdmin: eventObj["is_admin" as keyof typeof eventObj]
+      id: eventObj.id,
+      name: eventObj.name,
+      description: eventObj.description,
+      created: eventObj.created,
+      adminId: eventObj.admin_id,
+      private: eventObj.private,
+      uuid: eventObj.uuid,
+      user: eventObj.user_id && eventObj.in_event !== undefined && eventObj.is_admin !== undefined ? {
+          id: eventObj.user_id,
+          inEvent: eventObj.in_event,
+          isAdmin: eventObj.is_admin
         } : undefined
     };
     events.push(event);

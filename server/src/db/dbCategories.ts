@@ -17,7 +17,7 @@ export const getCategories = async (eventId: number) => {
     .input("category_id", sql.Int, null)
     .execute("get_categories")
     .then(data => {
-      return parseCategories(data.recordsets as sql.IRecordSet<object>[], Target.CLIENT);
+      return parseCategories(data.recordset, Target.CLIENT);
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD029, err);
@@ -37,7 +37,7 @@ export const getCategory = async (categoryId: number) => {
     .input("category_id", sql.Int, categoryId)
     .execute("get_categories")
     .then(data => {
-      return parseCategories(data.recordsets as sql.IRecordSet<object>[], Target.CLIENT);
+      return parseCategories(data.recordset, Target.CLIENT);
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD029, err);
