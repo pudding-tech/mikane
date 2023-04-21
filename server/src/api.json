@@ -981,6 +981,67 @@
         }
       }
     },
+    "/event-by-name": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Get event by name",
+        "description": "Get an event by the event's name",
+        "operationId": "getEventByName",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Event name",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Example Event"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - 'user' property is only present when a logged in user makes the request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventWithUser"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/categories": {
       "get": {
         "tags": [
@@ -1626,7 +1687,7 @@
           "Expenses"
         ],
         "summary": "Get expense",
-        "description": "Get a specific",
+        "description": "Get a specific expense",
         "operationId": "getExpense",
         "security": [
           { "cookieAuth": [] }

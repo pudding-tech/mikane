@@ -69,7 +69,7 @@ const apiDocsOptions = {
     supportedSubmitMethods: inProd ? ["get"] : ["get", "post", "put", "delete"],
     validatorUrl: null
   },
-    customSiteTitle: "PuddingDebt API"
+  customSiteTitle: "PuddingDebt API"
 };
 app.use("/", swaggerUi.serve);
 app.get("/", swaggerUi.setup(apiDocument, apiDocsOptions));

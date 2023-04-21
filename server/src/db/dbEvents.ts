@@ -48,6 +48,27 @@ export const getEvent = async (eventId: number, userId?: number) => {
 };
 
 /**
+ * DB interface: Get specific event by name
+ * @param eventId Event name
+ * @param userId Get user specific information about event (optional)
+ * @returns Event
+ */
+export const getEventByName = async (eventName: string, userId?: number) => {
+  const request = new sql.Request();
+  const events: Event[] = await request
+    .input("event_name", sql.NVarChar, eventName)
+    .input("user_id", sql.Int, userId)
+    .execute("get_event_by_name")
+    .then(data => {
+      return parseEvents(data.recordset);
+    })
+    .catch(err => {
+      throw new ErrorExt(ec.PUD031, err);
+    });
+  return events[0];
+};
+
+/**
  * DB interface: Get an event balance information for all users
  * @param eventId Event ID
  * @returns List of user balances for an event
