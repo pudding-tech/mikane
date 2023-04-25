@@ -37,6 +37,19 @@ router.get("/events/:id", authCheck, async (req, res, next) => {
   }
 });
 
+// Get specific event by name
+router.get("/event-by-name", authCheck, async (req, res, next) => {
+  const eventName = req.body.name;
+  const userId = req.session.userId;
+  try {
+    const event: Event = await db.getEventByName(eventName, userId);
+    res.status(200).send(event);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
 // Get a list of all users' balance information for an event
 router.get("/events/:id/balances", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);

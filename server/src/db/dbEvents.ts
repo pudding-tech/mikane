@@ -29,8 +29,8 @@ export const getEvents = async (userId?: number) => {
 /**
  * DB interface: Get specific event
  * @param eventId Event ID
- * @param userId Get user specific information about events (optional)
- * @returns Events
+ * @param userId Get user specific information about event (optional)
+ * @returns Event
  */
 export const getEvent = async (eventId: number, userId?: number) => {
   const request = new sql.Request();
@@ -38,6 +38,27 @@ export const getEvent = async (eventId: number, userId?: number) => {
     .input("event_id", sql.Int, eventId)
     .input("user_id", sql.Int, userId)
     .execute("get_events")
+    .then(data => {
+      return parseEvents(data.recordset);
+    })
+    .catch(err => {
+      throw new ErrorExt(ec.PUD031, err);
+    });
+  return events[0];
+};
+
+/**
+ * DB interface: Get specific event by name
+ * @param eventId Event name
+ * @param userId Get user specific information about event (optional)
+ * @returns Event
+ */
+export const getEventByName = async (eventName: string, userId?: number) => {
+  const request = new sql.Request();
+  const events: Event[] = await request
+    .input("event_name", sql.NVarChar, eventName)
+    .input("user_id", sql.Int, userId)
+    .execute("get_event_by_name")
     .then(data => {
       return parseEvents(data.recordset);
     })
@@ -58,19 +79,19 @@ export const getEventBalances = async (eventId: number) => {
     .input("event_id", sql.Int, eventId)
     .execute("get_event_payment_data")
     .then(res => {
-      return res.recordsets as sql.IRecordSet<object>[];
+      return res.recordsets as sql.IRecordSet<any>[];
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD030, err);
     });
   
-  if (!data || data.length < 4) {
+  if (!data || data.length < 3) {
     throw new ErrorExt(ec.PUD061);
   }
 
   const users: User[] = parseUsers(data[0], true);
-  const categories: Category[] = parseCategories([data[1], data[2]], Target.CALC);
-  const expenses: Expense[] = parseExpenses(data[3]);
+  const categories: Category[] = parseCategories(data[1], Target.CALC);
+  const expenses: Expense[] = parseExpenses(data[2]);
 
   const balance: BalanceCalculationResult = calculateBalance(expenses, categories, users);
   const usersWithBalance: UserBalance[] = parseBalance(users, balance);
@@ -88,19 +109,19 @@ export const getEventPayments = async (eventId: number) => {
     .input("event_id", sql.Int, eventId)
     .execute("get_event_payment_data")
     .then(res => {
-      return res.recordsets as sql.IRecordSet<object>[];
+      return res.recordsets as sql.IRecordSet<any>[];
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD030, err);
     });
   
-  if (!data || data.length < 4) {
+  if (!data || data.length < 3) {
     throw new ErrorExt(ec.PUD061);
   }
 
   const users: User[] = parseUsers(data[0], false);
-  const categories: Category[] = parseCategories([data[1], data[2]], Target.CALC);
-  const expenses: Expense[] = parseExpenses(data[3]);
+  const categories: Category[] = parseCategories(data[1], Target.CALC);
+  const expenses: Expense[] = parseExpenses(data[2]);
 
   const payments: Payment[] = calculatePayments(expenses, categories, users);
   return payments;
