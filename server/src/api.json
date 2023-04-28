@@ -828,7 +828,8 @@
         "description": "Get an event's payments information for all users",
         "operationId": "getEventPayments",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "apiKeyAuth": [] }
         ],
         "parameters": [
           {
@@ -990,7 +991,8 @@
         "description": "Get an event by the event's name",
         "operationId": "getEventByName",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "apiKeyAuth": [] }
         ],
         "requestBody": {
           "description": "Event name",
@@ -2250,6 +2252,11 @@
         "type": "apiKey",
         "in": "cookie",
         "name": "puddingdebt.sid"
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
       }
     }
   }
