@@ -71,3 +71,12 @@ create table [session] (
   user_id int not null
 )
 go
+
+create table api_key (
+  api_key_id uniqueidentifier primary key default newid(),
+  [name] nvarchar(255) not null unique,
+  hashed_key nvarchar(255) not null,
+  valid_from datetime,
+  valid_to datetime
+)
+go

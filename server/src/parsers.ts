@@ -1,6 +1,6 @@
 import { setUserUniqueNames } from "./utils/setUserDisplayNames";
-import { Category, Event, Expense, User, UserBalance, BalanceCalculationResult } from "./types/types";
-import { CategoryDB, UserWeightDB, ExpenseDB, UserDB, EventDB } from "./types/typesDB";
+import { Category, Event, Expense, User, UserBalance, BalanceCalculationResult, APIKey } from "./types/types";
+import { CategoryDB, UserWeightDB, ExpenseDB, UserDB, EventDB, APIKeyDB } from "./types/typesDB";
 import { Target } from "./types/enums";
 
 /**
@@ -238,4 +238,23 @@ export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult
   }
   
   return balances;
+};
+
+/**
+ * Build array of API keys 
+ * @param keysInput 
+ * @returns List of API keys
+ */
+export const parseApiKeys = (keysInput: APIKeyDB[]) => {
+  const keys: APIKey[] = [];
+  for (const key of keysInput) {
+    keys.push({
+      apiKeyId: key.api_key_id,
+      name: key.name,
+      hashedKey: key.hashed_key,
+      validFrom: key.valid_from ? key.valid_from : undefined,
+      validTo: key.valid_to ? key.valid_to : undefined
+    });
+  }
+  return keys;
 };

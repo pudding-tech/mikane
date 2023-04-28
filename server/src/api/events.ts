@@ -1,6 +1,6 @@
 import express from "express";
 import * as db from "../db/dbEvents";
-import { authCheck } from "../middlewares/authCheck";
+import { authCheck, authKeyCheck } from "../middlewares/authCheck";
 import { Event, Payment, UserBalance } from "../types/types";
 import * as ec from "../types/errorCodes";
 const router = express.Router();
@@ -38,7 +38,7 @@ router.get("/events/:id", authCheck, async (req, res, next) => {
 });
 
 // Get specific event by name
-router.get("/event-by-name", authCheck, async (req, res, next) => {
+router.get("/event-by-name", authKeyCheck, async (req, res, next) => {
   const eventName = req.body.name;
   const userId = req.session.userId;
   try {
@@ -66,7 +66,7 @@ router.get("/events/:id/balances", authCheck, async (req, res, next) => {
 });
 
 // Get a list of all payments for a given event
-router.get("/events/:id/payments", authCheck, async (req, res, next) => {
+router.get("/events/:id/payments", authKeyCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
     return res.status(400).json(ec.PUD013);

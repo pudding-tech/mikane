@@ -3,9 +3,10 @@ import sql from "mssql";
 import * as dbUsers from "../db/dbUsers";
 import * as dbAuth from "../db/dbAuthentication";
 import * as ec from "../types/errorCodes";
-import { authenticate, createHash } from "../utils/auth";
+import { authenticate, createHash, generateApiKey } from "../utils/auth";
 import { parseUser } from "../parsers";
 import { User } from "../types/types";
+import { authKeyCheck } from "../middlewares/authCheck";
 const router = express.Router();
 
 /* --- */
@@ -101,6 +102,26 @@ router.post("/logout", (req, res) => {
     console.log(`User ${username} successfully signed out`);
     res.status(200).json({ msg: "Signed out successfully" });
   });
+});
+
+/*
+* Generate API key
+*/
+router.post("/generatekey", authKeyCheck, async (req, res, next) => {
+  const name = req.query.name as string;
+  if (!name) {
+    return res.status(400).json(ec.PUD068);
+  }
+
+  try {
+    const key = generateApiKey();
+    const hash = createHash(key);
+    await dbAuth.newApiKey(name, hash);
+    res.status(200).json(key);
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 /*

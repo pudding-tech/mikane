@@ -77,3 +77,11 @@ export type UserBalance = {
   expenses: number,
   balance: number
 }
+
+export type APIKey = {
+  apiKeyId: string,
+  name: string,
+  hashedKey: string,
+  validFrom?: Date,
+  validTo?: Date
+}

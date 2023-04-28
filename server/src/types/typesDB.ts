@@ -52,3 +52,11 @@ export type EventDB = {
   in_event?: boolean,
   is_admin?: boolean
 }
+
+export type APIKeyDB = {
+  api_key_id: string,
+  name: string,
+  hashed_key: string,
+  valid_from: Date,
+  valid_to: Date
+}
