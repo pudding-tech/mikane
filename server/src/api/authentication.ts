@@ -6,7 +6,7 @@ import * as ec from "../types/errorCodes";
 import { authenticate, createHash, generateApiKey } from "../utils/auth";
 import { parseUser } from "../parsers";
 import { User } from "../types/types";
-import { authKeyCheck } from "../middlewares/authCheck";
+import { masterKeyCheck } from "../middlewares/authCheck";
 const router = express.Router();
 
 /* --- */
@@ -107,7 +107,7 @@ router.post("/logout", (req, res) => {
 /*
 * Generate API key
 */
-router.post("/generatekey", authKeyCheck, async (req, res, next) => {
+router.post("/generatekey", masterKeyCheck, async (req, res, next) => {
   const name = req.query.name as string;
   if (!name) {
     return res.status(400).json(ec.PUD068);

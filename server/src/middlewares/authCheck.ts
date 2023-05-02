@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { PUD001, PUD065, PUD066, PUD067 } from "../types/errorCodes";
+import { PUD001, PUD065, PUD066, PUD067, PUD069 } from "../types/errorCodes";
 import { getApiKeys } from "../db/dbAuthentication";
 import { authenticate } from "../utils/auth";
 
@@ -39,8 +39,55 @@ export const authKeyCheck = async (req: Request, res: Response, next: NextFuncti
 
     let isAuthenticated = false;
     for (const key of keys) {
-      const correct = authenticate(authKey, key.hashedKey);
-      if (!correct) {
+      const match = authenticate(authKey, key.hashedKey);
+      if (!match) {
+        continue;
+      }
+
+      // Check for valid dates
+      const now = new Date();
+      const offset = now.getTimezoneOffset();
+      now.setMinutes(now.getMinutes() - offset);
+      if (key.validFrom && key.validFrom.getTime() > now.getTime()) {
+        return res.status(401).json(PUD067);
+      }
+      if (key.validTo && key.validTo.getTime() < now.getTime()) {
+        return res.status(401).json(PUD067);
+      }
+
+      isAuthenticated = true;
+      break;
+    }
+    if (!isAuthenticated) {
+      return res.status(401).json(PUD066);
+    }
+  }
+  catch (err) {
+    next(err);
+  }
+
+  next();
+};
+
+/**
+ * Only allow requests with a correct master API key to progress
+ * @param req Request object
+ * @param res Response object
+ * @param next NextFunction
+ */
+export const masterKeyCheck = async (req: Request, res: Response, next: NextFunction) => {
+  const authKey = req.get("Authorization");
+  if (!authKey) {
+    return res.status(401).json(PUD069);
+  }
+
+  try {
+    const keys = await getApiKeys(true);
+
+    let isAuthenticated = false;
+    for (const key of keys) {
+      const match = authenticate(authKey, key.hashedKey);
+      if (!match) {
         continue;
       }
 

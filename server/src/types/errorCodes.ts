@@ -576,3 +576,11 @@ export const PUD068: ErrorCode = {
   code: "PUD-068",
   message: "API key 'name' parameter missing"
 };
+
+/**
+ * PUD-069: Missing 'Authorization' header
+ */
+export const PUD069: ErrorCode = {
+  code: "PUD-069",
+  message: "Missing 'Authorization' header"
+};

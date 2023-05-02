@@ -31,11 +31,13 @@ export const getUserHash = async (usernameEmail: string) => {
 
 /**
  * DB interface: Get list of all API keys
+ * @param masterOnly Whether only master keys should be returned
  * @returns List of API keys
  */
-export const getApiKeys = async () => {
+export const getApiKeys = async (masterOnly?: boolean) => {
   const request = new sql.Request();
   const keys = await request
+    .input("master", sql.Bit, masterOnly)
     .execute("get_api_keys")
     .then(data => {
       return parseApiKeys(data.recordset);
@@ -60,6 +62,7 @@ export const newApiKey = async (name: string, hash: string, validFrom?: Date, va
     .input("uuid", sql.UniqueIdentifier, uuid)
     .input("name", sql.NVarChar, name)
     .input("hashed_key", sql.NVarChar, hash)
+    .input("master", sql.Bit, false)
     .input("valid_from", sql.DateTime, validFrom)
     .input("valid_to", sql.DateTime, validTo)
     .execute("new_api_key")

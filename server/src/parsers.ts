@@ -252,6 +252,7 @@ export const parseApiKeys = (keysInput: APIKeyDB[]) => {
       apiKeyId: key.api_key_id,
       name: key.name,
       hashedKey: key.hashed_key,
+      master: key.master,
       validFrom: key.valid_from ? key.valid_from : undefined,
       validTo: key.valid_to ? key.valid_to : undefined
     });
