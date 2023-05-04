@@ -584,3 +584,11 @@ export const PUD069: ErrorCode = {
   code: "PUD-069",
   message: "Missing 'Authorization' header"
 };
+
+/**
+ * PUD-070: API key name already taken
+ */
+export const PUD070: ErrorCode = {
+  code: "PUD-070",
+  message: "API key name already taken"
+};

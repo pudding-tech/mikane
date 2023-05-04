@@ -10,6 +10,11 @@ create procedure new_api_key
   @valid_to datetime
 as
 begin
+
+  if exists (select 1 from api_key where [name] = @name)
+  begin
+    throw 50070, 'API key name already taken', 1
+  end
   
   insert into api_key(api_key_id, [name], hashed_key, [master], valid_from, valid_to)
     values (@uuid, @name, @hashed_key, @master, @valid_from, @valid_to)

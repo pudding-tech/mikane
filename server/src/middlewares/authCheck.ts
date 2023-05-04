@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { PUD001, PUD065, PUD066, PUD067, PUD069 } from "../types/errorCodes";
+import { ErrorCode, PUD001, PUD065, PUD066, PUD067, PUD069 } from "../types/errorCodes";
 import { getApiKeys } from "../db/dbAuthentication";
 import { authenticate } from "../utils/auth";
+import { APIKey } from "../types/types";
 
 /**
  * Only allow authenticated users to progress
@@ -16,6 +17,11 @@ export const authCheck = (req: Request, res: Response, next: NextFunction) => {
     return;
   }
   next();
+};
+
+type KeyOutput = {
+  valid: boolean,
+  reason?: ErrorCode
 };
 
 /**
@@ -35,31 +41,11 @@ export const authKeyCheck = async (req: Request, res: Response, next: NextFuncti
   }
 
   try {
-    const keys = await getApiKeys();
+    const keys = await getApiKeys("all");
+    const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
 
-    let isAuthenticated = false;
-    for (const key of keys) {
-      const match = authenticate(authKey, key.hashedKey);
-      if (!match) {
-        continue;
-      }
-
-      // Check for valid dates
-      const now = new Date();
-      const offset = now.getTimezoneOffset();
-      now.setMinutes(now.getMinutes() - offset);
-      if (key.validFrom && key.validFrom.getTime() > now.getTime()) {
-        return res.status(401).json(PUD067);
-      }
-      if (key.validTo && key.validTo.getTime() < now.getTime()) {
-        return res.status(401).json(PUD067);
-      }
-
-      isAuthenticated = true;
-      break;
-    }
-    if (!isAuthenticated) {
-      return res.status(401).json(PUD066);
+    if (!isAuthenticated.valid) {
+      return res.status(401).json(isAuthenticated.reason);
     }
   }
   catch (err) {
@@ -82,31 +68,11 @@ export const masterKeyCheck = async (req: Request, res: Response, next: NextFunc
   }
 
   try {
-    const keys = await getApiKeys(true);
+    const keys = await getApiKeys("master");
+    const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
 
-    let isAuthenticated = false;
-    for (const key of keys) {
-      const match = authenticate(authKey, key.hashedKey);
-      if (!match) {
-        continue;
-      }
-
-      // Check for valid dates
-      const now = new Date();
-      const offset = now.getTimezoneOffset();
-      now.setMinutes(now.getMinutes() - offset);
-      if (key.validFrom && key.validFrom.getTime() > now.getTime()) {
-        return res.status(401).json(PUD067);
-      }
-      if (key.validTo && key.validTo.getTime() < now.getTime()) {
-        return res.status(401).json(PUD067);
-      }
-
-      isAuthenticated = true;
-      break;
-    }
-    if (!isAuthenticated) {
-      return res.status(401).json(PUD066);
+    if (!isAuthenticated.valid) {
+      return res.status(401).json(isAuthenticated.reason);
     }
   }
   catch (err) {
@@ -114,4 +80,32 @@ export const masterKeyCheck = async (req: Request, res: Response, next: NextFunc
   }
 
   next();
+};
+
+/**
+ * Check for valid keys
+ * @param authKey Key provided by user
+ * @param keys Keys provided by database
+ * @returns Object with valid and reason properties
+ */
+const checkKeys = (authKey: string, keys: APIKey[]): KeyOutput => {
+  for (const key of keys) {
+    const match = authenticate(authKey, key.hashedKey);
+    if (!match) {
+      continue;
+    }
+
+    // Check for valid time range
+    const now = new Date();
+    const offset = now.getTimezoneOffset();
+    now.setMinutes(now.getMinutes() - offset);
+    if (key.validFrom && key.validFrom.getTime() > now.getTime()) {
+      return { valid: false, reason: PUD067 };
+    }
+    if (key.validTo && key.validTo.getTime() < now.getTime()) {
+      return { valid: false, reason: PUD067 };
+    }
+    return { valid: true };
+  }  
+  return { valid: false, reason: PUD066 };
 };

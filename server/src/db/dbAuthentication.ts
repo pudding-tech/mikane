@@ -1,5 +1,5 @@
 import sql from "mssql";
-import { PUD033, PUD063, PUD064 } from "../types/errorCodes";
+import { PUD033, PUD063, PUD064, PUD070 } from "../types/errorCodes";
 import { ErrorExt } from "../types/errorExt";
 import { parseApiKeys } from "../parsers";
 import { randomUUID } from "crypto";
@@ -31,10 +31,19 @@ export const getUserHash = async (usernameEmail: string) => {
 
 /**
  * DB interface: Get list of all API keys
- * @param masterOnly Whether only master keys should be returned
+ * @param type Type of keys to be returned
  * @returns List of API keys
  */
-export const getApiKeys = async (masterOnly?: boolean) => {
+export const getApiKeys = async (type: "normal" | "master" | "all") => {
+  let masterOnly: boolean | null = null;
+  switch (type) {
+    case "normal":
+      masterOnly = false;
+      break;
+    case "master":
+      masterOnly = true;
+      break;
+  }
   const request = new sql.Request();
   const keys = await request
     .input("master", sql.Bit, masterOnly)
@@ -70,7 +79,10 @@ export const newApiKey = async (name: string, hash: string, validFrom?: Date, va
       return parseApiKeys(data.recordset);
     })
     .catch(err => {
-      throw new ErrorExt(PUD064, err);
+      if (err.number === 50070)
+        throw new ErrorExt(PUD070, err, 400);
+      else
+        throw new ErrorExt(PUD064, err);
     });
 
   return key[0];
