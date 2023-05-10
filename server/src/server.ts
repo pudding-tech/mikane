@@ -63,12 +63,12 @@ app.use(cors({
 
 // API documentation
 const apiDocsOptions = {
-  customCssUrl: "/SwaggerDark.css",
-  customCss: ".swagger-ui .topbar { display: none }",
   swaggerOptions: {
     supportedSubmitMethods: inProd ? ["get"] : ["get", "post", "put", "delete"],
     validatorUrl: null
   },
+  customCssUrl: "/SwaggerDark.css",
+  customCss: ".swagger-ui .topbar { display: none }",
   customSiteTitle: "PuddingDebt API"
 };
 app.use("/", swaggerUi.serve);

@@ -1,6 +1,14 @@
 import { scryptSync, randomBytes } from "crypto";
 
 /**
+ * Generate a random API key
+ * @returns API key
+ */
+export const generateApiKey = () => {
+  return randomBytes(16).toString("hex");
+};
+
+/**
  * Compare given password with hashed password
  * @param password Given password
  * @param hash Hashed password with salt included

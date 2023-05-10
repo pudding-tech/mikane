@@ -184,6 +184,32 @@
         }
       }
     },
+    "/generatekey": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Generate API key",
+        "description": "Generate a new API key and save it in the database. This endpoint requires a master key in the Authorization header.",
+        "operationId": "postKey",
+        "security": [
+          { "apiKeyAuth": [] }
+        ],
+        "responses": {
+          "200": {
+            "description": "API key created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "2kj5bvh39nbm2h6lkj8"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users": {
       "get": {
         "tags": [
@@ -828,7 +854,8 @@
         "description": "Get an event's payments information for all users",
         "operationId": "getEventPayments",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "apiKeyAuth": [] }
         ],
         "parameters": [
           {
@@ -990,7 +1017,8 @@
         "description": "Get an event by the event's name",
         "operationId": "getEventByName",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "apiKeyAuth": [] }
         ],
         "requestBody": {
           "description": "Event name",
@@ -2250,6 +2278,11 @@
         "type": "apiKey",
         "in": "cookie",
         "name": "puddingdebt.sid"
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
       }
     }
   }

@@ -526,3 +526,69 @@ export const PUD062: ErrorCode = {
   code: "PUD-062",
   message: "User cannot pay for expense as user is not in event"
 };
+
+/**
+ * PUD-063: get_api_keys
+ */
+export const PUD063: ErrorCode = {
+  code: "PUD-063",
+  message: "Something went wrong while getting API keys",
+  log: true
+};
+
+/**
+ * PUD-064: new_api_key
+ */
+export const PUD064: ErrorCode = {
+  code: "PUD-064",
+  message: "Something went wrong while creating new API key",
+  log: true
+};
+
+/**
+ * PUD-065: No user authenticated and no 'Authorization' header
+ */
+export const PUD065: ErrorCode = {
+  code: "PUD-065",
+  message: "No user authenticated and no 'Authorization' header"
+};
+
+/**
+ * PUD-066: Authorization key is not correct
+ */
+export const PUD066: ErrorCode = {
+  code: "PUD-066",
+  message: "Authorization key is not correct"
+};
+
+/**
+ * PUD-067: Authorization key is outside valid time range
+ */
+export const PUD067: ErrorCode = {
+  code: "PUD-067",
+  message: "Authorization key is outside valid time range"
+};
+
+/**
+ * PUD-068: API key 'name' parameter missing
+ */
+export const PUD068: ErrorCode = {
+  code: "PUD-068",
+  message: "API key 'name' parameter missing"
+};
+
+/**
+ * PUD-069: Missing 'Authorization' header
+ */
+export const PUD069: ErrorCode = {
+  code: "PUD-069",
+  message: "Missing 'Authorization' header"
+};
+
+/**
+ * PUD-070: API key name already taken
+ */
+export const PUD070: ErrorCode = {
+  code: "PUD-070",
+  message: "API key name already taken"
+};
