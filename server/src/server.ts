@@ -57,7 +57,7 @@ app.use(helmet());
 
 // Enable client access
 app.use(cors({
-    origin: inProd ? "https://pudding-debt.hundseth.com" : "http://localhost:4200",
+    origin: process.env.ALLOWED_ORIGIN ?? "http://localhost:4200",
     credentials: true,
 }));
 
@@ -69,7 +69,8 @@ const apiDocsOptions = {
   },
   customCssUrl: "/SwaggerDark.css",
   customCss: ".swagger-ui .topbar { display: none }",
-  customSiteTitle: "PuddingDebt API"
+  customSiteTitle: "PuddingDebt API",
+  customfavIcon: "/favicon.png"
 };
 app.use("/", swaggerUi.serve);
 app.get("/", swaggerUi.setup(apiDocument, apiDocsOptions));
