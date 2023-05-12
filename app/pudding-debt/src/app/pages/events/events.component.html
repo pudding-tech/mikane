@@ -11,19 +11,19 @@
 			</mat-card-header>
 			<mat-card-content>
 				<mat-card *ngFor="let event of events" class="event-item">
-					<mat-card-header class="event-header">
-						<div class="clickable" (click)="clickEvent(event)">
-							<mat-card-title class="event-title">
-								<span class="event-name">
-									{{ event.name }}
-								</span>
-							</mat-card-title>
-							<mat-card-subtitle>
-								{{ event.description }}
-							</mat-card-subtitle>
-						</div>
+					<mat-card-header class="event-header clickable" (click)="clickEvent(event)">
+						<mat-card-title class="event-title">
+							<span class="event-name">
+								{{ event.name }}
+							</span>
+						</mat-card-title>
+						<mat-card-subtitle>
+							{{ event.description }}
+						</mat-card-subtitle>
 						<span class="event-actions">
-							<button mat-icon-button (click)="editEvent(event)"><mat-icon>edit</mat-icon></button>
+							<button mat-icon-button (click)="editEvent(event); $event.stopPropagation()">
+								<mat-icon>edit</mat-icon>
+							</button>
 							<!-- <button mat-icon-button (click)="deleteEvent(event)"><mat-icon>delete</mat-icon></button> -->
 						</span>
 					</mat-card-header>
