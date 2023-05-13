@@ -10,9 +10,14 @@ mat-toolbar button {
 	padding: 16px;
 }
 
-.logo {
+.logo-container {
+	min-width: 26px;
 	height: 26px;
 	padding-right: 14px;
+
+	.logo {
+		height: 26px;
+	}
 }
 
 .events-container {
