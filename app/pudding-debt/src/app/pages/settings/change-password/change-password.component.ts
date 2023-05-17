@@ -13,33 +13,34 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
-	selector: 'reset-password',
-	templateUrl: './reset-password.component.html',
-	styleUrls: ['./reset-password.component.scss'],
+	selector: 'change-password',
+	templateUrl: './change-password.component.html',
+	styleUrls: ['./change-password.component.scss'],
 	standalone: true,
 	imports: [MatCardModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, NgIf],
 })
-export class ResetPasswordComponent implements OnInit, OnDestroy {
+export class ChangePasswordComponent implements OnInit, OnDestroy {
 	hide = true;
 
 	private authSub: Subscription;
 
-	resetPasswordForm = new FormGroup({
-		password: new FormControl<string>('', [Validators.required]),
+	changePasswordForm = new FormGroup({
+		oldPassword: new FormControl<string>('', [Validators.required]),
+		newPassword: new FormControl<string>('', [Validators.required]),
 		passwordRetype: new FormControl<string>('', [Validators.required]),
 	});
 
 	constructor(private authService: AuthService, private messageService: MessageService, private router: Router) {}
 
 	ngOnInit(): void {
-		this.resetPasswordForm?.addValidators([
-			this.createCompareValidator(this.resetPasswordForm.get('password'), this.resetPasswordForm.get('passwordRetype')),
+		this.changePasswordForm?.addValidators([
+			this.createCompareValidator(this.changePasswordForm.get('newPassword'), this.changePasswordForm.get('passwordRetype')),
 		]);
 	}
 
 	submit() {
-		if (this.resetPasswordForm.valid) {
-			this.authSub = this.authService.resetPassword(this.resetPasswordForm.get<string>('password')?.value).subscribe({
+		if (this.changePasswordForm.valid) {
+			this.authSub = this.authService.resetPassword(this.changePasswordForm.get<string>('newPassword')?.value).subscribe({
 				next: (user: User) => {
 					if (user) {
 						this.messageService.showSuccess('Password reset successfully');
