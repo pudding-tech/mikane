@@ -1,14 +1,14 @@
 <div>
 	<span class="name">
-		Username
+		{{ username }}
 	</span>
 	<split-button #splitButton [onClick]="onAccountClick" (onDropdownClick)="onDropdownClick($event)">
 		<div button>
-			<mat-icon class="cog">settings</mat-icon>
+			<mat-icon class="account">account_circle</mat-icon>
 		</div>
 		<div dropdown1>
-			<mat-icon aria-hidden="true" class="icon">settings</mat-icon>
-			<span class="text">Settings</span>
+			<mat-icon aria-hidden="true" class="icon">person</mat-icon>
+			<span class="text">Account</span>
 		</div>
 		<div dropdown2>
 			<mat-icon aria-hidden="true" class="icon">logout</mat-icon>

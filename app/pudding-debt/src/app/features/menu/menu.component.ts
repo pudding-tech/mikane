@@ -16,12 +16,27 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class MenuComponent {
 	@ViewChild('splitButton') private splitButton: SplitButtonComponent;
+	username: string;
 
 	constructor(
 		private router: Router,
 		private messageService: MessageService,
 		private authService: AuthService
 	) {}
+
+	ngOnInit() {
+		this.authService
+			.getCurrentUser()
+			.subscribe({
+				next: (user) => {
+					this.username = user.username;
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to get user');
+					console.error('Something went wrong getting user in header component: ' + err?.error?.message);
+				}
+			});
+	}
 
 	onDropdownClick = (index: number) => {
 		if (index === 1) {
