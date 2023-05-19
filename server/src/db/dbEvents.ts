@@ -150,9 +150,9 @@ export const createEvent = async (name: string, userId: number, privateEvent: bo
     })
     .catch(err => {
       if (err.number === 50005)
-        throw new ErrorExt(ec.PUD005, err, 400);
+        throw new ErrorExt(ec.PUD005, err);
       if (err.number === 50008)
-        throw new ErrorExt(ec.PUD008, err, 400);
+        throw new ErrorExt(ec.PUD008, err);
       else
         throw new ErrorExt(ec.PUD037, err);
     });
@@ -195,11 +195,11 @@ export const addUserToEvent = async (eventId: number, userId: number) => {
     })
     .catch(err => {
       if (err.number === 50006) 
-        throw new ErrorExt(ec.PUD006, err, 400);
+        throw new ErrorExt(ec.PUD006, err);
       else if (err.number === 50008)
-        throw new ErrorExt(ec.PUD008, err, 400);
+        throw new ErrorExt(ec.PUD008, err);
       else if (err.number === 50009)
-        throw new ErrorExt(ec.PUD009, err, 400);
+        throw new ErrorExt(ec.PUD009, err);
       else
         throw new ErrorExt(ec.PUD021, err);
     });
@@ -250,9 +250,9 @@ export const editEvent = async (eventId: number, name?: string, description?: st
     })
     .catch(err => {
       if (err.number === 50005)
-        throw new ErrorExt(ec.PUD005, err, 400);
+        throw new ErrorExt(ec.PUD005, err);
       if (err.number === 50008)
-        throw new ErrorExt(ec.PUD008, err, 400);
+        throw new ErrorExt(ec.PUD008, err);
       else
         throw new ErrorExt(ec.PUD044, err);
     });

@@ -29,6 +29,25 @@ export const getUser = async (userId: number | null, username?: string | null) =
 };
 
 /**
+ * DB interface: Get user ID
+ * @param email Email of user to get 
+ * @returns User ID
+ */
+export const getUserID = async (email: string) => {
+  const request = new sql.Request();
+  const userId: number | null = await request
+    .input("email", sql.NVarChar, email)
+    .execute("get_user_id")
+    .then(data => {
+      return data.recordset[0]?.id || null;
+    })
+    .catch(err => {
+      throw new ErrorExt(ec.PUD071, err);
+    });
+  return userId;
+};
+
+/**
  * DB interface: Get all users, optionally filtered
  * @param filter Object containing filters (event ID, user ID to exclude)
  * @returns List of users
@@ -94,11 +113,11 @@ export const createUser = async (username: string, firstName: string, lastName: 
     })
     .catch(err => {
       if (err.number === 50017)
-        throw new ErrorExt(ec.PUD017, err, 400);
+        throw new ErrorExt(ec.PUD017, err);
       else if (err.number === 50018)
-        throw new ErrorExt(ec.PUD018, err, 400);
+        throw new ErrorExt(ec.PUD018, err);
       else if (err.number === 50019)
-        throw new ErrorExt(ec.PUD019, err, 400);
+        throw new ErrorExt(ec.PUD019, err);
       else
         throw new ErrorExt(ec.PUD038, err);
     });
@@ -126,11 +145,11 @@ export const editUser = async (userId: number, data: { username?: string, firstN
     })
     .catch(err => {
       if (err.number === 50017)
-        throw new ErrorExt(ec.PUD017, err, 400);
+        throw new ErrorExt(ec.PUD017, err);
       else if (err.number === 50018)
-        throw new ErrorExt(ec.PUD018, err, 400);
+        throw new ErrorExt(ec.PUD018, err);
       else if (err.number === 50019)
-        throw new ErrorExt(ec.PUD019, err, 400);
+        throw new ErrorExt(ec.PUD019, err);
       else
         throw new ErrorExt(ec.PUD028, err);
     });
@@ -152,6 +171,27 @@ export const deleteUser = async (userId: number) => {
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD025, err);
+    });
+  return success;
+};
+
+/**
+ * DB interface: Change a user's password
+ * @param userId 
+ * @param hash 
+ * @returs True if successful
+ */
+export const changePassword = async (userId: number, hash: string) => {
+  const request = new sql.Request();
+  const success = await request
+    .input("user_id", sql.Int, userId)
+    .input("password", sql.NVarChar, hash)
+    .execute("change_password")
+    .then(() => {
+      return true;
+    })
+    .catch(err => {
+      throw new ErrorExt(ec.PUD082, err);
     });
   return success;
 };

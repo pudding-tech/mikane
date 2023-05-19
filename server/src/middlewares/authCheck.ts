@@ -13,7 +13,7 @@ import { APIKey } from "../types/types";
 export const authCheck = (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.authenticated) {
     res.set("WWW-Authenticate", "Session");
-    res.status(401).json(PUD001);
+    res.status(PUD001.status).json(PUD001);
     return;
   }
   next();
@@ -37,7 +37,7 @@ export const authKeyCheck = async (req: Request, res: Response, next: NextFuncti
 
   const authKey = req.get("Authorization");
   if (!authKey) {
-    return res.status(401).json(PUD065);
+    return res.status(PUD065.status).json(PUD065);
   }
 
   try {
@@ -45,7 +45,7 @@ export const authKeyCheck = async (req: Request, res: Response, next: NextFuncti
     const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
 
     if (!isAuthenticated.valid) {
-      return res.status(401).json(isAuthenticated.reason);
+      return res.status(isAuthenticated.reason?.status ?? 401).json(isAuthenticated.reason);
     }
   }
   catch (err) {
@@ -64,7 +64,7 @@ export const authKeyCheck = async (req: Request, res: Response, next: NextFuncti
 export const masterKeyCheck = async (req: Request, res: Response, next: NextFunction) => {
   const authKey = req.get("Authorization");
   if (!authKey) {
-    return res.status(401).json(PUD069);
+    return res.status(PUD069.status).json(PUD069);
   }
 
   try {
@@ -72,7 +72,7 @@ export const masterKeyCheck = async (req: Request, res: Response, next: NextFunc
     const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
 
     if (!isAuthenticated.valid) {
-      return res.status(401).json(isAuthenticated.reason);
+      return res.status(isAuthenticated.reason?.status ?? 401).json(isAuthenticated.reason);
     }
   }
   catch (err) {

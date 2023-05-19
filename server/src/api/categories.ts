@@ -9,11 +9,13 @@ const router = express.Router();
 /* GET */
 /* --- */
 
-// Get a list of all categories for a given event
+/*
+* Get a list of all categories for a given event
+*/
 router.get("/categories", authCheck, async (req, res, next) => {
   const eventId = Number(req.query.eventId);
   if (isNaN(eventId)) {
-    return res.status(400).json(ec.PUD013);
+    return res.status(ec.PUD013.status).json(ec.PUD013);
   }
   try {
     const categories: Category[] = await db.getCategories(eventId);
@@ -24,15 +26,17 @@ router.get("/categories", authCheck, async (req, res, next) => {
   }
 });
 
-// Get a specific category
+/*
+* Get a specific category
+*/
 router.get("/categories/:id", authCheck, async (req, res, next) => {
   const id = Number(req.params.id);
   if (isNaN(id)) {
-    return res.status(400).json(ec.PUD045);
+    return res.status(ec.PUD045.status).json(ec.PUD045);
   }
   try {
     const category: Category = await db.getCategory(id);
-    res.send(category);
+    res.status(200).json(category);
   }
   catch (err) {
     next(err);
@@ -43,34 +47,38 @@ router.get("/categories/:id", authCheck, async (req, res, next) => {
 /* POST */
 /* ---- */
 
-// Create a new category
+/*
+* Create a new category
+*/
 router.post("/categories", authCheck, async (req, res, next) => {
   if (!req.body.name || !req.body.eventId || req.body.weighted === undefined) {
-    return res.status(400).json(ec.PUD046);
+    return res.status(ec.PUD046.status).json(ec.PUD046);
   }
   try {
     const category: Category = await db.createCategory(req.body.name, req.body.eventId, req.body.weighted);
-    res.status(200).send(category);
+    res.status(200).json(category);
   }
   catch (err) {
     next(err);
   }
 });
 
-// Add a user to a category
+/*
+* Add a user to a category
+*/
 router.post("/categories/:id/user/:userId", authCheck, async (req, res, next) => {
   const catId = Number(req.params.id);
   const userId = Number(req.params.userId);
   const weight = req.body.weight ? Number(req.body.weight) : undefined;
 
   if (isNaN(catId) || isNaN(userId)) {
-    return res.status(400).json(ec.PUD047);
+    return res.status(ec.PUD047.status).json(ec.PUD047);
   }
   if (weight && isNaN(weight)) {
-    return res.status(400).json(ec.PUD048);
+    return res.status(ec.PUD048.status).json(ec.PUD048);
   }
   if (weight && weight < 1) {
-    return res.status(400).json(ec.PUD049);
+    return res.status(ec.PUD049.status).json(ec.PUD049);
   }
   try {
     const category: Category = await db.addUserToCategory(catId, userId, weight);
@@ -85,14 +93,16 @@ router.post("/categories/:id/user/:userId", authCheck, async (req, res, next) =>
 /* PUT */
 /* --- */
 
-// Rename a category
+/*
+* Rename a category
+*/
 router.put("/categories/:id", authCheck, async (req, res, next) => {
   const catId = Number(req.params.id);
   if (isNaN(catId)) {
-    return res.status(400).json(ec.PUD045);
+    return res.status(ec.PUD045.status).json(ec.PUD045);
   }
   if (!req.body.name) {
-    return res.status(400).json(ec.PUD050);
+    return res.status(ec.PUD050.status).json(ec.PUD050);
   }
   try {
     const category: Category = await db.renameCategory(catId, req.body.name);
@@ -103,14 +113,16 @@ router.put("/categories/:id", authCheck, async (req, res, next) => {
   }
 });
 
-// Change weight status for a category (weighted or non-weighted)
+/*
+* Change weight status for a category (weighted or non-weighted)
+*/
 router.put("/categories/:id/weighted", authCheck, async (req, res, next) => {
   const catId = Number(req.params.id);
   if (isNaN(catId)) {
-    return res.status(400).json(ec.PUD045);
+    return res.status(ec.PUD045.status).json(ec.PUD045);
   }
   if (typeof(req.body.weighted) !== "boolean") {
-    return res.status(400).json(ec.PUD051);
+    return res.status(ec.PUD051.status).json(ec.PUD051);
   }
   try {
     const category: Category = await db.editWeightStatus(catId, Boolean(req.body.weighted));
@@ -121,20 +133,22 @@ router.put("/categories/:id/weighted", authCheck, async (req, res, next) => {
   }
 });
 
-// Edit a user's weight for a category
+/*
+* Edit a user's weight for a category
+*/
 router.put("/categories/:id/user/:userId", authCheck, async (req, res, next) => {
   const catId = Number(req.params.id);
   const userId = Number(req.params.userId);
   const weight = req.body.weight ? Number(req.body.weight) : undefined;
 
   if (isNaN(catId) || isNaN(userId)) {
-    return res.status(400).json(ec.PUD047);
+    return res.status(ec.PUD047.status).json(ec.PUD047);
   }
   if (!weight || isNaN(weight)) {
-    return res.status(400).json(ec.PUD048);
+    return res.status(ec.PUD048.status).json(ec.PUD048);
   }
   if (weight < 1) {
-    return res.status(400).json(ec.PUD049);
+    return res.status(ec.PUD049.status).json(ec.PUD049);
   }
   try {
     const category: Category = await db.editUserWeight(catId, userId, weight);
@@ -149,11 +163,13 @@ router.put("/categories/:id/user/:userId", authCheck, async (req, res, next) => 
 /* DELETE */
 /* ------ */
 
-// Delete a category
+/*
+* Delete a category
+*/
 router.delete("/categories/:id", authCheck, async (req, res, next) => {
   const catId = Number(req.params.id);
   if (isNaN(catId)) {
-    return res.status(400).json(ec.PUD045);
+    return res.status(ec.PUD045.status).json(ec.PUD045);
   }
   try {
     const success = await db.deleteCategory(catId);
@@ -164,12 +180,14 @@ router.delete("/categories/:id", authCheck, async (req, res, next) => {
   }
 });
 
-// Remove a user from a category
+/*
+* Remove a user from a category
+*/
 router.delete("/categories/:id/user/:userId", authCheck, async (req, res, next) => {
   const catId = Number(req.params.id);
   const userId = Number(req.params.userId);
   if (isNaN(catId) || isNaN(userId)) {
-    return res.status(400).json(ec.PUD047);
+    return res.status(ec.PUD047.status).json(ec.PUD047);
   }
   try {
     const category: Category = await db.removeUserFromCategory(catId, userId);
