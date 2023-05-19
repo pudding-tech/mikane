@@ -25,22 +25,22 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 	private authSub: Subscription;
 
 	changePasswordForm = new FormGroup({
-		oldPassword: new FormControl<string>('', [Validators.required]),
+		currentPassword: new FormControl<string>('', [Validators.required]),
 		newPassword: new FormControl<string>('', [Validators.required]),
-		passwordRetype: new FormControl<string>('', [Validators.required]),
+		newPasswordRetype: new FormControl<string>('', [Validators.required]),
 	});
 
 	constructor(private authService: AuthService, private messageService: MessageService, private router: Router) {}
 
 	ngOnInit(): void {
 		this.changePasswordForm?.addValidators([
-			this.createCompareValidator(this.changePasswordForm.get('newPassword'), this.changePasswordForm.get('passwordRetype')),
+			this.createCompareValidator(this.changePasswordForm.get('newPassword'), this.changePasswordForm.get('newPasswordRetype')),
 		]);
 	}
 
 	submit() {
 		if (this.changePasswordForm.valid) {
-			this.authSub = this.authService.resetPassword(this.changePasswordForm.get<string>('newPassword')?.value).subscribe({
+			this.authSub = this.authService.changePassword(this.changePasswordForm.get<string>('currentPassword')?.value, this.changePasswordForm.get<string>('newPassword')?.value).subscribe({
 				next: (user: User) => {
 					if (user) {
 						this.messageService.showSuccess('Password reset successfully');

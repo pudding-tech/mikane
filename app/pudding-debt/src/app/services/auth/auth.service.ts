@@ -26,13 +26,14 @@ export class AuthService {
 		return this.httpClient.post(this.apiUrl + 'logout', {});
 	}
 
-	resetPassword(password: string): Observable<User> {
+	changePassword(currentPassword: string, newPassword: string): Observable<User> {
 		return this.getCurrentUser().pipe(
 			switchMap((user) => {
 				return this.httpClient
-					.post<User>(this.apiUrl + 'reset-password', {
+					.post<User>(this.apiUrl + 'changepassword', {
 						userId: user.id,
-						password: password,
+						currentPassword: currentPassword,
+						newPassword: newPassword,
 					})
 					.pipe(tap((user) => (this.currentUser = user)));
 			})
