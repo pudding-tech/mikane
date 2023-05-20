@@ -13,6 +13,16 @@
 	width: 100%;
 }
 
+.logo-container {
+	min-width: 26px;
+	height: 26px;
+	padding-right: 14px;
+
+	.logo {
+		height: 26px;
+	}
+}
+
 .card-header, .card-content {
 	padding-left: 30px;
 	padding-right: 30px;
