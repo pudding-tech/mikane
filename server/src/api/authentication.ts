@@ -1,12 +1,12 @@
 import express from "express";
-import sql from "mssql";
 import * as dbUsers from "../db/dbUsers";
 import * as dbAuth from "../db/dbAuthentication";
 import * as ec from "../types/errorCodes";
 import { authenticate, createHash, generateApiKey } from "../utils/auth";
-import { parseUser } from "../parsers";
+import { generateKey } from "../utils/generateKey";
 import { User } from "../types/types";
 import { masterKeyCheck } from "../middlewares/authCheck";
+import { sendPasswordResetEmail } from "../email-services/passwordReset";
 const router = express.Router();
 
 /* --- */
@@ -26,8 +26,23 @@ router.get("/login", (req, res) => {
     });
   }
   res.set("WWW-Authenticate", "Session");
-  res.status(401).json(ec.PUD001);
+  res.status(ec.PUD001.status).json(ec.PUD001);
 });
+
+/*
+* Verify that a password reset key is valid
+*/
+router.get("/verifypasswordreset/:key", async (req, res) => {
+  const key = req.params.key;
+
+  const valid = await dbAuth.verifyPasswordResetKey(key);
+  if (valid) {
+    return res.status(200).json();
+  }
+  res.status(ec.PUD078.status).json(ec.PUD078);
+});
+
+export default router;
 
 /* ---- */
 /* POST */
@@ -39,7 +54,7 @@ router.get("/login", (req, res) => {
 router.post("/login", async (req, res, next) => {
   const {usernameEmail, password} = req.body;
   if (!usernameEmail || !password) {
-    return res.status(400).json(ec.PUD002);
+    return res.status(ec.PUD002.status).json(ec.PUD002);
   }
 
   try {
@@ -47,7 +62,7 @@ router.post("/login", async (req, res, next) => {
       console.log(`User ${req.session.username} already authenticated`);
       const user: User | null = await dbUsers.getUser(req.session.userId);
       if (!user) {
-        return res.status(500).json(ec.PUD054);
+        return res.status(ec.PUD054.status).json(ec.PUD054);
       }
       return res.status(200).json({
         authenticated: req.session.authenticated,
@@ -57,7 +72,7 @@ router.post("/login", async (req, res, next) => {
 
     const userPW = await dbAuth.getUserHash(usernameEmail);
     if (!userPW || !userPW.hash) {
-      return res.status(401).json(ec.PUD003);
+      return res.status(ec.PUD003.status).json(ec.PUD003);
     }
 
     const isAuthenticated = authenticate(password, userPW.hash);
@@ -65,7 +80,7 @@ router.post("/login", async (req, res, next) => {
     if (isAuthenticated) {
       const user: User | null = await dbUsers.getUser(userPW.id);
       if (!user) {
-        return res.status(500).json(ec.PUD054);
+        return res.status(ec.PUD054.status).json(ec.PUD054);
       }
       req.session.authenticated = true;
       req.session.userId = user.id;
@@ -78,7 +93,7 @@ router.post("/login", async (req, res, next) => {
       });
     }
     else {
-      res.status(401).json(ec.PUD003);
+      res.status(ec.PUD003.status).json(ec.PUD003);
     }
   }
   catch (err) {
@@ -91,13 +106,13 @@ router.post("/login", async (req, res, next) => {
 */
 router.post("/logout", (req, res) => {
   if (!req.session.authenticated) {
-    return res.status(400).json(ec.PUD001);
+    return res.status(ec.PUD001.status).json(ec.PUD001);
   }
   const username = req.session.username;
   req.session.destroy(err => {
     if (err) {
       console.log(err);
-      return res.status(500).json(ec.PUD060);
+      return res.status(ec.PUD060.status).json(ec.PUD060);
     }
     console.log(`User ${username} successfully signed out`);
     res.status(200).json({ msg: "Signed out successfully" });
@@ -110,7 +125,7 @@ router.post("/logout", (req, res) => {
 router.post("/generatekey", masterKeyCheck, async (req, res, next) => {
   const name = req.query.name as string;
   if (!name) {
-    return res.status(400).json(ec.PUD068);
+    return res.status(ec.PUD068.status).json(ec.PUD068);
   }
 
   try {
@@ -127,34 +142,55 @@ router.post("/generatekey", masterKeyCheck, async (req, res, next) => {
 /*
 * Request a password reset
 */
-router.post("/reset-password", async (req, res, next) => {
-  if (!req.body.userId || !req.body.password) {
-    return res.status(400).json({ error: "User ID or new password not provided" });
+router.post("/requestpasswordreset", async (req, res, next) => {
+  const email = req.body.email;
+  if (!email) {
+    return res.status(ec.PUD072.status).json(ec.PUD072);
   }
 
-  const hash = createHash(req.body.password);
+  try {
+    const userId = await dbUsers.getUserID(email);
+    if (!userId) {
+      const delay = Math.floor((Math.random() * 1500) + 1500);
+      await new Promise(resolve => setTimeout(() => {
+        const response = res.status(200).json();
+        resolve(response);
+      }, delay));
+      return;
+    }
 
-  const request = new sql.Request();
-  const user = await request
-    .input("user_id", sql.Int, req.body.userId)
-    .input("password", sql.NVarChar, hash)
-    .execute("reset_password")
-    .then(res => {
-      console.log(res.recordset);
-      const user: User = parseUser(res.recordset[0]);
-      console.log(user);
-      return user;
-    })
-    .catch(err => next(err));
+    const key = generateKey();
+    await dbAuth.newPasswordResetKey(userId, key);
 
-  res.status(200).send(user);
+    await sendPasswordResetEmail(email, key);
+    res.status(200).json();
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 /*
-* Reset a user's password
+* Reset a password
 */
-router.post("/confirm-reset-password", async (req, res) => {
-  res.status(200).send();
-});
+router.post("/resetpassword", async (req, res, next) => {
+  const key: string = req.body.key;
+  const valid = await dbAuth.verifyPasswordResetKey(key);
+  if (!valid) {
+    return res.status(ec.PUD078.status).json(ec.PUD078);
+  }
+  
+  const password: string = req.body.password;
+  if (!password || password.trim() === "") {
+    return res.status(ec.PUD079.status).json(ec.PUD079);
+  }
 
-export default router;
+  try {
+    const hash = createHash(password);
+    await dbAuth.resetPassword(key, hash);
+    res.status(200).json();
+  }
+  catch (err) {
+    next(err);
+  }
+});

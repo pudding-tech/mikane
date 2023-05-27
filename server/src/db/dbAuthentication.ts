@@ -1,18 +1,20 @@
 import sql from "mssql";
-import { PUD033, PUD063, PUD064, PUD070 } from "../types/errorCodes";
+import { PUD033, PUD063, PUD064, PUD070, PUD075, PUD076, PUD077 } from "../types/errorCodes";
 import { ErrorExt } from "../types/errorExt";
 import { parseApiKeys } from "../parsers";
 import { randomUUID } from "crypto";
 
 /**
  * DB interface: Get user password hash
- * @param usernameEmail 
+ * @param usernameEmail
+ * @param userId
  * @returns User's hashed password
  */
-export const getUserHash = async (usernameEmail: string) => {
+export const getUserHash = async (usernameEmail?: string, userId?: number) => {
   const request = new sql.Request();
   const userHash = await request
     .input("usernameEmail", sql.NVarChar, usernameEmail)
+    .input("user_id", sql.Int, userId)
     .execute("get_user_hash")
     .then(data => {
       if (data.recordset.length < 1) {
@@ -80,10 +82,60 @@ export const newApiKey = async (name: string, hash: string, validFrom?: Date, va
     })
     .catch(err => {
       if (err.number === 50070)
-        throw new ErrorExt(PUD070, err, 400);
+        throw new ErrorExt(PUD070, err);
       else
         throw new ErrorExt(PUD064, err);
     });
 
   return key[0];
+};
+
+/**
+ * DB interface: Add new password reset request key to database
+ * @param userId 
+ * @param key 
+ */
+export const newPasswordResetKey = async (userId: number, key: string) => {
+  const request = new sql.Request();
+  await request
+    .input("user_id", sql.Int, userId)
+    .input("key", sql.NVarChar, key)
+    .execute("new_password_reset_key")
+    .catch(err => {
+      throw new ErrorExt(PUD075, err);
+    });
+};
+
+/**
+ * DB interface: Verify that a password reset key is valid (not used and not expired)
+ * @param key 
+ */
+export const verifyPasswordResetKey = async (key: string) => {
+  const request = new sql.Request();
+  const keyExists = await request
+    .input("key", sql.NVarChar, key)
+    .execute("verify_password_reset_key")
+    .then(data => {
+      return data.recordset[0] ? true : false;
+    })
+    .catch(err => {
+      throw new ErrorExt(PUD076, err);
+    });
+  return keyExists;
+};
+
+/**
+ * DB interface: Reset a user's password. After resetting password, the key will be set as used
+ * @param key Password reset key
+ * @param hash Hashed new password
+ */
+export const resetPassword = async (key: string, hash: string) => {
+  const request = new sql.Request();
+  await request
+    .input("key", sql.NVarChar, key)
+    .input("password", sql.NVarChar, hash)
+    .execute("reset_password")
+    .catch(err => {
+      throw new ErrorExt(PUD077, err);
+    });
 };

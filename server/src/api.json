@@ -155,7 +155,7 @@
               }
             }
           },
-          "400": {
+          "401": {
             "description": "No user authenticated",
             "content": {
               "application/json": {
@@ -180,6 +180,104 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/requestpasswordreset": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Request a password reset",
+        "description": "Request a password reset for a user",
+        "operationId": "postRequestPasswordReset",
+        "requestBody": {
+          "description": "Email",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "test@test.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request received",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/verifypasswordreset/{key}": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Verify a password reset",
+        "description": "Verify that a password reset key exists",
+        "operationId": "postVerifyPasswordReset",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "Password reset key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resetpassword": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Reset password",
+        "description": "Reset a user's password",
+        "operationId": "postResetPassword",
+        "requestBody": {
+          "description": "Password reset key, and new password",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "test"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password has been reset, and key invalidated",
+            "content": {}
           }
         }
       }
@@ -508,6 +606,57 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/changepassword": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Change password",
+        "description": "Change signed in user's password",
+        "operationId": "postChangePassword",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Current password and new password",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currentPassword": {
+                    "type": "string",
+                    "example": "test"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "example": "newtest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password successfully changed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password successfully changed"
+                    }
+                  }
                 }
               }
             }

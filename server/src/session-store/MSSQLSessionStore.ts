@@ -7,16 +7,16 @@ export default class MSSQLSessionStore extends Store {
   private pool: sql.ConnectionPool;
   private table: string;
   private timeToLive: number;
-  private autoDelete: boolean;
-  private autoDeleteInterval: number;
+  private autoDestroy: boolean;
+  private autoDestroyInterval: number;
 
   constructor(config: sql.config, options: StoreOptions) {
     super();
     this.pool = new sql.ConnectionPool(config);
     this.table = options.table ?? "session";
     this.timeToLive = options.timeToLive ?? 1000 * 60 * 60 * 24;
-    this.autoDelete = options.autoDelete ?? false;
-    this.autoDeleteInterval = options.autoDeleteInterval ?? 1000 * 60 * 60 * 24;
+    this.autoDestroy = options.autoDestroy ?? false;
+    this.autoDestroyInterval = options.autoDestroyInterval ?? 1000 * 60 * 60 * 24;
   }
 
   /**
@@ -26,10 +26,10 @@ export default class MSSQLSessionStore extends Store {
     await this.pool.connect();
     console.log("Session store connected");
 
-    if (this.autoDelete) {
+    if (this.autoDestroy) {
       setInterval(() => {
-        this.deleteExpired();
-      }, this.autoDeleteInterval);
+        this.destroyExpired();
+      }, this.autoDestroyInterval);
     }
   }
   
@@ -121,9 +121,32 @@ export default class MSSQLSessionStore extends Store {
   }
 
   /**
-   * Delete all expired sessions from the database
+   * Destroy all sessions for the signed in user
+   * @param session 
    */
-  async deleteExpired() {
+  async destroyAll(userId: number, callback?: ((err?: any) => void)) {
+    try {
+      await this.connectionCheck();
+
+      const request = this.pool.request();
+      await request
+        .input("user_id", sql.Int, userId)
+        .query(`
+          DELETE FROM ${this.table} where user_id = @user_id
+        `);
+      if (callback) {
+        callback();
+      }
+    }
+    catch (err) {
+      this.errorhandler(err, callback);
+    }
+  }
+
+  /**
+   * Destroy all expired sessions from the database
+   */
+  async destroyExpired() {
     try {
       await this.connectionCheck();
 
@@ -143,18 +166,13 @@ export default class MSSQLSessionStore extends Store {
    * @returns `true` if database is connected
    */
   private async connectionCheck() {
-    try {
-      if (!this.pool.connected && !this.pool.connecting) {
-        await this.connect();
-      }
-      if (this.pool.connected) {
-        return true;
-      }
-      throw new Error("Not connected to session store");
+    if (!this.pool.connected && !this.pool.connecting) {
+      await this.connect();
     }
-    catch (err) {
-      throw err;
+    if (this.pool.connected) {
+      return true;
     }
+    throw new Error("Not connected to session store");
   }
 
   /**

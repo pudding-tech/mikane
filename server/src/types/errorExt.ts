@@ -7,15 +7,14 @@ export class ErrorExt extends Error {
   /**
    * @param errorCode ErrorCode object
    * @param error Original error
-   * @param status Error status, defaults to 500 if not provided
    */
-  constructor(errorCode: ErrorCode, error?: Error, status = 500) {
+  constructor(errorCode: ErrorCode, error?: Error) {
     super(errorCode.message);
     this.code = errorCode.code;
     this.message = errorCode.message;
     this.log = errorCode.log;
     this.error = error;
-    this.status = status;
+    this.status = errorCode.status;
   }
   code: string;
   message: string;

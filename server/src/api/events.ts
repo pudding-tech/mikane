@@ -9,7 +9,9 @@ const router = express.Router();
 /* GET */
 /* --- */
 
-// Get a list of all events
+/*
+* Get a list of all events
+*/
 router.get("/events", authCheck, async (req, res, next) => {
   const userId = req.session.userId;
   try {
@@ -21,12 +23,14 @@ router.get("/events", authCheck, async (req, res, next) => {
   }
 });
 
-// Get specific event
+/*
+* Get specific event
+*/
 router.get("/events/:id", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   const userId = req.session.userId;
   if (isNaN(eventId)) {
-    return res.status(400).json(ec.PUD013);
+    return res.status(ec.PUD013.status).json(ec.PUD013);
   }
   try {
     const event: Event = await db.getEvent(eventId, userId);
@@ -37,7 +41,9 @@ router.get("/events/:id", authCheck, async (req, res, next) => {
   }
 });
 
-// Get specific event by name
+/*
+* Get specific event by name
+*/
 router.get("/event-by-name", authKeyCheck, async (req, res, next) => {
   const eventName = req.body.name;
   const userId = req.session.userId;
@@ -50,11 +56,13 @@ router.get("/event-by-name", authKeyCheck, async (req, res, next) => {
   }
 });
 
-// Get a list of all users' balance information for an event
+/*
+* Get a list of all users' balance information for an event
+*/
 router.get("/events/:id/balances", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
-    return res.status(400).json(ec.PUD013);
+    return res.status(ec.PUD013.status).json(ec.PUD013);
   }
   try {
     const usersWithBalance: UserBalance[] = await db.getEventBalances(eventId);
@@ -65,11 +73,13 @@ router.get("/events/:id/balances", authCheck, async (req, res, next) => {
   }
 });
 
-// Get a list of all payments for a given event
+/*
+* Get a list of all payments for a given event
+*/
 router.get("/events/:id/payments", authKeyCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
-    return res.status(400).json(ec.PUD013);
+    return res.status(ec.PUD013.status).json(ec.PUD013);
   }
   try {
     const payments: Payment[] = await db.getEventPayments(eventId);
@@ -84,17 +94,19 @@ router.get("/events/:id/payments", authKeyCheck, async (req, res, next) => {
 /* POST */
 /* ---- */
 
-// Create new event
+/*
+* Create new event
+*/
 router.post("/events", authCheck, async (req, res, next) => {
   if (!req.body.name || (req.body.private === null || req.body.private === undefined)) {
-    return res.status(400).json(ec.PUD014);
+    return res.status(ec.PUD014.status).json(ec.PUD014);
   }
   if (req.body.name.length < 1) {
-    return res.status(400).json(ec.PUD053);
+    return res.status(ec.PUD053.status).json(ec.PUD053);
   }
   const userId = req.session.userId;
   if (!userId) {
-    return res.status(500).json(ec.PUD055);
+    return res.status(ec.PUD055.status).json(ec.PUD055);
   }
   try {
     const event: Event = await db.createEvent(req.body.name, userId, req.body.private, req.body.description);
@@ -105,13 +117,15 @@ router.post("/events", authCheck, async (req, res, next) => {
   }
 });
 
-// Add a user to an event
+/*
+* Add a user to an event
+*/
 router.post("/events/:id/user/:userId", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   const userId = Number(req.params.userId);
 
   if (isNaN(eventId) || isNaN(userId)) {
-    return res.status(400).json(ec.PUD015);
+    return res.status(ec.PUD015.status).json(ec.PUD015);
   }
   try {
     const event: Event = await db.addUserToEvent(eventId, userId);
@@ -126,13 +140,16 @@ router.post("/events/:id/user/:userId", authCheck, async (req, res, next) => {
 /* PUT */
 /* --- */
 
+/*
+* Edit event
+*/
 router.put("/events/:id", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
-    return res.status(400).json(ec.PUD013);
+    return res.status(ec.PUD013.status).json(ec.PUD013);
   }
   if (![undefined, null].includes(req.body.name) && req.body.name.length < 1) {
-    return res.status(400).json(ec.PUD053);
+    return res.status(ec.PUD053.status).json(ec.PUD053);
   }
   try {
     const event: Event = await db.editEvent(eventId, req.body.name, req.body.description, req.body.adminId, req.body.private);
@@ -147,11 +164,13 @@ router.put("/events/:id", authCheck, async (req, res, next) => {
 /* DELETE */
 /* ------ */
 
-// Delete an event
+/*
+* Delete event
+*/
 router.delete("/events/:id", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   if (isNaN(eventId)) {
-    return res.status(400).json(ec.PUD013);
+    return res.status(ec.PUD013.status).json(ec.PUD013);
   }
   try {
     const success = await db.deleteEvent(eventId);
@@ -162,12 +181,14 @@ router.delete("/events/:id", authCheck, async (req, res, next) => {
   }
 });
 
-// Remove a user from an event
+/*
+* Remove a user from an event
+*/
 router.delete("/events/:id/user/:userId", authCheck, async (req, res, next) => {
   const eventId = Number(req.params.id);
   const userId = Number(req.params.userId);
   if (isNaN(eventId) || isNaN(userId)) {
-    return res.status(400).json(ec.PUD015);
+    return res.status(ec.PUD015.status).json(ec.PUD015);
   }
   try {
     const event: Event = await db.removeUserFromEvent(eventId, userId);

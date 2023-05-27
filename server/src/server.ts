@@ -78,8 +78,8 @@ app.get("/", swaggerUi.setup(apiDocument, apiDocsOptions));
 // Session storage
 const store = new MSSQLSessionStore(dbConfig, {
   table: "[session]",
-  autoDelete: true,
-  autoDeleteInterval: 1000 * 60 * 60 * 24
+  autoDestroy: true,
+  autoDestroyInterval: 1000 * 60 * 60 * 24
 });
 store.connect().catch(err => console.error("Error connecting to session store\n", err));
 

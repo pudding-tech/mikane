@@ -87,15 +87,15 @@ export const addUserToCategory = async (categoryId: number, userId: number, weig
     })
     .catch(err => {
       if (err.number === 50007)
-        throw new ErrorExt(ec.PUD007, err, 400);
+        throw new ErrorExt(ec.PUD007, err);
       else if (err.number === 50008)
-        throw new ErrorExt(ec.PUD008, err, 400);
+        throw new ErrorExt(ec.PUD008, err);
       else if (err.number === 50010)
-        throw new ErrorExt(ec.PUD010, err, 400);
+        throw new ErrorExt(ec.PUD010, err);
       else if (err.number === 50011)
-        throw new ErrorExt(ec.PUD011, err, 400);
+        throw new ErrorExt(ec.PUD011, err);
       else if (err.number === 50012)
-        throw new ErrorExt(ec.PUD012, err, 400);
+        throw new ErrorExt(ec.PUD012, err);
       else
         throw new ErrorExt(ec.PUD020, err);
     });

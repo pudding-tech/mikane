@@ -81,3 +81,27 @@ create table api_key (
   valid_to datetime
 )
 go
+
+create table register_account_key (
+  [key] nvarchar(255) primary key,
+  email nvarchar(255) not null,
+  used bit not null,
+  expires datetime not null
+)
+go
+
+create table delete_account_key (
+  [key] nvarchar(255) primary key,
+  user_id int foreign key references [user](id) on delete set null,
+  used bit not null,
+  expires datetime not null
+)
+go
+
+create table password_reset_key (
+  [key] nvarchar(255) primary key,
+  user_id int foreign key references [user](id) on delete cascade,
+  used bit not null,
+  expires datetime not null
+)
+go

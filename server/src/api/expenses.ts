@@ -9,11 +9,13 @@ const router = express.Router();
 /* GET */
 /* --- */
 
-// Get a list of all expenses for a given event
+/*
+* Get a list of all expenses for a given event
+*/
 router.get("/expenses", authCheck, async (req, res, next) => {
   const eventId = Number(req.query.eventId);
   if (!req.query.eventId || isNaN(eventId)) {
-    return res.status(400).json(ec.PUD013);
+    return res.status(ec.PUD013.status).json(ec.PUD013);
   }
   try {
     const expenses: Expense[] = await db.getExpenses(eventId);
@@ -24,11 +26,13 @@ router.get("/expenses", authCheck, async (req, res, next) => {
   }
 });
 
-// Get a specific expense
+/*
+* Get a specific expense
+*/
 router.get("/expenses/:id", authCheck, async (req, res, next) => {
   const expenseId = Number(req.params.id);
   if (isNaN(expenseId)) {
-    return res.status(400).json(ec.PUD056);
+    return res.status(ec.PUD056.status).json(ec.PUD056);
   }
   try {
     const expense: Expense = await db.getExpense(expenseId);
@@ -43,10 +47,12 @@ router.get("/expenses/:id", authCheck, async (req, res, next) => {
 /* POST */
 /* ---- */
 
-// Create a new expense
+/*
+* Create a new expense
+*/
 router.post("/expenses", authCheck, async (req, res, next) => {
   if (!req.body.name || !req.body.amount || !req.body.categoryId || !req.body.payerId) {
-    return res.status(400).json(ec.PUD057);
+    return res.status(ec.PUD057.status).json(ec.PUD057);
   }
   try {
     const expense: Expense = await db.createExpense(req.body.name, req.body.description, req.body.amount, req.body.categoryId, req.body.payerId);
@@ -61,11 +67,13 @@ router.post("/expenses", authCheck, async (req, res, next) => {
 /* DELETE */
 /* ------ */
 
-// Delete an expense
+/*
+* Delete an expense
+*/
 router.delete("/expenses/:id", authCheck, async (req, res, next) => {
   const expenseId = Number(req.params.id);
   if (isNaN(expenseId)) {
-    return res.status(400).json(ec.PUD056);
+    return res.status(ec.PUD056.status).json(ec.PUD056);
   }
   try {
     const success = await db.deleteExpense(expenseId);
