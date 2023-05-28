@@ -102,7 +102,7 @@ router.post("/users", async (req, res, next) => {
 /*
 * Change signed in user's password
 */
-router.post("/changepassword", authCheck, async (req, res, next) => {
+router.post("/users/changepassword", authCheck, async (req, res, next) => {
   try {
     // Get signed in user's hashed password
     const userId = req.session.userId;

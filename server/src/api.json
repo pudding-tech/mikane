@@ -217,7 +217,7 @@
           "Authentication"
         ],
         "summary": "Verify a password reset",
-        "description": "Verify that a password reset key exists",
+        "description": "Verify that a password reset key exists and is valid",
         "operationId": "postVerifyPasswordReset",
         "parameters": [
           {
@@ -613,12 +613,12 @@
         }
       }
     },
-    "/changepassword": {
+    "/users/changepassword": {
       "post": {
         "tags": [
           "Users"
         ],
-        "summary": "Change password",
+        "summary": "Change user's password",
         "description": "Change signed in user's password",
         "operationId": "postChangePassword",
         "security": [

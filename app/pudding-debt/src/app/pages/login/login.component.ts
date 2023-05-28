@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -35,10 +35,16 @@ export class LoginComponent {
 
 	hide = true;
 	loading = false;
+	resetPasswordView = false;
+	resetPasswordRequestSent = false;
+	errorResponse: string;
 
 	loginForm = new FormGroup({
 		username: new FormControl<string>(''),
 		password: new FormControl<string>(''),
+	});
+	resetPasswordForm = new FormGroup({
+		email: new FormControl<string>('', [Validators.required, Validators.email]),
 	});
 
 	constructor(private authService: AuthService, private router: Router, private messageService: MessageService) {}
@@ -81,5 +87,43 @@ export class LoginComponent {
 		this.router.navigate(['/register'], {
 			state: { username: this.loginForm.get('username')?.value },
 		});
+	}
+
+	toggleForgotPassword() {
+		if (!this.loading) {
+			this.resetPasswordView = !this.resetPasswordView;
+		}
+	}
+
+	sendResetPasswordEmail() {
+		if (!this.resetPasswordForm.valid) {
+			return;
+		}
+
+		const email = this.resetPasswordForm.get('email')?.value;
+		if (email) {
+			this.loading = true;
+			this.authService
+				.sendResetPasswordEmail(email).subscribe({
+					next: () => {
+						this.loading = false;
+						this.resetPasswordRequestSent = true;
+					},
+					error: (err: ApiError) => {
+						this.loading = false;
+						if (err.status === 400) {
+							this.errorResponse = 'Server not configured for sending email';
+						}
+						else if (err.status >= 500) {
+							this.errorResponse = 'Something went wrong while sending email :(';
+						}
+					}
+				});
+		}
+	}
+
+	resetText() {
+		this.resetPasswordRequestSent = false;
+		this.errorResponse = '';
 	}
 }

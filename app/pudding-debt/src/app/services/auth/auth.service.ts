@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of, switchMap, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../user/user.service';
 
@@ -26,18 +26,8 @@ export class AuthService {
 		return this.httpClient.post(this.apiUrl + 'logout', {});
 	}
 
-	changePassword(currentPassword: string, newPassword: string): Observable<User> {
-		return this.getCurrentUser().pipe(
-			switchMap((user) => {
-				return this.httpClient
-					.post<User>(this.apiUrl + 'changepassword', {
-						userId: user.id,
-						currentPassword: currentPassword,
-						newPassword: newPassword,
-					})
-					.pipe(tap((user) => (this.currentUser = user)));
-			})
-		);
+	sendResetPasswordEmail(email: string): Observable<Object> {
+		return this.httpClient.post(this.apiUrl + 'requestpasswordreset', { email });
 	}
 
 	getCurrentUser(): Observable<User> {

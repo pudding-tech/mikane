@@ -84,8 +84,11 @@ export class UserService {
 		});
 	}
 
-	forgotPassword(userName: string) {
-		// TODO: Implement method
-		return;
+	changeUserPassword(currentPassword: string, newPassword: string): Observable<User> {
+		return this.httpClient
+			.post<User>(this.apiUrl + '/changepassword', {
+				currentPassword: currentPassword,
+				newPassword: newPassword,
+			});
 	}
 }
