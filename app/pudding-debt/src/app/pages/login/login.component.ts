@@ -47,7 +47,7 @@ export class LoginComponent {
 		email: new FormControl<string>('', [Validators.required, Validators.email]),
 	});
 
-	constructor(private authService: AuthService, private router: Router, private messageService: MessageService) {}
+	constructor(private authService: AuthService, private router: Router, private messageService: MessageService) { }
 
 	login() {
 		if (this.loginForm.valid) {
@@ -103,6 +103,8 @@ export class LoginComponent {
 		const email = this.resetPasswordForm.get('email')?.value;
 		if (email) {
 			this.loading = true;
+			this.resetPasswordRequestSent = false;
+			this.errorResponse = '';
 			this.authService
 				.sendResetPasswordEmail(email).subscribe({
 					next: () => {
