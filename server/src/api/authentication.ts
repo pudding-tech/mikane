@@ -147,16 +147,16 @@ router.post("/generatekey", masterKeyCheck, async (req, res, next) => {
 * Request a password reset
 */
 router.post("/requestpasswordreset", async (req, res, next) => {
+  if (!process.env.PUDDINGDEBT_EMAIL || !process.env.PUDDINGDEBT_EMAIL_PASSWORD) {
+    return next(new ErrorExt(ec.PUD073));
+  }
+  
   const email = req.body.email;
   if (!email) {
     return res.status(ec.PUD072.status).json(ec.PUD072);
   }
 
   try {
-    if (!process.env.PUDDINGDEBT_EMAIL || !process.env.PUDDINGDEBT_EMAIL_PASSWORD) {
-      throw new ErrorExt(ec.PUD073);
-    }
-
     const userId = await dbUsers.getUserID(email);
     if (!userId) {
       const delay = Math.floor((Math.random() * 1500) + 1500);
