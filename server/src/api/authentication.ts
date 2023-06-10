@@ -7,7 +7,11 @@ import { generateKey } from "../utils/generateKey";
 import { User } from "../types/types";
 import { masterKeyCheck } from "../middlewares/authCheck";
 import { sendPasswordResetEmail } from "../email-services/passwordReset";
+import { ErrorExt } from "../types/errorExt";
 const router = express.Router();
+
+import dotenv from "dotenv";
+dotenv.config();
 
 /* --- */
 /* GET */
@@ -52,7 +56,7 @@ export default router;
 * User sign in
 */
 router.post("/login", async (req, res, next) => {
-  const {usernameEmail, password} = req.body;
+  const { usernameEmail, password } = req.body;
   if (!usernameEmail || !password) {
     return res.status(ec.PUD002.status).json(ec.PUD002);
   }
@@ -143,6 +147,10 @@ router.post("/generatekey", masterKeyCheck, async (req, res, next) => {
 * Request a password reset
 */
 router.post("/requestpasswordreset", async (req, res, next) => {
+  if (!process.env.PUDDINGDEBT_EMAIL || !process.env.PUDDINGDEBT_EMAIL_PASSWORD) {
+    return next(new ErrorExt(ec.PUD073));
+  }
+  
   const email = req.body.email;
   if (!email) {
     return res.status(ec.PUD072.status).json(ec.PUD072);
@@ -161,7 +169,6 @@ router.post("/requestpasswordreset", async (req, res, next) => {
 
     const key = generateKey();
     await dbAuth.newPasswordResetKey(userId, key);
-
     await sendPasswordResetEmail(email, key);
     res.status(200).json();
   }
@@ -179,7 +186,7 @@ router.post("/resetpassword", async (req, res, next) => {
   if (!valid) {
     return res.status(ec.PUD078.status).json(ec.PUD078);
   }
-  
+
   const password: string = req.body.password;
   if (!password || password.trim() === "") {
     return res.status(ec.PUD079.status).json(ec.PUD079);

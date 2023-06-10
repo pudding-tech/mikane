@@ -61,6 +61,20 @@
 	opacity: 100%;
 }
 
-.mat-spinner-color::ng-deep circle{
+.forgot-password-text {
+	margin-bottom: 20px;
+}
+
+.info-text {
+	margin-top: 20px;
+	font-size: small;
+	text-align: center;
+}
+
+.error-text {
+	color: red;
+}
+
+.mat-spinner::ng-deep circle{
 	stroke: #FFFFFF !important;
 }

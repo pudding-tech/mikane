@@ -10,10 +10,15 @@
 			<div mat-card-avatar>
 				<mat-icon aria-hidden="false">account_circle</mat-icon>
 			</div>
-			<mat-card-title>Login</mat-card-title>
+			<mat-card-title>
+				<div *ngIf="!resetPasswordView; else resetPasswordTitle">Login</div>
+				<ng-template #resetPasswordTitle>
+					<div>Reset password</div>
+				</ng-template>
+			</mat-card-title>
 		</mat-card-header>
 		<mat-card-content class="card-content">
-			<form [formGroup]="loginForm" (ngSubmit)="login()">
+			<form *ngIf="!resetPasswordView; else resetPasswordContent" [formGroup]="loginForm" (ngSubmit)="login()">
 				<div>
 					<mat-form-field appearance="fill" class="login-input">
 						<mat-label>Username or Email</mat-label>
@@ -44,14 +49,44 @@
 							<span>Log in</span>
 						</ng-container>
 						<ng-template #loadingSpinner>
-							<mat-spinner diameter="25" class="mat-spinner-color"></mat-spinner>
+							<mat-spinner diameter="20" class="mat-spinner"></mat-spinner>
 						</ng-template>
 					</button>
 				</mat-card-actions>
 				<div class="forgot-password">
-					<button type="button" class="forgot-password-button">Forgot password?</button>
+					<button type="button" class="forgot-password-button" (click)="toggleForgotPassword()">Forgot password?</button>
 				</div>
 			</form>
+			<ng-template #resetPasswordContent>
+				<div class="forgot-password-text">Please enter the email address associated with your account.</div>
+				<form [formGroup]="resetPasswordForm" (ngSubmit)="sendResetPasswordEmail()">
+					<mat-form-field appearance="fill" class="login-input">
+						<mat-label>Email</mat-label>
+						<input type="email" matInput placeholder="Email" formControlName="email" />
+						<mat-error *ngIf="resetPasswordForm.get('email')?.invalid"> Invalid email </mat-error>
+					</mat-form-field>
+					<mat-card-actions class="login-actions">
+						<button type="submit" mat-raised-button color="primary" class="login-input">
+							<ng-container matButtonIcon *ngIf="!loading; else loadingSpinner">
+								<mat-icon aria-hidden="false">email</mat-icon>
+								<span>Send instructions</span>
+							</ng-container>
+							<ng-template #loadingSpinner>
+								<mat-spinner diameter="20" class="mat-spinner"></mat-spinner>
+							</ng-template>
+						</button>
+					</mat-card-actions>
+					<div *ngIf="resetPasswordRequestSent" class="info-text">
+						Your password reset request has been received and is being processed. You will receive an email with password reset instructions shortly.
+					</div>
+					<div *ngIf="errorResponse" class="info-text error-text">
+						{{ errorResponse }}
+					</div>
+					<div class="forgot-password">
+						<button type="button" class="forgot-password-button" (click)="toggleForgotPassword(); resetText()">Back</button>
+					</div>
+				</form>
+			</ng-template>
 		</mat-card-content>
 	</mat-card>
 </div>
