@@ -18,16 +18,31 @@
 						<mat-card-title class="event-title">
 							<span class="event-name">
 								{{ event.name }}
+								<mat-icon
+									*ngIf="event.user.inEvent"
+									matTooltip="You are in this event"
+									[matTooltipShowDelay]="200"
+									class="joined-icon"
+								>
+									how_to_reg
+								</mat-icon>
+								<span
+									*ngIf="event.user.isAdmin"
+									matTooltip="You are an admin for this event"
+									[matTooltipShowDelay]="200"
+									class="admin-icon"
+								>
+									A
+								</span>
 							</span>
 						</mat-card-title>
 						<mat-card-subtitle>
 							{{ event.description }}
 						</mat-card-subtitle>
-						<span class="event-actions">
+						<span *ngIf="event.user.isAdmin" class="event-actions">
 							<button mat-icon-button (click)="editEvent(event); $event.stopPropagation()">
 								<mat-icon>edit</mat-icon>
 							</button>
-							<!-- <button mat-icon-button (click)="deleteEvent(event)"><mat-icon>delete</mat-icon></button> -->
 						</span>
 					</mat-card-header>
 				</mat-card>

@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, switchMap, takeUntil } from 'rxjs';
-import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
+import { Category, CategoryService } from 'src/app/services/category/category.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dialog.component';
@@ -39,10 +40,12 @@ export class ExpendituresComponent implements OnInit {
 
 	expenses: Expense[] = [];
 	displayedColumns: string[] = ['name', 'payer', 'amount', 'categoryName', 'description', 'delete'];
+	currentUserId: number;
 
 	constructor(
 		private expenseService: ExpenseService,
 		private categoryService: CategoryService,
+		private authService: AuthService,
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
 		private messageService: MessageService
@@ -50,6 +53,17 @@ export class ExpendituresComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.loading.next(true);
+		this.authService
+			.getCurrentUser()
+			.subscribe({
+				next: (user) => {
+					this.currentUserId = user.id;
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to get user');
+					console.error('Something went wrong getting signed in user in expenses component: ' + err?.error?.message);
+				}
+			});
 		this.route?.parent?.parent?.params
 			.pipe(
 				switchMap((params) => {
