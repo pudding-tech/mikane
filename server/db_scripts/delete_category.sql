@@ -6,6 +6,11 @@ create procedure delete_category
 as
 begin
 
+  if not exists (select 1 from category where id = @category_id)
+  begin
+    throw 50007, 'Category not found', 1
+  end
+
   delete from category where id = @category_id
 
 end

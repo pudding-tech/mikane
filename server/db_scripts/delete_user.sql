@@ -6,6 +6,11 @@ create procedure delete_user
 as
 begin
 
+  if not exists (select 1 from [user] where id = @user_id)
+  begin
+    throw 50008, 'User not found', 1
+  end
+
   delete from [user] where id = @user_id
 
 end

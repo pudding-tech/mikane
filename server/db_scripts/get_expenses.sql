@@ -10,6 +10,11 @@ begin
 
   if (@event_id is not null and @user_id is null)
   begin
+    if not exists (select 1 from [event] where id = @event_id)
+    begin
+      throw 50006, 'Event not found', 1
+    end
+
     select
       ex.*,
       c.name as category_name,
@@ -27,6 +32,16 @@ begin
 
   else if (@event_id is not null and @user_id is not null)
   begin
+    if not exists (select 1 from [event] where id = @event_id)
+    begin
+      throw 50006, 'Event not found', 1
+    end
+
+    if not exists (select 1 from [user] where id = @user_id)
+    begin
+      throw 50008, 'User not found', 1
+    end
+    
     select
       ex.*,
       c.name as category_name,
@@ -45,6 +60,11 @@ begin
 
   else if (@expense_id is not null)
   begin
+    if not exists (select 1 from expense where id = @expense_id)
+    begin
+      throw 50084, 'Expense not found', 1
+    end
+
     select
       ex.*,
       c.name as category_name,

@@ -3,6 +3,7 @@ import { ErrorCode, PUD001, PUD065, PUD066, PUD067, PUD069 } from "../types/erro
 import { getApiKeys } from "../db/dbAuthentication";
 import { authenticate } from "../utils/auth";
 import { APIKey } from "../types/types";
+import { ErrorExt } from "../types/errorExt";
 
 /**
  * Only allow authenticated users to progress
@@ -11,12 +12,15 @@ import { APIKey } from "../types/types";
  * @param next NextFunction
  */
 export const authCheck = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.session.authenticated) {
-    res.set("WWW-Authenticate", "Session");
-    res.status(PUD001.status).json(PUD001);
-    return;
+  try {
+    if (!req.session.authenticated) {
+      throw new ErrorExt(PUD001);
+    }
+    next();
   }
-  next();
+  catch (err) {
+    next(err);
+  }
 };
 
 type KeyOutput = {
@@ -31,28 +35,27 @@ type KeyOutput = {
  * @param next NextFunction
  */
 export const authKeyCheck = async (req: Request, res: Response, next: NextFunction) => {
-  if (req.session.authenticated) {
-    return next();
-  }
-
-  const authKey = req.get("Authorization");
-  if (!authKey) {
-    return res.status(PUD065.status).json(PUD065);
-  }
-
   try {
+    if (req.session.authenticated) {
+      return next();
+    }
+
+    const authKey = req.get("Authorization");
+    if (!authKey) {
+      throw new ErrorExt(PUD065);
+    }
+
     const keys = await getApiKeys("all");
     const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
 
-    if (!isAuthenticated.valid) {
-      return res.status(isAuthenticated.reason?.status ?? 401).json(isAuthenticated.reason);
+    if (!isAuthenticated.valid && isAuthenticated.reason) {
+      throw new ErrorExt(isAuthenticated.reason);
     }
+    next();
   }
   catch (err) {
     next(err);
   }
-
-  next();
 };
 
 /**
@@ -64,22 +67,21 @@ export const authKeyCheck = async (req: Request, res: Response, next: NextFuncti
 export const masterKeyCheck = async (req: Request, res: Response, next: NextFunction) => {
   const authKey = req.get("Authorization");
   if (!authKey) {
-    return res.status(PUD069.status).json(PUD069);
+    throw new ErrorExt(PUD069);
   }
 
   try {
     const keys = await getApiKeys("master");
     const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
 
-    if (!isAuthenticated.valid) {
-      return res.status(isAuthenticated.reason?.status ?? 401).json(isAuthenticated.reason);
+    if (!isAuthenticated.valid && isAuthenticated.reason) {
+      throw new ErrorExt(isAuthenticated.reason);
     }
+    next();
   }
   catch (err) {
     next(err);
   }
-
-  next();
 };
 
 /**

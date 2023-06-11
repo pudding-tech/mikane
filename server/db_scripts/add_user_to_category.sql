@@ -10,12 +10,12 @@ begin
 
   if not exists (select id from category where id = @category_id)
   begin
-    throw 50007, 'Category does not exist', 1
+    throw 50007, 'Category not found', 1
   end
 
   if not exists (select id from [user] where id = @user_id)
   begin
-    throw 50008, 'User does not exist', 1
+    throw 50008, 'User not found', 1
   end
 
   declare @event_id int

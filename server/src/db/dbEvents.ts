@@ -44,6 +44,9 @@ export const getEvent = async (eventId: number, userId?: number) => {
     .catch(err => {
       throw new ErrorExt(ec.PUD031, err);
     });
+  if (!events.length) {
+    return null;
+  }
   return events[0];
 };
 
@@ -65,6 +68,9 @@ export const getEventByName = async (eventName: string, userId?: number) => {
     .catch(err => {
       throw new ErrorExt(ec.PUD031, err);
     });
+  if (!events.length) {
+    return null;
+  }
   return events[0];
 };
 
@@ -82,7 +88,14 @@ export const getEventBalances = async (eventId: number) => {
       return res.recordsets as sql.IRecordSet<any>[];
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD030, err);
+      if (err.number === 50006)
+        throw new ErrorExt(ec.PUD006, err);
+      else if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, err);
+      else if (err.number === 50084)
+        throw new ErrorExt(ec.PUD084, err);
+      else
+        throw new ErrorExt(ec.PUD030, err);
     });
   
   if (!data || data.length < 3) {
@@ -112,7 +125,14 @@ export const getEventPayments = async (eventId: number) => {
       return res.recordsets as sql.IRecordSet<any>[];
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD030, err);
+      if (err.number === 50006)
+        throw new ErrorExt(ec.PUD006, err);
+      else if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, err);
+      else if (err.number === 50084)
+        throw new ErrorExt(ec.PUD084, err);
+      else
+        throw new ErrorExt(ec.PUD030, err);
     });
   
   if (!data || data.length < 3) {
@@ -164,16 +184,22 @@ export const createEvent = async (name: string, userId: number, privateEvent: bo
  * @param id Event ID
  * @returns True if successful
  */
-export const deleteEvent = async (id: number) => {
+export const deleteEvent = async (id: number, userId: number) => {
   const request = new sql.Request();
   const success = await request
     .input("event_id", sql.Int, id)
+    .input("user_id", sql.Int, userId)
     .execute("delete_event")
     .then(() => {
       return true;
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD023, err);
+      if (err.number === 50006)
+        throw new ErrorExt(ec.PUD006, err);
+      if (err.number === 50085)
+        throw new ErrorExt(ec.PUD085, err);
+      else
+        throw new ErrorExt(ec.PUD023, err);
     });
   return success;
 };
@@ -222,7 +248,12 @@ export const removeUserFromEvent = async (eventId: number, userId: number) => {
       return parseEvents(data.recordset);
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD040, err);
+      if (err.number === 50006) 
+        throw new ErrorExt(ec.PUD006, err);
+      else if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, err);
+      else
+        throw new ErrorExt(ec.PUD040, err);
     });
   return events[0];
 };
@@ -230,16 +261,18 @@ export const removeUserFromEvent = async (eventId: number, userId: number) => {
 /**
  * DB interface: Edit event
  * @param eventId ID of event to edit
+ * @param userId ID of user performing edit
  * @param name New name
  * @param description New description
  * @param adminId New admin user ID
  * @param privateEvent Whether event should be open for all or invite only
  * @returns Edited event
  */
-export const editEvent = async (eventId: number, name?: string, description?: string, adminId?: number, privateEvent?: boolean) => {
+export const editEvent = async (eventId: number, userId: number, name?: string, description?: string, adminId?: number, privateEvent?: boolean) => {
   const request = new sql.Request();
   const events: Event[] = await request
     .input("event_id", sql.Int, eventId)
+    .input("user_id", sql.Int, userId)
     .input("name", sql.NVarChar, name)
     .input("description", sql.NVarChar, description)
     .input("admin_id", sql.Int, adminId)
@@ -249,12 +282,19 @@ export const editEvent = async (eventId: number, name?: string, description?: st
       return parseEvents(data.recordset);
     })
     .catch(err => {
-      if (err.number === 50005)
+      if (err.number === 50006)
+        throw new ErrorExt(ec.PUD006, err);
+      else if (err.number === 50005)
         throw new ErrorExt(ec.PUD005, err);
-      if (err.number === 50008)
+      else if (err.number === 50008)
         throw new ErrorExt(ec.PUD008, err);
+      else if (err.number === 50087)
+        throw new ErrorExt(ec.PUD087, err);
       else
         throw new ErrorExt(ec.PUD044, err);
     });
+  if (!events.length) {
+    return null;
+  }
   return events[0];
 };

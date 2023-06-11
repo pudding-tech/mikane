@@ -84,7 +84,14 @@ export const getUserExpenses = async (userId: number, eventId: number) => {
       return parseExpenses(data.recordset);
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD032, err);
+      if (err.number === 50006)
+        throw new ErrorExt(ec.PUD006);
+      else if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008);
+      else if (err.number === 50084)
+        throw new ErrorExt(ec.PUD084);
+      else
+        throw new ErrorExt(ec.PUD032, err);
     });
   return expenses;
 };
@@ -132,7 +139,7 @@ export const createUser = async (username: string, firstName: string, lastName: 
  */
 export const editUser = async (userId: number, data: { username?: string, firstName?: string, lastName?: string, email?: string, phone?: string }) => {
   const request = new sql.Request();
-  const user: User = await request
+  const user: User | null = await request
     .input("user_id", sql.Int, userId)
     .input("username", sql.NVarChar, data.username)
     .input("first_name", sql.NVarChar, data.firstName)
@@ -141,6 +148,9 @@ export const editUser = async (userId: number, data: { username?: string, firstN
     .input("phone_number", sql.NVarChar, data.phone)
     .execute("edit_user")
     .then(data => {
+      if (!data.recordset[0]) {
+        return null;
+      }
       return parseUser(data.recordset[0]);
     })
     .catch(err => {
@@ -170,7 +180,10 @@ export const deleteUser = async (userId: number) => {
       return true;
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD025, err);
+      if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, err);
+      else
+        throw new ErrorExt(ec.PUD025, err);
     });
   return success;
 };

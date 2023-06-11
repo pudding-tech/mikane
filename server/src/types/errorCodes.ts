@@ -51,30 +51,30 @@ export const PUD005: ErrorCode = {
 };
 
 /**
- * PUD-006: Event does not exist (400)
+ * PUD-006: Event not found (404)
  */
 export const PUD006: ErrorCode = {
   code: "PUD-006",
-  message: "Event does not exist",
-  status: 400
+  message: "Event not found",
+  status: 404
 };
 
 /**
- * PUD-007: Category does not exist (400)
+ * PUD-007: Category not found (404)
  */
 export const PUD007: ErrorCode = {
   code: "PUD-007",
-  message: "Category does not exist",
-  status: 400
+  message: "Category not found",
+  status: 404
 };
 
 /**
- * PUD-008: User does not exist (400)
+ * PUD-008: User not found (404)
  */
 export const PUD008: ErrorCode = {
   code: "PUD-008",
-  message: "User does not exist",
-  status: 400
+  message: "User not found",
+  status: 404
 };
 
 /**
@@ -780,11 +780,47 @@ export const PUD082: ErrorCode = {
 };
 
 /**
- * PUD-083: Unable to invalidate session (500)
+ * PUD-083: Unable to invalidate sessions (500)
  */
 export const PUD083: ErrorCode = {
   code: "PUD-083",
-  message: "Unable to invalidate session",
+  message: "Unable to invalidate sessions",
   status: 500,
   log: true
+};
+
+/**
+ * PUD-084: Expense not found (404)
+ */
+export const PUD084: ErrorCode = {
+  code: "PUD-084",
+  message: "Expense not found",
+  status: 404
+};
+
+/**
+ * PUD-085: Only event admin can delete event (403)
+ */
+export const PUD085: ErrorCode = {
+  code: "PUD-085",
+  message: "Only event admin can delete event",
+  status: 403
+};
+
+/**
+ * PUD-086: You can only delete your own expenses (unless event admin) (403)
+ */
+export const PUD086: ErrorCode = {
+  code: "PUD-086",
+  message: "You can only delete your own expenses (unless event admin)",
+  status: 403
+};
+
+/**
+ * PUD-087: Only event admin can edit event (403)
+ */
+export const PUD087: ErrorCode = {
+  code: "PUD-087",
+  message: "Only event admin can edit event",
+  status: 403
 };

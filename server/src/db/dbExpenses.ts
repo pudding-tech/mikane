@@ -20,7 +20,14 @@ export const getExpenses = async (eventId: number) => {
       return parseExpenses(data.recordset);
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD032, err);
+      if (err.number === 50006)
+        throw new ErrorExt(ec.PUD006);
+      else if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008);
+      else if (err.number === 50084)
+        throw new ErrorExt(ec.PUD084);
+      else
+        throw new ErrorExt(ec.PUD032, err);
     });
   return expenses;
 };
@@ -41,8 +48,18 @@ export const getExpense = async (expenseId: number) => {
       return parseExpenses(data.recordset);
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD032, err);
+      if (err.number === 50006)
+        throw new ErrorExt(ec.PUD006);
+      else if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008);
+      else if (err.number === 50084)
+        throw new ErrorExt(ec.PUD084);
+      else
+        throw new ErrorExt(ec.PUD032, err);
     });
+  if (!expenses.length) {
+    return null;
+  }
   return expenses[0];
 };
 
@@ -81,16 +98,22 @@ export const createExpense = async (name: string, description: string, amount: n
  * @param expenseId 
  * @returns True if successful
  */
-export const deleteExpense = async (expenseId: number) => {
+export const deleteExpense = async (expenseId: number, userId: number) => {
   const request = new sql.Request();
   const success = await request
     .input("expense_id", sql.Int, expenseId)
+    .input("user_id", sql.Int, userId)
     .execute("delete_expense")
     .then(() => {
       return true;
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD024, err);
+      if (err.number === 50084)
+        throw new ErrorExt(ec.PUD084, err);
+      if (err.number === 50086)
+        throw new ErrorExt(ec.PUD086, err);
+      else
+        throw new ErrorExt(ec.PUD024, err);
     });
   return success;
 };
