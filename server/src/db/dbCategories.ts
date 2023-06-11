@@ -69,7 +69,10 @@ export const createCategory = async (name: string, eventId: number, weighted: bo
       return data.recordset[0];
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD036, err);
+      if (err.number === 50006)
+        throw new ErrorExt(ec.PUD006, err);
+      else
+        throw new ErrorExt(ec.PUD036, err);
     });
   return category;
 };

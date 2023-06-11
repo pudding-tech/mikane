@@ -171,7 +171,7 @@ export const createEvent = async (name: string, userId: number, privateEvent: bo
     .catch(err => {
       if (err.number === 50005)
         throw new ErrorExt(ec.PUD005, err);
-      if (err.number === 50008)
+      else if (err.number === 50008)
         throw new ErrorExt(ec.PUD008, err);
       else
         throw new ErrorExt(ec.PUD037, err);
@@ -196,7 +196,7 @@ export const deleteEvent = async (id: number, userId: number) => {
     .catch(err => {
       if (err.number === 50006)
         throw new ErrorExt(ec.PUD006, err);
-      if (err.number === 50085)
+      else if (err.number === 50085)
         throw new ErrorExt(ec.PUD085, err);
       else
         throw new ErrorExt(ec.PUD023, err);

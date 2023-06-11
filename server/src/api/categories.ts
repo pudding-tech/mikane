@@ -61,8 +61,12 @@ router.post("/categories", authCheck, async (req, res, next) => {
     if (!req.body.name || !req.body.eventId || req.body.weighted === undefined) {
       throw new ErrorExt(ec.PUD046);
     }
-
-    const category: Category = await db.createCategory(req.body.name, req.body.eventId, req.body.weighted);
+    const eventId = Number(req.body.eventId);
+    if (isNaN(eventId)) {
+      throw new ErrorExt(ec.PUD013);
+    }
+    
+    const category: Category = await db.createCategory(req.body.name, eventId, Boolean(req.body.weighted));
     res.status(200).json(category);
   }
   catch (err) {

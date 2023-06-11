@@ -824,3 +824,21 @@ export const PUD087: ErrorCode = {
   message: "Only event admin can edit event",
   status: 403
 };
+
+/**
+ * PUD-088: Amount must be a number (400)
+ */
+export const PUD088: ErrorCode = {
+  code: "PUD-088",
+  message: "Amount must be a number",
+  status: 400
+};
+
+/**
+ * PUD-089: Payer ID must be a number (400)
+ */
+export const PUD089: ErrorCode = {
+  code: "PUD-089",
+  message: "Payer ID must be a number",
+  status: 400
+};

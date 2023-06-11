@@ -61,8 +61,20 @@ router.post("/expenses", authCheck, async (req, res, next) => {
     if (!req.body.name || !req.body.amount || !req.body.categoryId || !req.body.payerId) {
       throw new ErrorExt(ec.PUD057);
     }
+    const categoryId = Number(req.body.categoryId);
+    const payerId = Number(req.body.payerId);
+    const amount = Number(req.body.amount);
+    if (isNaN(categoryId)) {
+      throw new ErrorExt(ec.PUD045);
+    }
+    if (isNaN(payerId)) {
+      throw new ErrorExt(ec.PUD089);
+    }
+    if (isNaN(amount)) {
+      throw new ErrorExt(ec.PUD088);
+    }
 
-    const expense: Expense = await db.createExpense(req.body.name, req.body.description, req.body.amount, req.body.categoryId, req.body.payerId);
+    const expense: Expense = await db.createExpense(req.body.name, req.body.description, amount, categoryId, payerId);
     res.status(200).send(expense);
   }
   catch (err) {

@@ -85,7 +85,11 @@ export const createExpense = async (name: string, description: string, amount: n
       return parseExpenses(data.recordset);
     })
     .catch(err => {
-      if (err.number === 50062)
+      if (err.number === 50007)
+        throw new ErrorExt(ec.PUD007, err);
+      else if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, err);
+      else if (err.number === 50062)
         throw new ErrorExt(ec.PUD062, err);
       else
         throw new ErrorExt(ec.PUD043, err);
@@ -110,7 +114,7 @@ export const deleteExpense = async (expenseId: number, userId: number) => {
     .catch(err => {
       if (err.number === 50084)
         throw new ErrorExt(ec.PUD084, err);
-      if (err.number === 50086)
+      else if (err.number === 50086)
         throw new ErrorExt(ec.PUD086, err);
       else
         throw new ErrorExt(ec.PUD024, err);
