@@ -5,11 +5,13 @@ import { environment } from 'src/environments/environment';
 import { User } from '../user/user.service';
 
 export interface Expense {
-	id?: number;
+	id: number;
 	name: string;
 	description: string;
-	categoryName: string;
 	amount: number;
+	categoryId: number;
+	categoryName: string;
+	dateAdded: Date;
 	payer: User;
 }
 

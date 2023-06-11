@@ -7,10 +7,18 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 
 export interface User {
 	id: number;
+	uuid: string;
 	name: string;
 	username: string;
-	email: string;
-	phone: string;
+	firstName?: string;
+	lastName?: string;
+	email?: string;
+	phone?: string;
+	created?: Date;
+	event?: {
+		id: number;
+		joinedDate: Date;
+	}
 	authenticated: boolean;
 }
 
