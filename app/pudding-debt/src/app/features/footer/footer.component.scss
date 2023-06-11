@@ -1,6 +1,7 @@
 #footer {
-	margin: 0;
-	padding: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	height: 80px;
 	background-color: #212121;
 }
@@ -9,10 +10,9 @@
 	color: #777777;
 	font-size: 14px;
 	text-align: center;
-	padding-top: 20px;
 }
 
-.unselect {
+.unselectable {
 	user-select: none;
 	-webkit-user-select: none;
 	-ms-user-select: none;

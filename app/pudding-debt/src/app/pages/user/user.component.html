@@ -1,12 +1,15 @@
-<div class="add-actions">
-	<button mat-raised-button color="primary" *ngIf="showJoinEvent" (click)="joinEvent()">Join event</button>
-	<button mat-raised-button color="primary" (click)="openDialog()">
-		<mat-icon>person_add</mat-icon>
-		Add participant to event
-	</button>
-</div>
-
 <div *ngIf="(loading | async) === false; else loadingSpinner">
+	<div class="add-actions">
+		<button mat-raised-button color="primary" (click)="openDialog()">
+			<mat-icon>person_add</mat-icon>
+			Add users to event
+		</button>
+		<button mat-raised-button color="primary" *ngIf="showJoinEvent; else joinedEvent" (click)="joinEvent()">Join event</button>
+		<ng-template #joinedEvent>
+			<button mat-stroked-button disabled>Joined</button>
+		</ng-template>
+	</div>
+
 	<mat-accordion class="user-list" *ngIf="usersWithBalance.length > 0; else noUsers">
 		<mat-expansion-panel disabled>
 			<mat-expansion-panel-header>

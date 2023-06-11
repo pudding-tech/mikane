@@ -38,10 +38,27 @@ mat-toolbar button {
 	margin-bottom: 0.5em;
 
 	.event-header {
+		min-height: 48px;
 		align-items: center;
 		padding: 8px 16px 8px;
+
 		.event-actions {
 			margin-left: auto;
+		}
+
+		.event-name {
+			display: flex;
+			align-items: center;
+
+			.joined-icon {
+				margin-left: 10px;
+				opacity: 30%;
+			}
+
+			.admin-icon {
+				margin-left: 4px;
+				opacity: 30%;
+			}
 		}
 	}
 

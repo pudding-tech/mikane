@@ -13,6 +13,7 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 
 @Component({
@@ -31,6 +32,7 @@ import { MenuComponent } from 'src/app/features/menu/menu.component';
 		ProgressSpinnerComponent,
 		AsyncPipe,
 		MatDialogModule,
+		MatTooltipModule,
 		MenuComponent,
 	],
 })

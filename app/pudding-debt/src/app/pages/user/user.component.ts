@@ -113,7 +113,7 @@ export class UserComponent implements OnInit, OnDestroy {
 				.getCurrentUser()
 				.pipe(
 					switchMap((currentUser) => {
-						return this.eventService.addUser(this.eventId, currentUser?.id);
+						return this.eventService.addUser(this.eventId, currentUser.id);
 					})
 				)
 				.subscribe({

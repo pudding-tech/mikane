@@ -9,7 +9,14 @@ export interface PuddingEvent {
 	uuid: string;
 	name: string;
 	description: string;
-	public: boolean;
+	created: Date;
+	adminId: number;
+	private: boolean;
+	user?: {
+		id: number;
+		inEvent: boolean;
+		isAdmin: boolean;
+	}
 }
 
 export interface Payment {
