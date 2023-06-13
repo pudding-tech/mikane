@@ -7,6 +7,11 @@ create procedure get_categories
 as
 begin
 
+  if @event_id is not null and not exists (select 1 from [event] where id = @event_id)
+  begin
+    throw 50006, 'Event not found', 1
+  end
+
   select
     uc.user_id,
     c.id as 'category_id',

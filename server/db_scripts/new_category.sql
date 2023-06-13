@@ -8,6 +8,11 @@ create procedure new_category
 as
 begin
 
+  if not exists (select 1 from [event] where id = @event_id)
+  begin
+    throw 50006, 'Event not found', 1
+  end
+
   insert into category(event_id, [name], weighted) values (@event_id, @name, @weighted)
 
   select * from category where id = @@IDENTITY

@@ -7,8 +7,12 @@ create procedure edit_category_weighted_status
 as
 begin
 
+  if not exists (select 1 from category where id = @category_id)
+  begin
+    throw 50007, 'Category not found', 1
+  end
+
   update category set weighted = @weighted where id = @category_id
-  --update user_category set [weight] = 1 where category_id = @category_id
 
   declare @event_id int
   select @event_id = event_id from category where id = @category_id

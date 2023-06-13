@@ -8,6 +8,11 @@ create procedure edit_user_weight
 as
 begin
 
+  if not exists (select 1 from category where id = @category_id)
+  begin
+    throw 50007, 'Category not found', 1
+  end
+
   update user_category
   set [weight] = @weight
   where user_id = @user_id

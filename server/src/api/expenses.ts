@@ -2,6 +2,7 @@ import express from "express";
 import * as db from "../db/dbExpenses";
 import { authCheck } from "../middlewares/authCheck";
 import { Expense } from "../types/types";
+import { ErrorExt } from "../types/errorExt";
 import * as ec from "../types/errorCodes";
 const router = express.Router();
 
@@ -13,11 +14,12 @@ const router = express.Router();
 * Get a list of all expenses for a given event
 */
 router.get("/expenses", authCheck, async (req, res, next) => {
-  const eventId = Number(req.query.eventId);
-  if (!req.query.eventId || isNaN(eventId)) {
-    return res.status(ec.PUD013.status).json(ec.PUD013);
-  }
   try {
+    const eventId = Number(req.query.eventId);
+    if (!req.query.eventId || isNaN(eventId)) {
+      throw new ErrorExt(ec.PUD013);
+    }
+
     const expenses: Expense[] = await db.getExpenses(eventId);
     res.status(200).send(expenses);
   }
@@ -30,12 +32,16 @@ router.get("/expenses", authCheck, async (req, res, next) => {
 * Get a specific expense
 */
 router.get("/expenses/:id", authCheck, async (req, res, next) => {
-  const expenseId = Number(req.params.id);
-  if (isNaN(expenseId)) {
-    return res.status(ec.PUD056.status).json(ec.PUD056);
-  }
   try {
-    const expense: Expense = await db.getExpense(expenseId);
+    const expenseId = Number(req.params.id);
+    if (isNaN(expenseId)) {
+      throw new ErrorExt(ec.PUD056);
+    }
+
+    const expense: Expense | null = await db.getExpense(expenseId);
+    if (!expense) {
+      throw new ErrorExt(ec.PUD084);
+    }
     res.status(200).send(expense);
   }
   catch (err) {
@@ -51,11 +57,24 @@ router.get("/expenses/:id", authCheck, async (req, res, next) => {
 * Create a new expense
 */
 router.post("/expenses", authCheck, async (req, res, next) => {
-  if (!req.body.name || !req.body.amount || !req.body.categoryId || !req.body.payerId) {
-    return res.status(ec.PUD057.status).json(ec.PUD057);
-  }
   try {
-    const expense: Expense = await db.createExpense(req.body.name, req.body.description, req.body.amount, req.body.categoryId, req.body.payerId);
+    if (!req.body.name || !req.body.amount || !req.body.categoryId || !req.body.payerId) {
+      throw new ErrorExt(ec.PUD057);
+    }
+    const categoryId = Number(req.body.categoryId);
+    const payerId = Number(req.body.payerId);
+    const amount = Number(req.body.amount);
+    if (isNaN(categoryId)) {
+      throw new ErrorExt(ec.PUD045);
+    }
+    if (isNaN(payerId)) {
+      throw new ErrorExt(ec.PUD089);
+    }
+    if (isNaN(amount)) {
+      throw new ErrorExt(ec.PUD088);
+    }
+
+    const expense: Expense = await db.createExpense(req.body.name, req.body.description, amount, categoryId, payerId);
     res.status(200).send(expense);
   }
   catch (err) {
@@ -71,12 +90,17 @@ router.post("/expenses", authCheck, async (req, res, next) => {
 * Delete an expense
 */
 router.delete("/expenses/:id", authCheck, async (req, res, next) => {
-  const expenseId = Number(req.params.id);
-  if (isNaN(expenseId)) {
-    return res.status(ec.PUD056.status).json(ec.PUD056);
-  }
   try {
-    const success = await db.deleteExpense(expenseId);
+    const expenseId = Number(req.params.id);
+    if (isNaN(expenseId)) {
+      throw new ErrorExt(ec.PUD056);
+    }
+    const userId = req.session.userId;
+    if (!userId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const success = await db.deleteExpense(expenseId, userId);
     res.status(200).send({ success: success });
   }
   catch (err) {

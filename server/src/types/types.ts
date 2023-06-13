@@ -1,13 +1,13 @@
 export type User = {
   id: number,
-  username: string,
+  uuid: string,
   name: string,
+  username: string,
   firstName?: string,
   lastName?: string,
   email?: string,
   phone?: string,
   created?: Date,
-  uuid: string,
   event?: {
     id: number,
     joinedDate: Date
@@ -16,12 +16,12 @@ export type User = {
 
 export type Event = {
   id: number,
+  uuid: string,
   name: string,
   description: string,
   created: Date,
   adminId: number,
   private: boolean,
-  uuid: string,
   user?: {
     id: number,
     inEvent: boolean,

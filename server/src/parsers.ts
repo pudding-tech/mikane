@@ -29,22 +29,24 @@ export const parseCategories = (catInput: CategoryDB[], target: Target) : Catego
     try {
       const userWeights: UserWeightDB[] = JSON.parse(catObj.user_weights);
 
-      userWeights.forEach(weight => {
-        if (target === Target.CLIENT && category.users) {
-          category.users.push(
-            {
-              id: weight.user_id,
-              name: weight.first_name,
-              firstName: weight.first_name,
-              lastName: weight.last_name,
-              weight: weight.weight
-            }
-          );
-        }
-        else if (target === Target.CALC && category.userWeights) {
-          category.userWeights.set(weight.user_id, weight.weight);
-        }
-      });
+      if (userWeights) {
+        userWeights.forEach(weight => {
+          if (target === Target.CLIENT && category.users) {
+            category.users.push(
+              {
+                id: weight.user_id,
+                name: weight.first_name,
+                firstName: weight.first_name,
+                lastName: weight.last_name,
+                weight: weight.weight
+              }
+            );
+          }
+          else if (target === Target.CALC && category.userWeights) {
+            category.userWeights.set(weight.user_id, weight.weight);
+          }
+        });
+      }
     }
     catch (err) {
       console.error(err);

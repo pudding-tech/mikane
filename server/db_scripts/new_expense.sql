@@ -9,6 +9,16 @@ create procedure new_expense
   @payer_id int
 as
 begin
+
+  if not exists (select 1 from category where id = @category_id)
+  begin
+    throw 50007, 'Category not found', 1
+  end
+
+  if not exists (select 1 from [user] where id = @payer_id)
+  begin
+    throw 50008, 'User not found', 1
+  end
   
   if not exists (select ue.user_id from user_event ue inner join category c on ue.event_id = c.event_id where c.id = @category_id and ue.user_id = @payer_id)
   begin

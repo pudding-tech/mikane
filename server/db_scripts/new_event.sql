@@ -18,7 +18,7 @@ begin
 
   if not exists (select id from [user] where id = @user_id)
   begin
-    throw 50008, 'User does not exist', 1
+    throw 50008, 'User not found', 1
   end
 
   insert into [event]([name], [description], created, admin_id, [private], active, usernames_only) values (@name, @description, GETDATE(), @user_id, @private, @active, @usernames_only)
