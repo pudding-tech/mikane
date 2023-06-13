@@ -5,10 +5,19 @@
 .split-button {
 	background-color: #212121;
 	color: #d5d5d5;
+
+	@media(max-width: 550px) {
+		border: none !important;
+	}
 }
 
 .main-button {
 	width: 64px;
+	
+	@media(max-width: 550px) {
+		display: none;
+		border: none;
+	}
 }
 
 .dropdown {
