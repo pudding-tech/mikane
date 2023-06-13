@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 
 @Component({
@@ -33,17 +34,24 @@ import { MenuComponent } from 'src/app/features/menu/menu.component';
 		AsyncPipe,
 		MatDialogModule,
 		MatTooltipModule,
+		MatPaginatorModule,
 		MenuComponent,
 	],
 })
 export class EventsComponent implements OnInit, OnDestroy {
 	events: PuddingEvent[] = [];
+	pagedEvents: PuddingEvent[] = [];
 	selectedEvent!: PuddingEvent;
 
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
 	editSubscription: Subscription;
 	deleteSubscription: Subscription;
+
+	// Paginator
+	length: number = 0;
+	pageSize: number = 10;
+	pageSizeOptions: number[] = [5, 10, 20];
 
 	constructor(
 		private eventService: EventService,
@@ -58,6 +66,8 @@ export class EventsComponent implements OnInit, OnDestroy {
 		this.eventService.loadEvents().subscribe({
 			next: (events) => {
 				this.events = events;
+				this.pagedEvents = events.slice(0, this.pageSize);
+				this.length = events.length;
 				this.loading.next(false);
 			},
 			error: () => {
@@ -159,6 +169,15 @@ export class EventsComponent implements OnInit, OnDestroy {
 				});
 			}
 		});
+	}
+
+	onPageChange(event: PageEvent) {
+		const startIndex = event.pageIndex * event.pageSize;
+		let endIndex = startIndex + event.pageSize;
+		if (endIndex > this.length) {
+			endIndex = this.length;
+		}
+		this.pagedEvents = this.events.slice(startIndex, endIndex);
 	}
 
 	ngOnDestroy(): void {

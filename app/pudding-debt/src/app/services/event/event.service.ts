@@ -10,7 +10,7 @@ export interface PuddingEvent {
 	name: string;
 	description: string;
 	created: Date;
-	adminId: number;
+	adminIds: number[];
 	private: boolean;
 	user?: {
 		id: number;

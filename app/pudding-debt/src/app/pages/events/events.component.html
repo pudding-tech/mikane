@@ -12,8 +12,8 @@
 			<mat-card-header id="header">
 				<mat-card-title> Events </mat-card-title>
 			</mat-card-header>
-			<mat-card-content>
-				<mat-card *ngFor="let event of events" class="event-item">
+			<mat-card-content class="card-content">
+				<mat-card *ngFor="let event of pagedEvents" class="event-item">
 					<mat-card-header class="event-header clickable" (click)="clickEvent(event)">
 						<mat-card-title class="event-title">
 							<span class="event-name">
@@ -46,6 +46,13 @@
 						</span>
 					</mat-card-header>
 				</mat-card>
+				<mat-paginator
+					[length]="length"
+					[pageSize]="pageSize"
+					[pageSizeOptions]="pageSizeOptions"
+					(page)="onPageChange($event)"
+				>
+				</mat-paginator>
 			</mat-card-content>
 			<mat-card-actions>
 				<div class="add-button">
