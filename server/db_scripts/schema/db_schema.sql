@@ -21,7 +21,6 @@ create table [event] (
   [name] nvarchar(255) not null unique,
   [description] nvarchar(400),
   created datetime not null,
-  admin_id int foreign key references [user](id) on delete set null,
   [private] bit not null,
   active bit not null default 1,
   usernames_only bit not null,
@@ -33,6 +32,7 @@ create table user_event (
   user_id int foreign key references [user](id) on delete cascade,
   event_id int foreign key references [event](id) on delete cascade,
   joined_date datetime not null,
+  [admin] bit not null,
   primary key (user_id, event_id)
 )
 go

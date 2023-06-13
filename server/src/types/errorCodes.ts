@@ -799,11 +799,11 @@ export const PUD084: ErrorCode = {
 };
 
 /**
- * PUD-085: Only event admin can delete event (403)
+ * PUD-085: Only event admins can delete event (403)
  */
 export const PUD085: ErrorCode = {
   code: "PUD-085",
-  message: "Only event admin can delete event",
+  message: "Only event admins can delete event",
   status: 403
 };
 
@@ -817,11 +817,11 @@ export const PUD086: ErrorCode = {
 };
 
 /**
- * PUD-087: Only event admin can edit event (403)
+ * PUD-087: Only event admins can edit event (403)
  */
 export const PUD087: ErrorCode = {
   code: "PUD-087",
-  message: "Only event admin can edit event",
+  message: "Only event admins can edit event",
   status: 403
 };
 

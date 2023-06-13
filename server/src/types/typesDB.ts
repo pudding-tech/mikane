@@ -45,12 +45,16 @@ export type EventDB = {
   name: string,
   description: string,
   created: Date,
-  admin_id: number,
+  admin_ids: string,
   private: boolean,
   uuid: string,
   user_id?: number,
   in_event?: boolean,
   is_admin?: boolean
+}
+
+export type AdminIdDB = {
+  user_id: number
 }
 
 export type APIKeyDB = {

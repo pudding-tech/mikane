@@ -10,34 +10,61 @@ begin
   if (@user_id is null)
     begin
       select
-        id, [name], [description], created, admin_id, [private], uuid
+        e.id, e.name, e.description, e.created, e.private, e.uuid,
+        (
+          select 
+            ue.user_id
+          from 
+            user_event ue
+          where
+            ue.event_id = e.id and
+            ue.admin = 1
+          for json path
+        ) as 'admin_ids'
       from
-        [event]
+        [event] e
       where
-        id = isnull(@event_id, id)
-      order by id desc
+        e.id = isnull(@event_id, e.id)
+      order by e.id desc
     end
 
   else
     begin
+
+      if not exists (select id from [user] where id = @user_id)
+      begin
+        throw 50008, 'User not found', 1
+      end
+
       declare @TRUE bit = 1
       declare @FALSE bit = 0
 
       select
-        e.id, e.name, e.description, e.created, e.admin_id, e.private, e.uuid,
+        e.id, e.name, e.description, e.created, e.private, e.uuid,
+        (
+          select 
+            ue.user_id
+          from 
+            user_event ue
+          where
+            ue.event_id = e.id and
+            ue.admin = 1
+          for json path
+        ) as 'admin_ids',
         @user_id as 'user_id',
         case
-          when exists (select * from user_event ue where e.id = ue.event_id and ue.user_id = @user_id)
+          when exists (select ue.user_id where ue.user_id is not null)
             then @TRUE
             else @FALSE
           end as 'in_event',
         case
-          when e.admin_id = @user_id
+          when ue.admin = 1
             then @TRUE
             else @FALSE
           end as 'is_admin'
       from
         [event] e
+        left join user_event ue on e.id = ue.event_id and ue.user_id = @user_id
       where
         e.id = isnull(@event_id, e.id)
       order by e.id desc

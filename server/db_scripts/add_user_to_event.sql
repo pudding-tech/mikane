@@ -3,7 +3,8 @@ if object_id ('add_user_to_event') is not null
 go
 create procedure add_user_to_event
   @event_id int,
-  @user_id int
+  @user_id int,
+  @admin bit
 as
 begin
 
@@ -22,7 +23,7 @@ begin
     throw 50009, 'User is already in this event', 7
   end
 
-  insert into user_event (user_id, event_id, joined_date) values (@user_id, @event_id, GETDATE())
+  insert into user_event (user_id, event_id, joined_date, [admin]) values (@user_id, @event_id, GETDATE(), @admin)
 
   exec get_events @event_id, null
 

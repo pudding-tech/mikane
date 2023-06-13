@@ -1077,10 +1077,6 @@
                     "type": "string",
                     "example": "New event description"
                   },
-                  "adminId": {
-                    "type": "integer",
-                    "example": 2
-                  },
                   "private": {
                     "type": "integer",
                     "example": 1
@@ -2788,9 +2784,12 @@
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
           },
-          "adminId": {
-            "type": "integer",
-            "example": 1
+          "adminIds": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "example": 1
+            }
           },
           "private": {
             "type": "boolean",
@@ -2821,9 +2820,12 @@
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
           },
-          "adminId": {
-            "type": "integer",
-            "example": 1
+          "adminIds": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "example": 1
+            }
           },
           "private": {
             "type": "boolean",
@@ -2856,7 +2858,7 @@
           "name",
           "description",
           "created",
-          "adminId",
+          "adminIds",
           "private",
           "uuid"
         ]
