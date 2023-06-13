@@ -2,6 +2,10 @@
 	display: inline-block;
 	font-size: 1.1rem;
 	margin-right: 12px;
+
+	@media (max-width: 550px) {
+		display: none;
+	}
 }
 
 .account {
