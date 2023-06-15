@@ -1045,7 +1045,7 @@
           "Events"
         ],
         "summary": "Edit event",
-        "description": "Edit an event. Only allowed for the event admin.",
+        "description": "Edit an event. Only allowed for event admins.",
         "operationId": "putEvent",
         "security": [
           { "cookieAuth": [] }
@@ -1118,7 +1118,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - only allowed for the event admin",
+            "description": "Forbidden - only allowed for event admins",
             "content": {
               "application/json": {
                 "schema": {
@@ -1154,7 +1154,7 @@
           "Events"
         ],
         "summary": "Delete event",
-        "description": "Delete an event. Only allowed for the event admin.",
+        "description": "Delete an event. Only allowed for event admins.",
         "operationId": "deleteEvent",
         "security": [
           { "cookieAuth": [] }
@@ -1203,7 +1203,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - only allowed for the event admin",
+            "description": "Forbidden - only allowed for event admins",
             "content": {
               "application/json": {
                 "schema": {
@@ -1459,6 +1459,168 @@
         "summary": "Remove user from event",
         "description": "Remove a user from an event",
         "operationId": "deleteUserFromEvent",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event/user not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/events/{id}/admin/{userId}": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Set user as event admin",
+        "description": "Set a user as admin for an event (user must be in event already). Only allowed for existing event admins.",
+        "operationId": "postAdminToEvent",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event/user not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Remove user as event admin",
+        "description": "Remove a user as an admin for an event. Only allowed for existing event admins.",
+        "operationId": "deleteAdminFromEvent",
         "security": [
           { "cookieAuth": [] }
         ],
@@ -2579,7 +2741,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - only allowed for your own expenses and for event admin",
+            "description": "Forbidden - only allowed for your own expenses and for event admins",
             "content": {
               "application/json": {
                 "schema": {

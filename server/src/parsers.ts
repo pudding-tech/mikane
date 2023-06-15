@@ -179,7 +179,7 @@ export const parseUser = (userObj: UserDB): User => {
 export const parseEvents = (eventsInput: EventDB[]) => {
   const events: Event[] = [];
   for (const eventObj of eventsInput) {
-    const adminIds: AdminIdDB[] = JSON.parse(eventObj.admin_ids);
+    const adminIds: AdminIdDB[] = JSON.parse(eventObj.admin_ids) ?? [];
 
     const event: Event = {
       id: eventObj.id,

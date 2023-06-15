@@ -148,6 +148,29 @@ router.post("/events/:id/user/:userId", authCheck, async (req, res, next) => {
   }
 });
 
+/*
+* Set a user as admin for an event
+*/
+router.post("/events/:id/admin/:userId", authCheck, async (req, res, next) => {
+  try {
+    const eventId = Number(req.params.id);
+    const userId = Number(req.params.userId);
+    if (isNaN(eventId) || isNaN(userId)) {
+      throw new ErrorExt(ec.PUD015);
+    }
+    const byUserId = req.session.userId;
+    if (!byUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const event: Event = await db.addUserAsEventAdmin(eventId, userId, byUserId);
+    res.send(event);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
 /* --- */
 /* PUT */
 /* --- */
@@ -218,6 +241,29 @@ router.delete("/events/:id/user/:userId", authCheck, async (req, res, next) => {
     }
 
     const event: Event = await db.removeUserFromEvent(eventId, userId);
+    res.status(200).send(event);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
+/*
+* Remove a user as event admin
+*/
+router.delete("/events/:id/admin/:userId", authCheck, async (req, res, next) => {
+  try {
+    const eventId = Number(req.params.id);
+    const userId = Number(req.params.userId);
+    if (isNaN(eventId) || isNaN(userId)) {
+      throw new ErrorExt(ec.PUD015);
+    }
+    const byUserId = req.session.userId;
+    if (!byUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const event: Event = await db.removeUserAsEventAdmin(eventId, userId, byUserId);
     res.status(200).send(event);
   }
   catch (err) {

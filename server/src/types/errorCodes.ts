@@ -842,3 +842,59 @@ export const PUD089: ErrorCode = {
   message: "Payer ID must be a number",
   status: 400
 };
+
+/**
+ * PUD-090: User not in event, thus cannot be added as event admin (400)
+ */
+export const PUD090: ErrorCode = {
+  code: "PUD-090",
+  message: "User not in event, thus cannot be added as event admin",
+  status: 400
+};
+
+/**
+ * PUD-091: User is already an admin for this event (409)
+ */
+export const PUD091: ErrorCode = {
+  code: "PUD-091",
+  message: "User is already an admin for this event",
+  status: 409
+};
+
+/**
+ * PUD-092: User is not an admin for this event (400)
+ */
+export const PUD092: ErrorCode = {
+  code: "PUD-092",
+  message: "User is not an admin for this event",
+  status: 400
+};
+
+/**
+ * PUD-093: Cannot remove admin, as the user is the only admin and all events need at least one event admin (400)
+ */
+export const PUD093: ErrorCode = {
+  code: "PUD-093",
+  message: "Cannot remove admin, as the user is the only admin and all events need at least one event admin",
+  status: 400
+};
+
+/**
+ * PUD-094: add_user_as_event_admin (500)
+ */
+export const PUD094: ErrorCode = {
+  code: "PUD-094",
+  message: "Something went wrong while adding user as event admin",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-095: remove_user_as_event_admin (500)
+ */
+export const PUD095: ErrorCode = {
+  code: "PUD-095",
+  message: "Something went wrong while removing user as event admin",
+  status: 500,
+  log: true
+};
