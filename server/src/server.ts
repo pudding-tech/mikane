@@ -32,6 +32,7 @@ const connectDB = () => {
       }
       if (pool.connected) {
         console.log(`Connected to SQL database: ${dbConfig.server} - ${dbConfig.database}`);
+        store.connect().catch(err => console.error("Error connecting to session store\n", err));
       }
     })
     .catch(err => {
@@ -81,7 +82,6 @@ const store = new MSSQLSessionStore(dbConfig, {
   autoDestroy: true,
   autoDestroyInterval: 1000 * 60 * 60 * 24
 });
-store.connect().catch(err => console.error("Error connecting to session store\n", err));
 
 // Enable user sessions
 const tenDays = 1000 * 60 * 60 * 24 * 10;
