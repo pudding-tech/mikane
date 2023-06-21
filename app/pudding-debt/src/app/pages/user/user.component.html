@@ -6,7 +6,7 @@
 		</button>
 		<button mat-raised-button color="primary" *ngIf="showJoinEvent; else joinedEvent" (click)="joinEvent()">Join event</button>
 		<ng-template #joinedEvent>
-			<button mat-stroked-button disabled>Joined</button>
+			<button mat-stroked-button disabled>{{ isAdmin ? "Joined - Admin" : "Joined" }}</button>
 		</ng-template>
 	</div>
 
