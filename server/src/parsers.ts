@@ -128,6 +128,7 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[]
       uuid: userObj.uuid,
       event: withEventData && userObj.event_id && userObj.event_joined_date ? {
         id: userObj.event_id,
+        isAdmin: userObj.event_admin ?? false,
         joinedDate: userObj.event_joined_date
       } : undefined
     };
@@ -235,11 +236,6 @@ export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult
     }
     return a.user.event?.joinedDate.getTime() - b.user.event?.joinedDate.getTime();
   });
-
-  // Remove event information
-  for (const balance of balances) {
-    delete balance.user.event;
-  }
   
   return balances;
 };

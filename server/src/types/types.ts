@@ -10,6 +10,7 @@ export type User = {
   created?: Date,
   event?: {
     id: number,
+    isAdmin: boolean,
     joinedDate: Date
   }
 }

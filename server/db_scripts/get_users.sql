@@ -25,7 +25,8 @@ begin
     begin
         
       select
-        u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, u.uuid, ue.event_id, ue.joined_date as 'event_joined_date'
+        u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, u.uuid,
+        ue.event_id, ue.admin as 'event_admin', ue.joined_date as 'event_joined_date'
       from
         [user] u
         inner join user_event ue on ue.user_id = u.id

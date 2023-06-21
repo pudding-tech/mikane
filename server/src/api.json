@@ -1231,7 +1231,7 @@
           "Events"
         ],
         "summary": "Get an event's balance information",
-        "description": "Get an event's balance information for all users",
+        "description": "Get an event's balance information for all users (includes 'user in event' information)",
         "operationId": "getEventBalances",
         "security": [
           { "cookieAuth": [] }
@@ -2829,6 +2829,10 @@
                 "type": "integer",
                 "example": 1
               },
+              "isAdmin": {
+                "type": "boolean",
+                "example": false
+              },
               "joinedDate": {
                 "type": "date-time",
                 "example": "2023-01-20T19:00:00"
@@ -3120,7 +3124,7 @@
         "type": "object",
         "properties": {
           "user": {
-            "$ref": "#/components/schemas/User"
+            "$ref": "#/components/schemas/UserWithEvent"
           },
           "spending": {
             "type": "number",

@@ -37,6 +37,7 @@ export type UserDB = {
   created: Date,
   uuid: string,
   event_id?: number,
+  event_admin?: boolean,
   event_joined_date?: Date
 }
 
