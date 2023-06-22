@@ -8,7 +8,7 @@ jobs:
     frontend-build:
         working_directory: ~/project/app/pudding-debt
         docker:
-            - image: circleci/node:16-browsers
+            - image: cimg/node:16.20.1-browsers
         steps:
             - checkout:
                   path: ~/project
