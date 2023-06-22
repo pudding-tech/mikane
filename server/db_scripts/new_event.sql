@@ -21,10 +21,10 @@ begin
     throw 50008, 'User not found', 1
   end
 
-  insert into [event]([name], [description], created, admin_id, [private], active, usernames_only) values (@name, @description, GETDATE(), @user_id, @private, @active, @usernames_only)
+  insert into [event]([name], [description], created, [private], active, usernames_only) values (@name, @description, GETDATE(), @private, @active, @usernames_only)
 
   declare @event_id int = @@IDENTITY
-  exec add_user_to_event @event_id, @user_id
+  exec add_user_to_event @event_id, @user_id, 1
 
 end
 go

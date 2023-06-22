@@ -57,6 +57,7 @@ export class UserComponent implements OnInit, OnDestroy {
 	dataSources: ExpenseDataSource[] = [];
 
 	showJoinEvent = false;
+	isAdmin = false;
 
 	constructor(
 		private userService: UserService,
@@ -86,6 +87,10 @@ export class UserComponent implements OnInit, OnDestroy {
 							usersWithBalance.filter((userWithBalance) => {
 								return userWithBalance?.user?.id === currentUser?.id;
 							}).length === 0;
+							this.isAdmin = 
+								usersWithBalance.find((userWithBalance) => {
+									return userWithBalance?.user?.id === currentUser?.id;
+								})?.user.event?.isAdmin;
 						return usersWithBalance;
 					})
 				)

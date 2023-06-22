@@ -10,6 +10,7 @@ export type User = {
   created?: Date,
   event?: {
     id: number,
+    isAdmin: boolean,
     joinedDate: Date
   }
 }
@@ -20,7 +21,7 @@ export type Event = {
   name: string,
   description: string,
   created: Date,
-  adminId: number,
+  adminIds: number[],
   private: boolean,
   user?: {
     id: number,

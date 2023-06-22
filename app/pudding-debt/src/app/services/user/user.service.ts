@@ -17,6 +17,7 @@ export interface User {
 	created?: Date;
 	event?: {
 		id: number;
+		isAdmin: boolean;
 		joinedDate: Date;
 	}
 	authenticated: boolean;

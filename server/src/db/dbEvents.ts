@@ -21,7 +21,10 @@ export const getEvents = async (userId?: number) => {
       return parseEvents(data.recordset);
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD031, err);
+      if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, err);
+      else
+        throw new ErrorExt(ec.PUD031, err);
     });
   return events;
 };
@@ -42,7 +45,10 @@ export const getEvent = async (eventId: number, userId?: number) => {
       return parseEvents(data.recordset);
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD031, err);
+      if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, err);
+      else
+        throw new ErrorExt(ec.PUD031, err);
     });
   if (!events.length) {
     return null;
@@ -66,7 +72,10 @@ export const getEventByName = async (eventName: string, userId?: number) => {
       return parseEvents(data.recordset);
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD031, err);
+      if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, err);
+      else
+        throw new ErrorExt(ec.PUD031, err);
     });
   if (!events.length) {
     return null;
@@ -215,6 +224,7 @@ export const addUserToEvent = async (eventId: number, userId: number) => {
   const events: Event[] = await request
     .input("event_id", sql.Int, eventId)
     .input("user_id", sql.Int, userId)
+    .input("admin", sql.Bit, 0)
     .execute("add_user_to_event")
     .then(data => {
       return parseEvents(data.recordset);
@@ -259,23 +269,85 @@ export const removeUserFromEvent = async (eventId: number, userId: number) => {
 };
 
 /**
+ * DB interface: Add user to as admin for an event
+ * @param eventId 
+ * @param userId 
+ * @param byUserId UserId of user performing the action
+ * @returns Affected event
+ */
+export const addUserAsEventAdmin = async (eventId: number, userId: number, byUserId: number) => {
+  const request = new sql.Request();
+  const events: Event[] = await request
+    .input("event_id", sql.Int, eventId)
+    .input("user_id", sql.Int, userId)
+    .input("by_user_id", sql.Int, byUserId)
+    .execute("add_user_as_event_admin")
+    .then(data => {
+      return parseEvents(data.recordset);
+    })
+    .catch(err => {
+      if (err.number === 50006) 
+        throw new ErrorExt(ec.PUD006, err);
+      else if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, err);
+      else if (err.number === 50090)
+        throw new ErrorExt(ec.PUD090, err);
+      else if (err.number === 50091)
+        throw new ErrorExt(ec.PUD091, err);
+      else
+        throw new ErrorExt(ec.PUD094, err);
+    });
+  return events[0];
+};
+
+/**
+ * DB interface: Remove user as admin for an event
+ * @param eventId
+ * @param userId
+ * @param byUserId UserId of user performing the action
+ * @returns Affected event
+ */
+export const removeUserAsEventAdmin = async (eventId: number, userId: number, byUserId: number) => {
+  const request = new sql.Request();
+  const events: Event[] = await request
+    .input("event_id", sql.Int, eventId)
+    .input("user_id", sql.Int, userId)
+    .input("by_user_id", sql.Int, byUserId)
+    .execute("remove_user_as_event_admin")
+    .then(data => {
+      return parseEvents(data.recordset);
+    })
+    .catch(err => {
+      if (err.number === 50006) 
+        throw new ErrorExt(ec.PUD006, err);
+      else if (err.number === 50008)
+        throw new ErrorExt(ec.PUD008, err);
+      else if (err.number === 50092)
+        throw new ErrorExt(ec.PUD092, err);
+      else if (err.number === 50093)
+        throw new ErrorExt(ec.PUD093, err);
+      else
+        throw new ErrorExt(ec.PUD095, err);
+    });
+  return events[0];
+};
+
+/**
  * DB interface: Edit event
  * @param eventId ID of event to edit
  * @param userId ID of user performing edit
  * @param name New name
  * @param description New description
- * @param adminId New admin user ID
  * @param privateEvent Whether event should be open for all or invite only
  * @returns Edited event
  */
-export const editEvent = async (eventId: number, userId: number, name?: string, description?: string, adminId?: number, privateEvent?: boolean) => {
+export const editEvent = async (eventId: number, userId: number, name?: string, description?: string, privateEvent?: boolean) => {
   const request = new sql.Request();
   const events: Event[] = await request
     .input("event_id", sql.Int, eventId)
     .input("user_id", sql.Int, userId)
     .input("name", sql.NVarChar, name)
     .input("description", sql.NVarChar, description)
-    .input("admin_id", sql.Int, adminId)
     .input("private", sql.Bit, privateEvent)
     .execute("edit_event")
     .then(data => {
@@ -286,8 +358,6 @@ export const editEvent = async (eventId: number, userId: number, name?: string, 
         throw new ErrorExt(ec.PUD006, err);
       else if (err.number === 50005)
         throw new ErrorExt(ec.PUD005, err);
-      else if (err.number === 50008)
-        throw new ErrorExt(ec.PUD008, err);
       else if (err.number === 50087)
         throw new ErrorExt(ec.PUD087, err);
       else

@@ -1,6 +1,6 @@
 import { setUserUniqueNames } from "./utils/setUserDisplayNames";
 import { Category, Event, Expense, User, UserBalance, BalanceCalculationResult, APIKey } from "./types/types";
-import { CategoryDB, UserWeightDB, ExpenseDB, UserDB, EventDB, APIKeyDB } from "./types/typesDB";
+import { CategoryDB, UserWeightDB, ExpenseDB, UserDB, EventDB, APIKeyDB, AdminIdDB } from "./types/typesDB";
 import { Target } from "./types/enums";
 
 /**
@@ -128,6 +128,7 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[]
       uuid: userObj.uuid,
       event: withEventData && userObj.event_id && userObj.event_joined_date ? {
         id: userObj.event_id,
+        isAdmin: userObj.event_admin ?? false,
         joinedDate: userObj.event_joined_date
       } : undefined
     };
@@ -179,12 +180,14 @@ export const parseUser = (userObj: UserDB): User => {
 export const parseEvents = (eventsInput: EventDB[]) => {
   const events: Event[] = [];
   for (const eventObj of eventsInput) {
+    const adminIds: AdminIdDB[] = JSON.parse(eventObj.admin_ids) ?? [];
+
     const event: Event = {
       id: eventObj.id,
       name: eventObj.name,
       description: eventObj.description,
       created: eventObj.created,
-      adminId: eventObj.admin_id,
+      adminIds: adminIds.map(admin => admin.user_id),
       private: eventObj.private,
       uuid: eventObj.uuid,
       user: eventObj.user_id && eventObj.in_event !== undefined && eventObj.is_admin !== undefined ? {
@@ -233,11 +236,6 @@ export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult
     }
     return a.user.event?.joinedDate.getTime() - b.user.event?.joinedDate.getTime();
   });
-
-  // Remove event information
-  for (const balance of balances) {
-    delete balance.user.event;
-  }
   
   return balances;
 };

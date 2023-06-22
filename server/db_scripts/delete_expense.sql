@@ -15,8 +15,10 @@ begin
   if not exists (select 1 from expense ex
                     inner join category c on c.id = ex.category_id
                     inner join [event] ev on ev.id = c.event_id
+                    inner join user_event ue on ue.event_id = ev.id
                   where ex.id = @expense_id and
-                        (ex.payer_id = @user_id or ev.admin_id = @user_id))
+                        ue.user_id = @user_id and
+                        (ex.payer_id = @user_id or ue.admin = 1))
   begin
     throw 50086, 'You can only delete your own expenses (unless event admin)', 1
   end
