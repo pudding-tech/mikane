@@ -2,6 +2,9 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+orbs:
+  browser-tools: circleci/browser-tools@1.1.0
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
@@ -10,6 +13,10 @@ jobs:
         docker:
             - image: cimg/node:16.20.1-browsers
         steps:
+            - browser-tools/install-browser-tools
+            - run: |
+                node --version
+                google-chrome --version
             - checkout:
                   path: ~/project
             - restore_cache:
