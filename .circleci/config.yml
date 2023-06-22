@@ -13,9 +13,9 @@ jobs:
         docker:
             - image: cimg/node:16.20.1-browsers
         steps:
-            - browser-tools/install-browser-tools
             - checkout:
                   path: ~/project
+            - browser-tools/install-browser-tools
             - run: |
                 node --version
                 google-chrome --version
