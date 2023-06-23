@@ -5,7 +5,7 @@ import { map, combineLatest, find } from 'rxjs';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,7 +17,7 @@ import { MenuComponent } from 'src/app/features/menu/menu.component';
 	templateUrl: './event.component.html',
 	styleUrls: ['./event.component.scss'],
 	standalone: true,
-	imports: [MatToolbarModule, MatButtonModule, RouterLink, MatIconModule, MatTabsModule, NgIf, NgFor, AsyncPipe, RouterOutlet, MenuComponent],
+	imports: [CommonModule, MatToolbarModule, MatButtonModule, RouterLink, MatIconModule, MatTabsModule, RouterOutlet, MenuComponent],
 })
 export class EventComponent implements OnInit {
 	event: PuddingEvent = {
@@ -49,7 +49,7 @@ export class EventComponent implements OnInit {
 		private router: Router,
 		private messageService: MessageService,
 		private titleService: Title,
-		public breakpointService: BreakpointService,
+		public breakpointService: BreakpointService
 	) {
 		const event = this.router.getCurrentNavigation()?.extras.state?.['event'];
 		if (event) {
