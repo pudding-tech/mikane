@@ -21,6 +21,9 @@
 	>
 </nav>
 <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
-<div class="content">
+<div *ngIf="!(breakpointService.isMobile() | async); else mobileView" class="content">
 	<router-outlet></router-outlet>
 </div>
+<ng-template #mobileView>
+	<router-outlet></router-outlet>
+</ng-template>

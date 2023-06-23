@@ -1,0 +1,14 @@
+<mat-icon matListItemIcon class="expense-icon">shopping_cart</mat-icon>
+<div class="price-category">
+  <ng-content select="[price]"></ng-content>
+  <span class="category">
+    <ng-content select="[categoryName]"></ng-content>
+  </span>
+</div>
+<div class="title">
+  <ng-content select="[expenseName]"></ng-content>
+</div>
+<div class="payer">
+  <mat-icon class="payer-icon">person</mat-icon>
+  <ng-content select="[payerName]"></ng-content>
+</div>
