@@ -28,6 +28,8 @@ jobs:
                       - "node_modules"
             - run: xvfb-run -a npm run build
             - run: xvfb-run -a npm run test
+            - store_test_results:
+                  path: ./junit
             - store_artifacts:
                   path: coverage
 

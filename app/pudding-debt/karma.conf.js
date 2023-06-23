@@ -11,6 +11,7 @@ module.exports = function (config) {
 			require("karma-jasmine-html-reporter"),
 			require("karma-coverage"),
 			require("@angular-devkit/build-angular/plugins/karma"),
+			require("karma-junit-reporter"),
 		],
 		client: {
 			jasmine: {
@@ -32,7 +33,12 @@ module.exports = function (config) {
 
 		// test results reporter to use
 		// possible values: 'dots', 'progress', 'junit', 'growl', 'coverage', 'spec'
-		reporters: ["dots"],
+		reporters: ["junit"],
+		junitReporter: {
+			outputDir: "./junit/",
+			outputFile: "test-results.xml",
+			useBrowserName: false,
+		},
 
 		port: 9876,
 		colors: true,
