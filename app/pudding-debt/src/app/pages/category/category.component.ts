@@ -18,9 +18,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor, AsyncPipe, CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 
 @Component({
 	selector: 'app-category',
@@ -28,6 +29,7 @@ import { MatButtonModule } from '@angular/material/button';
 	styleUrls: ['./category.component.scss'],
 	standalone: true,
 	imports: [
+		CommonModule,
 		MatButtonModule,
 		MatIconModule,
 		NgIf,
@@ -64,7 +66,8 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
 		private cd: ChangeDetectorRef,
-		private messageService: MessageService
+		private messageService: MessageService,
+		public breakpointService: BreakpointService
 	) {}
 
 	ngOnInit(): void {

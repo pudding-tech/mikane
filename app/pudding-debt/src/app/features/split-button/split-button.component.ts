@@ -1,8 +1,9 @@
 import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 
 @Component({
 	selector: 'split-button',
@@ -12,13 +13,13 @@ import { MatIconModule } from '@angular/material/icon';
 	animations: [
 		trigger('overlayAnimation', [
 			transition(':enter', [style({ opacity: 0, transform: 'scaleY(0.8)' }), animate('{{showTransitionParams}}')]),
-			transition(':leave', [animate('{{hideTransitionParams}}', style({ opacity: 0 }))])
-		])
+			transition(':leave', [animate('{{hideTransitionParams}}', style({ opacity: 0 }))]),
+		]),
 	],
 	host: {
-		'(document:click)': 'onOutsideClick($event)'
+		'(document:click)': 'onOutsideClick($event)',
 	},
-	imports: [NgIf, MatButtonToggleModule, MatIconModule],
+	imports: [CommonModule, NgIf, MatButtonToggleModule, MatIconModule],
 })
 export class SplitButtonComponent {
 	@Input() onClick: () => void;
@@ -28,9 +29,7 @@ export class SplitButtonComponent {
 	showTransitionOptions = '.12s cubic-bezier(0, 0, 0.2, 1)';
 	hideTransitionOptions = '.1s linear';
 
-	constructor (
-		private self: ElementRef
-	) {};
+	constructor(private self: ElementRef, public breakpointService: BreakpointService) {}
 
 	toggleDropdown = () => {
 		this.toggled = !this.toggled;
@@ -38,7 +37,7 @@ export class SplitButtonComponent {
 
 	dropdownClicked = (index: number) => {
 		this.onDropdownClick.emit(index);
-	}
+	};
 
 	onOutsideClick(event: any) {
 		if (!this.toggled) {

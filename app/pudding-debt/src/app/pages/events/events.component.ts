@@ -9,13 +9,14 @@ import { ApiError } from 'src/app/types/apiError.type';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { MatCardModule } from '@angular/material/card';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor, AsyncPipe, CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 
 @Component({
 	selector: 'app-events',
@@ -23,6 +24,7 @@ import { MenuComponent } from 'src/app/features/menu/menu.component';
 	styleUrls: ['./events.component.scss'],
 	standalone: true,
 	imports: [
+		CommonModule,
 		MatToolbarModule,
 		MatButtonModule,
 		RouterLink,
@@ -58,7 +60,8 @@ export class EventsComponent implements OnInit, OnDestroy {
 		private router: Router,
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
-		private messageService: MessageService
+		private messageService: MessageService,
+		public breakpointService: BreakpointService
 	) {}
 
 	ngOnInit() {
@@ -92,7 +95,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 				edit: true,
 				event,
 			},
-			autoFocus: false
+			autoFocus: false,
 		});
 
 		this.editSubscription = dialogRef.afterClosed().subscribe({
