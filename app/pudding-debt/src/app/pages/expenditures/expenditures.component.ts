@@ -60,17 +60,15 @@ export class ExpendituresComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.loading.next(true);
-		this.authService
-			.getCurrentUser()
-			.subscribe({
-				next: (user) => {
-					this.currentUserId = user.id;
-				},
-				error: (err: ApiError) => {
-					this.messageService.showError('Failed to get user');
-					console.error('Something went wrong getting signed in user in expenses component: ' + err?.error?.message);
-				}
-			});
+		this.authService.getCurrentUser().subscribe({
+			next: (user) => {
+				this.currentUserId = user.id;
+			},
+			error: (err: ApiError) => {
+				this.messageService.showError('Failed to get user');
+				console.error('Something went wrong getting signed in user in expenses component: ' + err?.error?.message);
+			},
+		});
 		this.route?.parent?.parent?.params
 			.pipe(
 				switchMap((params) => {

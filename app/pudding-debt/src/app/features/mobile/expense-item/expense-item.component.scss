@@ -1,26 +1,31 @@
+.wrapper {
+	height: 106px !important;
+	border-bottom: 1px solid rgba(181, 181, 181, 0.1);
+}
+
 .expense-icon {
-  margin-right: 16px !important;
+	margin-right: 16px !important;
 }
 
 .price-category {
-  font-size: 0.9em;
-  margin-bottom: 4px;
+	font-size: 0.9em;
+	margin-bottom: 4px;
 }
 
 .category {
-  color: rgba(255, 255, 255, 0.7);
+	color: rgba(255, 255, 255, 0.7);
 }
 
 .payer {
-  display: flex;
-  align-items: center;
+	display: flex;
+	align-items: center;
 
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9em;
-  margin-top: 2px;
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 0.9em;
+	margin-top: 2px;
 }
 
 .payer-icon {
-  font-size: 18px;
-  height: 18px;
+	font-size: 18px;
+	height: 18px;
 }

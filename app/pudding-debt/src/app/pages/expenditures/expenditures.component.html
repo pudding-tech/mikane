@@ -62,45 +62,9 @@
 
 <ng-template #mobileView>
 	<mat-selection-list #expensesList>
-		<mat-list-item *ngFor="let expense of expenses" class="wrapper">
-			<expense-item>
-				<div price>
-					{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr
-				</div>
-				<div expenseName>
-					{{ expense.name }}
-				</div>
-				<div categoryName>
-					/ {{ expense.categoryName }}
-				</div>
-				<div payerName>
-					{{ expense.payer.name }}
-				</div>
-			</expense-item>
-		</mat-list-item>
+		<expense-item *ngFor="let expense of expenses" [expense]="expense"> </expense-item>
 	</mat-selection-list>
 </ng-template>
-
-<!-- <ng-template #mobileView>
-	<mat-selection-list #expensesList>
-		<mat-list-item *ngFor="let expense of expenses" class="wrapper">
-			<mat-icon matListItemIcon class="expense-icon">shopping_cart</mat-icon>
-			<div class="price-category">
-				{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr
-				<span class="category">
-					/ {{ expense.categoryName }}
-				</span>
-			</div>
-			<div class="title">
-				{{ expense.name }}
-			</div>
-			<div class="payer">
-				<mat-icon class="payer-icon">person</mat-icon>
-				{{ expense.payer.name }}
-			</div>
-		</mat-list-item>
-	</mat-selection-list>
-</ng-template> -->
 
 <ng-template #loadingSpinner>
 	<loading-spinner></loading-spinner>
