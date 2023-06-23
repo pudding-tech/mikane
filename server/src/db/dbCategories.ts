@@ -1,5 +1,5 @@
 import sql from "mssql";
-import { parseCategories } from "../parsers";
+import { parseCategories } from "../parsers/parseCategories";
 import { Target } from "../types/enums";
 import { Category } from "../types/types";
 import { ErrorExt } from "../types/errorExt";

@@ -5,21 +5,15 @@ import cors from "cors";
 import helmet from "helmet";
 import sql from "mssql";
 import MSSQLSessionStore from "./session-store/MSSQLSessionStore";
-import dotenv from "dotenv";
 import eventRoutes from "./api/events";
 import userRoutes from "./api/users";
 import categoryRoutes from "./api/categories";
 import expenseRoutes from "./api/expenses";
 import authRoutes from "./api/authentication";
-import { errorHandler } from "./errorHandler";
-
-dotenv.config();
-import { dbConfig } from "./config";
 import apiDocument from "./api.json";
-
-const port = process.env.PORT || 3002;
-const inProd = process.env.NODE_ENV === "production" ? true : false;
-const sessionSecret = process.env.SESSION_SECRET || "abcdef";
+import env from "./env";
+import { errorHandler } from "./errorHandler";
+import { dbConfig } from "./dbConfig";
 
 const app = express();
 
@@ -58,14 +52,14 @@ app.use(helmet());
 
 // Enable client access
 app.use(cors({
-    origin: process.env.ALLOWED_ORIGIN ?? "http://localhost:4200",
+    origin: env.ALLOWED_ORIGIN,
     credentials: true,
 }));
 
 // API documentation
 const apiDocsOptions = {
   swaggerOptions: {
-    supportedSubmitMethods: inProd ? ["get"] : ["get", "post", "put", "delete"],
+    supportedSubmitMethods: env.IN_PROD ? ["get"] : ["get", "post", "put", "delete"],
     validatorUrl: null
   },
   customCssUrl: "/SwaggerDark.css",
@@ -88,12 +82,12 @@ const tenDays = 1000 * 60 * 60 * 24 * 10;
 // const twentyMinutes = 1000 * 60 * 20;
 app.use(session({
     name: "puddingdebt.sid",
-    secret: sessionSecret,
+    secret: env.SESSION_SECRET,
     store: store,
     cookie: {
       maxAge: tenDays,
       httpOnly: true,
-      secure: inProd,
+      secure: env.IN_PROD,
       sameSite: "lax",
     },
     saveUninitialized: false,
@@ -132,6 +126,6 @@ app.use((req, res) => {
 });
 
 // Listen for requests
-app.listen(port, () => {
-  console.log("PuddingDebt server running on port " + port);
+app.listen(env.PORT, () => {
+  console.log("PuddingDebt server running on port " + env.PORT);
 });

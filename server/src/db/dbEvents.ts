@@ -1,6 +1,9 @@
 import sql from "mssql";
 import { calculateBalance, calculatePayments } from "../calculations";
-import { parseBalance, parseEvents, parseCategories, parseExpenses, parseUsers } from "../parsers";
+import { parseBalance, parseEvents } from "../parsers/parseEvents";
+import { parseCategories } from "../parsers/parseCategories";
+import { parseExpenses } from "../parsers/parseExpenses";
+import { parseUsers } from "../parsers/parseUsers";
 import { BalanceCalculationResult, Category, Event, Expense, Payment, User, UserBalance } from "../types/types";
 import { Target } from "../types/enums";
 import { ErrorExt } from "../types/errorExt";

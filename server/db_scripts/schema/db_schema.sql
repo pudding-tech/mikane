@@ -1,8 +1,3 @@
-create database puddingdebt
-go
-use puddingdebt
-go
-
 create table [user] (
   id int identity(1,1) primary key,
   username nvarchar(255) not null unique,
