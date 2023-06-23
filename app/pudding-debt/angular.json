@@ -23,15 +23,8 @@
 						"polyfills": "src/polyfills.ts",
 						"tsConfig": "tsconfig.app.json",
 						"inlineStyleLanguage": "scss",
-						"assets": [
-							"src/favicon.png",
-							"src/assets",
-							"src/manifest.webmanifest"
-						],
-						"styles": [
-							"./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
-							"src/styles.scss"
-						],
+						"assets": ["src/favicon.png", "src/assets", "src/manifest.webmanifest"],
+						"styles": ["./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css", "src/styles.scss"],
 						"scripts": [],
 						"serviceWorker": true,
 						"ngswConfigPath": "ngsw-config.json"
@@ -94,16 +87,10 @@
 						"polyfills": "src/polyfills.ts",
 						"tsConfig": "tsconfig.spec.json",
 						"karmaConfig": "karma.conf.js",
+						"codeCoverage": true,
 						"inlineStyleLanguage": "scss",
-						"assets": [
-							"src/favicon.png",
-							"src/assets",
-							"src/manifest.webmanifest"
-						],
-						"styles": [
-							"./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
-							"src/styles.scss"
-						],
+						"assets": ["src/favicon.png", "src/assets", "src/manifest.webmanifest"],
+						"styles": ["./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css", "src/styles.scss"],
 						"scripts": []
 					}
 				}

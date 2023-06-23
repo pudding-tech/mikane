@@ -3,7 +3,7 @@
 version: 2.1
 
 orbs:
-  browser-tools: circleci/browser-tools@1.1.0
+    browser-tools: circleci/browser-tools@1.1.0
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
@@ -17,8 +17,8 @@ jobs:
                   path: ~/project
             - browser-tools/install-browser-tools
             - run: |
-                node --version
-                google-chrome --version
+                  node --version
+                  google-chrome --version
             - restore_cache:
                   key: pudding-debt-{{ .Branch }}-{{ checksum "package.json" }}
             - run: npm install
@@ -28,6 +28,8 @@ jobs:
                       - "node_modules"
             - run: xvfb-run -a npm run build
             - run: xvfb-run -a npm run test
+            - store_artifacts:
+                  path: coverage
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
