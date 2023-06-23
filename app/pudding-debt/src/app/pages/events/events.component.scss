@@ -32,15 +32,13 @@ mat-toolbar button {
 		max-width: 54em;
 		width: 70vw;
 		background-color: #3d3d3d;
+	}
 
-		@media (max-width: 550px) {
-			width: 100vw;
-		}
+	.event-card.mobile {
+		width: 100vw;
 
 		.card-content {
-			@media (max-width: 550px) {
-				padding: 0;
-			}
+			padding: 0;
 		}
 	}
 }
@@ -55,10 +53,6 @@ mat-toolbar button {
 
 		.event-actions {
 			margin-left: auto;
-
-			@media (max-width: 550px) {
-				display: none;
-			}
 		}
 
 		.event-name {

@@ -1,5 +1,5 @@
 <div>
-	<span class="name">
+	<span class="name" *ngIf="(breakpointService.isMobile() | async) === false">
 		{{ username }}
 	</span>
 	<split-button #splitButton [onClick]="onAccountClick" (onDropdownClick)="onDropdownClick($event)">

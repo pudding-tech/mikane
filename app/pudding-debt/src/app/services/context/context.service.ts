@@ -7,7 +7,7 @@ export class ContextService {
 	private userAgent = window.navigator?.userAgent;
 	private hasUserAgent = !!this.userAgent;
 
-	get isMobile(): boolean {
+	get isMobileDevice(): boolean {
 		if (!this.hasUserAgent) {
 			return false;
 		}
