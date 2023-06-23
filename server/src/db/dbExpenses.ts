@@ -1,5 +1,5 @@
 import sql from "mssql";
-import { parseExpenses } from "../parsers";
+import { parseExpenses } from "../parsers/parseExpenses";
 import { ErrorExt } from "../types/errorExt";
 import { Expense } from "../types/types";
 import * as ec from "../types/errorCodes";

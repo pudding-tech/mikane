@@ -1,7 +1,7 @@
 import sql from "mssql";
 import { PUD033, PUD063, PUD064, PUD070, PUD075, PUD076, PUD077 } from "../types/errorCodes";
 import { ErrorExt } from "../types/errorExt";
-import { parseApiKeys } from "../parsers";
+import { parseApiKeys } from "../parsers/parseKeys";
 import { randomUUID } from "crypto";
 
 /**
