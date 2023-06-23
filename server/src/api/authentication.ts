@@ -2,6 +2,7 @@ import express from "express";
 import * as dbUsers from "../db/dbUsers";
 import * as dbAuth from "../db/dbAuthentication";
 import * as ec from "../types/errorCodes";
+import env from "../env";
 import { authenticate, createHash, generateApiKey } from "../utils/auth";
 import { generateKey } from "../utils/generateKey";
 import { User } from "../types/types";
@@ -9,9 +10,6 @@ import { masterKeyCheck } from "../middlewares/authCheck";
 import { sendPasswordResetEmail } from "../email-services/passwordReset";
 import { ErrorExt } from "../types/errorExt";
 const router = express.Router();
-
-import dotenv from "dotenv";
-dotenv.config();
 
 /* --- */
 /* GET */
@@ -159,7 +157,7 @@ router.post("/generatekey", masterKeyCheck, async (req, res, next) => {
 */
 router.post("/requestpasswordreset", async (req, res, next) => {
   try {
-    if (!process.env.PUDDINGDEBT_EMAIL || !process.env.PUDDINGDEBT_EMAIL_PASSWORD) {
+    if (!env.PUDDINGDEBT_EMAIL || !env.PUDDINGDEBT_EMAIL_PASSWORD) {
       throw new ErrorExt(ec.PUD073);
     }
 

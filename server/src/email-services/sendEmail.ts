@@ -1,11 +1,10 @@
 import { createTransport } from "nodemailer";
-import dotenv from "dotenv";
+import env from "../env";
 import { ErrorExt } from "../types/errorExt";
 import { PUD073, PUD074 } from "../types/errorCodes";
 
-dotenv.config();
-const email = process.env.PUDDINGDEBT_EMAIL;
-const password = process.env.PUDDINGDEBT_EMAIL_PASSWORD;
+const email = env.PUDDINGDEBT_EMAIL;
+const password = env.PUDDINGDEBT_EMAIL_PASSWORD;
 
 /**
  * Send an email to a recipient

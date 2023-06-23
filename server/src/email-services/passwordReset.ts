@@ -1,8 +1,7 @@
-import dotenv from "dotenv";
+import env from "../env";
 import { sendEmail } from "./sendEmail";
 
-dotenv.config();
-const url = process.env.ALLOWED_ORIGIN ? process.env.ALLOWED_ORIGIN + "/reset-password/" : "http://localhost:4200/reset-password/";
+const url = env.ALLOWED_ORIGIN + "/reset-password/";
 
 /**
  * Send an email to the recipient with password reset instructions
