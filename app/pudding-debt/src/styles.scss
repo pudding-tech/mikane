@@ -11,12 +11,11 @@ body {
 body {
 	margin: 0;
 	font-family: Roboto, "Helvetica Neue", sans-serif;
-	overflow-y: scroll;
 }
 
 #app {
-	display: grid;
-	grid-template-rows: 1fr auto;
+	display: flex;
+	flex-direction: column;
 	min-height: 100vh;
 	overflow-y: auto;
 }
@@ -116,14 +115,6 @@ a.nostyle:visited {
 
 .user-panel-title {
 	color: #242424;
-}
-
-.category-amount {
-	text-align: right;
-	justify-content: flex-end;
-	div {
-		margin-right: 1.5em;
-	}
 }
 
 .category-user-name {

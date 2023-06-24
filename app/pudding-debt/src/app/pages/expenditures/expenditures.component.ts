@@ -6,14 +6,17 @@ import { Expense, ExpenseService } from 'src/app/services/expense/expense.servic
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dialog.component';
 import { MatCardModule } from '@angular/material/card';
+import { ExpenseItemComponent } from 'src/app/features/mobile/expense-item/expense-item.component';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { MatTableModule } from '@angular/material/table';
-import { NgIf, AsyncPipe, CurrencyPipe } from '@angular/common';
+import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
 	selector: 'app-expenditures',
@@ -24,12 +27,15 @@ import { MatButtonModule } from '@angular/material/button';
 		MatButtonModule,
 		MatIconModule,
 		NgIf,
+		NgFor,
 		MatTableModule,
 		ProgressSpinnerComponent,
+		ExpenseItemComponent,
 		MatCardModule,
 		AsyncPipe,
 		CurrencyPipe,
 		MatDialogModule,
+		MatListModule,
 	],
 })
 export class ExpendituresComponent implements OnInit {
@@ -48,22 +54,21 @@ export class ExpendituresComponent implements OnInit {
 		private authService: AuthService,
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
-		private messageService: MessageService
+		private messageService: MessageService,
+		public breakpointService: BreakpointService
 	) {}
 
 	ngOnInit(): void {
 		this.loading.next(true);
-		this.authService
-			.getCurrentUser()
-			.subscribe({
-				next: (user) => {
-					this.currentUserId = user.id;
-				},
-				error: (err: ApiError) => {
-					this.messageService.showError('Failed to get user');
-					console.error('Something went wrong getting signed in user in expenses component: ' + err?.error?.message);
-				}
-			});
+		this.authService.getCurrentUser().subscribe({
+			next: (user) => {
+				this.currentUserId = user.id;
+			},
+			error: (err: ApiError) => {
+				this.messageService.showError('Failed to get user');
+				console.error('Something went wrong getting signed in user in expenses component: ' + err?.error?.message);
+			},
+		});
 		this.route?.parent?.parent?.params
 			.pipe(
 				switchMap((params) => {

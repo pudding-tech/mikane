@@ -21,6 +21,6 @@
 	>
 </nav>
 <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
-<div class="content">
+<div [ngClass]="{ content: !(breakpointService.isMobile() | async) }">
 	<router-outlet></router-outlet>
 </div>
