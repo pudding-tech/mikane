@@ -10,7 +10,7 @@ orbs:
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
     frontend-build:
-        working_directory: ~/project/app/pudding-debt
+        working_directory: ~/project/app/mikane
         docker:
             - image: cimg/node:16.20.1-browsers
         steps:
@@ -21,10 +21,10 @@ jobs:
                   node --version
                   google-chrome --version
             - restore_cache:
-                  key: pudding-debt-{{ .Branch }}-{{ checksum "package.json" }}
+                  key: mikane-{{ .Branch }}-{{ checksum "package.json" }}
             - run: npm install
             - save_cache:
-                  key: pudding-debt-{{ .Branch }}-{{ checksum "package.json" }}
+                  key: mikane-{{ .Branch }}-{{ checksum "package.json" }}
                   paths:
                       - "node_modules"
             - run: xvfb-run -a npm run build
@@ -34,7 +34,7 @@ jobs:
             - store_artifacts:
                   path: coverage
             - codecov/upload:
-                  file: './coverage/pudding-debt/cobertura-coverage.xml'
+                  file: './coverage/mikane/cobertura-coverage.xml'
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows

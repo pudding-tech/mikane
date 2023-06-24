@@ -157,7 +157,7 @@ router.post("/generatekey", masterKeyCheck, async (req, res, next) => {
 */
 router.post("/requestpasswordreset", async (req, res, next) => {
   try {
-    if (!env.PUDDINGDEBT_EMAIL || !env.PUDDINGDEBT_EMAIL_PASSWORD) {
+    if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_PASSWORD) {
       throw new ErrorExt(ec.PUD073);
     }
 

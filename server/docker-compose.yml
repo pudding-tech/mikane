@@ -1,5 +1,5 @@
 version: "3.8"
-# name: puddingdebt
+# name: mikane
 services:
   server:
     build:
@@ -7,7 +7,7 @@ services:
       args:
         SERVER_URL: 
         SERVER_DESCRIPTION: 
-    image: puddingdebt:latest
+    image: mikane:latest
     container_name: api
     ports:
       - "3002:3002"

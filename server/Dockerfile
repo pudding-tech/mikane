@@ -49,9 +49,9 @@ EXPOSE 3002
 CMD ["node", "build/server.js"]
 
 # Commands for building image and running container (substitute latest with version if building a release):
-#   docker build -t puddingdebt:latest ./
-#   docker run -d --name puddingdebt --env-file .env puddingdebt:latest
+#   docker build -t mikane:latest ./
+#   docker run -d --name mikane --env-file .env mikane:latest
 
 # Save and load image (for transferring to another host) (substitute latest with version if saving a release):
-#   docker save -o puddingdebt.tar puddingdebt:latest
-#   docker load -i puddingdebt.tar
+#   docker save -o mikane.tar mikane:latest
+#   docker load -i mikane.tar

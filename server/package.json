@@ -1,7 +1,7 @@
 {
-  "name": "puddingdebt_server",
+  "name": "mikane_server",
   "version": "2.0.0",
-  "description": "Server for PuddingDebt",
+  "description": "API server for Mikane",
   "scripts": {
     "build": "rimraf ./build && tsc --project ./",
     "start": "npx ts-node src/server.ts",

@@ -1,8 +1,8 @@
 <mat-toolbar>
 	<span class="logo-container">
-		<img src="assets/puddingdebt.svg" class="logo" />
+		<img src="assets/mikane.svg" class="logo" />
 	</span>
-	<span>PUDDING DEBT</span>
+	<span>MIKANE</span>
 	<span class="toolbar-spacer"></span>
 	<menu></menu>
 </mat-toolbar>
@@ -46,7 +46,13 @@
 						</span>
 					</mat-card-header>
 				</mat-card>
-				<mat-paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)" class="events-paginator">
+				<mat-paginator
+					[length]="length"
+					[pageSize]="pageSize"
+					[pageSizeOptions]="pageSizeOptions"
+					(page)="onPageChange($event)"
+					class="events-paginator"
+				>
 				</mat-paginator>
 			</mat-card-content>
 			<mat-card-actions>

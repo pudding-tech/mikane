@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "version": "2.0.0",
-    "title": "PuddingDebt API",
-    "description": "Documentation for all endpoints in the PuddingDebt API"
+    "title": "Mikane API",
+    "description": "Documentation for all endpoints in the Mikane API"
   },
   "servers": [
     {
@@ -90,12 +90,12 @@
         },
         "responses": {
           "200": {
-            "description": "Successfully authenticated. The session ID is returned in a cookie named `puddingdebt.sid`. You need to include this cookie in subsequent requests.",
+            "description": "Successfully authenticated. The session ID is returned in a cookie named `mikane.sid`. You need to include this cookie in subsequent requests.",
             "headers": {
               "Set-Cookie": {
                 "schema": {
                   "type": "string",
-                  "example": "puddingdebt.sid=abcdef12345; Path=/; HttpOnly;"
+                  "example": "mikane.sid=abcdef12345; Path=/; HttpOnly;"
                 }
               }
             },
@@ -3254,7 +3254,7 @@
       "cookieAuth": {
         "type": "apiKey",
         "in": "cookie",
-        "name": "puddingdebt.sid"
+        "name": "mikane.sid"
       },
       "apiKeyAuth": {
         "type": "apiKey",

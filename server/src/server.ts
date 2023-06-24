@@ -64,7 +64,7 @@ const apiDocsOptions = {
   },
   customCssUrl: "/SwaggerDark.css",
   customCss: ".swagger-ui .topbar { display: none }",
-  customSiteTitle: "PuddingDebt API",
+  customSiteTitle: "Mikane API",
   customfavIcon: "/favicon.png"
 };
 app.use("/", swaggerUi.serve);
@@ -81,7 +81,7 @@ const store = new MSSQLSessionStore(dbConfig, {
 const tenDays = 1000 * 60 * 60 * 24 * 10;
 // const twentyMinutes = 1000 * 60 * 20;
 app.use(session({
-    name: "puddingdebt.sid",
+    name: "mikane.sid",
     secret: env.SESSION_SECRET,
     store: store,
     cookie: {
@@ -127,5 +127,5 @@ app.use((req, res) => {
 
 // Listen for requests
 app.listen(env.PORT, () => {
-  console.log("PuddingDebt server running on port " + env.PORT);
+  console.log("Mikane server running on port " + env.PORT);
 });
