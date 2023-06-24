@@ -1,5 +1,7 @@
 .wrapper {
-	height: 106px !important;
+	height: fit-content !important;
+	padding-top: 12px;
+	padding-bottom: 12px;
 	border-bottom: 1px solid rgba(181, 181, 181, 0.1);
 }
 
@@ -18,6 +20,15 @@
 	.category {
 		color: rgba(255, 255, 255, 0.7);
 	}
+}
+
+.title {
+	white-space: normal;
+	max-height: 3em;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
 }
 
 .payer {
