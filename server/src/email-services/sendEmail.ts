@@ -3,8 +3,8 @@ import env from "../env";
 import { ErrorExt } from "../types/errorExt";
 import { PUD073, PUD074 } from "../types/errorCodes";
 
-const email = env.PUDDINGDEBT_EMAIL;
-const password = env.PUDDINGDEBT_EMAIL_PASSWORD;
+const email = env.MIKANE_EMAIL;
+const password = env.MIKANE_EMAIL_PASSWORD;
 
 /**
  * Send an email to a recipient
@@ -33,7 +33,7 @@ export const sendEmail = async (recipient: string, subject: string, html: string
 
   const info = await transporter.sendMail({
     from: {
-      name: "Pudding Debt",
+      name: "Mikane",
       address: email
     },
     to: recipient,

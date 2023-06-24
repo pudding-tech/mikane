@@ -11,7 +11,7 @@ const url = env.ALLOWED_ORIGIN + "/reset-password/";
 export const sendPasswordResetEmail = async (recipient: string, key: string) => {
 
   const uriEncodedKey = encodeURIComponent(key);
-  const subject = "Reset your password - Pudding Debt";
+  const subject = "Reset your password - Mikane";
   const html = passwordResetEmailHTML(uriEncodedKey);
 
   const sentMessageInfo = await sendEmail(recipient, subject, html);
@@ -23,7 +23,7 @@ export const sendPasswordResetEmail = async (recipient: string, key: string) => 
 const passwordResetEmailHTML = (key: string) => {
   return `<html>
             <body>
-              <h1>Pudding Debt - Password reset request</h1>
+              <h1>Mikane - Password reset request</h1>
               <div>A password reset has been requested for your account. Please click the button below to reset your password.</div>
               <br>
               <a href="${url + key}" style="display: inline-block; padding: 10px 20px; background-color: #c2185b; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">Reset password</a>

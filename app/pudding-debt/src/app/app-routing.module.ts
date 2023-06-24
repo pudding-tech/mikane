@@ -9,7 +9,7 @@ const routes: Routes = [
 	},
 	{
 		path: 'events',
-		title: 'PuddingDebt',
+		title: 'Mikane',
 		loadChildren: () => import('./pages/events/events.routes'),
 	},
 	{
