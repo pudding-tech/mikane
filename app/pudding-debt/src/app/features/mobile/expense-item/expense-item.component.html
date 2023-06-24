@@ -1,7 +1,7 @@
 <mat-list-item class="wrapper">
 	<mat-icon matListItemIcon class="expense-icon">shopping_cart</mat-icon>
 	<div class="price-category">
-		{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr
+		<span class="price">{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr</span>
 		<span class="category"> / {{ expense.categoryName }} </span>
 	</div>
 	<div class="title">

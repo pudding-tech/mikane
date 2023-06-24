@@ -10,10 +10,14 @@
 .price-category {
 	font-size: 0.9em;
 	margin-bottom: 4px;
-}
 
-.category {
-	color: rgba(255, 255, 255, 0.7);
+	.price {
+		color: rgb(127, 221, 117);
+	}
+
+	.category {
+		color: rgba(255, 255, 255, 0.7);
+	}
 }
 
 .payer {
@@ -22,7 +26,7 @@
 
 	color: rgba(255, 255, 255, 0.7);
 	font-size: 0.9em;
-	margin-top: 2px;
+	margin-top: 4px;
 }
 
 .payer-icon {

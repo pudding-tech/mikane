@@ -61,9 +61,9 @@
 </div>
 
 <ng-template #mobileView>
-	<mat-selection-list #expensesList>
+	<mat-nav-list #expensesList class="expenses-list-mobile">
 		<expense-item *ngFor="let expense of expenses" [expense]="expense"> </expense-item>
-	</mat-selection-list>
+	</mat-nav-list>
 </ng-template>
 
 <ng-template #loadingSpinner>
