@@ -181,8 +181,13 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "string",
-                "example": "test@test.com"
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "test@test.com"
+                  }
+                }
               }
             }
           }
