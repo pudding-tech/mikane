@@ -28,7 +28,7 @@ module.exports = function (config) {
 		coverageReporter: {
 			dir: require("path").join(__dirname, "./coverage/pudding-debt"),
 			subdir: ".",
-			reporters: [{ type: "html" }, { type: "text-summary" }],
+			reporters: [{ type: "cobertura" }, { type: "text-summary" }],
 		},
 
 		// test results reporter to use
