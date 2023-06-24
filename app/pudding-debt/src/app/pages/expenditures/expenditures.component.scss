@@ -10,3 +10,10 @@
     color: rgb(172 255 163);
 	}
 }
+
+.add-expense-button-mobile {
+  position: fixed;
+  bottom: 50px;
+  right: 20px;
+  z-index: 9999;
+}
