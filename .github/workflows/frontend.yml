@@ -19,6 +19,9 @@ jobs:
         node-version: [16.20.1]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
+    defaults:
+      run:
+        working-directory: ./app/pudding-debt/
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
