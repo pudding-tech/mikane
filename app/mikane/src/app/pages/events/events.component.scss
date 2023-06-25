@@ -9,7 +9,7 @@ mat-toolbar button {
 #header {
 	padding: 16px;
 	margin-bottom: 10px;
-	background-color: rgba(33, 33, 33, 0.80);
+	background-color: rgba(33, 33, 33, 0.8);
 }
 
 .events-container {
@@ -89,4 +89,11 @@ mat-toolbar button {
 
 .mat-mdc-card-header-text::ng-deep {
 	color: red !important;
+}
+
+.add-event-button-mobile {
+	position: fixed;
+	bottom: 50px;
+	right: 20px;
+	z-index: 9999;
 }

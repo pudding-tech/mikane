@@ -72,6 +72,9 @@
 	<mat-nav-list #eventsList class="events-list-mobile">
 		<event-item *ngFor="let event of events" [event]="event" (click)="clickEvent(event)"></event-item>
 	</mat-nav-list>
+	<button mat-fab color="primary" class="add-event-button-mobile" (click)="openDialog()">
+		<mat-icon>edit_calendar</mat-icon>
+	</button>
 </ng-template>
 
 <ng-template #loadingSpinner>
