@@ -33,8 +33,8 @@ jobs:
                   path: junit
             - store_artifacts:
                   path: coverage
-            - codecov/upload:
-                  file: './coverage/mikane/cobertura-coverage.xml'
+            #- codecov/upload:
+            #      file: './coverage/mikane/cobertura-coverage.xml'
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
