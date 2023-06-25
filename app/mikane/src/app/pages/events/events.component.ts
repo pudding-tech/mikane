@@ -6,6 +6,7 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 import { MessageService } from 'src/app/services/message/message.service';
 import { BehaviorSubject, NEVER, Subscription, switchMap } from 'rxjs';
 import { ApiError } from 'src/app/types/apiError.type';
+import { EventItemComponent } from 'src/app/features/mobile/event-item/event-item.component';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { MatCardModule } from '@angular/material/card';
@@ -16,6 +17,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
+import { MatListModule } from '@angular/material/list';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 
 @Component({
@@ -32,12 +34,14 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 		NgIf,
 		MatCardModule,
 		NgFor,
+		EventItemComponent,
 		ProgressSpinnerComponent,
 		AsyncPipe,
 		MatDialogModule,
 		MatTooltipModule,
 		MatPaginatorModule,
 		MenuComponent,
+		MatListModule,
 	],
 })
 export class EventsComponent implements OnInit, OnDestroy {

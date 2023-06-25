@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { map, combineLatest, find } from 'rxjs';
@@ -24,7 +24,8 @@ export class EventComponent implements OnInit {
 		name: '',
 	} as PuddingEvent;
 	activeLink = '';
-	links = [
+	isMobile = signal(false);
+	links = computed(() => [
 		{
 			name: 'Participants',
 			location: './users',
@@ -34,14 +35,14 @@ export class EventComponent implements OnInit {
 			location: './expenses',
 		},
 		{
-			name: 'Expense Categories',
+			name: this.isMobile() ? 'Categories' : 'Expense Categories',
 			location: './categories',
 		},
 		{
-			name: 'Payment Structure',
+			name: this.isMobile() ? 'Payments' : 'Payment Structure',
 			location: './payment',
 		},
-	];
+	]);
 
 	constructor(
 		private eventService: EventService,
@@ -61,6 +62,10 @@ export class EventComponent implements OnInit {
 	ngOnInit() {
 		// Set active link based on current URL
 		this.activeLink = './' + window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+
+		this.breakpointService.isMobile().subscribe(isMobile => {
+			this.isMobile.set(isMobile);
+		});
 
 		combineLatest([this.eventService.loadEvents(), this.route.params])
 			.pipe(

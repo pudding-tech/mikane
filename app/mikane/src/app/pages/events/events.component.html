@@ -7,8 +7,8 @@
 	<menu></menu>
 </mat-toolbar>
 <div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div class="events-container">
-		<mat-card class="event-card" [ngClass]="{ mobile: breakpointService.isMobile() | async }">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="events-container">
+		<mat-card class="event-card">
 			<mat-card-header id="header">
 				<mat-card-title> Events </mat-card-title>
 			</mat-card-header>
@@ -17,7 +17,7 @@
 					<mat-card-header class="event-header clickable" (click)="clickEvent(event)">
 						<mat-card-title class="event-title">
 							<span class="event-name">
-								{{ event.name }}
+								<span class="name-text">{{ event.name }}</span>
 								<mat-icon
 									*ngIf="event.user.inEvent"
 									matTooltip="You are in this event"
@@ -39,7 +39,7 @@
 						<mat-card-subtitle>
 							{{ event.description }}
 						</mat-card-subtitle>
-						<span *ngIf="event.user.isAdmin && (breakpointService.isMobile() | async) === false" class="event-actions">
+						<span *ngIf="event.user.isAdmin" class="event-actions">
 							<button mat-icon-button (click)="editEvent(event); $event.stopPropagation()">
 								<mat-icon>edit</mat-icon>
 							</button>
@@ -66,6 +66,13 @@
 		</mat-card>
 	</div>
 </div>
+
+<ng-template #mobileView>
+	<div class="title-mobile">EVENTS</div>
+	<mat-nav-list #eventsList class="events-list-mobile">
+		<event-item *ngFor="let event of events" [event]="event" (click)="clickEvent(event)"></event-item>
+	</mat-nav-list>
+</ng-template>
 
 <ng-template #loadingSpinner>
 	<loading-spinner></loading-spinner>

@@ -13,7 +13,7 @@
 <nav class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
 	<a
 		mat-tab-link
-		*ngFor="let link of links"
+		*ngFor="let link of links()"
 		[routerLink]="link.location"
 		(click)="activeLink = link.location"
 		[active]="activeLink == link.location"
