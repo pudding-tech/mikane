@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import session from "express-session";
 import swaggerUi from "swagger-ui-express";
 import cors from "cors";
@@ -43,6 +43,13 @@ app.use(express.static("public", { index: false }));
 
 // Body parser
 app.use(express.json());
+
+// Error handler for invalid JSON in body
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  if (err) {
+    return res.status(400).json({ error: "Invalid JSON in body"});
+  }
+});
 
 // Trust proxy
 app.enable("trust proxy");
@@ -98,14 +105,14 @@ app.use(session({
 
 app.post("*", (req, res, next) => {
   if (req.headers["content-type"] !== undefined && !req.is("application/json")) {
-    return res.status(400).json({ err: "Wrong content-type" });
+    return res.status(400).json({ error: "Wrong content-type" });
   }
   next();
 });
 
 app.put("*", (req, res, next) => {
-  if (!req.is("application/json")) {
-    return res.status(400).json({ err: "Wrong content-type" });
+  if (req.headers["content-type"] !== undefined && !req.is("application/json")) {
+    return res.status(400).json({ error: "Wrong content-type" });
   }
   next();
 });
