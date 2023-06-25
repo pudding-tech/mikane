@@ -1,6 +1,6 @@
-import { Component, ContentChildren, ElementRef, EventEmitter, Input, Output, QueryList } from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { CommonModule, NgIf } from '@angular/common';
+import { Component, ContentChildren, ElementRef, Input, QueryList } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';

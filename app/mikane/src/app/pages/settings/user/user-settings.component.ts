@@ -1,6 +1,12 @@
+import { NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { NEVER, Subscription, switchMap } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
@@ -9,12 +15,6 @@ import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
-import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
 
 @Component({
 	selector: 'user-settings',
@@ -29,7 +29,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	private editSubscription: Subscription;
 
 	private phone!: Phonenumber;
-	private phoneCtrl$: Subscription | undefined;
+	// private phoneCtrl$: Subscription | undefined;
 
 	currentUser: User;
 	editMode: boolean = false;
@@ -71,12 +71,12 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	}
 
 	ngAfterViewInit(): void {
-		this.phoneCtrl$ = this.editUserForm.get('phone')?.valueChanges.subscribe((number) => {
+		/* 		this.phoneCtrl$ = this.editUserForm.get('phone')?.valueChanges.subscribe((number) => {
 			// TODO: Phonenumber validation
 			this.phone = {
 				number: number ? number : '',
 			};
-		});
+		}); */
 	}
 
 	editUser() {
@@ -110,7 +110,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 				content: 'Are you sure you want to delete your account? Warning: This is not reversible!',
 				confirm: 'Yes, I am sure',
 			},
-			autoFocus: false
+			autoFocus: false,
 		});
 
 		this.deleteSubscription = dialogRef
