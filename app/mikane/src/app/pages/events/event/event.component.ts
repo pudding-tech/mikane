@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -24,7 +25,7 @@ export class EventComponent implements OnInit {
 		name: '',
 	} as PuddingEvent;
 	activeLink = '';
-	isMobile = signal(false);
+	isMobile = toSignal(this.breakpointService.isMobile());
 	links = computed(() => [
 		{
 			name: 'Participants',
@@ -62,10 +63,6 @@ export class EventComponent implements OnInit {
 	ngOnInit() {
 		// Set active link based on current URL
 		this.activeLink = './' + window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
-
-		this.breakpointService.isMobile().subscribe(isMobile => {
-			this.isMobile.set(isMobile);
-		});
 
 		combineLatest([this.eventService.loadEvents(), this.route.params])
 			.pipe(
