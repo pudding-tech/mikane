@@ -17,7 +17,8 @@ body {
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
-	overflow-y: auto;
+	overflow-y: hidden;
+	overflow-x: hidden;
 }
 
 a.nostyle:link {
@@ -150,10 +151,6 @@ a.nostyle:visited {
 	text-align: center;
 }
 
-mat-card-title.mat-mdc-card-title {
-	padding-left: 0px !important;
-}
-
 // Hide background of autocompleted inputs
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -161,6 +158,10 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
 	-webkit-background-clip: text;
 }
+
+/* ------------------ */
+/* Material overrides */
+/* ------------------ */
 
 // Change color of input labels
 .mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
@@ -172,4 +173,9 @@ mat-tooltip-component {
 	user-select: none;
 	-webkit-user-select: none;
 	-ms-user-select: none;
+}
+
+// Set width of material card header
+.mat-mdc-card-header-text {
+	width: 100%;
 }

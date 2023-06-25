@@ -8,6 +8,8 @@ mat-toolbar button {
 
 #header {
 	padding: 16px;
+	margin-bottom: 10px;
+	background-color: rgba(33, 33, 33, 0.80);
 }
 
 .events-container {
@@ -22,14 +24,6 @@ mat-toolbar button {
 		max-width: 54em;
 		width: 70vw;
 		background-color: #3d3d3d;
-	}
-
-	.event-card.mobile {
-		width: 100vw;
-
-		.card-content {
-			padding: 0;
-		}
 	}
 }
 
@@ -49,13 +43,18 @@ mat-toolbar button {
 			display: flex;
 			align-items: center;
 
+			.name-text {
+				max-width: 84%;
+			}
+
 			.joined-icon {
 				margin-left: 10px;
 				opacity: 30%;
 			}
 
 			.admin-icon {
-				margin-left: 4px;
+				padding-left: 4px;
+				padding-right: 6px;
 				opacity: 30%;
 			}
 		}
@@ -72,4 +71,22 @@ mat-toolbar button {
 
 .events-paginator {
 	background-color: #3d3d3d;
+}
+
+.events-list-mobile {
+	padding: 0;
+}
+
+.title-mobile {
+	display: flex;
+	align-items: center;
+	height: 50px;
+	padding-left: 16px;
+	background-color: rgba(24, 24, 24, 1);
+	border-top: 1px solid #333333;
+	stroke: #333333;
+}
+
+.mat-mdc-card-header-text::ng-deep {
+	color: red !important;
 }
