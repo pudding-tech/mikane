@@ -1,9 +1,10 @@
-import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { CommonModule, NgIf } from '@angular/common';
+import { Component, ContentChildren, ElementRef, Input, QueryList } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { SplitButtonItemDirective } from './split-button-item/split-button-item.directive';
 
 @Component({
 	selector: 'split-button',
@@ -23,7 +24,7 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 })
 export class SplitButtonComponent {
 	@Input() onClick: () => void;
-	@Output() onDropdownClick: EventEmitter<any> = new EventEmitter();
+	@ContentChildren(SplitButtonItemDirective) items: QueryList<SplitButtonItemDirective>;
 
 	toggled = false;
 	showTransitionOptions = '.12s cubic-bezier(0, 0, 0.2, 1)';
@@ -33,10 +34,6 @@ export class SplitButtonComponent {
 
 	toggleDropdown = () => {
 		this.toggled = !this.toggled;
-	};
-
-	dropdownClicked = (index: number) => {
-		this.onDropdownClick.emit(index);
 	};
 
 	onOutsideClick(event: any) {
