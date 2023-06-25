@@ -1,16 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, signal, computed } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { map, combineLatest, find } from 'rxjs';
+import { combineLatest, map } from 'rxjs';
+import { MenuComponent } from 'src/app/features/menu/menu.component';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { CommonModule } from '@angular/common';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MenuComponent } from 'src/app/features/menu/menu.component';
 
 @Component({
 	selector: 'app-event',
