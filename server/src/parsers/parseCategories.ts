@@ -1,7 +1,7 @@
 import { setUserUniqueNames } from "../utils/setUserDisplayNames";
 import { Category } from "../types/types";
 import { CategoryDB, UserWeightDB } from "../types/typesDB";
-import { Target } from "../types/enums";
+import { Target, CategoryIcon } from "../types/enums";
 
 /**
  * Build array of Category objects. Format for either client or calculate function
@@ -16,6 +16,7 @@ export const parseCategories = (catInput: CategoryDB[], target: Target) : Catego
     const category: Category = {
       id: catObj.id,
       name: catObj.name,
+      icon: catObj.icon as CategoryIcon,
       weighted: catObj.weighted
     };
 

@@ -4,6 +4,7 @@ import { authCheck } from "../middlewares/authCheck";
 import { Category } from "../types/types";
 import { ErrorExt } from "../types/errorExt";
 import * as ec from "../types/errorCodes";
+import { CategoryIcon } from "../types/enums";
 const router = express.Router();
 
 /* --- */
@@ -65,8 +66,13 @@ router.post("/categories", authCheck, async (req, res, next) => {
     if (isNaN(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
+
+    const icon: CategoryIcon = req.body.icon;
+    if (icon && !Object.values(CategoryIcon).includes(icon)) {
+      throw new ErrorExt(ec.PUD096);
+    }
     
-    const category: Category = await db.createCategory(req.body.name, eventId, Boolean(req.body.weighted));
+    const category: Category = await db.createCategory(req.body.name, eventId, Boolean(req.body.weighted), icon);
     res.status(200).json(category);
   }
   catch (err) {

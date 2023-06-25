@@ -1,6 +1,7 @@
 export type CategoryDB = {
   id: number,
   name: string,
+  icon: string,
   weighted: boolean,
   user_weights: string
 }

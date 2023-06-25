@@ -30,6 +30,7 @@ begin
   select
     c.id,
     c.name,
+    c.icon,
     c.weighted,
     c.event_id,
     (

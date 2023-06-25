@@ -898,3 +898,21 @@ export const PUD095: ErrorCode = {
   status: 500,
   log: true
 };
+
+/**
+ * PUD-096: Not a valid category icon (400)
+ */
+export const PUD096: ErrorCode = {
+  code: "PUD-096",
+  message: "Not a valid category icon",
+  status: 400
+};
+
+/**
+ * PUD-097: Another category in this event already has this name (409)
+ */
+export const PUD097: ErrorCode = {
+  code: "PUD-097",
+  message: "Another category in this event already has this name",
+  status: 409
+};

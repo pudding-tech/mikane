@@ -1839,14 +1839,18 @@
                     "type": "string",
                     "example": "Example category"
                   },
-                  "eventId": {
-                    "type": "integer",
-                    "example": 1
+                  "icon": {
+                    "type": "string",
+                    "example": "shopping_cart"
                   },
                   "weighted": {
                     "type": "boolean",
                     "example": true
-                  }
+                  },
+                  "eventId": {
+                    "type": "integer",
+                    "example": 1
+                  }                 
                 }
               }
             }
@@ -3090,6 +3094,10 @@
           "name": {
             "type": "string",
             "example": "Test category"
+          },
+          "icon": {
+            "type": "string",
+            "example": "shopping_cart"
           },
           "weighted": {
             "type": "boolean",
