@@ -24,7 +24,6 @@ import { SplitButtonItemDirective } from './split-button-item/split-button-item.
 })
 export class SplitButtonComponent {
 	@Input() onClick: () => void;
-	@Output() onDropdownClick: EventEmitter<any> = new EventEmitter();
 	@ContentChildren(SplitButtonItemDirective) items: QueryList<SplitButtonItemDirective>;
 
 	toggled = false;

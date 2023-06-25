@@ -40,14 +40,6 @@ export class MenuComponent {
 		});
 	}
 
-	onDropdownClick = (index: number) => {
-		if (index === 1) {
-			this.onAccountClick();
-		} else if (index === 2) {
-			this.logout();
-		}
-	};
-
 	onAccountClick = () => {
 		if (this.router.url === '/settings') {
 			this.splitButton.toggled = false;

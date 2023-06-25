@@ -2,7 +2,7 @@
 	<span class="name" *ngIf="(breakpointService.isMobile() | async) === false">
 		{{ username }}
 	</span>
-	<split-button #splitButton [onClick]="onAccountClick" (onDropdownClick)="onDropdownClick($event)">
+	<split-button #splitButton [onClick]="onAccountClick">
 		<div button>
 			<mat-icon class="account">account_circle</mat-icon>
 		</div>
