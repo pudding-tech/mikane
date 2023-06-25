@@ -232,15 +232,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Key exists",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean",
-                  "example": true
-                }
-              }
-            }
+            "description": "Key exists"
           },
           "404": {
             "description": "Key not found",
