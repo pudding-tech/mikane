@@ -11,6 +11,7 @@ body {
 body {
 	margin: 0;
 	font-family: Roboto, "Helvetica Neue", sans-serif;
+	overflow-y: scroll;
 }
 
 #app {
@@ -178,4 +179,9 @@ mat-tooltip-component {
 // Set width of material card header
 .mat-mdc-card-header-text {
 	width: 100%;
+}
+
+// Set padding of material card title
+.mat-mdc-card-title {
+	padding-left: 0 !important;
 }
