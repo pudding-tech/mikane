@@ -16,15 +16,8 @@
 	}"
 >
 	<ul class="menu-list">
-		<li>
-			<a dropdown1 (click)="dropdownClicked(1)" class="link">
-				<ng-content select="[dropdown1]"></ng-content>
-			</a>
-		</li>
-		<li>
-			<a dropdown2 (click)="dropdownClicked(2)" class="link">
-				<ng-content select="[dropdown2]"></ng-content>
-			</a>
+		<li *ngFor="let item of items">
+			<ng-container *ngTemplateOutlet="item.templateRef"></ng-container>
 		</li>
 		<!-- <li class="menu-separator"></li> -->
 	</ul>

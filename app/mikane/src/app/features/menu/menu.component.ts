@@ -7,13 +7,15 @@ import { ApiError } from 'src/app/types/apiError.type';
 import { MessageService } from 'src/app/services/message/message.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { SplitButtonItemComponent } from '../split-button/split-button-item/split-button-item.component';
+import { SplitButtonItemDirective } from '../split-button/split-button-item/split-button-item.directive';
 
 @Component({
 	selector: 'menu',
 	templateUrl: './menu.component.html',
 	styleUrls: ['./menu.component.scss'],
 	standalone: true,
-	imports: [CommonModule, NgIf, MatIconModule, SplitButtonComponent],
+	imports: [CommonModule, NgIf, MatIconModule, SplitButtonComponent, SplitButtonItemComponent, SplitButtonItemDirective],
 })
 export class MenuComponent {
 	@ViewChild('splitButton') private splitButton: SplitButtonComponent;

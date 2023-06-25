@@ -6,13 +6,7 @@
 		<div button>
 			<mat-icon class="account">account_circle</mat-icon>
 		</div>
-		<div dropdown1>
-			<mat-icon aria-hidden="true" class="icon">person</mat-icon>
-			<span class="text">Account</span>
-		</div>
-		<div dropdown2>
-			<mat-icon aria-hidden="true" class="icon">logout</mat-icon>
-			<span class="text">Log out</span>
-		</div>
+		<split-button-item *splitButtonItem [onClick]="onAccountClick" icon="person" text="Account"></split-button-item>
+		<split-button-item *splitButtonItem [onClick]="logout" icon="logout" text="Log out"></split-button-item>
 	</split-button>
 </div>
