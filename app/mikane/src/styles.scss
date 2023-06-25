@@ -30,6 +30,16 @@ a.nostyle:visited {
 	color: inherit;
 }
 
+.logo-container {
+	min-width: 26px;
+	height: 26px;
+	padding-right: 14px;
+
+	.logo {
+		height: 26px;
+	}
+}
+
 .content {
 	margin-left: 10%;
 	padding-bottom: 3em;
@@ -146,8 +156,8 @@ mat-card-title.mat-mdc-card-title {
 
 // Hide background of autocompleted inputs
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
 	-webkit-background-clip: text;
 }

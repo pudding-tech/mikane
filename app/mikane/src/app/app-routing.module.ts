@@ -24,6 +24,10 @@ const routes: Routes = [
 		path: 'settings',
 		loadChildren: () => import('./pages/settings/settings.routes'),
 	},
+	{
+		path: 'reset-password',
+		loadChildren: () => import('./pages/reset-password/reset-password.routes'),
+	},
 	{ path: '**', redirectTo: '/events' },
 ];
 

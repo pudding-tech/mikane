@@ -37,4 +37,12 @@ export class AuthService {
 			return this.httpClient.get<User>(this.apiUrl + 'login').pipe(tap((user) => (this.currentUser = user)));
 		}
 	}
+
+	verifyPasswordReset(key: string): Observable<void> {
+		return this.httpClient.get<void>(this.apiUrl + 'verifypasswordreset/' + key);
+	}
+
+	resetPassword(key: string, password: string): Observable<void> {
+		return this.httpClient.post<void>(this.apiUrl + 'resetpassword', { key, password });
+	}
 }
