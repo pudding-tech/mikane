@@ -29,7 +29,7 @@
 					</div>
 					<div>{{ userWithBalance.spending | currency : "" : "" : "1.2-2" : "no" }} kr</div>
 					<div>{{ userWithBalance.expenses | currency : "" : "" : "1.2-2" : "no" }} kr</div>
-					<div>{{ userWithBalance.balance | currency : "" : "" : "1.2-2" : "no" }} kr</div>
+					<div class="amount-color">{{ userWithBalance.balance | currency : "" : "" : "1.2-2" : "no" }} kr</div>
 				</mat-panel-title>
 			</mat-expansion-panel-header>
 			<ng-template matExpansionPanelContent>
@@ -52,7 +52,7 @@
 					<!-- Amount Column -->
 					<ng-container matColumnDef="amount">
 						<th mat-header-cell *matHeaderCellDef>Amount</th>
-						<td mat-cell *matCellDef="let expense">
+						<td mat-cell class="amount-color" *matCellDef="let expense">
 							{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr
 						</td></ng-container
 					>
@@ -61,7 +61,7 @@
 					<ng-container matColumnDef="category">
 						<th mat-header-cell *matHeaderCellDef>Category</th>
 						<td mat-cell *matCellDef="let expense">
-							{{ expense.categoryName }}
+							{{ expense.category.name }}
 						</td></ng-container
 					>
 

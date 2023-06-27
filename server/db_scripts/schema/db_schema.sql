@@ -35,7 +35,8 @@ go
 create table category (
   id int identity(1,1) primary key,
   [name] nvarchar(255) not null,
-  weighted bit,
+  icon nvarchar(255),
+  weighted bit not null,
   event_id int foreign key references [event](id) on delete cascade
 )
 go

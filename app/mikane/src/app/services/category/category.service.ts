@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 export interface Category {
 	id: number;
 	name: string;
+	icon: string;
 	weighted: boolean;
 	users: {
 		id: number;

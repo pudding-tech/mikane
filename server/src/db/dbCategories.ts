@@ -1,6 +1,6 @@
 import sql from "mssql";
 import { parseCategories } from "../parsers/parseCategories";
-import { Target } from "../types/enums";
+import { CategoryIcon, Target } from "../types/enums";
 import { Category } from "../types/types";
 import { ErrorExt } from "../types/errorExt";
 import * as ec from "../types/errorCodes";
@@ -58,10 +58,11 @@ export const getCategory = async (categoryId: number) => {
  * @param weighted 
  * @returns Newly created category
  */
-export const createCategory = async (name: string, eventId: number, weighted: boolean) => {
+export const createCategory = async (name: string, eventId: number, weighted: boolean, icon?: CategoryIcon) => {
   const request = new sql.Request();
   const category: Category = await request
     .input("name", sql.NVarChar, name)
+    .input("icon", sql.NVarChar, icon)
     .input("event_id", sql.Int, eventId)
     .input("weighted", sql.Bit, weighted)
     .execute("new_category")
@@ -71,6 +72,8 @@ export const createCategory = async (name: string, eventId: number, weighted: bo
     .catch(err => {
       if (err.number === 50006)
         throw new ErrorExt(ec.PUD006, err);
+      if (err.number === 50097)
+        throw new ErrorExt(ec.PUD097, err);
       else
         throw new ErrorExt(ec.PUD036, err);
     });

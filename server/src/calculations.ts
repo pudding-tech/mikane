@@ -51,7 +51,7 @@ export const calculateBalance = (
       expense.payer.id,
       (userNetExpense.get(expense.payer.id) ?? 0) + expense.amount
     );
-    const expenseCategory = categoryWeights.get(expense.categoryId);
+    const expenseCategory = categoryWeights.get(expense.category.id);
     if (expenseCategory) {
       expenseCategory.forEach((userWeight: number, userId: number) => {
         spendingMap.set(

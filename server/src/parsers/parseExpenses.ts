@@ -1,6 +1,7 @@
 import { setUserUniqueNames } from "../utils/setUserDisplayNames";
 import { Expense, User } from "../types/types";
 import { ExpenseDB } from "../types/typesDB";
+import { CategoryIcon } from "../types/enums";
 
 /**
  * Build array of Expense objects
@@ -10,14 +11,24 @@ import { ExpenseDB } from "../types/typesDB";
 export const parseExpenses = (expInput: ExpenseDB[]): Expense[] => {
   const expenses: Expense[] = [];
   expInput.forEach(expObj => {
+
+    // Validate and set category icon
+    let icon: CategoryIcon = expObj.category_icon as CategoryIcon;
+    if (icon && !Object.values(CategoryIcon).includes(icon)) {
+      icon = CategoryIcon.SHOPPING;
+    }
+
     const expense: Expense = {
       id: expObj.id,
       name: expObj.name,
       description: expObj.description,
       amount: expObj.amount,
-      categoryId: expObj.category_id,
-      categoryName: expObj.category_name,
       dateAdded: expObj.date_added,
+      category: {
+        id: expObj.category_id,
+        name: expObj.category_name,
+        icon: icon
+      },
       payer: {
         id: expObj.payer_id,
         username: expObj.payer_username,

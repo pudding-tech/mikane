@@ -1,3 +1,5 @@
+import { CategoryIcon } from "./enums";
+
 export type User = {
   id: number,
   uuid: string,
@@ -33,6 +35,7 @@ export type Event = {
 export type Category = {
   id: number,
   name: string,
+  icon: CategoryIcon,
   weighted: boolean,
   userWeights?: Map<number, number>,
   users?: {
@@ -49,9 +52,12 @@ export type Expense = {
   name: string,
   description: string,
   amount: number,
-  categoryId: number,
-  categoryName: string,
   dateAdded: Date,
+  category: {
+    id: number,
+    name: string,
+    icon: CategoryIcon
+  },
   payer: User
 }
 
