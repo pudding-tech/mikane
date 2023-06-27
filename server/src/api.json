@@ -3049,17 +3049,26 @@
             "type": "number",
             "example": 100
           },
-          "categoryId": {
-            "type": "integer",
-            "example": 1
-          },
-          "categoryName": {
-            "type": "string",
-            "example": "Example category"
-          },
-          "time": {
+          "dateAdded": {
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "Example category"
+              },
+              "icon": {
+                "type": "string",
+                "example": "shopping_cart"
+              }
+            }
           },
           "payer": {
             "type": "object",

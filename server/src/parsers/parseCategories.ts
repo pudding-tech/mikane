@@ -13,10 +13,16 @@ export const parseCategories = (catInput: CategoryDB[], target: Target) : Catego
   const categories: Category[] = [];
   catInput.forEach(catObj => {
 
+    // Validate and set icon
+    let icon: CategoryIcon = catObj.icon as CategoryIcon;
+    if (icon && !Object.values(CategoryIcon).includes(icon)) {
+      icon = CategoryIcon.SHOPPING;
+    }
+
     const category: Category = {
       id: catObj.id,
       name: catObj.name,
-      icon: catObj.icon as CategoryIcon,
+      icon: icon,
       weighted: catObj.weighted
     };
 
