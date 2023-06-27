@@ -152,6 +152,16 @@ a.nostyle:visited {
 	text-align: center;
 }
 
+.amount-color {
+	// color: rgb(172 255 163);
+  color: rgb(255 133 181);
+}
+
+.amount-color-mobile {
+	// color: rgb(127, 221, 117);
+	color: rgb(253, 89, 154);
+}
+
 // Hide background of autocompleted inputs
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

@@ -9,9 +9,12 @@ export interface Expense {
 	name: string;
 	description: string;
 	amount: number;
-	categoryId: number;
-	categoryName: string;
 	dateAdded: Date;
+	category: {
+		id: number;
+		name: string;
+		icon: string;
+	}
 	payer: User;
 }
 
