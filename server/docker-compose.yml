@@ -24,9 +24,10 @@ services:
       - .env
     environment:
       - ACCEPT_EULA=Y
-    command: /bin/bash ./entrypoint.sh
+      - DB_HOST=db
+    command: /bin/bash ./bash_scripts/entrypoint.sh
     volumes:
       - ./db_data:/var/opt/mssql/data
-      - ./entrypoint.sh:/entrypoint.sh
+      - ./bash_scripts:/bash_scripts
       - ./db_scripts:/db_scripts
     restart: unless-stopped

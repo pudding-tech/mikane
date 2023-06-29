@@ -9,7 +9,7 @@ interface EnvVariables {
   ALLOWED_ORIGIN: string;
   SESSION_SECRET: string;
 
-  DB_SERVER: string;
+  DB_HOST: string;
   DB_PORT: number;
   DB_DATABASE: string;
   DB_USER: string;
@@ -23,8 +23,8 @@ const validateEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
 
   const missing: string[] = [];
 
-  if (!env.DB_SERVER) {
-    missing.push("DB_SERVER");
+  if (!env.DB_HOST) {
+    missing.push("DB_HOST");
   }
   if (!env.DB_USER) {
     missing.push("DB_USER");
@@ -52,7 +52,7 @@ const validateEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
     ALLOWED_ORIGIN: env.ALLOWED_ORIGIN || "http://localhost:4200",
     SESSION_SECRET: env.SESSION_SECRET || "abcdef",
 
-    DB_SERVER: env.DB_SERVER as string,
+    DB_HOST: env.DB_HOST as string,
     DB_PORT: parseInt(env.DB_PORT ?? "") || 1433,
     DB_DATABASE: env.DB_DATABASE || "master",
     DB_USER: env.DB_USER as string,
