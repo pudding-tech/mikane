@@ -1,4 +1,4 @@
-HOST=${DB_SERVER:-localhost}
+HOST=${DB_HOST:-localhost}
 PORT=${DB_PORT:-1433}
 USER=${DB_USER:-sa}
 
