@@ -4,7 +4,6 @@ USER=${DB_USER:-sa}
 
 # Wait to be sure that SQL Server is running
 echo "Waiting for SQL Server to start"
-chmod +x ./bash_scripts/wait-until.sh
 ./bash_scripts/wait-until.sh "/opt/mssql-tools/bin/sqlcmd -S '${HOST},${PORT}' -U '${USER}' -P "${DB_PASSWORD}" -d 'master' -Q 'select '\''database master is running'\'''" 60 2> /dev/null
 exit_status=$?
 if [ "${exit_status}" -eq 1 ]; then
