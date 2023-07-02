@@ -21,12 +21,21 @@ const app = express();
 const connectDB = () => {
   sql.connect(dbConfig)
     .then(pool => {
-      if (pool.connecting) {
-        console.log("Still connecting to database...");
-      }
       if (pool.connected) {
         console.log(`Connected to SQL database: ${dbConfig.server} - ${dbConfig.database}`);
-        store.connect().catch(err => console.error("Error connecting to session store\n", err));
+        store.connect()
+          .then(() => {
+            app.set("dbReady", true);
+            app.emit("dbConnected");
+          })
+          .catch(err => {
+            console.error("Error connecting to session store\n", err);
+            app.set("dbReady", false);
+            app.emit("dbConnectionError");
+          });
+      }
+      else {
+        console.log("Database is still connecting? " + pool.connecting);
       }
     })
     .catch(err => {
@@ -132,7 +141,4 @@ app.use((req, res) => {
   res.status(404).send({ error: "404: Not found" });
 });
 
-// Listen for requests
-app.listen(env.PORT, () => {
-  console.log("Mikane server running on port " + env.PORT);
-});
+export default app;

@@ -41,7 +41,7 @@ jobs:
     env:
       DB_HOST: localhost
       DB_PORT: 1433
-      DB_DATABASE: mikane
+      DB_DATABASE: mikanetest
       DB_USER: SA
       DB_PASSWORD: MikaneTestPassword!123
 
@@ -89,6 +89,7 @@ jobs:
         run: |
           chmod -R +x ./bash_scripts
           docker exec \
+          -e ENVIRONMENT=test \
           -e DB_HOST="${{ env.DB_HOST }}" \
           -e DB_PORT=1433 \
           -e DB_USER="${{ env.DB_USER }}" \
@@ -105,3 +106,6 @@ jobs:
 
       - name: Test outside SQL connection
         run: sqlcmd -S "${{ env.DB_HOST }}" -U sa -P "${{ env.DB_PASSWORD }}" -d master -Q "SELECT name FROM sys.databases;"
+
+      - name: Run tests
+        run: npm run test
