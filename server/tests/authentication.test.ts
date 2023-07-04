@@ -45,7 +45,7 @@ describe("authentication", async () => {
       authToken = res.headers["set-cookie"][0];
     });
 
-    test("should fail login with wrong password", async () => {
+    test("fail login with wrong password", async () => {
       const res = await request(app)
         .post("/api/login")
         .send({
@@ -71,7 +71,7 @@ describe("authentication", async () => {
       expect(res.body.username).toEqual(user.username);
     });
 
-    test("should be not authenticated", async () => {
+    test("should not be authenticated", async () => {
       const res = await request(app)
         .get("/api/login");
 

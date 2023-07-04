@@ -52,10 +52,10 @@ jobs:
     #       MSSQL_SA_PASSWORD: "${{ env.DB_PASSWORD }}"
     #       ACCEPT_EULA: 'Y'
     #     ports:
-    #       - 1433:1433
+    #       - "${{ env.DB_PORT }}":1433
     #     volumes:
-    #       - /server/bash_scripts:/bash_scripts
-    #       - /server/db_scripts:/db_scripts
+    #       - ${{ github.workspace }}/server/bash_scripts:/bash_scripts
+    #       - ${{ github.workspace }}/server/db_scripts:/db_scripts
     #     options: >-
     #       --name mssqldb
 
@@ -98,14 +98,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Install sqlcmd
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mssql-tools
-
-      - name: Test outside SQL connection
-        run: sqlcmd -S "${{ env.DB_HOST }}" -U sa -P "${{ env.DB_PASSWORD }}" -d master -Q "SELECT name FROM sys.databases;"
 
       - name: Run tests
         run: npm run test

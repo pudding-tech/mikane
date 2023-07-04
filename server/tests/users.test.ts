@@ -58,7 +58,7 @@ describe("users", async () => {
       user2 = res.body;
     });
 
-    test("should fail create user with taken username", async () => {
+    test("fail create user with taken username", async () => {
       const res = await request(app)
         .post("/api/users")
         .send({
@@ -74,7 +74,7 @@ describe("users", async () => {
       expect(res.body.code).toEqual(ec.PUD017.code);
     });
 
-    test("should fail create user with invalid email", async () => {
+    test("fail create user with invalid email", async () => {
       const res = await request(app)
         .post("/api/users")
         .send({
@@ -90,7 +90,7 @@ describe("users", async () => {
       expect(res.body.code).toEqual(ec.PUD004.code);
     });
 
-    test("should fail create user with empty first name", async () => {
+    test("fail create user with empty first name", async () => {
       const res = await request(app)
         .post("/api/users")
         .send({
@@ -174,7 +174,7 @@ describe("users", async () => {
       expect(res.body.firstName).toEqual("Changed");
     });
 
-    test("should fail edit user with non-number user ID", async () => {
+    test("fail edit user with non-number user ID", async () => {
       const res = await request(app)
         .put("/api/users/" + "a")
         .set("Cookie", authToken)
@@ -186,7 +186,7 @@ describe("users", async () => {
       expect(res.body.code).toEqual(ec.PUD016.code);
     });
 
-    test("should fail edit user with empty first name", async () => {
+    test("fail edit user with empty first name", async () => {
       const res = await request(app)
         .put("/api/users/" + user.id)
         .set("Cookie", authToken)

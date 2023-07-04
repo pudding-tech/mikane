@@ -4,7 +4,7 @@ import app from "./setup";
 import * as ec from "../src/types/errorCodes";
 import { Event, User } from "../src/types/types";
 
-describe("events", () => {
+describe("events", async () => {
 
   let authToken: string;
   let authToken2: string;
@@ -90,7 +90,7 @@ describe("events", () => {
       event2 = res2.body;
     });
 
-    test("should fail create event with taken name", async () => {
+    test("fail create event with taken name", async () => {
       const res = await request(app)
         .post("/api/events")
         .set("Cookie", authToken)
@@ -140,7 +140,7 @@ describe("events", () => {
       expect(res.body.name).toEqual("Example event");
     });
 
-    test("should fail get event by non-exisisting name", async () => {
+    test("fail get event by non-exisisting name", async () => {
       const res = await request(app)
         .get("/api/event-by-name")
         .set("Cookie", authToken)
@@ -192,7 +192,7 @@ describe("events", () => {
       expect(res.body.name).toEqual("Changed");
     });
 
-    test("should fail edit event when logged in user is not event admin", async () => {
+    test("fail edit event when logged in user is not event admin", async () => {
       const res = await request(app)
         .put("/api/events/" + event.id)
         .set("Cookie", authToken2)
@@ -204,7 +204,7 @@ describe("events", () => {
       expect(res.body.code).toEqual(ec.PUD087.code);
     });
 
-    test("should fail edit event with empty name", async () => {
+    test("fail edit event with empty name", async () => {
       const res = await request(app)
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
@@ -217,9 +217,9 @@ describe("events", () => {
     });
   });
 
-  /* ------------------------- */
-  /* POST /events/:id/user/:id */
-  /* ------------------------- */
+  /* ----------------------------- */
+  /* POST /events/:id/user/:userId */
+  /* ----------------------------- */
   describe("POST /events/:id/user/:id", async () => {
     // Check number of users in event (should be 1)
     test("number of users in event should be 1", async () => {
@@ -313,9 +313,9 @@ describe("events", () => {
     });
   });
 
-  /* --------------------------- */
-  /* DELETE /events/:id/user/:id */
-  /* --------------------------- */
+  /* ------------------------------- */
+  /* DELETE /events/:id/user/:userId */
+  /* ------------------------------- */
   describe("DELETE /events/:id/user/:id", async () => {
     // Check number of users in event (should be 2)
     test("number of users in event should be 2", async () => {
@@ -362,7 +362,7 @@ describe("events", () => {
       expect(res.body.success).toEqual(true);
     });
 
-    test("should fail delete event when logged in user is not event admin", async () => {
+    test("fail delete event when logged in user is not event admin", async () => {
       const res = await request(app)
         .delete("/api/events/" + event.id)
         .set("Cookie", authToken2);
