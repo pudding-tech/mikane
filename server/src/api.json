@@ -314,17 +314,22 @@
         "security": [
           { "apiKeyAuth": [] }
         ],
-        "parameters": [
-          {
-            "name": "name",
-            "in": "query",
-            "description": "Name of key",
-            "required": true,
-            "schema": {
-              "type": "string"
+        "requestBody": {
+          "description": "Name of API key",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Example key"
+                  }
+                }
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "API key created",

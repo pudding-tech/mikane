@@ -65,12 +65,12 @@ export const authKeyCheck = async (req: Request, res: Response, next: NextFuncti
  * @param next NextFunction
  */
 export const masterKeyCheck = async (req: Request, res: Response, next: NextFunction) => {
-  const authKey = req.get("Authorization");
-  if (!authKey) {
-    throw new ErrorExt(PUD069);
-  }
-
   try {
+    const authKey = req.get("Authorization");
+    if (!authKey) {
+      throw new ErrorExt(PUD069);
+    }
+
     const keys = await getApiKeys("master");
     const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
 

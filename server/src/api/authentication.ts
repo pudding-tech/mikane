@@ -137,7 +137,7 @@ router.post("/logout", (req, res, next) => {
 */
 router.post("/generatekey", masterKeyCheck, async (req, res, next) => {
   try {
-    const name = req.query.name as string;
+    const name = req.body.name as string;
     if (!name) {
       throw new ErrorExt(ec.PUD068);
     }
@@ -161,7 +161,7 @@ router.post("/requestpasswordreset", async (req, res, next) => {
       throw new ErrorExt(ec.PUD073);
     }
 
-    const email = req.body.email;
+    const email = req.body.email as string;
     if (!email) {
       throw new ErrorExt(ec.PUD072);
     }

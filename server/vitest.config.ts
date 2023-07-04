@@ -7,6 +7,7 @@ export default defineConfig({
       if (log.includes("Connected to SQL database")) return false;
       if (log.includes("Session store connected")) return false;
       if (log.includes("signing in...")) return false;
+      if (log.includes("successfully signed out")) return false;
     }
   }
 });

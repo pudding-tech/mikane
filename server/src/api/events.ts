@@ -184,7 +184,7 @@ router.put("/events/:id", authCheck, async (req, res, next) => {
     if (isNaN(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
-    if (![undefined, null].includes(req.body.name) && req.body.name.length < 1) {
+    if (![undefined, null].includes(req.body.name) && req.body.name.trim() === "") {
       throw new ErrorExt(ec.PUD053);
     }
     const userId = req.session.userId;

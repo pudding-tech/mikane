@@ -34,7 +34,7 @@ begin
   end
 
   if (@weighted = 1 and @weight is null)
-    begin;
+    begin
       throw 50012, 'Weight required when adding user to weighted category', 9
     end
   else if (@weighted = 1)
