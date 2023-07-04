@@ -6,8 +6,8 @@ import { User } from "../src/types/types";
 
 describe("authentication", async () => {
 
-  let user: User;
   let authToken: string;
+  let user: User;
 
   /*
    * Create user

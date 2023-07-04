@@ -7,9 +7,9 @@ import { Category, Event, User } from "../src/types/types";
 describe("categories", async () => {
 
   let authToken: string;
-  let category: Category;
-  let event: Event;
   let user: User;
+  let event: Event;
+  let category: Category;
 
   /*
    * Create user, log in, then create event

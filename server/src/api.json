@@ -2484,7 +2484,7 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "eventId",
             "in": "query",
             "description": "Event ID",
             "required": true,

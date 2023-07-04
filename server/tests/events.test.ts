@@ -8,10 +8,10 @@ describe("events", async () => {
 
   let authToken: string;
   let authToken2: string;
-  let event: Event;
-  let event2: Event;
   let user: User;
   let user2: User;
+  let event: Event;
+  let event2: Event;
 
   /*
    * Create 2 users, then log in both users
