@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  mikane_test_db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mikane_test_db
+    user: root
+    ports:
+      - "37000:1433"
+    environment:
+      - ENVIRONMENT=test
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=MikaneTestPassword!123
+      - DB_HOST=mikane_test_db
+      - DB_PASSWORD=MikaneTestPassword!123
+    command: /bin/bash ./bash_scripts/entrypoint.sh
+    volumes:
+      - ../bash_scripts:/bash_scripts
+      - ../db_scripts:/db_scripts

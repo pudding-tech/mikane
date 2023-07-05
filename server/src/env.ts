@@ -1,6 +1,12 @@
 import dotenv from "dotenv";
 import { isEmail } from "./utils/emailValidator";
-dotenv.config();
+
+if (process.env.NODE_ENV === "test") {
+  dotenv.config({ path: "./test.env" });
+}
+else {
+  dotenv.config();
+}
 
 interface EnvVariables {
   NODE_ENV: string;
