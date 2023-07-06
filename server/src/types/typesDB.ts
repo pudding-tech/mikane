@@ -1,5 +1,30 @@
+export type UserDB = {
+  uuid: string,
+  username: string,
+  first_name: string,
+  last_name: string,
+  email: string,
+  phone_number: string,
+  created: Date,
+  event_uuid?: string,
+  event_admin?: boolean,
+  event_joined_date?: Date
+}
+
+export type EventDB = {
+  uuid: string,
+  name: string,
+  description: string,
+  created: Date,
+  admin_ids: string,
+  private: boolean,
+  user_uuid?: string,
+  user_in_event?: boolean,
+  user_is_admin?: boolean
+}
+
 export type CategoryDB = {
-  id: number,
+  uuid: string,
   name: string,
   icon: string,
   weighted: boolean,
@@ -7,57 +32,30 @@ export type CategoryDB = {
 }
 
 export type UserWeightDB = {
-  user_id: number,
+  user_uuid: string,
   first_name: string,
   last_name: string,
   weight: number
 }
 
 export type ExpenseDB = {
-  id: number,
+  uuid: string,
   name: string,
   description: string,
   amount: number,
   category_id: number,
+  category_uuid: string,
   category_name: string,
   category_icon: string;
   date_added: Date,
-  payer_id: number,
+  payer_uuid: string,
   payer_username: string,
   payer_first_name: string,
-  payer_last_name: string,
-  payer_uuid: string
-}
-
-export type UserDB = {
-  id: number,
-  username: string,
-  first_name: string,
-  last_name: string,
-  email: string,
-  phone_number: string,
-  created: Date,
-  uuid: string,
-  event_id?: number,
-  event_admin?: boolean,
-  event_joined_date?: Date
-}
-
-export type EventDB = {
-  id: number,
-  name: string,
-  description: string,
-  created: Date,
-  admin_ids: string,
-  private: boolean,
-  uuid: string,
-  user_id?: number,
-  in_event?: boolean,
-  is_admin?: boolean
+  payer_last_name: string
 }
 
 export type AdminIdDB = {
-  user_id: number
+  user_uuid: string
 }
 
 export type APIKeyDB = {

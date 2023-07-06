@@ -168,7 +168,7 @@ describe("events", async () => {
 
     test("should not find event", async () => {
       const res = await request(app)
-        .get("/api/events/" + 3)
+        .get("/api/events/56e901ad-374f-4e1d-92f1-d02dd22d11d3")
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(404);

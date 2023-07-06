@@ -106,7 +106,7 @@ describe("categories", async () => {
           name: "Test category 2",
           icon: "shopping_cart",
           weighted: false,
-          eventId: 15
+          eventId: "56e901ad-374f-4e1d-92f1-d02dd22d11d3"
         });
 
       expect(res.status).toEqual(404);
@@ -146,7 +146,7 @@ describe("categories", async () => {
     test("fail find categories with invalid event ID", async () => {
       const res = await request(app)
         .get("/api/categories")
-        .query("eventId=" + 15)
+        .query("eventId=56e901ad-374f-4e1d-92f1-d02dd22d11d3")
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(404);
@@ -157,7 +157,7 @@ describe("categories", async () => {
   /* ------------------- */
   /* GET /categories/:id */
   /* ------------------- */
-  describe("GET /categories", async () => {
+  describe("GET /categories/:id", async () => {
     test("should get category", async () => {
       const res = await request(app)
         .get("/api/categories/" + category.id)
@@ -169,7 +169,7 @@ describe("categories", async () => {
 
     test("fail find category", async () => {
       const res = await request(app)
-        .get("/api/categories/" + 30)
+        .get("/api/categories/56e901ad-374f-4e1d-92f1-d02dd22d11d3")
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(404);
@@ -180,7 +180,7 @@ describe("categories", async () => {
   /* ------------------- */
   /* PUT /categories/:id */
   /* ------------------- */
-  describe("PUT /categories", async () => {
+  describe("PUT /categories/:id", async () => {
     test("should edit category", async () => {
       const res = await request(app)
         .put("/api/categories/" + category.id)
@@ -196,7 +196,7 @@ describe("categories", async () => {
 
     test("fail edit category with invalid ID", async () => {
       const res = await request(app)
-        .put("/api/categories/" + 30)
+        .put("/api/categories/56e901ad-374f-4e1d-92f1-d02dd22d11d3")
         .set("Cookie", authToken)
         .send({
           name: "New test category name"
@@ -311,6 +311,29 @@ describe("categories", async () => {
 
       expect(res.status).toEqual(200);
       expect(res.body.users.length).toEqual(0);
+    });
+  });
+
+  /* ---------------------- */
+  /* DELETE /categories/:id */
+  /* ---------------------- */
+  describe("DELETE /categories/:id", async () => {
+    test("should delete category", async () => {
+      const res = await request(app)
+        .delete("/api/categories/" + category.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.success).toEqual(true);
+    });
+
+    test("confirm deleted category does not exist", async () => {
+      const res = await request(app)
+        .get("/api/categories/" + category.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(404);
+      expect(res.body.code).toEqual(ec.PUD007.code);
     });
   });
 });

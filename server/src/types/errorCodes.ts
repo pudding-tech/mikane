@@ -114,11 +114,11 @@ export const PUD012: ErrorCode = {
 };
 
 /**
- * PUD-013: Event ID must be a number (400)
+ * PUD-013: Event ID must be a valid UUID (400)
  */
 export const PUD013: ErrorCode = {
   code: "PUD-013",
-  message: "Event ID must be a number",
+  message: "Event ID must be a valid UUID",
   status: 400
 };
 
@@ -132,20 +132,20 @@ export const PUD014: ErrorCode = {
 };
 
 /**
- * PUD-015: Event ID and user ID must be numbers (400)
+ * PUD-015: Event ID and user ID must be valid UUIDs (400)
  */
 export const PUD015: ErrorCode = {
   code: "PUD-015",
-  message: "Event ID and user ID must be numbers",
+  message: "Event ID and user ID must be valid UUIDs",
   status: 400
 };
 
 /**
- * PUD-016: User ID must be a number (400)
+ * PUD-016: User ID must be a valid UUID (400)
  */
 export const PUD016: ErrorCode = {
   code: "PUD-016",
-  message: "User ID must be a number",
+  message: "User ID must be a valid UUID",
   status: 400
 };
 
@@ -427,11 +427,11 @@ export const PUD044: ErrorCode = {
 };
 
 /**
- * PUD-045: Category ID must be a number (400)
+ * PUD-045: Category ID must be a valid UUID (400)
  */
 export const PUD045: ErrorCode = {
   code: "PUD-045",
-  message: "Category ID must be a number",
+  message: "Category ID must be a valid UUID",
   status: 400
 };
 
@@ -445,11 +445,11 @@ export const PUD046: ErrorCode = {
 };
 
 /**
- * PUD-047: Category ID and user ID must be numbers (400)
+ * PUD-047: Category ID and user ID must be valid UUIDs (400)
  */
 export const PUD047: ErrorCode = {
   code: "PUD-047",
-  message: "Category ID and user ID must be numbers",
+  message: "Category ID and user ID must be valid UUIDs",
   status: 400
 };
 
@@ -526,11 +526,11 @@ export const PUD055: ErrorCode = {
 };
 
 /**
- * PUD-056: Expense ID must be a number (400)
+ * PUD-056: Expense ID must be a valid UUID (400)
  */
 export const PUD056: ErrorCode = {
   code: "PUD-056",
-  message: "Expense ID must be a number",
+  message: "Expense ID must be a valid UUID",
   status: 400
 };
 
@@ -835,11 +835,11 @@ export const PUD088: ErrorCode = {
 };
 
 /**
- * PUD-089: Payer ID must be a number (400)
+ * PUD-089: Payer ID must be a valid UUID (400)
  */
 export const PUD089: ErrorCode = {
   code: "PUD-089",
-  message: "Payer ID must be a number",
+  message: "Payer ID must be a valid UUID",
   status: 400
 };
 

@@ -63,12 +63,16 @@ export default class MSSQLSessionStore extends Store {
         .input("sid", sql.NVarChar, sid)
         .input("session", sql.NVarChar, data)
         .input("expires", sql.DateTime, expires)
-        .input("user_id", sql.Int, userId)
+        .input("user_uuid", sql.UniqueIdentifier, userId)
         .query(`
           IF EXISTS (SELECT * FROM ${this.table} WHERE sid = @sid)
             UPDATE ${this.table} SET session = @session, expires = @expires WHERE sid = @sid
           ELSE
-            INSERT INTO ${this.table} (sid, session, expires, user_id) VALUES (@sid, @session, @expires, @user_id)
+            BEGIN
+            DECLARE @user_id int
+            SELECT @user_id = id FROM [user] WHERE uuid = @user_uuid
+            INSERT INTO ${this.table} (sid, session, expires, user_id, user_uuid) VALUES (@sid, @session, @expires, @user_id, @user_uuid)
+            END
         `);
       if (callback) {
         callback();
@@ -124,15 +128,15 @@ export default class MSSQLSessionStore extends Store {
    * Destroy all sessions for the signed in user
    * @param session 
    */
-  async destroyAll(userId: number, callback?: ((err?: any) => void)) {
+  async destroyAll(userId: string, callback?: ((err?: any) => void)) {
     try {
       await this.connectionCheck();
 
       const request = this.pool.request();
       await request
-        .input("user_id", sql.Int, userId)
+        .input("user_uuid", sql.UniqueIdentifier, userId)
         .query(`
-          DELETE FROM ${this.table} where user_id = @user_id
+          DELETE FROM ${this.table} where user_uuid = @user_uuid
         `);
       if (callback) {
         callback();

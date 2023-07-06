@@ -9,12 +9,12 @@ import * as ec from "../types/errorCodes";
  * @param eventId 
  * @returns List of expenses
  */
-export const getExpenses = async (eventId: number) => {
+export const getExpenses = async (eventId: string) => {
   const request = new sql.Request();
   const expenses: Expense[] = await request
-    .input("event_id", sql.Int, eventId)
-    .input("user_id", sql.Int, null)
-    .input("expense_id", sql.Int, null)
+    .input("event_uuid", sql.UniqueIdentifier, eventId)
+    .input("user_uuid", sql.UniqueIdentifier, null)
+    .input("expense_uuid", sql.UniqueIdentifier, null)
     .execute("get_expenses")
     .then(data => {
       return parseExpenses(data.recordset);
@@ -37,12 +37,12 @@ export const getExpenses = async (eventId: number) => {
  * @param expenseId 
  * @returns Expense object
  */
-export const getExpense = async (expenseId: number) => {
+export const getExpense = async (expenseId: string) => {
   const request = new sql.Request();
   const expenses: Expense[] = await request
-    .input("event_id", sql.Int, null)
-    .input("user_id", sql.Int, null)
-    .input("expense_id", sql.Int, expenseId)
+    .input("event_uuid", sql.UniqueIdentifier, null)
+    .input("user_uuid", sql.UniqueIdentifier, null)
+    .input("expense_uuid", sql.UniqueIdentifier, expenseId)
     .execute("get_expenses")
     .then(data => {
       return parseExpenses(data.recordset);
@@ -72,14 +72,14 @@ export const getExpense = async (expenseId: number) => {
  * @param payerId 
  * @returns Newly created expense
  */
-export const createExpense = async (name: string, description: string, amount: number, categoryId: number, payerId: number) => {
+export const createExpense = async (name: string, description: string, amount: number, categoryId: string, payerId: string) => {
   const request = new sql.Request();
   const expenses: Expense[] = await request
     .input("name", sql.NVarChar, name)
     .input("description", sql.NVarChar, description)
     .input("amount", sql.Numeric(16, 2), amount)
-    .input("category_id", sql.Int, categoryId)
-    .input("payer_id", sql.Int, payerId)
+    .input("category_uuid", sql.UniqueIdentifier, categoryId)
+    .input("payer_uuid", sql.UniqueIdentifier, payerId)
     .execute("new_expense")
     .then(data => {
       return parseExpenses(data.recordset);
@@ -102,11 +102,11 @@ export const createExpense = async (name: string, description: string, amount: n
  * @param expenseId 
  * @returns True if successful
  */
-export const deleteExpense = async (expenseId: number, userId: number) => {
+export const deleteExpense = async (expenseId: string, userId: string) => {
   const request = new sql.Request();
   const success = await request
-    .input("expense_id", sql.Int, expenseId)
-    .input("user_id", sql.Int, userId)
+    .input("expense_uuid", sql.UniqueIdentifier, expenseId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .execute("delete_expense")
     .then(() => {
       return true;

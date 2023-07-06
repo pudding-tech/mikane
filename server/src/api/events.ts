@@ -1,6 +1,7 @@
 import express from "express";
 import * as db from "../db/dbEvents";
 import { authCheck, authKeyCheck } from "../middlewares/authCheck";
+import { isUUID } from "../utils/uuidValidator";
 import { Event, Payment, UserBalance } from "../types/types";
 import { ErrorExt } from "../types/errorExt";
 import * as ec from "../types/errorCodes";
@@ -29,9 +30,9 @@ router.get("/events", authCheck, async (req, res, next) => {
 */
 router.get("/events/:id", authCheck, async (req, res, next) => {
   try {
-    const eventId = Number(req.params.id);
+    const eventId = req.params.id;
     const userId = req.session.userId;
-    if (isNaN(eventId)) {
+    if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
@@ -70,8 +71,8 @@ router.get("/event-by-name", authKeyCheck, async (req, res, next) => {
 */
 router.get("/events/:id/balances", authCheck, async (req, res, next) => {
   try {
-    const eventId = Number(req.params.id);
-    if (isNaN(eventId)) {
+    const eventId = req.params.id;
+    if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
@@ -88,8 +89,8 @@ router.get("/events/:id/balances", authCheck, async (req, res, next) => {
 */
 router.get("/events/:id/payments", authKeyCheck, async (req, res, next) => {
   try {
-    const eventId = Number(req.params.id);
-    if (isNaN(eventId)) {
+    const eventId = req.params.id;
+    if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
@@ -134,9 +135,9 @@ router.post("/events", authCheck, async (req, res, next) => {
 */
 router.post("/events/:id/user/:userId", authCheck, async (req, res, next) => {
   try {
-    const eventId = Number(req.params.id);
-    const userId = Number(req.params.userId);
-    if (isNaN(eventId) || isNaN(userId)) {
+    const eventId = req.params.id;
+    const userId = req.params.userId;
+    if (!isUUID(eventId) || !isUUID(userId)) {
       throw new ErrorExt(ec.PUD015);
     }
 
@@ -153,9 +154,9 @@ router.post("/events/:id/user/:userId", authCheck, async (req, res, next) => {
 */
 router.post("/events/:id/admin/:userId", authCheck, async (req, res, next) => {
   try {
-    const eventId = Number(req.params.id);
-    const userId = Number(req.params.userId);
-    if (isNaN(eventId) || isNaN(userId)) {
+    const eventId = req.params.id;
+    const userId = req.params.userId;
+    if (!isUUID(eventId) || !isUUID(userId)) {
       throw new ErrorExt(ec.PUD015);
     }
     const byUserId = req.session.userId;
@@ -180,8 +181,8 @@ router.post("/events/:id/admin/:userId", authCheck, async (req, res, next) => {
 */
 router.put("/events/:id", authCheck, async (req, res, next) => {
   try {
-    const eventId = Number(req.params.id);
-    if (isNaN(eventId)) {
+    const eventId = req.params.id;
+    if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
     if (![undefined, null].includes(req.body.name) && req.body.name.trim() === "") {
@@ -212,8 +213,8 @@ router.put("/events/:id", authCheck, async (req, res, next) => {
 */
 router.delete("/events/:id", authCheck, async (req, res, next) => {
   try {
-    const eventId = Number(req.params.id);
-    if (isNaN(eventId)) {
+    const eventId = req.params.id;
+    if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
     const userId = req.session.userId;
@@ -234,9 +235,9 @@ router.delete("/events/:id", authCheck, async (req, res, next) => {
 */
 router.delete("/events/:id/user/:userId", authCheck, async (req, res, next) => {
   try {
-    const eventId = Number(req.params.id);
-    const userId = Number(req.params.userId);
-    if (isNaN(eventId) || isNaN(userId)) {
+    const eventId = req.params.id;
+    const userId = req.params.userId;
+    if (!isUUID(eventId) || !isUUID(userId)) {
       throw new ErrorExt(ec.PUD015);
     }
 
@@ -253,9 +254,9 @@ router.delete("/events/:id/user/:userId", authCheck, async (req, res, next) => {
 */
 router.delete("/events/:id/admin/:userId", authCheck, async (req, res, next) => {
   try {
-    const eventId = Number(req.params.id);
-    const userId = Number(req.params.userId);
-    if (isNaN(eventId) || isNaN(userId)) {
+    const eventId = req.params.id;
+    const userId = req.params.userId;
+    if (!isUUID(eventId) || !isUUID(userId)) {
       throw new ErrorExt(ec.PUD015);
     }
     const byUserId = req.session.userId;

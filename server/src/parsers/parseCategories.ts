@@ -20,7 +20,7 @@ export const parseCategories = (catInput: CategoryDB[], target: Target) : Catego
     }
 
     const category: Category = {
-      id: catObj.id,
+      id: catObj.uuid,
       name: catObj.name,
       icon: icon,
       weighted: catObj.weighted
@@ -30,7 +30,7 @@ export const parseCategories = (catInput: CategoryDB[], target: Target) : Catego
       category.users = [];
     }
     else if (target === Target.CALC) {
-      category.userWeights = new Map<number, number>();
+      category.userWeights = new Map<string, number>();
     }
 
     try {
@@ -41,7 +41,7 @@ export const parseCategories = (catInput: CategoryDB[], target: Target) : Catego
           if (target === Target.CLIENT && category.users) {
             category.users.push(
               {
-                id: weight.user_id,
+                id: weight.user_uuid,
                 name: weight.first_name,
                 firstName: weight.first_name,
                 lastName: weight.last_name,
@@ -50,7 +50,7 @@ export const parseCategories = (catInput: CategoryDB[], target: Target) : Catego
             );
           }
           else if (target === Target.CALC && category.userWeights) {
-            category.userWeights.set(weight.user_id, weight.weight);
+            category.userWeights.set(weight.user_uuid, weight.weight);
           }
         });
       }
