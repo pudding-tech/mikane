@@ -33,16 +33,12 @@
                       "example": "true"
                     },
                     "id": {
-                      "type": "integer",
-                      "example": 1
+                      "type": "string",
+                      "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                     },
                     "username": {
                       "type": "string",
                       "example": "testuser"
-                    },
-                    "uuid": {
-                      "type": "string",
-                      "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
                     }
                   }
                 }
@@ -1853,8 +1849,8 @@
                     "example": true
                   },
                   "eventId": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                   }                 
                 }
               }
@@ -2571,12 +2567,12 @@
                     "example": 100
                   },
                   "categoryId": {
-                    "type": "number",
-                    "example": 1
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                   },
                   "payerId": {
-                    "type": "number",
-                    "example": 1
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                   }
                 }
               }
@@ -2776,8 +2772,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "example": 1
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
           },
           "username": {
             "type": "string",
@@ -2794,10 +2790,6 @@
           "created": {
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
-          },
-          "uuid": {
-            "type": "string",
-            "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
           }
         }
       },
@@ -2805,8 +2797,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "example": 1
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
           },
           "username": {
             "type": "string",
@@ -2824,16 +2816,12 @@
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
           },
-          "uuid": {
-            "type": "string",
-            "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
-          },
           "event": {
             "type": "object",
             "properties": {
               "id": {
-                "type": "integer",
-                "example": 1
+                "type": "string",
+                "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
               },
               "isAdmin": {
                 "type": "boolean",
@@ -2851,16 +2839,15 @@
           "username",
           "name",
           "email",
-          "created",
-          "uuid"
+          "created"
         ]
       },
       "UserDetailed": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "example": 1
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
           },
           "username": {
             "type": "string",
@@ -2889,10 +2876,6 @@
           "created": {
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
-          },
-          "uuid": {
-            "type": "string",
-            "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
           }
         }
       },
@@ -2904,8 +2887,8 @@
             "example": "true"
           },
           "id": {
-            "type": "integer",
-            "example": 1
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
           },
           "username": {
             "type": "string",
@@ -2930,10 +2913,6 @@
           "created": {
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
-          },
-          "uuid": {
-            "type": "string",
-            "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
           }
         }
       },
@@ -2941,8 +2920,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "example": 1
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
           },
           "name": {
             "type": "string",
@@ -2959,17 +2938,13 @@
           "adminIds": {
             "type": "array",
             "items": {
-              "type": "number",
-              "example": 1
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
             }
           },
           "private": {
             "type": "boolean",
             "example": false
-          },
-          "uuid": {
-            "type": "string",
-            "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
           }
         }
       },
@@ -2977,8 +2952,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "example": 1
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
           },
           "name": {
             "type": "string",
@@ -2995,24 +2970,20 @@
           "adminIds": {
             "type": "array",
             "items": {
-              "type": "number",
-              "example": 1
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
             }
           },
           "private": {
             "type": "boolean",
             "example": false
           },
-          "uuid": {
-            "type": "string",
-            "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
-          },
           "user": {
             "type": "object",
             "properties": {
               "id": {
-                "type": "integer",
-                "example": 2
+                "type": "string",
+                "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
               },
               "inEvent": {
                 "type": "boolean",
@@ -3031,16 +3002,15 @@
           "description",
           "created",
           "adminIds",
-          "private",
-          "uuid"
+          "private"
         ]
       },
       "Expense": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "example": 1
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
           },
           "name": {
             "type": "string",
@@ -3062,8 +3032,8 @@
             "type": "object",
             "properties": {
               "id": {
-                "type": "integer",
-                "example": 1
+                "type": "string",
+                "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
               },
               "name": {
                 "type": "string",
@@ -3079,8 +3049,8 @@
             "type": "object",
             "properties": {
               "id": {
-                "type": "integer",
-                "example": 1
+                "type": "string",
+                "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
               },
               "username": {
                 "type": "string",
@@ -3089,10 +3059,6 @@
               "name": {
                 "type": "string",
                 "example": "Test"
-              },
-              "uuid": {
-                "type": "string",
-                "example": "e1c594bc-93b7-4a33-9181-5de0b094ed9b"
               }
             }
           }
@@ -3102,8 +3068,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "example": 1
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
           },
           "name": {
             "type": "string",
@@ -3123,8 +3089,8 @@
               "type": "object",
               "properties": {
                 "id": {
-                  "type": "integer",
-                  "example": 1
+                  "type": "string",
+                  "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                 },
                 "name": {
                   "type": "string",

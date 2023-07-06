@@ -40,7 +40,7 @@ export const getUserID = async (email: string) => {
     .input("email", sql.NVarChar, email)
     .execute("get_user_id")
     .then(data => {
-      return data.recordset[0]?.id || null;
+      return data.recordset[0]?.uuid || null;
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD071, err);
