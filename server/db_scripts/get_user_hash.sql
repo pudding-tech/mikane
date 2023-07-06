@@ -3,23 +3,23 @@ if object_id ('get_user_hash') is not null
 go
 create procedure get_user_hash
   @usernameEmail nvarchar(255),
-  @user_id int
+  @user_uuid uniqueidentifier
 as
 begin
 
-  if (@user_id is not null)
+  if (@user_uuid is not null)
     begin
       select
-        id, [password]
+        uuid, [password]
       from
         [user]
       where
-        id = @user_id
+        uuid = @user_uuid
     end
   else
     begin
       select
-        id, [password]
+        uuid, [password]
       from
         [user]
       where

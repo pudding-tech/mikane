@@ -2,10 +2,15 @@ if object_id ('remove_user_from_event') is not null
   drop procedure remove_user_from_event
 go
 create procedure remove_user_from_event
-  @event_id int,
-  @user_id int
+  @event_uuid uniqueidentifier,
+  @user_uuid uniqueidentifier
 as
 begin
+
+  declare @event_id int
+  declare @user_id int
+  select @event_id = id from [event] where uuid = @event_uuid
+  select @user_id = id from [user] where uuid = @user_uuid
 
   if not exists (select id from [event] where id = @event_id)
   begin
@@ -26,7 +31,7 @@ begin
     c.event_id = @event_id and
     e.payer_id = @user_id
 
-  exec get_events @event_id, null
+  exec get_events @event_uuid, null
 
 end
 go

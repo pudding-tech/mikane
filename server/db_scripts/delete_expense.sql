@@ -2,10 +2,15 @@ if object_id ('delete_expense') is not null
   drop procedure delete_expense
 go
 create procedure delete_expense
-  @expense_id int,
-  @user_id int
+  @expense_uuid uniqueidentifier,
+  @user_uuid uniqueidentifier
 as
 begin
+
+  declare @expense_id int
+  declare @user_id int
+  select @expense_id = id from expense where uuid = @expense_uuid
+  select @user_id = id from [user] where uuid = @user_uuid
 
   if not exists (select 1 from expense where id = @expense_id)
   begin

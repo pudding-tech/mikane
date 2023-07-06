@@ -7,7 +7,7 @@ as
 begin
 
   select
-    id
+    uuid
   from
     [user]
   where

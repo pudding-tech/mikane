@@ -2,21 +2,19 @@ if object_id ('rename_category') is not null
   drop procedure rename_category
 go
 create procedure rename_category
-  @category_id int,
+  @category_uuid uniqueidentifier,
   @name nvarchar(255)
 as
 begin
 
-  if not exists (select 1 from category where id = @category_id)
+  if not exists (select 1 from category where uuid = @category_uuid)
   begin
     throw 50007, 'Category not found', 1
   end
 
-  update category set [name] = @name where id = @category_id
+  update category set [name] = @name where uuid = @category_uuid
   
-  select * from category where event_id = (
-    select event_id from category where id = @category_id
-  )
+  exec get_categories null, @category_uuid
 
 end
 go

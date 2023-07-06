@@ -2,11 +2,16 @@ if object_id ('add_user_to_event') is not null
   drop procedure add_user_to_event
 go
 create procedure add_user_to_event
-  @event_id int,
-  @user_id int,
+  @event_uuid uniqueidentifier,
+  @user_uuid uniqueidentifier,
   @admin bit
 as
 begin
+
+  declare @event_id int
+  declare @user_id int
+  select @event_id = id from [event] where uuid = @event_uuid
+  select @user_id = id from [user] where uuid = @user_uuid
 
   if not exists (select id from [event] where id = @event_id)
   begin
@@ -25,7 +30,7 @@ begin
 
   insert into user_event (user_id, event_id, joined_date, [admin]) values (@user_id, @event_id, GETDATE(), @admin)
 
-  exec get_events @event_id, null
+  exec get_events @event_uuid, null
 
 end
 go

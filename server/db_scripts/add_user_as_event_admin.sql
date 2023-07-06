@@ -2,11 +2,18 @@ if object_id ('add_user_as_event_admin') is not null
   drop procedure add_user_as_event_admin
 go
 create procedure add_user_as_event_admin
-  @event_id int,
-  @user_id int,
-  @by_user_id int
+  @event_uuid uniqueidentifier,
+  @user_uuid uniqueidentifier,
+  @by_user_uuid uniqueidentifier
 as
 begin
+
+  declare @event_id int
+  declare @user_id int
+  declare @by_user_id int
+  select @event_id = id from [event] where uuid = @event_uuid
+  select @user_id = id from [user] where uuid = @user_uuid
+  select @by_user_id = id from [user] where uuid = @by_user_uuid
 
   if not exists (select 1 from [event] where id = @event_id)
   begin
@@ -37,7 +44,7 @@ begin
 
   update user_event set [admin] = 1 where event_id = @event_id and user_id = @user_id
 
-  exec get_events @event_id, null
+  exec get_events @event_uuid, null
 
 end
 go

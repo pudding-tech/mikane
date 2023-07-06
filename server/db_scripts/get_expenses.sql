@@ -2,13 +2,20 @@ if object_id ('get_expenses') is not null
   drop procedure get_expenses
 go
 create procedure get_expenses
-  @event_id int,
-  @user_id int,
-  @expense_id int
+  @event_uuid uniqueidentifier,
+  @user_uuid uniqueidentifier,
+  @expense_uuid uniqueidentifier
 as
 begin
 
-  if (@event_id is not null and @user_id is null)
+  declare @event_id int
+  declare @user_id int
+  declare @expense_id int
+  select @event_id = id from [event] where uuid = @event_uuid
+  select @user_id = id from [user] where uuid = @user_uuid
+  select @expense_id = id from expense where uuid = @expense_uuid
+
+  if (@event_uuid is not null and @user_uuid is null)
   begin
     if not exists (select 1 from [event] where id = @event_id)
     begin
@@ -16,9 +23,9 @@ begin
     end
 
     select
-      ex.*,
-      c.name as category_name, c.icon as category_icon,
-      u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.uuid as payer_uuid
+      ex.uuid, ex.name, ex.description, ex.amount, ex.payer_id, ex.date_added,
+      c.uuid as 'category_uuid', c.name as 'category_name', c.icon as 'category_icon',
+      u.uuid as 'payer_uuid', u.first_name as 'payer_first_name', u.last_name as 'payer_last_name', u.username as 'payer_username'
     from
       expense ex
       inner join category c on c.id = ex.category_id
@@ -30,7 +37,7 @@ begin
       ex.date_added desc
   end
 
-  else if (@event_id is not null and @user_id is not null)
+  else if (@event_uuid is not null and @user_uuid is not null)
   begin
     if not exists (select 1 from [event] where id = @event_id)
     begin
@@ -43,9 +50,9 @@ begin
     end
     
     select
-      ex.*,
-      c.name as category_name, c.icon as category_icon,
-      u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.uuid as payer_uuid
+      ex.uuid, ex.name, ex.description, ex.amount, ex.payer_id, ex.date_added,
+      c.uuid as 'category_uuid', c.name as 'category_name', c.icon as 'category_icon',
+      u.uuid as 'payer_uuid', u.first_name as 'payer_first_name', u.last_name as 'payer_last_name', u.username as 'payer_username'
     from
       expense ex
       inner join category c on c.id = ex.category_id
@@ -58,7 +65,7 @@ begin
       ex.date_added desc
   end
 
-  else if (@expense_id is not null)
+  else if (@expense_uuid is not null)
   begin
     if not exists (select 1 from expense where id = @expense_id)
     begin
@@ -66,9 +73,9 @@ begin
     end
 
     select
-      ex.*,
-      c.name as category_name, c.icon as category_icon,
-      u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.uuid as payer_uuid
+      ex.uuid, ex.name, ex.description, ex.amount, ex.payer_id, ex.date_added,
+      c.uuid as 'category_uuid', c.name as 'category_name', c.icon as 'category_icon',
+      u.uuid as 'payer_uuid', u.first_name as 'payer_first_name', u.last_name as 'payer_last_name', u.username as 'payer_username'
     from
       expense ex
       inner join category c on c.id = ex.category_id

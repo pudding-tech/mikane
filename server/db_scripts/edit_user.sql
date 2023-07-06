@@ -2,7 +2,7 @@ if object_id ('edit_user') is not null
   drop procedure edit_user
 go
 create procedure edit_user
-  @user_id int,
+  @user_uuid uniqueidentifier,
   @username nvarchar(255),
   @first_name nvarchar(255),
   @last_name nvarchar(255),
@@ -11,17 +11,17 @@ create procedure edit_user
 as
 begin
 
-  if @username is not null and exists (select id from [user] where [username] = @username and id != @user_id) 
+  if @username is not null and exists (select id from [user] where [username] = @username and uuid != @user_uuid) 
   begin
     throw 50017, 'Username already taken', 1
   end
 
-  if @email is not null and exists (select id from [user] where email = @email and id != @user_id) 
+  if @email is not null and exists (select id from [user] where email = @email and uuid != @user_uuid) 
   begin
     throw 50018, 'Email address already taken', 1
   end
 
-  if @phone_number is not null and exists (select id from [user] where phone_number = @phone_number and id != @user_id)
+  if @phone_number is not null and exists (select id from [user] where phone_number = @phone_number and uuid != @user_uuid)
   begin
     throw 50019, 'Phone number already taken', 1
   end
@@ -35,9 +35,9 @@ begin
     email = isnull(@email, email),
     phone_number = isnull(@phone_number, phone_number)
   where
-    id = @user_id
+    uuid = @user_uuid
   
-  exec get_user @user_id, null
+  exec get_user @user_uuid, null
 
 end
 go

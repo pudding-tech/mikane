@@ -2,25 +2,25 @@ if object_id ('get_user') is not null
   drop procedure get_user
 go
 create procedure get_user
-  @user_id int,
+  @user_uuid uniqueidentifier,
   @username nvarchar(255)
 as
 begin
 
-  if (@user_id is not null)
+  if (@user_uuid is not null)
   begin
     select
-      id, username, first_name, last_name, email, phone_number, [password], created, uuid
+      uuid, username, first_name, last_name, email, phone_number, [password], created
     from
       [user]
     where
-      id = @user_id
+      uuid = @user_uuid
   end
 
   else if (@username is not null)
   begin
     select
-      id, username, first_name, last_name, email, phone_number, [password], created, uuid
+      uuid, username, first_name, last_name, email, phone_number, [password], created
     from
       [user]
     where

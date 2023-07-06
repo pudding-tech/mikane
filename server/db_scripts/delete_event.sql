@@ -2,10 +2,15 @@ if object_id ('delete_event') is not null
   drop procedure delete_event
 go
 create procedure delete_event
-  @event_id int,
-  @user_id int
+  @event_uuid uniqueidentifier,
+  @user_uuid uniqueidentifier
 as
 begin
+
+  declare @event_id int
+  declare @user_id int
+  select @event_id = id from [event] where uuid = @event_uuid
+  select @user_id = id from [user] where uuid = @user_uuid
 
   if not exists (select 1 from [event] where id = @event_id)
   begin

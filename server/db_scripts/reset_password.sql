@@ -13,7 +13,7 @@ begin
   update [user] set [password] = @password where id = @user_id
   update password_reset_key set used = 1 where [key] = @key
 
-  select id, username, email, created from [user] where id = @user_id
+  select uuid, username, email, created from [user] where id = @user_id
 
 end
 go

@@ -7,7 +7,7 @@ create table [user] (
   phone_number nvarchar(20) not null unique,
   [password] nvarchar(255) not null,
   created datetime not null,
-  uuid uniqueidentifier not null default newid()
+  uuid uniqueidentifier not null unique default newid()
 );
 
 create table [event] (
@@ -18,7 +18,7 @@ create table [event] (
   [private] bit not null,
   active bit not null default 1,
   usernames_only bit not null,
-  uuid uniqueidentifier not null default newid()
+  uuid uniqueidentifier not null unique default newid()
 );
 
 create table user_event (
@@ -34,7 +34,8 @@ create table category (
   [name] nvarchar(255) not null,
   icon nvarchar(255),
   weighted bit not null,
-  event_id int foreign key references [event](id) on delete cascade
+  event_id int foreign key references [event](id) on delete cascade,
+  uuid uniqueidentifier not null unique default newid()
 );
 
 create table expense (
@@ -44,7 +45,8 @@ create table expense (
   amount numeric(16, 2) not null,
   category_id int foreign key references category(id) on delete cascade,
   payer_id int foreign key references [user](id) on delete cascade,
-  date_added datetime not null
+  date_added datetime not null,
+  uuid uniqueidentifier not null unique default newid()
 );
 
 create table user_category (
@@ -58,7 +60,8 @@ create table [session] (
   [sid] nvarchar(255) not null primary key,
   [session] nvarchar(max) not null,
   expires datetime not null,
-  user_id int not null
+  user_id int foreign key references [user](id) on delete cascade,
+  user_uuid uniqueidentifier not null
 );
 
 create table api_key (
