@@ -12,16 +12,15 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[]
   const users: User[] = [];
   usersInput.forEach(userObj => {
     const user: User = {
-      id: userObj.id,
+      id: userObj.uuid,
       username: userObj.username,
       name: userObj.first_name,
       firstName: userObj.first_name,
       lastName: userObj.last_name,
       email: userObj.email,
       created: userObj.created,
-      uuid: userObj.uuid,
-      event: withEventData && userObj.event_id && userObj.event_joined_date ? {
-        id: userObj.event_id,
+      event: withEventData && userObj.event_uuid && userObj.event_joined_date ? {
+        id: userObj.event_uuid,
         isAdmin: userObj.event_admin ?? false,
         joinedDate: userObj.event_joined_date
       } : undefined
@@ -54,7 +53,7 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[]
  */
 export const parseUser = (userObj: UserDB): User => {
   return {
-    id: userObj.id,
+    id: userObj.uuid,
     username: userObj.username,
     name: userObj.first_name,
     firstName: userObj.first_name,
@@ -62,6 +61,5 @@ export const parseUser = (userObj: UserDB): User => {
     email: userObj.email,
     phone: userObj.phone_number,
     created: userObj.created,
-    uuid: userObj.uuid
   };
 };

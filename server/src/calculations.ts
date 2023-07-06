@@ -22,8 +22,8 @@ export const calculateBalance = (
   const balance: Record[] = [];
   const spending: Record[] = [];
   const expensesOutput: Record[] = [];
-  const categoryWeights = new Map<number, Map<number, number>>();
-  const userNetExpense = new Map<number, number>();
+  const categoryWeights = new Map<string, Map<string, number>>();
+  const userNetExpense = new Map<string, number>();
 
   categories.forEach((category) => {
     if (!category.userWeights) {
@@ -33,15 +33,15 @@ export const calculateBalance = (
     category.userWeights.forEach((weight) => {
       sumCategoryWeights += weight;
     });
-    const adjustedUserWeights = new Map<number, number>();
+    const adjustedUserWeights = new Map<string, number>();
     category.userWeights.forEach((weight, user) => {
       adjustedUserWeights.set(user, weight / sumCategoryWeights);
     });
     categoryWeights.set(category.id, adjustedUserWeights);
   });
 
-  const spendingMap = new Map<number, number>();
-  const expensesOutputMap = new Map<number, number>();
+  const spendingMap = new Map<string, number>();
+  const expensesOutputMap = new Map<string, number>();
   expenses.forEach((expense) => {
     expensesOutputMap.set(
       expense.payer.id,
@@ -53,7 +53,7 @@ export const calculateBalance = (
     );
     const expenseCategory = categoryWeights.get(expense.category.id);
     if (expenseCategory) {
-      expenseCategory.forEach((userWeight: number, userId: number) => {
+      expenseCategory.forEach((userWeight: number, userId: string) => {
         spendingMap.set(
           userId,
           (spendingMap.get(userId) ?? 0) - expense.amount * userWeight
@@ -66,7 +66,7 @@ export const calculateBalance = (
     }
   });
 
-  userNetExpense.forEach((netExpense: number, userId: number) => {
+  userNetExpense.forEach((netExpense: number, userId: string) => {
     const user = users.find((user) => {
       return user.id == userId;
     });

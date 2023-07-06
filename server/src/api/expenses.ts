@@ -1,6 +1,7 @@
 import express from "express";
 import * as db from "../db/dbExpenses";
 import { authCheck } from "../middlewares/authCheck";
+import { isUUID } from "../utils/uuidValidator";
 import { Expense } from "../types/types";
 import { ErrorExt } from "../types/errorExt";
 import * as ec from "../types/errorCodes";
@@ -15,8 +16,8 @@ const router = express.Router();
 */
 router.get("/expenses", authCheck, async (req, res, next) => {
   try {
-    const eventId = Number(req.query.eventId);
-    if (!req.query.eventId || isNaN(eventId)) {
+    const eventId = req.query.eventId as string;
+    if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
@@ -33,8 +34,8 @@ router.get("/expenses", authCheck, async (req, res, next) => {
 */
 router.get("/expenses/:id", authCheck, async (req, res, next) => {
   try {
-    const expenseId = Number(req.params.id);
-    if (isNaN(expenseId)) {
+    const expenseId = req.params.id;
+    if (!isUUID(expenseId)) {
       throw new ErrorExt(ec.PUD056);
     }
 
@@ -61,13 +62,13 @@ router.post("/expenses", authCheck, async (req, res, next) => {
     if (!req.body.name || !req.body.amount || !req.body.categoryId || !req.body.payerId) {
       throw new ErrorExt(ec.PUD057);
     }
-    const categoryId = Number(req.body.categoryId);
-    const payerId = Number(req.body.payerId);
+    const categoryId = req.body.categoryId as string;
+    const payerId = req.body.payerId as string;
     const amount = Number(req.body.amount);
-    if (isNaN(categoryId)) {
+    if (!isUUID(categoryId)) {
       throw new ErrorExt(ec.PUD045);
     }
-    if (isNaN(payerId)) {
+    if (!isUUID(payerId)) {
       throw new ErrorExt(ec.PUD089);
     }
     if (isNaN(amount)) {
@@ -91,8 +92,8 @@ router.post("/expenses", authCheck, async (req, res, next) => {
 */
 router.delete("/expenses/:id", authCheck, async (req, res, next) => {
   try {
-    const expenseId = Number(req.params.id);
-    if (isNaN(expenseId)) {
+    const expenseId = req.params.id;
+    if (!isUUID(expenseId)) {
       throw new ErrorExt(ec.PUD056);
     }
     const userId = req.session.userId;

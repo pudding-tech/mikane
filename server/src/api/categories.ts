@@ -1,10 +1,11 @@
 import express from "express";
 import * as db from "../db/dbCategories";
 import { authCheck } from "../middlewares/authCheck";
+import { isUUID } from "../utils/uuidValidator";
 import { Category } from "../types/types";
+import { CategoryIcon } from "../types/enums";
 import { ErrorExt } from "../types/errorExt";
 import * as ec from "../types/errorCodes";
-import { CategoryIcon } from "../types/enums";
 const router = express.Router();
 
 /* --- */
@@ -16,8 +17,8 @@ const router = express.Router();
 */
 router.get("/categories", authCheck, async (req, res, next) => {
   try {
-    const eventId = Number(req.query.eventId);
-    if (isNaN(eventId)) {
+    const eventId = req.query.eventId as string;
+    if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
@@ -34,8 +35,8 @@ router.get("/categories", authCheck, async (req, res, next) => {
 */
 router.get("/categories/:id", authCheck, async (req, res, next) => {
   try {
-    const id = Number(req.params.id);
-    if (isNaN(id)) {
+    const id = req.params.id;
+    if (!isUUID(id)) {
       throw new ErrorExt(ec.PUD045);
     }
 
@@ -62,8 +63,8 @@ router.post("/categories", authCheck, async (req, res, next) => {
     if (!req.body.name || !req.body.eventId || req.body.weighted === undefined) {
       throw new ErrorExt(ec.PUD046);
     }
-    const eventId = Number(req.body.eventId);
-    if (isNaN(eventId)) {
+    const eventId = req.body.eventId as string;
+    if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
@@ -85,11 +86,11 @@ router.post("/categories", authCheck, async (req, res, next) => {
 */
 router.post("/categories/:id/user/:userId", authCheck, async (req, res, next) => {
   try {
-    const catId = Number(req.params.id);
-    const userId = Number(req.params.userId);
+    const catId = req.params.id;
+    const userId = req.params.userId;
     const weight = req.body.weight ? Number(req.body.weight) : undefined;
 
-    if (isNaN(catId) || isNaN(userId)) {
+    if (!isUUID(catId) || !isUUID(userId)) {
       throw new ErrorExt(ec.PUD047);
     }
     if (weight && isNaN(weight)) {
@@ -116,8 +117,8 @@ router.post("/categories/:id/user/:userId", authCheck, async (req, res, next) =>
 */
 router.put("/categories/:id", authCheck, async (req, res, next) => {
   try {
-    const catId = Number(req.params.id);
-    if (isNaN(catId)) {
+    const catId = req.params.id;
+    if (!isUUID(catId)) {
       throw new ErrorExt(ec.PUD045);
     }
     if (!req.body.name) {
@@ -140,8 +141,8 @@ router.put("/categories/:id", authCheck, async (req, res, next) => {
 */
 router.put("/categories/:id/weighted", authCheck, async (req, res, next) => {
   try {
-    const catId = Number(req.params.id);
-    if (isNaN(catId)) {
+    const catId = req.params.id;
+    if (!isUUID(catId)) {
       throw new ErrorExt(ec.PUD045);
     }
     if (typeof(req.body.weighted) !== "boolean") {
@@ -161,11 +162,11 @@ router.put("/categories/:id/weighted", authCheck, async (req, res, next) => {
 */
 router.put("/categories/:id/user/:userId", authCheck, async (req, res, next) => {
   try {
-    const catId = Number(req.params.id);
-    const userId = Number(req.params.userId);
+    const catId = req.params.id;
+    const userId = req.params.userId;
     const weight = req.body.weight ? Number(req.body.weight) : undefined;
 
-    if (isNaN(catId) || isNaN(userId)) {
+    if (!isUUID(catId) || !isUUID(userId)) {
       throw new ErrorExt(ec.PUD047);
     }
     if (!weight || isNaN(weight)) {
@@ -192,8 +193,8 @@ router.put("/categories/:id/user/:userId", authCheck, async (req, res, next) => 
 */
 router.delete("/categories/:id", authCheck, async (req, res, next) => {
   try {
-    const catId = Number(req.params.id);
-    if (isNaN(catId)) {
+    const catId = req.params.id;
+    if (!isUUID(catId)) {
       throw new ErrorExt(ec.PUD045);
     }
 
@@ -210,9 +211,9 @@ router.delete("/categories/:id", authCheck, async (req, res, next) => {
 */
 router.delete("/categories/:id/user/:userId", authCheck, async (req, res, next) => {
   try {
-    const catId = Number(req.params.id);
-    const userId = Number(req.params.userId);
-    if (isNaN(catId) || isNaN(userId)) {
+    const catId = req.params.id;
+    const userId = req.params.userId;
+    if (!isUUID(catId) || !isUUID(userId)) {
       throw new ErrorExt(ec.PUD047);
     }
 

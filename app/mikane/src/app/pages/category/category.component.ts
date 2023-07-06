@@ -47,7 +47,7 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 	],
 })
 export class CategoryComponent implements OnInit, AfterViewChecked {
-	private eventId!: number;
+	private eventId!: string;
 
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -109,7 +109,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		});
 	}
 
-	filterUsers(categoryId: number) {
+	filterUsers(categoryId: string) {
 		const category = this.categories.find((category) => {
 			return category.id === categoryId;
 		});
@@ -149,7 +149,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		});
 	}
 
-	addUser(categoryId: number) {
+	addUser(categoryId: string) {
 		if (this.addUserForm.value.participantName) {
 			this.categoryService.addUser(categoryId, this.addUserForm.value.participantName, this.addUserForm.value.weight ?? 1).subscribe({
 				next: (res) => {
@@ -172,7 +172,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		}
 	}
 
-	removeUser(categoryId: number, userId: number) {
+	removeUser(categoryId: string, userId: string) {
 		this.categoryService.deleteUser(categoryId, userId).subscribe({
 			next: (res) => {
 				const index = this.categories.findIndex((category) => category.id === res.id);
@@ -189,7 +189,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		});
 	}
 
-	openEditDialog(categoryId: number, userId: number) {
+	openEditDialog(categoryId: string, userId: string) {
 		const dialogRef = this.dialog.open(CategoryEditDialogComponent, {
 			width: '300px',
 			data: { categoryId, userId },
@@ -202,7 +202,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		});
 	}
 
-	editCategory(categoryId: number, userId: number, weight: number) {
+	editCategory(categoryId: string, userId: string, weight: number) {
 		this.categoryService.editUser(categoryId, userId, weight).subscribe({
 			next: (res) => {
 				const catIndex = this.categories.findIndex((category) => {
@@ -225,7 +225,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		});
 	}
 
-	toggleWeighted(categoryId: number, weighted: boolean) {
+	toggleWeighted(categoryId: string, weighted: boolean) {
 		this.categoryService.setWeighted(categoryId, !weighted).subscribe({
 			next: () => {
 				const category = this.categories.find((category) => {
@@ -242,7 +242,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		});
 	}
 
-	deleteCategoryDialog(categoryId: number) {
+	deleteCategoryDialog(categoryId: string) {
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
 			width: '350px',
 			data: {
@@ -259,7 +259,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		});
 	}
 
-	deleteCategory(categoryId: number) {
+	deleteCategory(categoryId: string) {
 		this.categoryService.deleteCategory(categoryId).subscribe({
 			next: () => {
 				const index = this.categories.findIndex((category) => category.id === categoryId);

@@ -5,13 +5,13 @@ import { environment } from 'src/environments/environment';
 import { User } from '../user/user.service';
 
 export interface Expense {
-	id: number;
+	id: string;
 	name: string;
 	description: string;
 	amount: number;
 	dateAdded: Date;
 	category: {
-		id: number;
+		id: string;
 		name: string;
 		icon: string;
 	}
@@ -26,7 +26,7 @@ export class ExpenseService {
 
 	constructor(private httpClient: HttpClient) {}
 
-	loadExpenses(eventId: number): Observable<Expense[]> {
+	loadExpenses(eventId: string): Observable<Expense[]> {
 		return this.httpClient.get<Expense[]>(this.apiUrl + `?eventId=${eventId}`);
 	}
 
@@ -34,8 +34,8 @@ export class ExpenseService {
 		expenseName: string,
 		expenseDescription: string,
 		amount: number,
-		categoryId: number,
-		payerId: number
+		categoryId: string,
+		payerId: string
 	): Observable<Expense> {
 		return this.httpClient.post<Expense>(this.apiUrl, {
 			name: expenseName,
@@ -46,7 +46,7 @@ export class ExpenseService {
 		});
 	}
 
-	deleteExpense(expenseId: number): Observable<void> {
+	deleteExpense(expenseId: string): Observable<void> {
 		return this.httpClient.delete<void>(this.apiUrl + `/${expenseId}`);
 	}
 }

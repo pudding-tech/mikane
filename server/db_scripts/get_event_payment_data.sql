@@ -2,18 +2,18 @@ if object_id ('get_event_payment_data') is not null
   drop procedure get_event_payment_data
 go
 create procedure get_event_payment_data
-  @event_id int
+  @event_uuid uniqueidentifier
 as
 begin
 
-  if (@event_id is null)
+  if (@event_uuid is null)
   begin
     return
   end
 
-  execute get_users @event_id, null
-  execute get_categories @event_id, null
-  execute get_expenses @event_id, null, null
+  execute get_users @event_uuid, null
+  execute get_categories @event_uuid, null
+  execute get_expenses @event_uuid, null, null
 
 end
 go

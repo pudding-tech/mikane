@@ -68,7 +68,7 @@ export class EventComponent implements OnInit {
 			.pipe(
 				map(([events, params]) => {
 					return events.find((event) => {
-						return event.id === +params['eventId'];
+						return event.id === params['eventId'];
 					});
 				})
 			)

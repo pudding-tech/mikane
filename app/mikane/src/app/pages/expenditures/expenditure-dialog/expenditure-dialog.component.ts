@@ -44,8 +44,8 @@ export class ExpenditureDialogComponent implements OnInit {
 		public dialogRef: MatDialogRef<ExpenditureDialogComponent>,
 		@Inject(MAT_DIALOG_DATA)
 		public data: {
-			eventId: number;
-			userId: number;
+			eventId: string;
+			userId: string;
 		},
 		private categoryService: CategoryService,
 		private userService: UserService

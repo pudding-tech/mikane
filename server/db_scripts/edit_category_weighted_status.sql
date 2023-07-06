@@ -2,10 +2,13 @@ if object_id ('edit_category_weighted_status') is not null
   drop procedure edit_category_weighted_status
 go
 create procedure edit_category_weighted_status
-  @category_id int,
+  @category_uuid uniqueidentifier,
   @weighted bit
 as
 begin
+
+  declare @category_id int
+  select @category_id = id from category where uuid = @category_uuid
 
   if not exists (select 1 from category where id = @category_id)
   begin
@@ -25,7 +28,9 @@ begin
     end
   end
 
-  exec get_categories @event_id, @category_id
+  declare @event_uuid uniqueidentifier
+  select @event_uuid = uuid from [event] where id = @event_id
+  exec get_categories @event_uuid, @category_uuid
 
 end
 go

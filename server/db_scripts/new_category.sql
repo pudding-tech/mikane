@@ -5,9 +5,12 @@ create procedure new_category
   @name nvarchar(255),
   @icon nvarchar(255),
   @weighted bit,
-  @event_id int
+  @event_uuid uniqueidentifier
 as
 begin
+
+  declare @event_id int
+  select @event_id = id from [event] where uuid = @event_uuid
 
   if not exists (select 1 from [event] where id = @event_id)
   begin
@@ -21,7 +24,10 @@ begin
 
   insert into category(event_id, [name], icon, weighted) values (@event_id, @name, @icon, @weighted)
 
-  select * from category where id = @@IDENTITY
+  declare @category_uuid uniqueidentifier
+  select @category_uuid = uuid from category where id = @@IDENTITY
+
+  exec get_categories null, @category_uuid
 
 end
 go

@@ -1,8 +1,7 @@
 import { CategoryIcon } from "./enums";
 
 export type User = {
-  id: number,
-  uuid: string,
+  id: string,
   name: string,
   username: string,
   firstName?: string,
@@ -11,35 +10,34 @@ export type User = {
   phone?: string,
   created?: Date,
   event?: {
-    id: number,
+    id: string,
     isAdmin: boolean,
     joinedDate: Date
   }
 }
 
 export type Event = {
-  id: number,
-  uuid: string,
+  id: string,
   name: string,
   description: string,
   created: Date,
-  adminIds: number[],
+  adminIds: string[],
   private: boolean,
   user?: {
-    id: number,
+    id: string,
     inEvent: boolean,
     isAdmin: boolean
   }
 };
 
 export type Category = {
-  id: number,
+  id: string,
   name: string,
   icon: CategoryIcon,
   weighted: boolean,
-  userWeights?: Map<number, number>,
+  userWeights?: Map<string, number>,
   users?: {
-    id: number,
+    id: string,
     name: string,
     firstName?: string,
     lastName?: string,
@@ -48,13 +46,13 @@ export type Category = {
 }
 
 export type Expense = {
-  id: number,
+  id: string,
   name: string,
   description: string,
   amount: number,
   dateAdded: Date,
   category: {
-    id: number,
+    id: string,
     name: string,
     icon: CategoryIcon
   },

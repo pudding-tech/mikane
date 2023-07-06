@@ -19,23 +19,22 @@ export const parseExpenses = (expInput: ExpenseDB[]): Expense[] => {
     }
 
     const expense: Expense = {
-      id: expObj.id,
+      id: expObj.uuid,
       name: expObj.name,
       description: expObj.description,
       amount: expObj.amount,
       dateAdded: expObj.date_added,
       category: {
-        id: expObj.category_id,
+        id: expObj.category_uuid,
         name: expObj.category_name,
         icon: icon
       },
       payer: {
-        id: expObj.payer_id,
+        id: expObj.payer_uuid,
         username: expObj.payer_username,
         name: expObj.payer_first_name,
         firstName: expObj.payer_first_name,
-        lastName: expObj.payer_last_name,
-        uuid: expObj.payer_uuid
+        lastName: expObj.payer_last_name
       }
 		};
 		expenses.push(expense);

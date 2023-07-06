@@ -6,8 +6,7 @@ import { Expense } from '../expense/expense.service';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
 
 export interface User {
-	id: number;
-	uuid: string;
+	id: string;
 	name: string;
 	username: string;
 	firstName?: string;
@@ -16,7 +15,7 @@ export interface User {
 	phone?: string;
 	created?: Date;
 	event?: {
-		id: number;
+		id: string;
 		isAdmin: boolean;
 		joinedDate: Date;
 	}
@@ -41,27 +40,27 @@ export class UserService {
 		return this.httpClient.get<User[]>(this.apiUrl + (excludeSelf ? '?exclude=self' : ''));
 	}
 
-	loadUsersByEvent(eventId: number) {
+	loadUsersByEvent(eventId: string) {
 		return this.httpClient.get<User[]>(this.apiUrl + `?eventId=${eventId}`);
 	}
 
-	loadUserById(userId: number) {
+	loadUserById(userId: string) {
 		return this.httpClient.get<User>(this.apiUrl + `/${userId}`);
 	}
 
-	createUser(eventId: number, name: string): Observable<User> {
+	createUser(eventId: string, name: string): Observable<User> {
 		return this.httpClient.post<User>(this.apiUrl, { name: name, eventId: eventId, email: 'email', password: 'password' });
 	}
 
-	loadUserExpenses(userId: number, eventId: number): Observable<Expense[]> {
+	loadUserExpenses(userId: string, eventId: string): Observable<Expense[]> {
 		return this.httpClient.get<Expense[]>(this.apiUrl + `/${userId}/expenses/${eventId}`);
 	}
 
-	loadUserBalance(eventId: number): Observable<UserBalance[]> {
+	loadUserBalance(eventId: string): Observable<UserBalance[]> {
 		return this.httpClient.get<UserBalance[]>(this.apiUrl + `/balances?eventId=${eventId}`);
 	}
 
-	editUser(userId: number, username: string, firstName: string, lastName: string, email: string, phone: Phonenumber): Observable<User> {
+	editUser(userId: string, username: string, firstName: string, lastName: string, email: string, phone: Phonenumber): Observable<User> {
 		return this.httpClient.put<User>(this.apiUrl + `/${userId}`, {
 			username,
 			firstName,
@@ -71,7 +70,7 @@ export class UserService {
 		});
 	}
 
-	deleteUser(userId: number): Observable<User[]> {
+	deleteUser(userId: string): Observable<User[]> {
 		return this.httpClient.delete<User[]>(this.apiUrl + `/${userId}`);
 	}
 

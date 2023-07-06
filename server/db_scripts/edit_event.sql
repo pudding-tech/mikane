@@ -2,13 +2,18 @@ if object_id ('edit_event') is not null
   drop procedure edit_event
 go
 create procedure edit_event
-  @event_id int,
-  @user_id int,
+  @event_uuid uniqueidentifier,
+  @user_uuid uniqueidentifier,
   @name nvarchar(255),
   @description nvarchar(400),
   @private bit
 as
 begin
+
+  declare @event_id int
+  declare @user_id int
+  select @event_id = id from [event] where uuid = @event_uuid
+  select @user_id = id from [user] where uuid = @user_uuid
 
   if not exists (select 1 from [event] where id = @event_id)
   begin
@@ -41,7 +46,7 @@ begin
     update [event] set [description] = null where id = @event_id
   end
   
-  exec get_events @event_id, null
+  exec get_events @event_uuid, null
 
 end
 go

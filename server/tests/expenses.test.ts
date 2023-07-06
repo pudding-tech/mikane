@@ -144,7 +144,7 @@ describe("expenses", async () => {
     test("fail finding expenses for non-existing event", async () => {
       const res = await request(app)
         .get("/api/expenses")
-        .query("eventId=" + 15)
+        .query("eventId=56e901ad-374f-4e1d-92f1-d02dd22d11d3")
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(404);
@@ -167,7 +167,7 @@ describe("expenses", async () => {
 
     test("fail finding expense", async () => {
       const res = await request(app)
-        .get("/api/expenses/" + 35)
+        .get("/api/expenses/56e901ad-374f-4e1d-92f1-d02dd22d11d3")
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(404);

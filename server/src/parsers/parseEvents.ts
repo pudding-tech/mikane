@@ -12,17 +12,16 @@ export const parseEvents = (eventsInput: EventDB[]) => {
     const adminIds: AdminIdDB[] = JSON.parse(eventObj.admin_ids) ?? [];
 
     const event: Event = {
-      id: eventObj.id,
+      id: eventObj.uuid,
       name: eventObj.name,
       description: eventObj.description,
       created: eventObj.created,
-      adminIds: adminIds.map(admin => admin.user_id),
+      adminIds: adminIds.map(admin => admin.user_uuid),
       private: eventObj.private,
-      uuid: eventObj.uuid,
-      user: eventObj.user_id && eventObj.in_event !== undefined && eventObj.is_admin !== undefined ? {
-          id: eventObj.user_id,
-          inEvent: eventObj.in_event,
-          isAdmin: eventObj.is_admin
+      user: eventObj.user_uuid && eventObj.user_in_event !== undefined && eventObj.user_is_admin !== undefined ? {
+          id: eventObj.user_uuid,
+          inEvent: eventObj.user_in_event,
+          isAdmin: eventObj.user_is_admin
         } : undefined
     };
     events.push(event);

@@ -3,19 +3,22 @@ if object_id ('get_event_by_name') is not null
 go
 create procedure get_event_by_name
   @event_name nvarchar(254),
-  @user_id int
+  @user_uuid uniqueidentifier
 as
 begin
 
-  if (@user_id is null)
+  declare @user_id int
+  select @user_id = id from [user] where uuid = @user_uuid
+
+  if (@user_uuid is null)
     begin
       select
-        e.id, e.name, e.description, e.created, e.private, e.uuid,
+        e.uuid, e.name, e.description, e.created, e.private,
         (
           select 
-            ue.user_id
-          from 
-            user_event ue
+            u.uuid as 'user_uuid'
+          from user_event ue
+            inner join [user] u on ue.user_id = u.id
           where
             ue.event_id = e.id and
             ue.admin = 1
@@ -39,28 +42,28 @@ begin
       declare @FALSE bit = 0
 
       select
-        e.id, e.name, e.description, e.created, e.private, e.uuid,
+        e.uuid, e.name, e.description, e.created, e.private,
         (
           select 
-            ue.user_id
-          from 
-            user_event ue
+            u.uuid as 'user_uuid'
+          from user_event ue
+            inner join [user] u on ue.user_id = u.id
           where
             ue.event_id = e.id and
             ue.admin = 1
           for json path
         ) as 'admin_ids',
-        @user_id as 'user_id',
+        @user_uuid as 'user_uuid',
         case
           when exists (select ue.user_id where ue.user_id is not null)
             then @TRUE
             else @FALSE
-          end as 'in_event',
+          end as 'user_in_event',
         case
          when ue.admin = 1
             then @TRUE
             else @FALSE
-          end as 'is_admin'
+          end as 'user_is_admin'
       from
         [event] e
         left join user_event ue on e.id = ue.event_id and ue.user_id = @user_id

@@ -35,7 +35,7 @@ import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
 export class PaymentStructureComponent implements OnInit {
 	@ViewChild(MatAccordion) accordion!: MatAccordion;
 
-	private eventId!: number;
+	private eventId!: string;
 
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 

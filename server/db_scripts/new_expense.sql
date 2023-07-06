@@ -5,10 +5,15 @@ create procedure new_expense
   @name nvarchar(255),
   @description nvarchar(255),
   @amount numeric(16, 2),
-  @category_id int,
-  @payer_id int
+  @category_uuid uniqueidentifier,
+  @payer_uuid uniqueidentifier
 as
 begin
+
+  declare @category_id int
+  declare @payer_id int
+  select @category_id = id from category where uuid = @category_uuid
+  select @payer_id = id from [user] where uuid = @payer_uuid
 
   if not exists (select 1 from category where id = @category_id)
   begin
@@ -28,7 +33,9 @@ begin
   insert into expense([name], [description], amount, category_id, payer_id, date_added)
     values (@name, nullif(@description, ''), @amount, @category_id, @payer_id, GETDATE())
 
-  exec get_expenses null, null, @@IDENTITY
+  declare @expense_uuid uniqueidentifier
+  select @expense_uuid = uuid from expense where id = @@IDENTITY
+  exec get_expenses null, null, @expense_uuid
 
 end
 go

@@ -14,11 +14,11 @@ import * as ec from "../types/errorCodes";
  * @param userId Get user specific information about events (optional)
  * @returns List of events
  */
-export const getEvents = async (userId?: number) => {
+export const getEvents = async (userId?: string) => {
   const request = new sql.Request();
   const events: Event[] = await request
-    .input("event_id", sql.Int, null)
-    .input("user_id", sql.Int, userId)
+    .input("event_uuid", sql.UniqueIdentifier, null)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .execute("get_events")
     .then(data => {
       return parseEvents(data.recordset);
@@ -38,11 +38,11 @@ export const getEvents = async (userId?: number) => {
  * @param userId Get user specific information about event (optional)
  * @returns Event
  */
-export const getEvent = async (eventId: number, userId?: number) => {
+export const getEvent = async (eventId: string, userId?: string) => {
   const request = new sql.Request();
   const events: Event[] = await request
-    .input("event_id", sql.Int, eventId)
-    .input("user_id", sql.Int, userId)
+    .input("event_uuid", sql.UniqueIdentifier, eventId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .execute("get_events")
     .then(data => {
       return parseEvents(data.recordset);
@@ -65,11 +65,11 @@ export const getEvent = async (eventId: number, userId?: number) => {
  * @param userId Get user specific information about event (optional)
  * @returns Event
  */
-export const getEventByName = async (eventName: string, userId?: number) => {
+export const getEventByName = async (eventName: string, userId?: string) => {
   const request = new sql.Request();
   const events: Event[] = await request
     .input("event_name", sql.NVarChar, eventName)
-    .input("user_id", sql.Int, userId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .execute("get_event_by_name")
     .then(data => {
       return parseEvents(data.recordset);
@@ -91,10 +91,10 @@ export const getEventByName = async (eventName: string, userId?: number) => {
  * @param eventId Event ID
  * @returns List of user balances for an event
  */
-export const getEventBalances = async (eventId: number) => {
+export const getEventBalances = async (eventId: string) => {
   const request = new sql.Request();
   const data = await request
-    .input("event_id", sql.Int, eventId)
+    .input("event_uuid", sql.UniqueIdentifier, eventId)
     .execute("get_event_payment_data")
     .then(res => {
       return res.recordsets as sql.IRecordSet<any>[];
@@ -128,10 +128,10 @@ export const getEventBalances = async (eventId: number) => {
  * @param eventId Event ID
  * @returns List of payments for an event
  */
-export const getEventPayments = async (eventId: number) => {
+export const getEventPayments = async (eventId: string) => {
   const request = new sql.Request();
   const data = await request
-    .input("event_id", sql.Int, eventId)
+    .input("event_uuid", sql.UniqueIdentifier, eventId)
     .execute("get_event_payment_data")
     .then(res => {
       return res.recordsets as sql.IRecordSet<any>[];
@@ -167,12 +167,12 @@ export const getEventPayments = async (eventId: number) => {
  * @param description Description of event (optional)
  * @returns Newly created event
  */
-export const createEvent = async (name: string, userId: number, privateEvent: boolean, description?: string) => {
+export const createEvent = async (name: string, userId: string, privateEvent: boolean, description?: string) => {
   const request = new sql.Request();
   const events: Event[] = await request
     .input("name", sql.NVarChar, name)
     .input("description", sql.NVarChar, description)
-    .input("user_id", sql.Int, userId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .input("private", sql.Bit, privateEvent)
     .input("active", sql.Bit, 1)
     .input("usernames_only", sql.Bit, 0)
@@ -196,11 +196,11 @@ export const createEvent = async (name: string, userId: number, privateEvent: bo
  * @param id Event ID
  * @returns True if successful
  */
-export const deleteEvent = async (id: number, userId: number) => {
+export const deleteEvent = async (id: string, userId: string) => {
   const request = new sql.Request();
   const success = await request
-    .input("event_id", sql.Int, id)
-    .input("user_id", sql.Int, userId)
+    .input("event_uuid", sql.UniqueIdentifier, id)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .execute("delete_event")
     .then(() => {
       return true;
@@ -222,11 +222,11 @@ export const deleteEvent = async (id: number, userId: number) => {
  * @param userId 
  * @returns Affected event
  */
-export const addUserToEvent = async (eventId: number, userId: number) => {
+export const addUserToEvent = async (eventId: string, userId: string) => {
   const request = new sql.Request();
   const events: Event[] = await request
-    .input("event_id", sql.Int, eventId)
-    .input("user_id", sql.Int, userId)
+    .input("event_uuid", sql.UniqueIdentifier, eventId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .input("admin", sql.Bit, 0)
     .execute("add_user_to_event")
     .then(data => {
@@ -251,11 +251,11 @@ export const addUserToEvent = async (eventId: number, userId: number) => {
  * @param userId 
  * @returns Affected event
  */
-export const removeUserFromEvent = async (eventId: number, userId: number) => {
+export const removeUserFromEvent = async (eventId: string, userId: string) => {
   const request = new sql.Request();
   const events: Event[] = await request
-    .input("event_id", sql.Int, eventId)  
-    .input("user_id", sql.Int, userId)  
+    .input("event_uuid", sql.UniqueIdentifier, eventId)  
+    .input("user_uuid", sql.UniqueIdentifier, userId)  
     .execute("remove_user_from_event")
     .then(data => {
       return parseEvents(data.recordset);
@@ -278,12 +278,12 @@ export const removeUserFromEvent = async (eventId: number, userId: number) => {
  * @param byUserId UserId of user performing the action
  * @returns Affected event
  */
-export const addUserAsEventAdmin = async (eventId: number, userId: number, byUserId: number) => {
+export const addUserAsEventAdmin = async (eventId: string, userId: string, byUserId: string) => {
   const request = new sql.Request();
   const events: Event[] = await request
-    .input("event_id", sql.Int, eventId)
-    .input("user_id", sql.Int, userId)
-    .input("by_user_id", sql.Int, byUserId)
+    .input("event_uuid", sql.UniqueIdentifier, eventId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
+    .input("by_user_uuid", sql.UniqueIdentifier, byUserId)
     .execute("add_user_as_event_admin")
     .then(data => {
       return parseEvents(data.recordset);
@@ -310,12 +310,12 @@ export const addUserAsEventAdmin = async (eventId: number, userId: number, byUse
  * @param byUserId UserId of user performing the action
  * @returns Affected event
  */
-export const removeUserAsEventAdmin = async (eventId: number, userId: number, byUserId: number) => {
+export const removeUserAsEventAdmin = async (eventId: string, userId: string, byUserId: string) => {
   const request = new sql.Request();
   const events: Event[] = await request
-    .input("event_id", sql.Int, eventId)
-    .input("user_id", sql.Int, userId)
-    .input("by_user_id", sql.Int, byUserId)
+    .input("event_uuid", sql.UniqueIdentifier, eventId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
+    .input("by_user_uuid", sql.UniqueIdentifier, byUserId)
     .execute("remove_user_as_event_admin")
     .then(data => {
       return parseEvents(data.recordset);
@@ -344,11 +344,11 @@ export const removeUserAsEventAdmin = async (eventId: number, userId: number, by
  * @param privateEvent Whether event should be open for all or invite only
  * @returns Edited event
  */
-export const editEvent = async (eventId: number, userId: number, name?: string, description?: string, privateEvent?: boolean) => {
+export const editEvent = async (eventId: string, userId: string, name?: string, description?: string, privateEvent?: boolean) => {
   const request = new sql.Request();
   const events: Event[] = await request
-    .input("event_id", sql.Int, eventId)
-    .input("user_id", sql.Int, userId)
+    .input("event_uuid", sql.UniqueIdentifier, eventId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .input("name", sql.NVarChar, name)
     .input("description", sql.NVarChar, description)
     .input("private", sql.Bit, privateEvent)

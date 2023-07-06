@@ -11,10 +11,10 @@ import * as ec from "../types/errorCodes";
  * @param username
  * @returns User data
  */
-export const getUser = async (userId: number | null, username?: string | null) => {
+export const getUser = async (userId: string | null, username?: string | null) => {
   const request = new sql.Request();
   const user: User | null = await request
-    .input("user_id", sql.Int, userId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .input("username", sql.NVarChar, username)
     .execute("get_user")
     .then(data => {
@@ -36,11 +36,11 @@ export const getUser = async (userId: number | null, username?: string | null) =
  */
 export const getUserID = async (email: string) => {
   const request = new sql.Request();
-  const userId: number | null = await request
+  const userId: string | null = await request
     .input("email", sql.NVarChar, email)
     .execute("get_user_id")
     .then(data => {
-      return data.recordset[0]?.id || null;
+      return data.recordset[0]?.uuid || null;
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD071, err);
@@ -53,11 +53,11 @@ export const getUserID = async (email: string) => {
  * @param filter Object containing filters (event ID, user ID to exclude)
  * @returns List of users
  */
-export const getUsers = async (filter?: { eventId?: number, excludeUserId?: number }) => {
+export const getUsers = async (filter?: { eventId?: string, excludeUserId?: string }) => {
   const request = new sql.Request();
   return request
-    .input("event_id", sql.Int, filter?.eventId)
-    .input("exclude_user_id", sql.Int, filter?.excludeUserId)
+    .input("event_uuid", sql.UniqueIdentifier, filter?.eventId)
+    .input("exclude_user_uuid", sql.UniqueIdentifier, filter?.excludeUserId)
     .execute("get_users")
     .then(data => {
       const users: User[] = parseUsers(data.recordset, true);
@@ -74,12 +74,12 @@ export const getUsers = async (filter?: { eventId?: number, excludeUserId?: numb
  * @param eventId 
  * @returns List of expenses
  */
-export const getUserExpenses = async (userId: number, eventId: number) => {
+export const getUserExpenses = async (userId: string, eventId: string) => {
   const request = new sql.Request();
   const expenses: Expense[] = await request
-    .input("event_id", sql.Int, eventId)
-    .input("user_id", sql.Int, userId)
-    .input("expense_id", sql.Int, null)
+    .input("event_uuid", sql.UniqueIdentifier, eventId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
+    .input("expense_uuid", sql.UniqueIdentifier, null)
     .execute("get_expenses")
     .then(data => {
       return parseExpenses(data.recordset);
@@ -138,10 +138,10 @@ export const createUser = async (username: string, firstName: string, lastName: 
  * @param data Data object
  * @returns Edited user
  */
-export const editUser = async (userId: number, data: { username?: string, firstName?: string, lastName?: string, email?: string, phone?: string }) => {
+export const editUser = async (userId: string, data: { username?: string, firstName?: string, lastName?: string, email?: string, phone?: string }) => {
   const request = new sql.Request();
   const user: User | null = await request
-    .input("user_id", sql.Int, userId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .input("username", sql.NVarChar, data.username)
     .input("first_name", sql.NVarChar, data.firstName)
     .input("last_name", sql.NVarChar, data.lastName)
@@ -172,10 +172,10 @@ export const editUser = async (userId: number, data: { username?: string, firstN
  * @param userId 
  * @returns True if successful
  */
-export const deleteUser = async (userId: number) => {
+export const deleteUser = async (userId: string) => {
   const request = new sql.Request();
   const success = request
-    .input("user_id", sql.Int, userId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .execute("delete_user")
     .then(() => {
       return true;
@@ -195,10 +195,10 @@ export const deleteUser = async (userId: number) => {
  * @param hash 
  * @returs True if successful
  */
-export const changePassword = async (userId: number, hash: string) => {
+export const changePassword = async (userId: string, hash: string) => {
   const request = new sql.Request();
   const success = await request
-    .input("user_id", sql.Int, userId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .input("password", sql.NVarChar, hash)
     .execute("change_password")
     .then(() => {

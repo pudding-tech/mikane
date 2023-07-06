@@ -3,6 +3,7 @@ import * as db from "../db/dbUsers";
 import * as dbAuth from "../db/dbAuthentication";
 import { authCheck } from "../middlewares/authCheck";
 import { authenticate, createHash } from "../utils/auth";
+import { isUUID } from "../utils/uuidValidator";
 import { isEmail } from "../utils/emailValidator";
 import { Expense, User } from "../types/types";
 import { ErrorExt } from "../types/errorExt";
@@ -18,13 +19,17 @@ const router = express.Router();
 */
 router.get("/users", authCheck, async (req, res, next) => {
   try {
-    const filter: { eventId?: number, excludeUserId?: number } = {
-      eventId: req.query.eventId ? Number(req.query.eventId) : undefined
+    const filter: { eventId?: string, excludeUserId?: string } = {
+      eventId: req.query.eventId as string
     };
+
+    if (filter.eventId && !isUUID(filter.eventId)) {
+      throw new ErrorExt(ec.PUD013);
+    }
 
     const excludeSelf = req.query.exclude === "self";
     if (excludeSelf) {
-      filter.excludeUserId = Number(req.session.userId);
+      filter.excludeUserId = req.session.userId;
     }
 
     const users: User[] = await db.getUsers(filter);
@@ -40,8 +45,8 @@ router.get("/users", authCheck, async (req, res, next) => {
 */
 router.get("/users/:id", authCheck, async (req, res, next) => {
   try {
-    const userId = Number(req.params.id);
-    if (isNaN(userId)) {
+    const userId = req.params.id;
+    if (!isUUID(userId)) {
       throw new ErrorExt(ec.PUD016);
     }
 
@@ -61,9 +66,9 @@ router.get("/users/:id", authCheck, async (req, res, next) => {
 */
 router.get("/users/:id/expenses/:eventId", authCheck, async (req, res, next) => {
   try {
-    const userId = Number(req.params.id);
-    const eventId = Number(req.params.eventId);
-    if (isNaN(userId) || isNaN(eventId)) {
+    const userId = req.params.id;
+    const eventId = req.params.eventId;
+    if (!isUUID(userId) || !isUUID(eventId)) {
       throw new ErrorExt(ec.PUD015);
     }
 
@@ -156,8 +161,8 @@ router.post("/users/changepassword", authCheck, async (req, res, next) => {
 */
 router.put("/users/:id", authCheck, async (req, res, next) => {
   try {
-    const userId = Number(req.params.id);
-    if (isNaN(userId)) {
+    const userId = req.params.id;
+    if (!isUUID(userId)) {
       throw new ErrorExt(ec.PUD016);
     }
     if (!req.body.username && !req.body.firstName && !req.body.lastName && !req.body.email && !req.body.phone) {
@@ -194,8 +199,8 @@ router.put("/users/:id", authCheck, async (req, res, next) => {
 */
 router.delete("/users/:id", authCheck, async (req, res, next) => {
   try {
-    const userId = Number(req.params.id);
-    if (isNaN(userId)) {
+    const userId = req.params.id;
+    if (!isUUID(userId)) {
       throw new ErrorExt(ec.PUD016);
     }
 

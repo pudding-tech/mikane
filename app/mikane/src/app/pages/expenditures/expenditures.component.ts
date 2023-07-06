@@ -39,14 +39,14 @@ import { MatListModule } from '@angular/material/list';
 	],
 })
 export class ExpendituresComponent implements OnInit {
-	private eventId!: number;
+	private eventId!: string;
 
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 	cancel$: Subject<void> = new Subject();
 
 	expenses: Expense[] = [];
 	displayedColumns: string[] = ['name', 'payer', 'amount', 'categoryName', 'description', 'delete'];
-	currentUserId: number;
+	currentUserId: string;
 
 	constructor(
 		private expenseService: ExpenseService,
@@ -134,7 +134,7 @@ export class ExpendituresComponent implements OnInit {
 			});
 	}
 
-	removeExpense(expenseId: number) {
+	removeExpense(expenseId: string) {
 		this.expenseService.deleteExpense(expenseId).subscribe({
 			next: () => {
 				this.expenses = [

@@ -93,6 +93,22 @@ describe("authentication", async () => {
     });
   });
 
+  /* -------------------------- */
+  /* POST /requestpasswordreset */
+  /* -------------------------- */
+  describe("POST /requestpasswordreset", async () => {
+    test("fail when requesting password reset", async () => {
+      const res = await request(app)
+        .post("/api/requestpasswordreset")
+        .send({
+          email: "a@mikane.no"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD073.code);
+    });
+  });
+
   /* ----------------- */
   /* POST /generatekey */
   /* ----------------- */

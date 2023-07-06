@@ -10,18 +10,18 @@ import { randomUUID } from "crypto";
  * @param userId
  * @returns User's hashed password
  */
-export const getUserHash = async (usernameEmail?: string, userId?: number) => {
+export const getUserHash = async (usernameEmail?: string, userId?: string) => {
   const request = new sql.Request();
   const userHash = await request
     .input("usernameEmail", sql.NVarChar, usernameEmail)
-    .input("user_id", sql.Int, userId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .execute("get_user_hash")
     .then(data => {
       if (data.recordset.length < 1) {
         return null;
       }
       return {
-        id: data.recordset[0].id as number,
+        id: data.recordset[0].uuid as string,
         hash: data.recordset[0].password as string
       };
     })
@@ -95,10 +95,10 @@ export const newApiKey = async (name: string, hash: string, validFrom?: Date, va
  * @param userId 
  * @param key 
  */
-export const newPasswordResetKey = async (userId: number, key: string) => {
+export const newPasswordResetKey = async (userId: string, key: string) => {
   const request = new sql.Request();
   await request
-    .input("user_id", sql.Int, userId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .input("key", sql.NVarChar, key)
     .execute("new_password_reset_key")
     .catch(err => {

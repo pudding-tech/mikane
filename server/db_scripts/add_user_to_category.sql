@@ -2,11 +2,16 @@ if object_id ('add_user_to_category') is not null
   drop procedure add_user_to_category
 go
 create procedure add_user_to_category
-  @category_id int,
-  @user_id int,
+  @category_uuid uniqueidentifier,
+  @user_uuid uniqueidentifier,
   @weight numeric(14)
 as
 begin
+
+  declare @category_id int
+  declare @user_id int
+  select @category_id = id from category where uuid = @category_uuid
+  select @user_id = id from [user] where uuid = @user_uuid
 
   if not exists (select id from category where id = @category_id)
   begin
@@ -46,7 +51,10 @@ begin
       insert into user_category (user_id, category_id) values (@user_id, @category_id)
     end
 
-  exec get_categories @event_id, @category_id
+  declare @event_uuid uniqueidentifier
+  select @event_uuid = uuid from [event] where id = @event_id
+  
+  exec get_categories @event_uuid, @category_uuid
 
 end
 go

@@ -10,18 +10,20 @@ import * as ec from "../types/errorCodes";
  * @param eventId 
  * @returns List of categories
  */
-export const getCategories = async (eventId: number) => {
+export const getCategories = async (eventId: string) => {
   const request = new sql.Request();
   const categories: Category[] = await request
-    .input("event_id", sql.Int, eventId)
-    .input("category_id", sql.Int, null)
+    .input("event_uuid", sql.UniqueIdentifier, eventId)
+    .input("category_uuid", sql.UniqueIdentifier, null)
     .execute("get_categories")
     .then(data => {
       return parseCategories(data.recordset, Target.CLIENT);
     })
     .catch(err => {
       if (err.number === 50006)
-        throw new ErrorExt(ec.PUD006);
+        throw new ErrorExt(ec.PUD006, err);
+      if (err.number === 50007)
+        throw new ErrorExt(ec.PUD007, err);
       else
         throw new ErrorExt(ec.PUD029, err);
     });
@@ -33,17 +35,22 @@ export const getCategories = async (eventId: number) => {
  * @param categoryId 
  * @returns Category object
  */
-export const getCategory = async (categoryId: number) => {
+export const getCategory = async (categoryId: string) => {
   const request = new sql.Request();
   const categories: Category[] = await request
-    .input("event_id", sql.Int, null)
-    .input("category_id", sql.Int, categoryId)
+    .input("event_uuid", sql.UniqueIdentifier, null)
+    .input("category_uuid", sql.UniqueIdentifier, categoryId)
     .execute("get_categories")
     .then(data => {
       return parseCategories(data.recordset, Target.CLIENT);
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD029, err);
+      if (err.number === 50006)
+        throw new ErrorExt(ec.PUD006, err);
+      if (err.number === 50007)
+        throw new ErrorExt(ec.PUD007, err);
+      else
+        throw new ErrorExt(ec.PUD029, err);
     });
   if (!categories.length) {
     return null;
@@ -58,16 +65,16 @@ export const getCategory = async (categoryId: number) => {
  * @param weighted 
  * @returns Newly created category
  */
-export const createCategory = async (name: string, eventId: number, weighted: boolean, icon?: CategoryIcon) => {
+export const createCategory = async (name: string, eventId: string, weighted: boolean, icon?: CategoryIcon) => {
   const request = new sql.Request();
-  const category: Category = await request
+  const category: Category[] = await request
     .input("name", sql.NVarChar, name)
     .input("icon", sql.NVarChar, icon)
-    .input("event_id", sql.Int, eventId)
+    .input("event_uuid", sql.UniqueIdentifier, eventId)
     .input("weighted", sql.Bit, weighted)
     .execute("new_category")
     .then(data => {
-      return data.recordset[0];
+      return parseCategories(data.recordset, Target.CLIENT);
     })
     .catch(err => {
       if (err.number === 50006)
@@ -77,7 +84,7 @@ export const createCategory = async (name: string, eventId: number, weighted: bo
       else
         throw new ErrorExt(ec.PUD036, err);
     });
-  return category;
+  return category[0];
 };
 
 /**
@@ -87,11 +94,11 @@ export const createCategory = async (name: string, eventId: number, weighted: bo
  * @param weight 
  * @returns Affected category
  */
-export const addUserToCategory = async (categoryId: number, userId: number, weight?: number) => {
+export const addUserToCategory = async (categoryId: string, userId: string, weight?: number) => {
   const request = new sql.Request();
   const categories: Category[] = await request
-    .input("category_id", sql.Int, categoryId)
-    .input("user_id", sql.Int, userId)
+    .input("category_uuid", sql.UniqueIdentifier, categoryId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .input("weight", sql.Numeric(14), weight)
     .execute("add_user_to_category")
     .then(data => {
@@ -120,14 +127,14 @@ export const addUserToCategory = async (categoryId: number, userId: number, weig
  * @param name New name of category
  * @returns Edited category
  */
-export const renameCategory = async (categoryId: number, name: string) => {
+export const renameCategory = async (categoryId: string, name: string) => {
   const request = new sql.Request();
-  const category: Category | null = await request
-    .input("category_id", sql.Int, categoryId)
+  const category: Category[] = await request
+    .input("category_uuid", sql.UniqueIdentifier, categoryId)
     .input("name", sql.NVarChar, name)
     .execute("rename_category")
     .then(data => {
-      return data.recordset[0];
+      return parseCategories(data.recordset, Target.CLIENT);
     })
     .catch(err => {
       if (err.number === 50007)
@@ -135,7 +142,7 @@ export const renameCategory = async (categoryId: number, name: string) => {
       else
         throw new ErrorExt(ec.PUD041, err);
     });
-  return category;
+  return category[0];
 };
 
 /**
@@ -145,11 +152,11 @@ export const renameCategory = async (categoryId: number, name: string) => {
  * @param weight 
  * @returns Edited category
  */
-export const editUserWeight = async (categoryId: number, userId: number, weight: number) => {
+export const editUserWeight = async (categoryId: string, userId: string, weight: number) => {
   const request = new sql.Request();
   const categories: Category[] = await request
-    .input("category_id", sql.Int, categoryId)
-    .input("user_id", sql.Int, userId)
+    .input("category_uuid", sql.UniqueIdentifier, categoryId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .input("weight", sql.Int, weight)
     .execute("edit_user_weight")
     .then(data => {
@@ -170,10 +177,10 @@ export const editUserWeight = async (categoryId: number, userId: number, weight:
  * @param weighted 
  * @returns Edited category
  */
-export const editWeightStatus = async (categoryId: number, weighted: boolean) => {
+export const editWeightStatus = async (categoryId: string, weighted: boolean) => {
   const request = new sql.Request();
   const categories: Category[] = await request
-    .input("category_id", sql.Int, categoryId)
+    .input("category_uuid", sql.UniqueIdentifier, categoryId)
     .input("weighted", sql.Bit, weighted)
     .execute("edit_category_weighted_status")
     .then(data => {
@@ -193,10 +200,10 @@ export const editWeightStatus = async (categoryId: number, weighted: boolean) =>
  * @param categoryId 
  * @returns True if successful
  */
-export const deleteCategory = async (categoryId: number) => {
+export const deleteCategory = async (categoryId: string) => {
   const request = new sql.Request();
   const success = await request
-    .input("category_id", sql.Int, categoryId)
+    .input("category_uuid", sql.UniqueIdentifier, categoryId)
     .execute("delete_category")
     .then(() => {
       return true;
@@ -216,11 +223,11 @@ export const deleteCategory = async (categoryId: number) => {
  * @param userId 
  * @returns Edited category
  */
-export const removeUserFromCategory = async (categoryId: number, userId: number) => {
+export const removeUserFromCategory = async (categoryId: string, userId: string) => {
   const request = new sql.Request();
   const categories: Category[] = await request
-    .input("category_id", sql.Int, categoryId)
-    .input("user_id", sql.Int, userId)
+    .input("category_uuid", sql.UniqueIdentifier, categoryId)
+    .input("user_uuid", sql.UniqueIdentifier, userId)
     .execute("remove_user_from_category")
     .then(data => {
       return parseCategories(data.recordset, Target.CLIENT);
