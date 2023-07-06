@@ -43,7 +43,7 @@ import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
 	],
 })
 export class UserComponent implements OnInit, OnDestroy {
-	private eventId!: number;
+	private eventId!: string;
 	private userSubscription: Subscription;
 	private addUserSubscription: Subscription;
 
@@ -202,7 +202,7 @@ export class UserComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	deleteUserDialog(userId: number) {
+	deleteUserDialog(userId: string) {
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
 			width: '380px',
 			data: {
@@ -219,7 +219,7 @@ export class UserComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	removeUser(userId: number) {
+	removeUser(userId: string) {
 		this.eventService.removeUser(this.eventId, userId).subscribe({
 			next: () => {
 				// Reload users and balances
@@ -237,7 +237,7 @@ export class UserComponent implements OnInit, OnDestroy {
 		this.dataSources[index].loadExpenses(user.id, this.eventId);
 	}
 
-	createExpenseDialog(userId: number, dataSource: ExpenseDataSource) {
+	createExpenseDialog(userId: string, dataSource: ExpenseDataSource) {
 		const dialogRef = this.dialog.open(ExpenditureDialogComponent, {
 			width: '400px',
 			data: {
@@ -281,7 +281,7 @@ export class UserComponent implements OnInit, OnDestroy {
 			});
 	}
 
-	deleteExpense(id: number, dataSource: ExpenseDataSource): void {
+	deleteExpense(id: string, dataSource: ExpenseDataSource): void {
 		this.expenseService.deleteExpense(id).subscribe({
 			next: () => {
 				dataSource.removeExpense(id);

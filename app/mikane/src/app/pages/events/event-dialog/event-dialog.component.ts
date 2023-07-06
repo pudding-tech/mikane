@@ -14,7 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 	imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule],
 })
 export class EventDialogComponent {
-	event: { id?: number; name: string; description: string } = { name: '', description: '' };
+	event: { id?: string; name: string; description: string } = { name: '', description: '' };
 	edit: boolean;
 	currentName: string;
 	currentDescription: string;

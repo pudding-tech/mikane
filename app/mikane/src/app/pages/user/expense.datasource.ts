@@ -21,7 +21,7 @@ export class ExpenseDataSource implements DataSource<Expense> {
 		this.loadingSubject.complete();
 	}
 
-	loadExpenses(userId: number, eventId: number) {
+	loadExpenses(userId: string, eventId: string) {
 		this.loadingSubject.next(true);
 
 		this.userService
@@ -36,7 +36,7 @@ export class ExpenseDataSource implements DataSource<Expense> {
 			});
 	}
 
-	removeExpense(expenseId: number) {
+	removeExpense(expenseId: string) {
 		const expenses = this.expenseSubject.value;
 		const index = expenses.findIndex((expense) => {
 			return expense.id === expenseId;
