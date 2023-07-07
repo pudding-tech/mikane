@@ -1,0 +1,35 @@
+.navbar {
+	display: flex;
+	justify-content: space-between;
+	position: fixed;
+	z-index: 9999;
+	bottom: 0px;
+	width: 100vw;
+	height: 58px;
+	background-color: #212121;
+	border-top: 1px solid rgba(181, 181, 181, 0.2);
+}
+
+.nav-button {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	padding: 0 10px;
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 12px;
+}
+
+.test {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.active {
+	color: rgb(253, 89, 154);
+}

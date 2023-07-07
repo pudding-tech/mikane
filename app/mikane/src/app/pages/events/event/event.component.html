@@ -10,10 +10,10 @@
 	<span class="toolbar-spacer"></span>
 	<menu></menu>
 </mat-toolbar>
-<nav class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
+<nav *ngIf="!(breakpointService.isMobile() | async); else mobileNavbar" class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
 	<a
 		mat-tab-link
-		*ngFor="let link of links()"
+		*ngFor="let link of links"
 		[routerLink]="link.location"
 		(click)="activeLink = link.location"
 		[active]="activeLink == link.location"
@@ -21,6 +21,9 @@
 	>
 </nav>
 <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+<ng-template #mobileNavbar>
+	<mobile-nav [activeLink]="activeLink"></mobile-nav>
+</ng-template>
 <div [ngClass]="{ content: !(breakpointService.isMobile() | async) }">
 	<router-outlet></router-outlet>
 </div>
