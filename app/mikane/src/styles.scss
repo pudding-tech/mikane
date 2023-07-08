@@ -70,6 +70,10 @@ a.nostyle:visited {
 	margin-right: 1em !important;
 }
 
+.back-button-mobile {
+	margin-right: 0.2em !important;
+}
+
 .user-actions {
 	button {
 		margin: 1em;
@@ -162,6 +166,10 @@ a.nostyle:visited {
 .amount-color-mobile {
 	// color: rgb(127, 221, 117);
 	color: rgb(253, 89, 154);
+}
+
+.mobile-toolbar {
+	padding: 0 6px !important;
 }
 
 // Hide background of autocompleted inputs

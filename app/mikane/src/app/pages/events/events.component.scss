@@ -2,6 +2,10 @@
 	flex: 1 1 auto;
 }
 
+.events-toolbar {
+	padding-left: 16px !important;
+}
+
 mat-toolbar button {
 	margin-left: 1em;
 }
@@ -28,7 +32,7 @@ mat-toolbar button {
 }
 
 .event-item {
-	margin-bottom: 0.5em;
+	margin-bottom: 0.4em;
 
 	.event-header {
 		min-height: 48px;

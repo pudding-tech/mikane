@@ -1,4 +1,4 @@
-<mat-toolbar>
+<mat-toolbar class="events-toolbar" [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
 	<span class="logo-container">
 		<img src="assets/mikane.svg" class="logo" />
 	</span>

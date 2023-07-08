@@ -5,3 +5,19 @@
 mat-toolbar button {
 	margin-left: 1em;
 }
+
+.mobile-event {
+	margin-bottom: 58px; // Add margin to adjust for fixed navbar
+}
+
+.mobile-menu {
+	padding-left: 0;
+}
+
+.name {
+	white-space: normal;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
