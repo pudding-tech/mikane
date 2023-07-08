@@ -4,9 +4,9 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-	selector: 'mobile-nav',
-	templateUrl: 'navbar.component.html',
-	styleUrls: ['./navbar.component.scss'],
+	selector: 'mobile-navbar',
+	templateUrl: 'mobile-navbar.component.html',
+	styleUrls: ['./mobile-navbar.component.scss'],
 	standalone: true,
 	imports: [CommonModule, RouterLink, RouterOutlet, MatIconModule],
 })
@@ -20,7 +20,7 @@ export class MobileNavbarComponent {
 		},
 		{
 			name: 'Expenses',
-			icon: 'account_balance_wallet',
+			icon: 'payment',
 			location: './expenses',
 		},
 		{
@@ -30,24 +30,8 @@ export class MobileNavbarComponent {
 		},
 		{
 			name: 'Payments',
-			icon: 'payment',
+			icon: 'account_balance_wallet',
 			location: './payment',
 		},
 	];
-
-	constructor(
-		// private route: ActivatedRoute,
-		// private router: Router
-	) { };
-
-	ngOnInit() {
-		// console.log("child init");
-		// console.log(this.activeLink);
-	}
-
-	gotoPayments() {
-		console.log("pay click");
-		// console.log(this.route);
-		// console.log(this.router);
-	}
 }

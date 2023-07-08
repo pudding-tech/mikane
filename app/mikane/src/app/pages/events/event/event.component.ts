@@ -8,7 +8,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { combineLatest, map } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
-import { MobileNavbarComponent } from 'src/app/features/mobile/navbar/navbar.component';
+import { MobileNavbarComponent } from 'src/app/features/mobile/mobile-navbar/mobile-navbar.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
