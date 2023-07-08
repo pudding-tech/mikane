@@ -21,7 +21,7 @@ export const getUserHash = async (usernameEmail?: string, userId?: string) => {
         return null;
       }
       return {
-        id: data.recordset[0].uuid as string,
+        id: (data.recordset[0].uuid as string).toLowerCase(),
         hash: data.recordset[0].password as string
       };
     })

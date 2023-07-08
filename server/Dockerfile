@@ -46,7 +46,7 @@ RUN if [ "${SERVER_DESCRIPTION}" ] ; \
 EXPOSE 3002
 
 # Run build
-CMD ["node", "build/server.js"]
+CMD ["node", "build/index.js"]
 
 # Commands for building image and running container (substitute latest with version if building a release):
 #   docker build -t mikane:latest ./

@@ -12,17 +12,17 @@ export const parseEvents = (eventsInput: EventDB[]) => {
     const adminIds: AdminIdDB[] = JSON.parse(eventObj.admin_ids) ?? [];
 
     const event: Event = {
-      id: eventObj.uuid,
+      id: eventObj.uuid.toLowerCase(),
       name: eventObj.name,
       description: eventObj.description,
       created: eventObj.created,
-      adminIds: adminIds.map(admin => admin.user_uuid),
+      adminIds: adminIds.map(admin => admin.user_uuid.toLowerCase()),
       private: eventObj.private,
       user: eventObj.user_uuid && eventObj.user_in_event !== undefined && eventObj.user_is_admin !== undefined ? {
-          id: eventObj.user_uuid,
-          inEvent: eventObj.user_in_event,
-          isAdmin: eventObj.user_is_admin
-        } : undefined
+        id: eventObj.user_uuid.toLowerCase(),
+        inEvent: eventObj.user_in_event,
+        isAdmin: eventObj.user_is_admin
+      } : undefined
     };
     events.push(event);
   }
@@ -64,6 +64,6 @@ export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult
     }
     return a.user.event?.joinedDate.getTime() - b.user.event?.joinedDate.getTime();
   });
-  
+
   return balances;
 };

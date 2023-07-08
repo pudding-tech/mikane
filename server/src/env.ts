@@ -69,6 +69,13 @@ const validateEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
   };
 };
 
-const envVariables = validateEnvVariables(process.env);
+let envVariables: EnvVariables;
+try {
+  envVariables = validateEnvVariables(process.env);
+}
+catch (err) {
+  console.error(err);
+  process.exit(1);
+}
 
 export default envVariables;

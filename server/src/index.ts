@@ -3,5 +3,5 @@ import env from "./env";
 
 // Listen for requests
 app.listen(env.PORT, () => {
-  console.log(`Mikane server (${env.NODE_ENV} envionment) running on port ${env.PORT}`);
+  console.log(`Mikane server (${env.NODE_ENV} environment) running on port ${env.PORT}`);
 });

@@ -19,26 +19,26 @@ export const parseExpenses = (expInput: ExpenseDB[]): Expense[] => {
     }
 
     const expense: Expense = {
-      id: expObj.uuid,
+      id: expObj.uuid.toLowerCase(),
       name: expObj.name,
       description: expObj.description,
       amount: expObj.amount,
       dateAdded: expObj.date_added,
       category: {
-        id: expObj.category_uuid,
+        id: expObj.category_uuid.toLowerCase(),
         name: expObj.category_name,
         icon: icon
       },
       payer: {
-        id: expObj.payer_uuid,
+        id: expObj.payer_uuid.toLowerCase(),
         username: expObj.payer_username,
         name: expObj.payer_first_name,
         firstName: expObj.payer_first_name,
         lastName: expObj.payer_last_name
       }
-		};
-		expenses.push(expense);
-	});
+    };
+    expenses.push(expense);
+  });
 
   // Set unique names of users where they are shared
   const users: User[] = expenses.map(expense => expense.payer);
@@ -48,5 +48,5 @@ export const parseExpenses = (expInput: ExpenseDB[]): Expense[] => {
     delete user.lastName;
   }
 
-	return expenses;
+  return expenses;
 };
