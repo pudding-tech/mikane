@@ -9,12 +9,12 @@ export interface Expense {
 	name: string;
 	description: string;
 	amount: number;
-	dateAdded: Date;
+	dateAdded: number;
 	category: {
 		id: string;
 		name: string;
 		icon: string;
-	}
+	};
 	payer: User;
 }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, switchMap, takeUntil } from 'rxjs';
@@ -17,6 +17,7 @@ import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
+import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 
 @Component({
 	selector: 'app-expenditures',
@@ -36,6 +37,7 @@ import { MatListModule } from '@angular/material/list';
 		CurrencyPipe,
 		MatDialogModule,
 		MatListModule,
+		MatSortModule,
 	],
 })
 export class ExpendituresComponent implements OnInit {
@@ -47,6 +49,8 @@ export class ExpendituresComponent implements OnInit {
 	expenses: Expense[] = [];
 	displayedColumns: string[] = ['name', 'payer', 'amount', 'categoryName', 'description', 'delete'];
 	currentUserId: string;
+
+	@ViewChild(MatSort) sort: MatSort;
 
 	constructor(
 		private expenseService: ExpenseService,
@@ -149,5 +153,41 @@ export class ExpendituresComponent implements OnInit {
 				console.error('something went wrong while deleting expense', err?.error?.message);
 			},
 		});
+	}
+
+	sortData(sort: Sort) {
+		if (!sort.active || sort.direction === '') {
+			this.expenses = [
+				...this.expenses.sort((a, b) => {
+					return this.compare(a.dateAdded, b.dateAdded, false);
+				}),
+			];
+			return;
+		}
+
+		this.expenses = [
+			...this.expenses.sort((a, b) => {
+				const isAsc = sort.direction === 'asc';
+				switch (sort.active) {
+					case 'name':
+						return this.compare(a.name, b.name, isAsc);
+					case 'payer':
+						return this.compare(a.payer.name, b.payer.name, isAsc);
+					case 'categoryName':
+						return this.compare(a.category.name, b.category.name, isAsc);
+					case 'amount':
+						return this.compare(a.amount, b.amount, isAsc);
+					case 'desscription':
+						return this.compare(a.description, b.description, isAsc);
+					default:
+						return 0;
+				}
+			}),
+		];
+	}
+
+	private compare(a: string | number, b: string | number, isAsc: boolean) {
+		if (a === b) return 0;
+		return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 	}
 }
