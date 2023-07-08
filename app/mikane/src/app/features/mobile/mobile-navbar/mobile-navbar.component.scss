@@ -2,7 +2,7 @@
 	display: flex;
 	justify-content: space-between;
 	position: fixed;
-	z-index: 9999;
+	z-index: 999;
 	bottom: 0px;
 	width: 100vw;
 	height: 58px;
@@ -17,7 +17,6 @@
 	align-items: center;
 	justify-content: center;
 	text-decoration: none;
-	padding: 0 10px;
 	color: rgba(255, 255, 255, 0.6);
 	font-size: 12px;
 }
