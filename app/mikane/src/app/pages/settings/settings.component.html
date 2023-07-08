@@ -1,5 +1,5 @@
-<mat-toolbar>
-	<a mat-icon-button routerLink="/events" class="back-button">
+<mat-toolbar [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
+	<a mat-icon-button routerLink="/events" [ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
 		<mat-icon>arrow_back</mat-icon>
 	</a>
 	<span class="toolbar-spacer"></span>

@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { combineLatest, map } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
+import { MobileNavbarComponent } from 'src/app/features/mobile/mobile-navbar/mobile-navbar.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -18,15 +18,14 @@ import { MessageService } from 'src/app/services/message/message.service';
 	templateUrl: './event.component.html',
 	styleUrls: ['./event.component.scss'],
 	standalone: true,
-	imports: [CommonModule, MatToolbarModule, MatButtonModule, RouterLink, MatIconModule, MatTabsModule, RouterOutlet, MenuComponent],
+	imports: [CommonModule, MatToolbarModule, MatButtonModule, RouterLink, MatIconModule, MatTabsModule, RouterOutlet, MenuComponent, MobileNavbarComponent],
 })
 export class EventComponent implements OnInit {
 	event: PuddingEvent = {
 		name: '',
 	} as PuddingEvent;
 	activeLink = '';
-	isMobile = toSignal(this.breakpointService.isMobile());
-	links = computed(() => [
+	links = [
 		{
 			name: 'Participants',
 			location: './users',
@@ -36,14 +35,14 @@ export class EventComponent implements OnInit {
 			location: './expenses',
 		},
 		{
-			name: this.isMobile() ? 'Categories' : 'Expense Categories',
+			name: 'Expense Categories',
 			location: './categories',
 		},
 		{
-			name: this.isMobile() ? 'Payments' : 'Payment Structure',
+			name: 'Payment Structure',
 			location: './payment',
 		},
-	]);
+	];
 
 	constructor(
 		private eventService: EventService,
@@ -63,6 +62,12 @@ export class EventComponent implements OnInit {
 	ngOnInit() {
 		// Set active link based on current URL
 		this.activeLink = './' + window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+
+		this.router.events.subscribe((event) => {
+			if (event instanceof NavigationEnd) {
+				this.activeLink = './' + window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+			}
+		});
 
 		combineLatest([this.eventService.loadEvents(), this.route.params])
 			.pipe(

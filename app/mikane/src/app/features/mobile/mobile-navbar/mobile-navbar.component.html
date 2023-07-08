@@ -1,0 +1,12 @@
+<div class="navbar">
+	<a
+		class="nav-button"
+		*ngFor="let link of links"
+		[routerLink]="link.location"
+		(click)="activeLink = link.location"
+		[ngClass]="{ active: activeLink === link.location}"
+	>
+		<mat-icon>{{ link.icon }}</mat-icon>
+		<div>{{ link.name }}</div>
+	</a>
+</div>

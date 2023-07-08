@@ -2,12 +2,14 @@
 
 :root {
 	color-scheme: dark;
+	-webkit-tap-highlight-color: rgba(237, 237, 237, 0.2);
 }
 
 html,
 body {
 	height: 100%;
 }
+
 body {
 	margin: 0;
 	font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -66,6 +68,10 @@ a.nostyle:visited {
 
 .back-button {
 	margin-right: 1em !important;
+}
+
+.back-button-mobile {
+	margin-right: 0.2em !important;
 }
 
 .user-actions {
@@ -160,6 +166,10 @@ a.nostyle:visited {
 .amount-color-mobile {
 	// color: rgb(127, 221, 117);
 	color: rgb(253, 89, 154);
+}
+
+.mobile-toolbar {
+	padding: 0 6px !important;
 }
 
 // Hide background of autocompleted inputs
