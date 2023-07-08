@@ -10,8 +10,7 @@ import { CategoryIcon } from "../types/enums";
  */
 export const parseExpenses = (expInput: ExpenseDB[]): Expense[] => {
   const expenses: Expense[] = [];
-  expInput.forEach(expObj => {
-
+  expInput.forEach((expObj) => {
     // Validate and set category icon
     let icon: CategoryIcon = expObj.category_icon as CategoryIcon;
     if (icon && !Object.values(CategoryIcon).includes(icon)) {
@@ -23,25 +22,25 @@ export const parseExpenses = (expInput: ExpenseDB[]): Expense[] => {
       name: expObj.name,
       description: expObj.description,
       amount: expObj.amount,
-      dateAdded: expObj.date_added,
+      dateAdded: expObj.date_added.getTime(),
       category: {
         id: expObj.category_uuid.toLowerCase(),
         name: expObj.category_name,
-        icon: icon
+        icon: icon,
       },
       payer: {
         id: expObj.payer_uuid.toLowerCase(),
         username: expObj.payer_username,
         name: expObj.payer_first_name,
         firstName: expObj.payer_first_name,
-        lastName: expObj.payer_last_name
-      }
+        lastName: expObj.payer_last_name,
+      },
     };
     expenses.push(expense);
   });
 
   // Set unique names of users where they are shared
-  const users: User[] = expenses.map(expense => expense.payer);
+  const users: User[] = expenses.map((expense) => expense.payer);
   setUserUniqueNames(users);
   for (const user of users) {
     delete user.firstName;
