@@ -1,11 +1,12 @@
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,6 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 	styleUrls: ['./login.component.scss'],
 	standalone: true,
 	imports: [
+		CommonModule,
 		MatToolbarModule,
 		MatCardModule,
 		MatIconModule,
@@ -47,7 +49,7 @@ export class LoginComponent {
 		email: new FormControl<string>('', [Validators.required, Validators.email]),
 	});
 
-	constructor(private authService: AuthService, private router: Router, private messageService: MessageService) { }
+	constructor(private authService: AuthService, private router: Router, private messageService: MessageService, public breakpointService: BreakpointService) { }
 
 	login() {
 		if (this.loginForm.valid) {
