@@ -46,7 +46,8 @@
 								<mat-form-field *ngIf="category.weighted" subscriptSizing="dynamic" class="category-weight-input add-user">
 									<input
 										matInput
-										type="text"
+										type="number"
+										min="1"
 										formControlName="weight"
 										name="weight"
 										placeholder="Weight"
@@ -64,7 +65,7 @@
 									<button
 										mat-icon-button
 										type="button"
-										(click)="openEditDialog(category.id, user.id)"
+										(click)="openEditDialog(category.id, user.id, user.weight)"
 										*ngIf="category.weighted"
 									>
 										<mat-icon>edit</mat-icon>

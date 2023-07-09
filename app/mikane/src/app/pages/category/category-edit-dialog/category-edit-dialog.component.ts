@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
 	selector: 'category-edit-dialog',
@@ -14,12 +14,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 })
 export class CategoryEditDialogComponent {
 	editCategoryForm = new FormGroup({
-		weight: new FormControl('', [Validators.required]),
+		weight: new FormControl(this.data.weight, [Validators.required]),
 	});
 
 	constructor(
 		public dialogRef: MatDialogRef<CategoryEditDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: { catId: number; userId: number }
+		@Inject(MAT_DIALOG_DATA) public data: { catId: number; userId: number; weight: number }
 	) {}
 
 	onNoClick(): void {
