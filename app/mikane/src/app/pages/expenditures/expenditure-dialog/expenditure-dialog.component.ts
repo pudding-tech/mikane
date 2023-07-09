@@ -1,14 +1,14 @@
+import { NgFor } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { User, UserService } from 'src/app/services/user/user.service';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { NgFor } from '@angular/common';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { Category, CategoryService } from 'src/app/services/category/category.service';
+import { User, UserService } from 'src/app/services/user/user.service';
 
 @Component({
 	selector: 'expenditure-dialog',
@@ -37,7 +37,7 @@ export class ExpenditureDialogComponent implements OnInit {
 		description: new FormControl(''),
 		category: new FormControl('', [Validators.required]),
 		amount: new FormControl('', [Validators.required]),
-		payer: new FormControl({ value: this.data.userId, disabled: this.data.userId !== undefined }, [Validators.required]),
+		payer: new FormControl(this.data.userId, [Validators.required]),
 	});
 
 	constructor(
