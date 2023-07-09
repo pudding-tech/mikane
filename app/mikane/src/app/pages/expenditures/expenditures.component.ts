@@ -105,7 +105,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			width: '350px',
 			data: {
 				eventId: this.event.id,
-				userId: undefined,
+				userId: this.currentUserId,
 			},
 		});
 
