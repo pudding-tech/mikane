@@ -46,7 +46,7 @@ begin
     update [event] set [description] = null where id = @event_id
   end
   
-  exec get_events @event_uuid, null
+  exec get_events @event_uuid, @user_uuid
 
 end
 go
