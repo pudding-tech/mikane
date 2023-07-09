@@ -1,6 +1,10 @@
 <mat-toolbar [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
 	<div>
-		<a mat-icon-button routerLink="../../events" [ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
+		<a
+			mat-icon-button
+			routerLink="../../events"
+			[ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'"
+		>
 			<mat-icon>arrow_back</mat-icon>
 		</a>
 	</div>
@@ -24,6 +28,6 @@
 <ng-template #mobileNavbar>
 	<mobile-navbar [activeLink]="activeLink"></mobile-navbar>
 </ng-template>
-<div [ngClass]="{ content: !(breakpointService.isMobile() | async), 'mobile-event': breakpointService.isMobile() | async}">
-	<router-outlet></router-outlet>
+<div [ngClass]="{ content: !(breakpointService.isMobile() | async), 'mobile-event': breakpointService.isMobile() | async }">
+	<router-outlet (activate)="onOutletLoaded($event)"></router-outlet>
 </div>

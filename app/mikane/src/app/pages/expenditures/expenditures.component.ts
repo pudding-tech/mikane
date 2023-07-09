@@ -1,23 +1,23 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Subject, switchMap, takeUntil } from 'rxjs';
-import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
-import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { ApiError } from 'src/app/types/apiError.type';
-import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dialog.component';
-import { MatCardModule } from '@angular/material/card';
-import { ExpenseItemComponent } from 'src/app/features/mobile/expense-item/expense-item.component';
-import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
-import { MatTableModule } from '@angular/material/table';
-import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { AsyncPipe, CurrencyPipe, NgFor, NgIf } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { BehaviorSubject, Subject, Subscription, filter, of, switchMap, takeUntil } from 'rxjs';
+import { ExpenseItemComponent } from 'src/app/features/mobile/expense-item/expense-item.component';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { Category, CategoryService } from 'src/app/services/category/category.service';
+import { PuddingEvent } from 'src/app/services/event/event.service';
+import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
+import { MessageService } from 'src/app/services/message/message.service';
+import { ApiError } from 'src/app/types/apiError.type';
+import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dialog.component';
 
 @Component({
 	selector: 'app-expenditures',
@@ -40,8 +40,11 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 		MatSortModule,
 	],
 })
-export class ExpendituresComponent implements OnInit {
-	private eventId!: string;
+export class ExpendituresComponent implements OnInit, OnDestroy {
+	event!: PuddingEvent;
+
+	@Input() $event: BehaviorSubject<PuddingEvent>;
+	private eventSubscription: Subscription;
 
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 	cancel$: Subject<void> = new Subject();
@@ -56,7 +59,6 @@ export class ExpendituresComponent implements OnInit {
 		private expenseService: ExpenseService,
 		private categoryService: CategoryService,
 		private authService: AuthService,
-		private route: ActivatedRoute,
 		public dialog: MatDialog,
 		private messageService: MessageService,
 		public breakpointService: BreakpointService
@@ -73,11 +75,16 @@ export class ExpendituresComponent implements OnInit {
 				console.error('Something went wrong getting signed in user in expenses component: ' + err?.error?.message);
 			},
 		});
-		this.route?.parent?.parent?.params
-			.pipe(
-				switchMap((params) => {
-					this.eventId = params['eventId'];
-					return this.expenseService.loadExpenses(this.eventId);
+		this.eventSubscription = this.$event
+			?.pipe(
+				filter((event) => event?.id !== undefined),
+				switchMap((event) => {
+					if (event.id) {
+						this.event = event;
+						return this.expenseService.loadExpenses(this.event.id);
+					} else {
+						return of([]);
+					}
 				})
 			)
 			.subscribe({
@@ -97,7 +104,7 @@ export class ExpendituresComponent implements OnInit {
 		const dialogRef = this.dialog.open(ExpenditureDialogComponent, {
 			width: '350px',
 			data: {
-				eventId: this.eventId,
+				eventId: this.event.id,
 				userId: undefined,
 			},
 		});
@@ -111,7 +118,7 @@ export class ExpendituresComponent implements OnInit {
 						this.cancel$.next();
 					}
 					newExpense = expense;
-					return this.categoryService.findOrCreate(this.eventId, expense?.category);
+					return this.categoryService.findOrCreate(this.event.id, expense?.category);
 				}),
 				takeUntil(this.cancel$)
 			)
@@ -189,5 +196,9 @@ export class ExpendituresComponent implements OnInit {
 	private compare(a: string | number, b: string | number, isAsc: boolean) {
 		if (a === b) return 0;
 		return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+	}
+
+	ngOnDestroy(): void {
+		this.eventSubscription?.unsubscribe();
 	}
 }

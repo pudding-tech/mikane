@@ -55,7 +55,12 @@
 			<ng-container matColumnDef="delete">
 				<th mat-header-cell *matHeaderCellDef></th>
 				<td mat-cell *matCellDef="let expense">
-					<button *ngIf="expense.payer.id === currentUserId" mat-icon-button type="button" (click)="removeExpense(expense.id)">
+					<button
+						*ngIf="expense.payer.id === currentUserId || event?.user?.isAdmin"
+						mat-icon-button
+						type="button"
+						(click)="removeExpense(expense.id)"
+					>
 						<mat-icon>delete</mat-icon>
 					</button>
 				</td>
