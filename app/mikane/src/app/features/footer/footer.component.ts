@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import packageJson from '../../../../package.json';
@@ -20,7 +20,7 @@ export class FooterComponent {
 	) { }
 
 	showFooter() {
-		const includedPages = ['login', 'events'];
+		const includedPages = ['events'];
 		const currentPage = this.router.url.split('/').pop();
 		return includedPages.includes(currentPage.toLowerCase());
 	}

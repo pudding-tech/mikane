@@ -17,7 +17,7 @@
 <nav *ngIf="!(breakpointService.isMobile() | async); else mobileNavbar" class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
 	<a
 		mat-tab-link
-		*ngFor="let link of links"
+		*ngFor="let link of links()"
 		[routerLink]="link.location"
 		(click)="activeLink = link.location"
 		[active]="activeLink == link.location"
@@ -26,7 +26,7 @@
 </nav>
 <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
 <ng-template #mobileNavbar>
-	<mobile-navbar [activeLink]="activeLink"></mobile-navbar>
+	<mobile-navbar [activeLink]="activeLink" [links]="links()"></mobile-navbar>
 </ng-template>
 <div [ngClass]="{ content: !(breakpointService.isMobile() | async), 'mobile-event': breakpointService.isMobile() | async }">
 	<router-outlet (activate)="onOutletLoaded($event)"></router-outlet>

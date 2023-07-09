@@ -3,6 +3,12 @@ import { Component, Input } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 
+interface Route {
+	name: string;
+	icon: string;
+	location: string;
+}
+
 @Component({
 	selector: 'mobile-navbar',
 	templateUrl: 'mobile-navbar.component.html',
@@ -12,26 +18,5 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class MobileNavbarComponent {
 	@Input('activeLink') activeLink: string;
-	links = [
-		{
-			name: 'Participants',
-			icon: 'person',
-			location: './users',
-		},
-		{
-			name: 'Expenses',
-			icon: 'payment',
-			location: './expenses',
-		},
-		{
-			name: 'Categories',
-			icon: 'category',
-			location: './categories',
-		},
-		{
-			name: 'Payments',
-			icon: 'account_balance_wallet',
-			location: './payment',
-		},
-	];
+	@Input('links') links: Route[];
 }

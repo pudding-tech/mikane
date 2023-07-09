@@ -11,16 +11,51 @@
 
 .login-input {
 	width: 100%;
+
+	&.button {
+		margin-top: 20px;
+		margin-bottom: 8px;
+		height: 42px;
+	}
 }
 
-.logo-container {
+.bg {
+	height: 100vh;
+	background-color: #262626;
+}
+
+.mobile-view {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 80vw;
+}
+
+.mobile-title {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 30px;
+}
+
+.mobile-logo-container {
+	display: flex;
+	align-items: center;
 	min-width: 26px;
 	height: 26px;
-	padding-right: 14px;
+	padding-right: 10px;
 
 	.logo {
 		height: 26px;
 	}
+}
+
+.logo-text {
+	margin-right: 14px;
+}
+.reset-password-title {
+	margin-bottom: 10px;
 }
 
 .card-header, .card-content {
@@ -30,14 +65,6 @@
 
 .card-content {
 	margin-top: 15px;
-}
-
-.login-actions {
-	padding: 0px !important;
-}
-
-.login-actions button {
-	height: 42px;
 }
 
 .forgot-password {

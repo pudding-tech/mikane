@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -38,24 +39,29 @@ export class EventComponent implements OnInit {
 	$event: BehaviorSubject<PuddingEvent> = new BehaviorSubject<PuddingEvent>(undefined);
 
 	activeLink = '';
-	links = [
+	isMobile = toSignal(this.breakpointService.isMobile());
+	links = computed(() => [
 		{
 			name: 'Participants',
+			icon: 'person',
 			location: './users',
 		},
 		{
 			name: 'Expenses',
+			icon: 'payment',
 			location: './expenses',
 		},
 		{
-			name: 'Expense Categories',
+			name: this.isMobile() ? 'Expenses' : 'Expense Categories',
+			icon: 'category',
 			location: './categories',
 		},
 		{
-			name: 'Payment Structure',
+			name: this.isMobile() ? 'Payments' : 'Payment Structure',
+			icon: 'account_balance_wallet',
 			location: './payment',
 		},
-	];
+	]);
 
 	constructor(
 		private eventService: EventService,
