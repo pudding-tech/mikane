@@ -1,27 +1,27 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { map } from 'lodash-es';
-import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { MessageService } from 'src/app/services/message/message.service';
-import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
-import { BehaviorSubject } from 'rxjs';
-import { ApiError } from 'src/app/types/apiError.type';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { MatCardModule } from '@angular/material/card';
-import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatTableModule } from '@angular/material/table';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { NgIf, NgFor, AsyncPipe, CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
+import { map } from 'lodash-es';
+import { BehaviorSubject } from 'rxjs';
+import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { Category, CategoryService } from 'src/app/services/category/category.service';
+import { MessageService } from 'src/app/services/message/message.service';
+import { User, UserService } from 'src/app/services/user/user.service';
+import { ApiError } from 'src/app/types/apiError.type';
+import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
+import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
 
 @Component({
 	selector: 'app-category',
@@ -189,10 +189,10 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		});
 	}
 
-	openEditDialog(categoryId: string, userId: string) {
+	openEditDialog(categoryId: string, userId: string, weight: number) {
 		const dialogRef = this.dialog.open(CategoryEditDialogComponent, {
 			width: '300px',
-			data: { categoryId, userId },
+			data: { categoryId, userId, weight },
 		});
 
 		dialogRef.afterClosed().subscribe((res) => {
