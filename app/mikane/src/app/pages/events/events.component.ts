@@ -1,24 +1,24 @@
+import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { PuddingEvent, EventService } from 'src/app/services/event/event.service';
-import { EventDialogComponent } from './event-dialog/event-dialog.component';
-import { MessageService } from 'src/app/services/message/message.service';
-import { BehaviorSubject, NEVER, Subscription, switchMap } from 'rxjs';
-import { ApiError } from 'src/app/types/apiError.type';
-import { EventItemComponent } from 'src/app/features/mobile/event-item/event-item.component';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
-import { MatCardModule } from '@angular/material/card';
-import { NgIf, NgFor, AsyncPipe, CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { BehaviorSubject, NEVER, Subscription, switchMap } from 'rxjs';
+import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
-import { MatListModule } from '@angular/material/list';
+import { EventItemComponent } from 'src/app/features/mobile/event-item/event-item.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
+import { MessageService } from 'src/app/services/message/message.service';
+import { ApiError } from 'src/app/types/apiError.type';
+import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { EventDialogComponent } from './event-dialog/event-dialog.component';
 
 @Component({
 	selector: 'app-events',
@@ -107,9 +107,9 @@ export class EventsComponent implements OnInit, OnDestroy {
 				if (event) {
 					this.eventService.editEvent(event).subscribe({
 						next: (result) => {
-							const index = this.events.indexOf(this.events.find((event) => event.id === result.id));
+							const index = this.pagedEvents.indexOf(this.pagedEvents.find((event) => event.id === result.id));
 							if (~index) {
-								this.events[index] = result;
+								this.pagedEvents[index] = result;
 							}
 						},
 						error: (err: ApiError) => {
