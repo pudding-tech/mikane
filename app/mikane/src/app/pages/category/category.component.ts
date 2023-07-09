@@ -227,12 +227,14 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 
 	toggleWeighted(categoryId: string, weighted: boolean) {
 		this.categoryService.setWeighted(categoryId, !weighted).subscribe({
-			next: () => {
-				const category = this.categories.find((category) => {
-					return category.id === categoryId;
-				});
-				if (category) {
-					category.weighted = !weighted;
+			next: (result) => {
+				const category = this.categories.indexOf(
+					this.categories.find((category) => {
+						return category.id === result.id;
+					})
+				);
+				if (~category) {
+					Object.assign(this.categories[category], result);
 				}
 			},
 			error: (err: ApiError) => {
