@@ -1,31 +1,37 @@
-if object_id ('get_user') is not null
-  drop procedure get_user
-go
-create procedure get_user
-  @user_uuid uniqueidentifier,
-  @username nvarchar(255)
-as
+drop function if exists get_user;
+create or replace function get_user(
+  ip_user_uuid_value uuid,
+  ip_username_value varchar(255)
+)
+returns table (
+  "uuid" uuid,
+  username varchar(255),
+  first_name varchar(255),
+  last_name varchar(255),
+  email varchar(255),
+  phone_number varchar(20),
+  "password" varchar(255),
+  created timestamp
+) as
+$$
 begin
-
-  if (@user_uuid is not null)
-  begin
+  if ip_user_uuid_value is not null then
+    return query
     select
-      uuid, username, first_name, last_name, email, phone_number, [password], created
+      u.uuid, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created
     from
-      [user]
+      "user" u
     where
-      uuid = @user_uuid
-  end
-
-  else if (@username is not null)
-  begin
+      u.uuid = ip_user_uuid_value;
+  elsif ip_username_value is not null then
+    return query
     select
-      uuid, username, first_name, last_name, email, phone_number, [password], created
+      u.uuid, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created
     from
-      [user]
+      "user" u
     where
-      username = @username
-  end
-
-end
-go
+      u.username = ip_username_value;
+  end if;
+end;
+$$
+language plpgsql;

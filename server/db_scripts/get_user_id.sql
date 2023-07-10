@@ -1,17 +1,19 @@
-if object_id ('get_user_id') is not null
-  drop procedure get_user_id
-go
-create procedure get_user_id
-  @email nvarchar(255)
-as
+drop function if exists get_user_id;
+create or replace function get_user_id(
+  ip_email varchar(255)
+)
+returns table (
+  "uuid" uuid
+) as
+$$
 begin
-
+  return query
   select
-    uuid
+    u.uuid
   from
-    [user]
+    "user" u
   where
-    email = @email
-
-end
-go
+    u.email = ip_email;
+end;
+$$
+language plpgsql;

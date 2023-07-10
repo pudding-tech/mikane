@@ -1,37 +1,43 @@
-if object_id ('new_user') is not null
-  drop procedure new_user
-go
-create procedure new_user
-  @username nvarchar(255),
-  @first_name nvarchar(255),
-  @last_name nvarchar(255),
-  @email nvarchar(255),
-  @phone_number nvarchar(20),
-  @password nvarchar(255)
-as
+drop function if exists new_user;
+create or replace function new_user(
+  ip_username varchar(255),
+  ip_first_name varchar(255),
+  ip_last_name varchar(255),
+  ip_email varchar(255),
+  ip_phone_number varchar(20),
+  ip_password varchar(255)
+)
+returns table (
+  "uuid" uuid,
+  username varchar(255),
+  first_name varchar(255),
+  last_name varchar(255),
+  email varchar(255),
+  phone_number varchar(20),
+  "password" varchar(255),
+  created timestamp
+) as
+$$
+declare tmp_user_uuid uuid;
 begin
+  if exists (select u.id from "user" u where u.username = ip_username) then
+    raise exception 'Username already taken' using errcode = 'P0017';
+  end if;
 
-  if exists (select id from [user] where [username] = @username)
-  begin
-    throw 50017, 'Username already taken', 1
-  end
+  if exists (select u.id from "user" u where u.email = ip_email) then
+    raise exception 'Email address already taken' using errcode = 'P0018';
+  end if;
 
-  if exists (select id from [user] where email = @email)
-  begin
-    throw 50018, 'Email address already taken', 1
-  end
+  if exists (select u.id from "user" u where u.phone_number = ip_phone_number) then
+    raise exception 'Phone number already taken' using errcode = 'P0019';
+  end if;
 
-  if exists (select id from [user] where phone_number = @phone_number)
-  begin
-    throw 50019, 'Phone number already taken', 1
-  end
+  insert into "user"(username, first_name, last_name, email, phone_number, "password", created)
+    values (ip_username, ip_first_name, nullif(ip_last_name, ''), ip_email, ip_phone_number, ip_password, CURRENT_TIMESTAMP)
+    returning "user".uuid into tmp_user_uuid;
 
-  insert into [user](username, first_name, last_name, email, phone_number, [password], created)
-    values (@username, @first_name, nullif(@last_name, ''), @email, @phone_number, @password, GETDATE())
-
-  declare @user_uuid uniqueidentifier
-  select @user_uuid = uuid from [user] where id = @@IDENTITY
-  exec get_user @user_uuid, null
-
-end
-go
+  return query
+  select * from get_user(tmp_user_uuid, null);
+end;
+$$
+language plpgsql;

@@ -1,31 +1,40 @@
-if object_id ('new_event') is not null
-  drop procedure new_event
-go
-create procedure new_event
-  @name nvarchar(255),
-  @description nvarchar(400),
-  @user_uuid uniqueidentifier,
-  @private bit,
-  @active bit,
-  @usernames_only bit
-as
+drop function if exists new_event;
+create or replace function new_event(
+  ip_name varchar(255),
+  ip_description varchar(400),
+  ip_user_uuid uuid,
+  ip_private boolean,
+  ip_active boolean,
+  ip_usernames_only boolean
+)
+returns table (
+  "uuid" uuid,
+  "name" varchar(255),
+  "description" varchar(255),
+  created timestamp,
+  "private" boolean,
+  admin_ids JSONB,
+  user_uuid uuid,
+  user_in_event boolean,
+  user_is_admin boolean
+) as
+$$
+declare tmp_event_uuid uuid;
 begin
+  if exists (select 1 from "event" e where e.name = ip_name) then
+    raise exception 'Another event already has this name' using errcode = 'P0005';
+  end if;
 
-  if exists (select 1 from [event] where [name] = @name)
-  begin
-    throw 50005, 'Another event already has this name', 1
-  end
+  if not exists (select 1 from "user" u where u.uuid = ip_user_uuid) then
+    raise exception 'User not found' using errcode = 'P0008';
+  end if;
 
-  if not exists (select 1 from [user] where uuid = @user_uuid)
-  begin
-    throw 50008, 'User not found', 1
-  end
+  insert into "event"("name", "description", created, "private", active, usernames_only)
+    values (ip_name, ip_description, CURRENT_TIMESTAMP, ip_private, ip_active, ip_usernames_only)
+    returning "event".uuid into tmp_event_uuid;
 
-  insert into [event]([name], [description], created, [private], active, usernames_only) values (@name, @description, GETDATE(), @private, @active, @usernames_only)
-
-  declare @event_uuid uniqueidentifier
-  select @event_uuid = uuid from [event] where id = @@IDENTITY
-  exec add_user_to_event @event_uuid, @user_uuid, 1
-
-end
-go
+  return query
+  select * from add_user_to_event(tmp_event_uuid, ip_user_uuid, true);
+end;
+$$
+language plpgsql;

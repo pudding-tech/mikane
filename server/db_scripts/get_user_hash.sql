@@ -1,31 +1,36 @@
-if object_id ('get_user_hash') is not null
-  drop procedure get_user_hash
-go
-create procedure get_user_hash
-  @usernameEmail nvarchar(255),
-  @user_uuid uniqueidentifier
-as
+drop function if exists get_user_hash;
+create or replace function get_user_hash(
+  ip_username_email varchar(255),
+  ip_user_uuid uuid
+)
+returns table (
+  "uuid" uuid,
+  "password" varchar(255)
+) as
+$$
 begin
-
-  if (@user_uuid is not null)
+  if ip_user_uuid is not null then
     begin
+      return query
       select
-        uuid, [password]
+        u.uuid, u.password
       from
-        [user]
+        "user" u
       where
-        uuid = @user_uuid
-    end
+        u.uuid = ip_user_uuid;
+    end;
   else
     begin
+      return query
       select
-        uuid, [password]
+        u.uuid, u.password
       from
-        [user]
+        "user" u
       where
-        username = @usernameEmail or
-        email = @usernameEmail
-    end
-
-end
-go
+        u.username = ip_username_email or
+        u.email = ip_username_email;
+    end;
+  end if;
+end;
+$$
+language plpgsql;
