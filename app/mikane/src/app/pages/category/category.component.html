@@ -23,8 +23,34 @@
 								{{ user.name }}
 							</td>
 							<td mat-footer-cell *matFooterCellDef>
-								<mat-form-field class="category-user-input add-user" subscriptSizing="dynamic">
-									<select matNativeControl formControlName="participantName" name="participantName" required>
+								<mat-form-field
+									class="category-user-input add-user"
+									subscriptSizinig="dynamic"
+									*ngIf="(breakpointService.isMobile() | async) === false"
+								>
+									<mat-select
+										[formControl]="addUserForm.get('participantName') | formControl"
+										name="participantName"
+										placeholder="Choose participant"
+										required
+									>
+										<mat-option *ngFor="let user of filterUsers(category.id)" [value]="user.id">
+											{{ user.name }}
+										</mat-option>
+									</mat-select>
+								</mat-form-field>
+
+								<mat-form-field
+									class="category-user-input add-user"
+									subscriptSizing="dynamic"
+									*ngIf="(breakpointService.isMobile() | async) === true"
+								>
+									<select
+										matNativeControl
+										[formControl]="addUserForm.get('participantName') | formControl"
+										name="participantName"
+										required
+									>
 										<option value="" disabled selected>Choose participant</option>
 										<option *ngFor="let user of filterUsers(category.id)" [value]="user.id">
 											{{ user.name }}
