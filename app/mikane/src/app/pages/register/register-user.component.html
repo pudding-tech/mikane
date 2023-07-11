@@ -15,14 +15,15 @@
 					<mat-form-field appearance="fill">
 						<mat-label>Username</mat-label>
 						<input type="text" matInput placeholder="Username" formControlName="username" />
-						<mat-error *ngIf="registerUserForm.get('username')?.invalid"> Username required </mat-error>
+						<mat-error *ngIf="registerUserForm.get('username')?.errors?.['required']"> Username required </mat-error>
+						<mat-error *ngIf="registerUserForm.get('username')?.errors?.['duplicate']"> Username already taken </mat-error>
 					</mat-form-field>
 				</div>
 				<div>
 					<mat-form-field appearance="fill">
 						<mat-label>First Name</mat-label>
 						<input type="text" matInput placeholder="First name" formControlName="firstName" />
-						<mat-error *ngIf="registerUserForm.get('firstName')?.invalid"> First name required </mat-error>
+						<mat-error *ngIf="registerUserForm.get('firstName')?.errors?.['required']"> First name required </mat-error>
 					</mat-form-field>
 				</div>
 				<div>
@@ -36,14 +37,17 @@
 					<mat-form-field appearance="fill">
 						<mat-label>Email</mat-label>
 						<input type="text" matInput placeholder="Email" formControlName="email" />
-						<mat-error *ngIf="registerUserForm.get('email')?.invalid"> Invalid email </mat-error>
+						<mat-error *ngIf="registerUserForm.get('email')?.errors?.['required']"> Email required </mat-error>
+						<mat-error *ngIf="registerUserForm.get('email')?.errors?.['invalid']"> Email invalid </mat-error>
+						<mat-error *ngIf="registerUserForm.get('email')?.errors?.['duplicate']"> Email address already taken </mat-error>
 					</mat-form-field>
 				</div>
 				<div>
 					<mat-form-field appearance="fill">
 						<mat-label>Phonenumber</mat-label>
 						<input type="tel" matInput placeholder="Phonenumber" formControlName="phone" />
-						<mat-error *ngIf="registerUserForm.get('phone')?.invalid"> Invalid phonenumber </mat-error>
+						<mat-error *ngIf="registerUserForm.get('phone')?.errors?.['required']"> Invalid phonenumber </mat-error>
+						<mat-error *ngIf="registerUserForm.get('phone')?.errors?.['duplicate']"> Phonenumber already taken </mat-error>
 					</mat-form-field>
 				</div>
 				<div formGroupName="passwordGroup">
