@@ -58,7 +58,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 
 	addUserForm = new FormGroup({
 		participantName: new FormControl('', [Validators.required]),
-		weight: new FormControl(1, [Validators.required]),
+		weight: new FormControl(1, [Validators.required, Validators.min(1)]),
 	}) as FormGroup;
 
 	categories: Category[] = [];
