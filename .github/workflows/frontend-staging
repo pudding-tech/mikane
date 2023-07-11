@@ -1,0 +1,38 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: frontend-staging
+
+on:
+  push:
+    branches: [ "develop" ]
+
+env:
+  NODE_VERSION: 16.20.1
+
+jobs:
+  deploy:
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app/mikane/
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: ./app/mikane/package-lock.json
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2.5.1
+      with:
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+    - name: Adding Known Hosts
+      run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+    - run: npm ci
+    - run: npm run build --if-present
+    - name: Deploy with rsync
+      run: rsync -avz ./dist/mikane/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane-staging/
