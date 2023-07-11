@@ -21,6 +21,7 @@ import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/validators/form-control.pipe';
 import { ApiError } from 'src/app/types/apiError.type';
+import { CategoryIcon } from 'src/app/types/enums';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
@@ -135,13 +136,13 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 
 		dialogRef.afterClosed().subscribe((result) => {
 			if (result) {
-				this.createCategory(result.categoryName, result.weighted);
+				this.createCategory(result.categoryName, result.weighted, result.selectedIcon);
 			}
 		});
 	}
 
-	createCategory(name: string, weighted: boolean) {
-		this.categoryService.createCategory(name, this.eventId, weighted).subscribe({
+	createCategory(name: string, weighted: boolean, icon: CategoryIcon) {
+		this.categoryService.createCategory(name, this.eventId, weighted, icon).subscribe({
 			next: (category) => {
 				this.categories.push(category);
 				this.messageService.showSuccess('Category created!');
