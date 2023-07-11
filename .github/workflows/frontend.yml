@@ -66,4 +66,4 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - name: Deploy with rsync
-      run: rsync -avz ./dist/mikane ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane-staging/
+      run: rsync -avz ./dist/mikane/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane-staging/
