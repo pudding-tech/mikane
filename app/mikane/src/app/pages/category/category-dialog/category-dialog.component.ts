@@ -57,7 +57,7 @@ export class CategoryDialogComponent {
 	}
 
 	iconChange(icon: CategoryIcon) {
-		this.addCategoryForm.value.selectedIcon = icon;
+		this.addCategoryForm.get('selectedIcon').patchValue(icon);
 		this.isOpen = false;
 	}
 }
