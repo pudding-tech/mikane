@@ -9,7 +9,7 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
-  admin_ids JSONB,
+  admin_ids jsonb,
   user_uuid uuid,
   user_in_event boolean,
   user_is_admin boolean

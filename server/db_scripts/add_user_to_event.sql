@@ -23,8 +23,6 @@ begin
 
   select e.id into tmp_event_id from "event" e where e.uuid = ip_event_uuid;
   select u.id into tmp_user_id from "user" u where u.uuid = ip_user_uuid;
-  RAISE NOTICE 'event id: %', tmp_event_id;
-  RAISE NOTICE 'user id: %', tmp_user_id;
 
   if not exists (select 1 from "event" e where e.id = tmp_event_id) then
     raise exception 'Event not found' using errcode = 'P0006';
