@@ -9,7 +9,12 @@
 	<mat-accordion *ngIf="categories.length > 0; else noCategories">
 		<mat-expansion-panel *ngFor="let category of categories" class="categories">
 			<mat-expansion-panel-header>
-				<mat-panel-title>{{ category.name }}</mat-panel-title>
+				<mat-panel-title>
+					<mat-icon class="category-icon">
+						{{ category.icon ?? "shopping_cart" }}
+					</mat-icon>
+					{{ category.name }}
+				</mat-panel-title>
 			</mat-expansion-panel-header>
 
 			<ng-template matExpansionPanelContent>

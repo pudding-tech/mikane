@@ -6,12 +6,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/validators/form-control.pipe';
+import { CategoryIcon } from 'src/app/types/enums';
 
 @Component({
 	selector: 'expenditure-dialog',
@@ -32,9 +34,13 @@ import { FormControlPipe } from 'src/app/shared/forms/validators/form-control.pi
 		NgIf,
 		MatSelectModule,
 		FormControlPipe,
+		MatIconModule,
 	],
 })
 export class ExpenditureDialogComponent implements OnInit {
+	isOpen: boolean = false;
+	categoryIcons = CategoryIcon;
+
 	categories: Category[] = [];
 	users: User[] = [];
 	expense: any = {};
@@ -43,6 +49,7 @@ export class ExpenditureDialogComponent implements OnInit {
 		name: new FormControl('', [Validators.required]),
 		description: new FormControl(''),
 		category: new FormControl('', [Validators.required]),
+		selectedIcon: new FormControl(CategoryIcon.SHOPPING),
 		amount: new FormControl('', [Validators.required]),
 		payer: new FormControl(this.data.userId, [Validators.required]),
 	});
@@ -71,5 +78,13 @@ export class ExpenditureDialogComponent implements OnInit {
 
 	onNoClick(): void {
 		this.dialogRef.close();
+	}
+
+	iconChange(icon: CategoryIcon) {
+		this.addExpenseForm.value.selectedIcon = icon;
+	}
+
+	findCategory(categoryName: string) {
+		return this.categories.find((c) => c.name === categoryName);
 	}
 }

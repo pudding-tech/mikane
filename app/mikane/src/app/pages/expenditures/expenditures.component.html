@@ -15,6 +15,14 @@
 			[dataSource]="expenses"
 			(matSortChange)="sortData($event)"
 		>
+			<!-- Icon Column -->
+			<ng-container matColumnDef="icon">
+				<th mat-header-cell *matHeaderCellDef></th>
+				<td mat-cell class="expense-icon" *matCellDef="let expense">
+					<mat-icon>{{ expense.category.icon ?? "shopping_cart" }}</mat-icon>
+				</td>
+			</ng-container>
+
 			<!-- Name Column -->
 			<ng-container matColumnDef="name">
 				<th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
