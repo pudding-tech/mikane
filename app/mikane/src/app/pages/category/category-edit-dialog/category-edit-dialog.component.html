@@ -4,6 +4,7 @@
 		<mat-form-field appearance="fill">
 			<mat-label>Weight</mat-label>
 			<input matInput type="number" min="1" step="1" name="weight" formControlName="weight" />
+			<mat-error *ngIf="editCategoryForm.get('weight').errors?.['min']">Weight must be at least 1</mat-error>
 		</mat-form-field>
 	</form>
 </div>
