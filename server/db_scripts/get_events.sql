@@ -1,69 +1,66 @@
 drop function if exists get_events;
 create or replace function get_events(
-  ip_event_uuid uuid,
-  ip_user_uuid uuid
+  ip_event_id uuid,
+  ip_user_id uuid
 )
 returns table (
-  "uuid" uuid,
+  id uuid,
   "name" varchar(255),
   "description" varchar(255),
   created timestamp,
   "private" boolean,
   admin_ids jsonb,
-  user_uuid uuid,
+  user_id uuid,
   user_in_event boolean,
   user_is_admin boolean
 ) as
 $$
-declare
-  tmp_user_id int;
 begin
   
-  select u.id into tmp_user_id from "user" u where u.uuid = ip_user_uuid;
-
-  if (ip_user_uuid is null) then
+  if (ip_user_id is null) then
     begin
       return query
       select
-        e.uuid, e.name, e.description, e.created, e.private,
+        e.id, e.name, e.description, e.created, e.private,
         (
           select
-            JSONB_AGG(jsonb_build_object('user_uuid', u.uuid))
+            JSONB_AGG(jsonb_build_object('user_id', u.id))
           from user_event ue
             inner join "user" u on ue.user_id = u.id
           where
             ue.event_id = e.id and
             ue.admin = true
         ) as admin_ids,
-        null::uuid as user_uuid,
+        null::uuid as user_id,
         null::boolean as user_in_event,
         null::boolean as user_is_admin
       from
         "event" e
       where
-        e.uuid = coalesce(ip_event_uuid, e.uuid)
-      order by e.id desc;
+        e.id = coalesce(ip_event_id, e.id)
+      order by
+        e.created desc;
     end;
 
   else
     begin
-      if not exists (select 1 from "user" u where u.id = tmp_user_id) then
+      if not exists (select 1 from "user" u where u.id = ip_user_id) then
         raise exception 'User not found' using errcode = 'P0008';
       end if;
 
       return query
       select
-        e.uuid, e.name, e.description, e.created, e.private,
+        e.id, e.name, e.description, e.created, e.private,
         (
           select
-            JSONB_AGG(jsonb_build_object('user_uuid', u.uuid))
+            JSONB_AGG(jsonb_build_object('user_id', u.id))
           from user_event ue
             inner join "user" u on ue.user_id = u.id
           where
             ue.event_id = e.id and
             ue.admin = true
         ) as admin_ids,
-        ip_user_uuid as user_uuid,
+        ip_user_id as user_id,
         case
           when exists (select 1 where ue.user_id is not null)
             then true
@@ -76,10 +73,11 @@ begin
           end as user_is_admin
       from
         "event" e
-        left join user_event ue on e.id = ue.event_id and ue.user_id = tmp_user_id
+        left join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
       where
-        e.uuid = coalesce(ip_event_uuid, e.uuid)
-      order by e.id desc;
+        e.id = coalesce(ip_event_id, e.id)
+      order by
+        e.created desc;
     end;
 
   end if;

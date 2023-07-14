@@ -8,7 +8,7 @@ create or replace function new_user(
   ip_password varchar(255)
 )
 returns table (
-  "uuid" uuid,
+  id uuid,
   username varchar(255),
   first_name varchar(255),
   last_name varchar(255),
@@ -18,7 +18,7 @@ returns table (
   created timestamp
 ) as
 $$
-declare tmp_user_uuid uuid;
+declare tmp_user_id uuid;
 begin
   if exists (select u.id from "user" u where u.username = ip_username) then
     raise exception 'Username already taken' using errcode = 'P0017';
@@ -34,10 +34,10 @@ begin
 
   insert into "user"(username, first_name, last_name, email, phone_number, "password", created)
     values (ip_username, ip_first_name, nullif(ip_last_name, ''), ip_email, ip_phone_number, ip_password, CURRENT_TIMESTAMP)
-    returning "user".uuid into tmp_user_uuid;
+    returning "user".id into tmp_user_id;
 
   return query
-  select * from get_user(tmp_user_uuid, null);
+  select * from get_user(tmp_user_id, null);
 end;
 $$
 language plpgsql;

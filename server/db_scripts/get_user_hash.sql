@@ -1,29 +1,29 @@
 drop function if exists get_user_hash;
 create or replace function get_user_hash(
   ip_username_email varchar(255),
-  ip_user_uuid uuid
+  ip_user_id uuid
 )
 returns table (
-  "uuid" uuid,
+  id uuid,
   "password" varchar(255)
 ) as
 $$
 begin
-  if ip_user_uuid is not null then
+  if (ip_user_id is not null) then
     begin
       return query
       select
-        u.uuid, u.password
+        u.id, u.password
       from
         "user" u
       where
-        u.uuid = ip_user_uuid;
+        u.id = ip_user_id;
     end;
   else
     begin
       return query
       select
-        u.uuid, u.password
+        u.id, u.password
       from
         "user" u
       where

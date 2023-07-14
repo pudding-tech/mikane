@@ -1,10 +1,10 @@
 drop function if exists get_user;
 create or replace function get_user(
-  ip_user_uuid_value uuid,
-  ip_username_value varchar(255)
+  ip_user_id uuid,
+  ip_username varchar(255)
 )
 returns table (
-  "uuid" uuid,
+  id uuid,
   username varchar(255),
   first_name varchar(255),
   last_name varchar(255),
@@ -15,22 +15,22 @@ returns table (
 ) as
 $$
 begin
-  if ip_user_uuid_value is not null then
+  if (ip_user_id is not null) then
     return query
     select
-      u.uuid, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created
+      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created
     from
       "user" u
     where
-      u.uuid = ip_user_uuid_value;
-  elsif ip_username_value is not null then
+      u.id = ip_user_id;
+  elsif (ip_username is not null) then
     return query
     select
-      u.uuid, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created
+      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created
     from
       "user" u
     where
-      u.username = ip_username_value;
+      u.username = ip_username;
   end if;
 end;
 $$

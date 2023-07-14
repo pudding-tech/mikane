@@ -1,91 +1,98 @@
-if object_id ('get_expenses') is not null
-  drop procedure get_expenses
-go
-create procedure get_expenses
-  @event_uuid uniqueidentifier,
-  @user_uuid uniqueidentifier,
-  @expense_uuid uniqueidentifier
-as
+drop function if exists get_expenses;
+create or replace function get_expenses(
+  ip_event_id uuid,
+  ip_user_id uuid,
+  ip_expense_id uuid
+)
+returns table (
+  id uuid,
+  name varchar(255),
+  description varchar(255),
+  amount numeric(16, 2),
+  created timestamp,
+  category_id uuid,
+  category_name varchar(255),
+  category_icon varchar(255),
+  payer_id uuid,
+  payer_first_name varchar(255),
+  payer_last_name varchar(255),
+  payer_username varchar(255)
+) as
+$$
 begin
-
-  declare @event_id int
-  declare @user_id int
-  declare @expense_id int
-  select @event_id = id from [event] where uuid = @event_uuid
-  select @user_id = id from [user] where uuid = @user_uuid
-  select @expense_id = id from expense where uuid = @expense_uuid
-
-  if (@event_uuid is not null and @user_uuid is null)
+  
+  if (ip_event_id is not null and ip_user_id is null) then
   begin
-    if not exists (select 1 from [event] where id = @event_id)
-    begin
-      throw 50006, 'Event not found', 1
-    end
+    if not exists (select 1 from "event" e where e.id = ip_event_id) then
+      raise exception 'Event not found' using errcode = 'P0006';
+    end if;
 
+    return query
     select
-      ex.uuid, ex.name, ex.description, ex.amount, ex.payer_id, ex.date_added,
-      c.uuid as 'category_uuid', c.name as 'category_name', c.icon as 'category_icon',
-      u.uuid as 'payer_uuid', u.first_name as 'payer_first_name', u.last_name as 'payer_last_name', u.username as 'payer_username'
+      ex.id, ex.name, ex.description, ex.amount, ex.created,
+      c.id as category_id, c.name as category_name, c.icon as category_icon,
+      u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username
     from
       expense ex
       inner join category c on c.id = ex.category_id
-      inner join [event] ev on ev.id = c.event_id
-      inner join [user] u on u.id = ex.payer_id
+      inner join "event" ev on ev.id = c.event_id
+      inner join "user" u on u.id = ex.payer_id
     where
-      ev.id = @event_id
+      ev.id = ip_event_id
     order by
-      ex.date_added desc
-  end
-
-  else if (@event_uuid is not null and @user_uuid is not null)
+      ex.created desc;
+  end;
+  
+  elsif (ip_event_id is not null and ip_user_id is not null) then
   begin
-    if not exists (select 1 from [event] where id = @event_id)
-    begin
-      throw 50006, 'Event not found', 1
-    end
+    if not exists (select 1 from "event" e where e.id = ip_event_id) then
+      raise exception 'Event not found' using errcode = 'P0006';
+    end if;
 
-    if not exists (select 1 from [user] where id = @user_id)
-    begin
-      throw 50008, 'User not found', 1
-    end
+    if not exists (select 1 from "user" u where u.id = ip_user_id) then
+      raise exception 'User not found' using errcode = 'P0008';
+    end if;
     
+    return query
     select
-      ex.uuid, ex.name, ex.description, ex.amount, ex.payer_id, ex.date_added,
-      c.uuid as 'category_uuid', c.name as 'category_name', c.icon as 'category_icon',
-      u.uuid as 'payer_uuid', u.first_name as 'payer_first_name', u.last_name as 'payer_last_name', u.username as 'payer_username'
+      ex.id, ex.name, ex.description, ex.amount, ex.created,
+      c.id as category_id, c.name as category_name, c.icon as category_icon,
+      u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username
     from
       expense ex
       inner join category c on c.id = ex.category_id
-      inner join [event] ev on ev.id = c.event_id
-      inner join [user] u on u.id = ex.payer_id
+      inner join "event" ev on ev.id = c.event_id
+      inner join "user" u on u.id = ex.payer_id
     where
-      ev.id = @event_id and
-      u.id = @user_id
+      ev.id = ip_event_id and
+      u.id = ip_user_id
     order by
-      ex.date_added desc
-  end
+      ex.created desc;
+  end;
 
-  else if (@expense_uuid is not null)
+  elsif (ip_expense_id is not null) then
   begin
-    if not exists (select 1 from expense where id = @expense_id)
-    begin
-      throw 50084, 'Expense not found', 1
-    end
+    if not exists (select 1 from expense ex where ex.id = ip_expense_id) then
+      raise exception 'Expense not found' using errcode = 'P0084';
+    end if;
 
+    return query
     select
-      ex.uuid, ex.name, ex.description, ex.amount, ex.payer_id, ex.date_added,
-      c.uuid as 'category_uuid', c.name as 'category_name', c.icon as 'category_icon',
-      u.uuid as 'payer_uuid', u.first_name as 'payer_first_name', u.last_name as 'payer_last_name', u.username as 'payer_username'
+      ex.id, ex.name, ex.description, ex.amount, ex.created,
+      c.id as category_id, c.name as category_name, c.icon as category_icon,
+      u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username
     from
       expense ex
       inner join category c on c.id = ex.category_id
-      inner join [event] ev on ev.id = c.event_id
-      inner join [user] u on u.id = ex.payer_id
+      inner join "event" ev on ev.id = c.event_id
+      inner join "user" u on u.id = ex.payer_id
     where
-      ex.id = @expense_id
+      ex.id = ip_expense_id
     order by
-      ex.date_added desc
-  end
+      ex.created desc;
+  end;
+  end if;
 
-end
-go
+end;
+$$
+language plpgsql;

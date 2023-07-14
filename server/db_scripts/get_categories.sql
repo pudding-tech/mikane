@@ -1,30 +1,25 @@
 drop function if exists get_categories;
 create or replace function get_categories(
-  ip_event_uuid uuid,
-  ip_category_uuid uuid
+  ip_event_id uuid,
+  ip_category_id uuid
 )
 returns table (
-  "uuid" uuid,
+  id uuid,
   "name" varchar(255),
   icon varchar(255),
   weighted boolean,
-  event_uuid uuid,
+  event_id uuid,
+  created timestamp,
   user_weights jsonb
 ) as
 $$
-declare
-  tmp_event_id int;
-  tmp_category_id int;
 begin
   
-  select e.id into tmp_event_id from "event" e where e.uuid = ip_event_uuid;
-  select c.id into tmp_category_id from category c where c.uuid = ip_category_uuid;
-
-  if ip_event_uuid is not null and not exists (select 1 from "event" e where e.id = tmp_event_id) then
+  if ip_event_id is not null and not exists (select 1 from "event" e where e.id = ip_event_id) then
     raise exception 'Event not found' using errcode = 'P0006';
   end if;
 
-  if ip_category_uuid is not null and not exists (select 1 from "category" c where c.id = tmp_category_id) then
+  if ip_category_id is not null and not exists (select 1 from "category" c where c.id = ip_category_id) then
     raise exception 'Category not found' using errcode = 'P0007';
   end if;
 
@@ -41,20 +36,21 @@ begin
   from user_category uc
     inner join category c on c.id = uc.category_id
   where
-    c.id = coalesce(tmp_category_id, c.id) and
-    c.event_id = coalesce(tmp_event_id, c.event_id);
+    c.id = coalesce(ip_category_id, c.id) and
+    c.event_id = coalesce(ip_event_id, c.event_id);
 
   return query
   select
-    c.uuid,
+    c.id,
     c.name,
     c.icon,
     c.weighted,
-    e.uuid as event_uuid,
+    e.id as event_id,
+    c.created,
     (
       select
         jsonb_agg(jsonb_build_object(
-          'user_uuid', u.uuid,
+          'user_id', u.id,
           'username', u.username,
           'first_name', u.first_name,
           'last_name', u.last_name,
@@ -70,8 +66,10 @@ begin
   from category c
     inner join "event" e on c.event_id = e.id
   where
-    c.id = coalesce(tmp_category_id, c.id) and
-    c.event_id = coalesce(tmp_event_id, c.event_id);
+    c.id = coalesce(ip_category_id, c.id) and
+    c.event_id = coalesce(ip_event_id, c.event_id)
+  order by
+    c.created desc;
 
   drop table if exists weights_temp;
 

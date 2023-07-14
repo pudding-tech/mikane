@@ -1,41 +1,49 @@
-if object_id ('new_expense') is not null
-  drop procedure new_expense
-go
-create procedure new_expense
-  @name nvarchar(255),
-  @description nvarchar(255),
-  @amount numeric(16, 2),
-  @category_uuid uniqueidentifier,
-  @payer_uuid uniqueidentifier
-as
+drop function if exists new_expense;
+create or replace function new_expense(
+  ip_name varchar(255),
+  ip_description varchar(255),
+  ip_amount numeric(16, 2),
+  ip_category_id uuid,
+  ip_payer_id uuid
+)
+returns table (
+  id uuid,
+  name varchar(255),
+  description varchar(255),
+  amount numeric(16, 2),
+  created timestamp,
+  category_id uuid,
+  category_name varchar(255),
+  category_icon varchar(255),
+  payer_id uuid,
+  payer_first_name varchar(255),
+  payer_last_name varchar(255),
+  payer_username varchar(255)
+) as
+$$
+declare
+  tmp_expense_id uuid;
 begin
 
-  declare @category_id int
-  declare @payer_id int
-  select @category_id = id from category where uuid = @category_uuid
-  select @payer_id = id from [user] where uuid = @payer_uuid
+  if not exists (select 1 from category c where c.id = ip_category_id) then
+    raise exception 'Category not found' using errcode = 'P0007';
+  end if;
 
-  if not exists (select 1 from category where id = @category_id)
-  begin
-    throw 50007, 'Category not found', 1
-  end
+  if not exists (select 1 from "user" u where u.id = ip_payer_id) then
+    raise exception 'User not found' using errcode = 'P0008';
+  end if;
 
-  if not exists (select 1 from [user] where id = @payer_id)
-  begin
-    throw 50008, 'User not found', 1
-  end
-  
-  if not exists (select ue.user_id from user_event ue inner join category c on ue.event_id = c.event_id where c.id = @category_id and ue.user_id = @payer_id)
-  begin
-    throw 50062, 'User cannot pay for expense as user is not in event', 7
-  end
+  if not exists (select ue.user_id from user_event ue inner join category c on ue.event_id = c.event_id where c.id = ip_category_id and ue.user_id = ip_payer_id) then
+    raise exception 'User cannot pay for expense as user is not in event' using errcode = 'P0062';
+  end if;
 
-  insert into expense([name], [description], amount, category_id, payer_id, date_added)
-    values (@name, nullif(@description, ''), @amount, @category_id, @payer_id, GETDATE())
+  insert into expense("name", "description", amount, category_id, payer_id, created)
+    values (ip_name, ip_description, ip_amount, ip_category_id, ip_payer_id, CURRENT_TIMESTAMP)
+    returning expense.id into tmp_expense_id;
 
-  declare @expense_uuid uniqueidentifier
-  select @expense_uuid = uuid from expense where id = @@IDENTITY
-  exec get_expenses null, null, @expense_uuid
+  return query
+  select * from get_expenses(null, null, tmp_expense_id);
 
-end
-go
+end;
+$$
+language plpgsql;

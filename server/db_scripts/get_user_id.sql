@@ -3,13 +3,13 @@ create or replace function get_user_id(
   ip_email varchar(255)
 )
 returns table (
-  "uuid" uuid
+  id uuid
 ) as
 $$
 begin
   return query
   select
-    u.uuid
+    u.id
   from
     "user" u
   where
