@@ -1,37 +1,44 @@
-if object_id ('remove_user_from_event') is not null
-  drop procedure remove_user_from_event
-go
-create procedure remove_user_from_event
-  @event_uuid uniqueidentifier,
-  @user_uuid uniqueidentifier
-as
+drop function if exists remove_user_from_event;
+create or replace function remove_user_from_event(
+  ip_event_id uuid,
+  ip_user_id uuid
+)
+returns table (
+  id uuid,
+  "name" varchar(255),
+  "description" varchar(255),
+  created timestamp,
+  "private" boolean,
+  admin_ids jsonb,
+  user_id uuid,
+  user_in_event boolean,
+  user_is_admin boolean
+) as
+$$
 begin
 
-  declare @event_id int
-  declare @user_id int
-  select @event_id = id from [event] where uuid = @event_uuid
-  select @user_id = id from [user] where uuid = @user_uuid
+  if not exists (select 1 from "event" e where e.id = ip_event_id) then
+    raise exception 'Event not found' using errcode = 'P0006';
+  end if;
 
-  if not exists (select id from [event] where id = @event_id)
-  begin
-    throw 50006, 'Event not found', 1
-  end
+  if not exists (select 1 from "user" u where u.id = ip_user_id) then
+    raise exception 'User not found' using errcode = 'P0008';
+  end if;
 
-  if not exists (select id from [user] where id = @user_id)
-  begin
-    throw 50008, 'User not found', 1
-  end
-
-  delete from user_event where event_id = @event_id and user_id = @user_id
+  delete from user_event ue where ue.event_id = ip_event_id and ue.user_id = ip_user_id;
 
   -- Delete expenses belonging to user from event
-  delete e from expense e
-    inner join category c on e.category_id = c.id
-  where
-    c.event_id = @event_id and
-    e.payer_id = @user_id
+  delete from expense e
+  where e.id in (
+    select ex.id
+    from expense ex
+      inner join category c on ex.category_id = c.id
+    where c.event_id = ip_event_id and ex.payer_id = ip_user_id
+  );
 
-  exec get_events @event_uuid, null
+  return query
+  select * from get_events(ip_event_id, null);
 
-end
-go
+end;
+$$
+language plpgsql;

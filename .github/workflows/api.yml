@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "develop" ]
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "develop-temp" ]
 
 env:
   NODE_VERSION: 18.16.1

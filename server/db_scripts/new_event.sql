@@ -22,7 +22,7 @@ $$
 declare
   tmp_event_id uuid;
 begin
-  if exists (select 1 from "event" e where e.name = ip_name) then
+  if exists (select 1 from "event" e where e.name ilike ip_name) then
     raise exception 'Another event already has this name' using errcode = 'P0005';
   end if;
 

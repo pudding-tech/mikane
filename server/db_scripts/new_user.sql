@@ -20,15 +20,15 @@ returns table (
 $$
 declare tmp_user_id uuid;
 begin
-  if exists (select u.id from "user" u where u.username = ip_username) then
+  if exists (select u.id from "user" u where u.username ilike ip_username) then
     raise exception 'Username already taken' using errcode = 'P0017';
   end if;
 
-  if exists (select u.id from "user" u where u.email = ip_email) then
+  if exists (select u.id from "user" u where u.email ilike ip_email) then
     raise exception 'Email address already taken' using errcode = 'P0018';
   end if;
 
-  if exists (select u.id from "user" u where u.phone_number = ip_phone_number) then
+  if exists (select u.id from "user" u where u.phone_number ilike ip_phone_number) then
     raise exception 'Phone number already taken' using errcode = 'P0019';
   end if;
 
