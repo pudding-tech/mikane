@@ -1,52 +1,52 @@
-if object_id ('edit_event') is not null
-  drop procedure edit_event
-go
-create procedure edit_event
-  @event_uuid uniqueidentifier,
-  @user_uuid uniqueidentifier,
-  @name nvarchar(255),
-  @description nvarchar(400),
-  @private bit
-as
+drop function if exists edit_event;
+create or replace function edit_event(
+  ip_event_id uuid,
+  ip_user_id uuid,
+  ip_name varchar(255),
+  ip_description varchar(400),
+  ip_private boolean
+)
+returns table (
+  id uuid,
+  "name" varchar(255),
+  "description" varchar(255),
+  created timestamp,
+  "private" boolean,
+  admin_ids jsonb,
+  user_id uuid,
+  user_in_event boolean,
+  user_is_admin boolean
+) as
+$$
 begin
 
-  declare @event_id int
-  declare @user_id int
-  select @event_id = id from [event] where uuid = @event_uuid
-  select @user_id = id from [user] where uuid = @user_uuid
+  if not exists (select 1 from "event" e where e.id = ip_event_id) then
+    raise exception 'Event not found' using errcode = 'P0006';
+  end if;
 
-  if not exists (select 1 from [event] where id = @event_id)
-  begin
-    throw 50006, 'Event not found', 1
-  end
-
-  if not exists (select 1 from [event] e
+  if not exists (select 1 from "event" e
                   inner join user_event ue on e.id = ue.event_id
-                  where e.id = @event_id and ue.user_id = @user_id and ue.admin = 1)
-  begin
-    throw 50087, 'Only event admins can edit event', 1
-  end
-  
-  if exists (select id from [event] where [name] = @name and id != @event_id)
-  begin
-    throw 50005, 'Another event already has this name', 1
-  end
+                  where e.id = ip_event_id and ue.user_id = ip_user_id and ue."admin" = true)
+  then
+    raise exception 'Only event admins can edit event' using errcode = 'P0087';
+  end if;
+
+  if exists (select 1 from "event" e where e.name ilike ip_name and e.id != ip_event_id) then
+    raise exception 'Another event already has this name' using errcode = 'P0005';
+  end if;
 
   update
-    [event]
+    "event" e
   set
-    [name] = isnull(@name, [name]),
-    [description] = nullif(isnull(@description, [description]), ''),
-    [private] = isnull(@private, [private])
+    e.name = coalesce(ip_name, u.name),
+    e.description = nullif(trim(coalesce(ip_description, e.description)), ''),
+    e.private = coalesce(ip_private, u.private)
   where
-    id = @event_id
-
-  if (@description = '')
-  begin
-    update [event] set [description] = null where id = @event_id
-  end
+    e.id = ip_event_id;
   
-  exec get_events @event_uuid, @user_uuid
+  return query
+  select * from get_events(ip_event_id, ip_user_id);
 
-end
-go
+end;
+$$
+language plpgsql;

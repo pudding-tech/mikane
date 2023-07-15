@@ -37,6 +37,11 @@ begin
 
   else
   begin
+
+    if not exists (select 1 from "event" e where e.id = ip_event_id) then
+      raise exception 'Event not found' using errcode = 'P0006';
+    end if;
+
     return query
     select
       u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created,
@@ -45,7 +50,7 @@ begin
       "user" u
       inner join user_event ue on ue.user_id = u.id
       inner join "event" e on e.id = ue.event_id
-    WHERE
+    where
       ue.event_id = ip_event_id and
       ((ip_exclude_user_id is not null and u.id != ip_exclude_user_id) or
       (ip_exclude_user_id is null and u.id = u.id))

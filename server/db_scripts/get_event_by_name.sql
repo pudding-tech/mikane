@@ -21,6 +21,10 @@ begin
 
   select e.id into tmp_event_id from "event" e where e.name ilike ip_event_name;
 
+  if not exists (select 1 from "event" e where e.id = tmp_event_id) then
+    raise exception 'Event not found' using errcode = 'P0006';
+  end if;
+
   return query
   select * from get_events(tmp_event_id, ip_user_id);
   

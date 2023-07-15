@@ -1,17 +1,17 @@
-if object_id ('delete_category') is not null
-  drop procedure delete_category
-go
-create procedure delete_category
-  @category_uuid uniqueidentifier
-as
+drop function if exists delete_category;
+create or replace function delete_category(
+  ip_category_id uuid
+)
+returns void as
+$$
 begin
 
-  if not exists (select 1 from category where uuid = @category_uuid)
-  begin
-    throw 50007, 'Category not found', 1
-  end
+  if not exists (select 1 from category c where c.id = ip_category_id) then
+    raise exception 'Category not found' using errcode = 'P0007';
+  end if;
 
-  delete from category where uuid = @category_uuid
+  delete from category c where c.id = ip_category_id;
 
-end
-go
+end;
+$$
+language plpgsql;
