@@ -58,7 +58,7 @@ create table user_category (
 
 create table "session" (
   "sid" varchar(255) not null primary key,
-  "session" text not null,
+  "session" json not null,
   expires timestamp not null,
   user_id uuid references "user"(id) on delete cascade
 );

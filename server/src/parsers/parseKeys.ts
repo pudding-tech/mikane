@@ -10,7 +10,7 @@ export const parseApiKeys = (keysInput: APIKeyDB[]) => {
   const keys: APIKey[] = [];
   for (const key of keysInput) {
     keys.push({
-      apiKeyId: key.api_key_id.toLowerCase(),
+      apiKeyId: key.id,
       name: key.name,
       hashedKey: key.hashed_key,
       master: key.master,

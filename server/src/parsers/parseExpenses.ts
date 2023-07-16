@@ -18,18 +18,18 @@ export const parseExpenses = (expInput: ExpenseDB[]): Expense[] => {
     }
 
     const expense: Expense = {
-      id: expObj.uuid.toLowerCase(),
+      id: expObj.uuid,
       name: expObj.name,
       description: expObj.description,
       amount: expObj.amount,
-      dateAdded: expObj.date_added.getTime(),
-      category: {
-        id: expObj.category_uuid.toLowerCase(),
+      created: expObj.created.getTime(),
+      categoryInfo: {
+        id: expObj.category_id,
         name: expObj.category_name,
         icon: icon,
       },
       payer: {
-        id: expObj.payer_uuid.toLowerCase(),
+        id: expObj.payer_id,
         username: expObj.payer_username,
         name: expObj.payer_first_name,
         firstName: expObj.payer_first_name,

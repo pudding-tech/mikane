@@ -12,17 +12,17 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[]
   const users: User[] = [];
   usersInput.forEach(userObj => {
     const user: User = {
-      id: userObj.uuid.toLowerCase(),
+      id: userObj.id,
       username: userObj.username,
       name: userObj.first_name,
       firstName: userObj.first_name,
       lastName: userObj.last_name,
       email: userObj.email,
       created: userObj.created,
-      event: withEventData && userObj.event_uuid && userObj.event_joined_date ? {
-        id: userObj.event_uuid.toLowerCase(),
+      eventInfo: withEventData && userObj.event_uuid && userObj.event_joined_time ? {
+        id: userObj.event_uuid,
         isAdmin: userObj.event_admin ?? false,
-        joinedDate: userObj.event_joined_date
+        joinedTime: userObj.event_joined_time
       } : undefined
     };
     users.push(user);
@@ -35,12 +35,12 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[]
     delete user.lastName;
   }
 
-  // Sort users by date joined event
+  // Sort users by time joined event
   users.sort((a, b) => {
-    if (!a.event?.joinedDate || !b.event?.joinedDate) {
+    if (!a.eventInfo?.joinedTime || !b.eventInfo?.joinedTime) {
       return 0;
     }
-    return a.event?.joinedDate.getTime() - b.event?.joinedDate.getTime();
+    return a.eventInfo?.joinedTime.getTime() - b.eventInfo?.joinedTime.getTime();
   });
 
   return users;
@@ -53,7 +53,7 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[]
  */
 export const parseUser = (userObj: UserDB): User => {
   return {
-    id: userObj.uuid.toLowerCase(),
+    id: userObj.id,
     username: userObj.username,
     name: userObj.first_name,
     firstName: userObj.first_name,

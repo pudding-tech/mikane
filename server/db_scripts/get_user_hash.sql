@@ -10,26 +10,22 @@ returns table (
 $$
 begin
   if (ip_user_id is not null) then
-    begin
-      return query
-      select
-        u.id, u.password
-      from
-        "user" u
-      where
-        u.id = ip_user_id;
-    end;
+    return query
+    select
+      u.id, u.password
+    from
+      "user" u
+    where
+      u.id = ip_user_id;
   else
-    begin
-      return query
-      select
-        u.id, u.password
-      from
-        "user" u
-      where
-        u.username = ip_username_email or
-        u.email = ip_username_email;
-    end;
+    return query
+    select
+      u.id, u.password
+    from
+      "user" u
+    where
+      u.username ilike ip_username_email or
+      u.email ilike ip_username_email;
   end if;
 end;
 $$

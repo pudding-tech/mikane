@@ -1,4 +1,5 @@
 import sql from "mssql";
+import { pool } from "../db";
 import { calculateBalance, calculatePayments } from "../calculations";
 import { parseBalance, parseEvents } from "../parsers/parseEvents";
 import { parseCategories } from "../parsers/parseCategories";
@@ -15,21 +16,21 @@ import * as ec from "../types/errorCodes";
  * @returns List of events
  */
 export const getEvents = async (userId?: string) => {
-  const request = new sql.Request();
-  const events: Event[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, null)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .execute("get_events")
-    .then(data => {
-      return parseEvents(data.recordset);
-    })
-    .catch(err => {
-      if (err.number === 50008)
-        throw new ErrorExt(ec.PUD008, err);
-      else
-        throw new ErrorExt(ec.PUD031, err);
-    });
-  return events;
+    const query = {
+      text: "select * from get_events(null, $1);",
+      values: [userId]
+    };
+    const events: Event[] = await pool.query(query)
+      .then(data => {
+        return parseEvents(data.rows);
+      })
+      .catch(err => {
+        if (err.code === "P0008")
+          throw new ErrorExt(ec.PUD008, err);
+        else
+          throw new ErrorExt(ec.PUD031, err);
+      });
+    return events;
 };
 
 /**

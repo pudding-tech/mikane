@@ -1,4 +1,5 @@
 import sql from "mssql";
+import { pool } from "../db";
 import { parseExpenses } from "../parsers/parseExpenses";
 import { parseUser, parseUsers } from "../parsers/parseUsers";
 import { Expense, User } from "../types/types";
@@ -12,20 +13,21 @@ import * as ec from "../types/errorCodes";
  * @returns User data
  */
 export const getUser = async (userId: string | null, username?: string | null) => {
-  const request = new sql.Request();
-  const user: User | null = await request
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .input("username", sql.NVarChar, username)
-    .execute("get_user")
+  const query = {
+    text: "select * from get_user($1, $2)",
+    values: [userId, username]
+  };
+  const user: User | null = await pool.query(query)
     .then(data => {
-      if (!data.recordset[0]) {
+      if (!data.rows[0]) {
         return null;
       }
-      return parseUser(data.recordset[0]);
+      return parseUser(data.rows[0]);
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD034, err);
     });
+
   return user;
 };
 

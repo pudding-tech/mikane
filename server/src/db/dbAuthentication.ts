@@ -1,4 +1,5 @@
 import sql from "mssql";
+import { pool } from "../db";
 import { PUD033, PUD063, PUD064, PUD070, PUD075, PUD076, PUD077 } from "../types/errorCodes";
 import { ErrorExt } from "../types/errorExt";
 import { parseApiKeys } from "../parsers/parseKeys";
@@ -11,23 +12,24 @@ import { randomUUID } from "crypto";
  * @returns User's hashed password
  */
 export const getUserHash = async (usernameEmail?: string, userId?: string) => {
-  const request = new sql.Request();
-  const userHash = await request
-    .input("usernameEmail", sql.NVarChar, usernameEmail)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .execute("get_user_hash")
+  const query = {
+    text: "select * from get_user_hash($1, $2);",
+    values: [usernameEmail, userId]
+  };
+  const userHash = await pool.query(query)
     .then(data => {
-      if (data.recordset.length < 1) {
+      if (data.rows.length < 1) {
         return null;
       }
       return {
-        id: (data.recordset[0].uuid as string).toLowerCase(),
-        hash: data.recordset[0].password as string
+        id: data.rows[0].id as string,
+        hash: data.rows[0].password as string
       };
     })
     .catch(err => {
       throw new ErrorExt(PUD033, err);
     });
+
   return userHash;
 };
 
