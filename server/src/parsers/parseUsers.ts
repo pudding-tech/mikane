@@ -19,8 +19,8 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[]
       lastName: userObj.last_name,
       email: userObj.email,
       created: userObj.created,
-      eventInfo: withEventData && userObj.event_uuid && userObj.event_joined_time ? {
-        id: userObj.event_uuid,
+      eventInfo: withEventData && userObj.event_id && userObj.event_joined_time ? {
+        id: userObj.event_id,
         isAdmin: userObj.event_admin ?? false,
         joinedTime: userObj.event_joined_time
       } : undefined

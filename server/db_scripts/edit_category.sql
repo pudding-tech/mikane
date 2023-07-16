@@ -19,7 +19,12 @@ begin
     raise exception 'Category not found' using errcode = 'P0007';
   end if;
 
-  update category c set c."name" = ip_name where c.id = ip_category_id;
+  update
+    category c
+  set
+    "name" = ip_name
+  where
+    c.id = ip_category_id;
 
   return query
   select * from get_categories(null, ip_category_id);

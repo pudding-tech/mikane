@@ -20,6 +20,10 @@ returns table (
 $$
 begin
 
+  if not exists (select 1 from "user" u where u.id = ip_user_id) then
+    raise exception 'User not found' using errcode = 'P0008';
+  end if;
+
   if ip_username is not null and exists (select 1 from "user" u where u.username ilike ip_username and u.id != ip_user_id) then
     raise exception 'Username already taken' using errcode = 'P0017';
   end if;
@@ -35,11 +39,11 @@ begin
   update
     "user" u
   set
-    u.username = coalesce(ip_username, u.username),
-    u.first_name = coalesce(ip_first_name, u.first_name),
-    u.last_name = nullif(trim(coalesce(ip_last_name, u.last_name)), ''),
-    u.email = coalesce(ip_email, u.email),
-    u.phone_number = coalesce(ip_phone_number, u.phone_number)
+    username = coalesce(ip_username, u.username),
+    first_name = coalesce(ip_first_name, u.first_name),
+    last_name = nullif(trim(coalesce(ip_last_name, u.last_name)), ''),
+    email = coalesce(ip_email, u.email),
+    phone_number = coalesce(ip_phone_number, u.phone_number)
   where
     u.id = ip_user_id;
   

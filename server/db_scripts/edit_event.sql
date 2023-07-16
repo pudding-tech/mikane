@@ -38,12 +38,12 @@ begin
   update
     "event" e
   set
-    e.name = coalesce(ip_name, u.name),
-    e.description = nullif(trim(coalesce(ip_description, e.description)), ''),
-    e.private = coalesce(ip_private, u.private)
+    name = coalesce(ip_name, e.name),
+    description = nullif(trim(coalesce(ip_description, e.description)), ''),
+    private = coalesce(ip_private, e.private)
   where
     e.id = ip_event_id;
-  
+
   return query
   select * from get_events(ip_event_id, ip_user_id);
 

@@ -19,11 +19,11 @@ begin
     raise exception 'Category not found' using errcode = 'P0007';
   end if;
 
-  update category c set c.weighted = ip_weighted where c.id = ip_category_id;
+  update category c set weighted = ip_weighted where c.id = ip_category_id;
 
   if (ip_weighted = true) then
     if exists (select 1 from user_category uc where uc.category_id = ip_category_id and uc.weight is null) then
-      update user_category uc set uc.weight = 1 where category_id = ip_category_id and uc.weight is null;
+      update user_category uc set weight = 1 where category_id = ip_category_id and uc.weight is null;
     end if;
   end if;
 

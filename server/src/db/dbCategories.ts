@@ -1,4 +1,4 @@
-import sql from "mssql";
+import { pool } from "../db";
 import { parseCategories } from "../parsers/parseCategories";
 import { CategoryIcon, Target } from "../types/enums";
 import { Category } from "../types/types";
@@ -11,22 +11,23 @@ import * as ec from "../types/errorCodes";
  * @returns List of categories
  */
 export const getCategories = async (eventId: string) => {
-  const request = new sql.Request();
-  const categories: Category[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, eventId)
-    .input("category_uuid", sql.UniqueIdentifier, null)
-    .execute("get_categories")
+  const query = {
+    text: "SELECT * FROM get_categories($1, null);",
+    values: [eventId]
+  };
+  const categories: Category[] = await pool.query(query)
     .then(data => {
-      return parseCategories(data.recordset, Target.CLIENT);
+      return parseCategories(data.rows, Target.CLIENT);
     })
     .catch(err => {
-      if (err.number === 50006)
+      if (err.code === "P0006")
         throw new ErrorExt(ec.PUD006, err);
-      if (err.number === 50007)
+      if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
       else
         throw new ErrorExt(ec.PUD029, err);
     });
+
   return categories;
 };
 
@@ -36,22 +37,23 @@ export const getCategories = async (eventId: string) => {
  * @returns Category object
  */
 export const getCategory = async (categoryId: string) => {
-  const request = new sql.Request();
-  const categories: Category[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, null)
-    .input("category_uuid", sql.UniqueIdentifier, categoryId)
-    .execute("get_categories")
+  const query = {
+    text: "SELECT * FROM get_categories(null, $1);",
+    values: [categoryId]
+  };
+  const categories: Category[] = await pool.query(query)
     .then(data => {
-      return parseCategories(data.recordset, Target.CLIENT);
+      return parseCategories(data.rows, Target.CLIENT);
     })
     .catch(err => {
-      if (err.number === 50006)
+      if (err.code === "P0006")
         throw new ErrorExt(ec.PUD006, err);
-      if (err.number === 50007)
+      if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
       else
         throw new ErrorExt(ec.PUD029, err);
     });
+
   if (!categories.length) {
     return null;
   }
@@ -66,24 +68,23 @@ export const getCategory = async (categoryId: string) => {
  * @returns Newly created category
  */
 export const createCategory = async (name: string, eventId: string, weighted: boolean, icon?: CategoryIcon) => {
-  const request = new sql.Request();
-  const category: Category[] = await request
-    .input("name", sql.NVarChar, name)
-    .input("icon", sql.NVarChar, icon)
-    .input("event_uuid", sql.UniqueIdentifier, eventId)
-    .input("weighted", sql.Bit, weighted)
-    .execute("new_category")
+  const query = {
+    text: "SELECT * FROM new_category($1, $2, $3, $4);",
+    values: [name, icon, weighted, eventId]
+  };
+  const category: Category[] = await pool.query(query)
     .then(data => {
-      return parseCategories(data.recordset, Target.CLIENT);
+      return parseCategories(data.rows, Target.CLIENT);
     })
     .catch(err => {
-      if (err.number === 50006)
+      if (err.code === "P0006")
         throw new ErrorExt(ec.PUD006, err);
-      if (err.number === 50097)
+      if (err.code === "P0097")
         throw new ErrorExt(ec.PUD097, err);
       else
         throw new ErrorExt(ec.PUD036, err);
     });
+
   return category[0];
 };
 
@@ -95,29 +96,29 @@ export const createCategory = async (name: string, eventId: string, weighted: bo
  * @returns Affected category
  */
 export const addUserToCategory = async (categoryId: string, userId: string, weight?: number) => {
-  const request = new sql.Request();
-  const categories: Category[] = await request
-    .input("category_uuid", sql.UniqueIdentifier, categoryId)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .input("weight", sql.Numeric(14), weight)
-    .execute("add_user_to_category")
+  const query = {
+    text: "SELECT * FROM add_user_to_category($1, $2, $3);",
+    values: [categoryId, userId, weight]
+  };
+  const categories: Category[] = await pool.query(query)
     .then(data => {
-      return parseCategories(data.recordset, Target.CLIENT);
+      return parseCategories(data.rows, Target.CLIENT);
     })
     .catch(err => {
-      if (err.number === 50007)
+      if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
-      else if (err.number === 50008)
+      else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
-      else if (err.number === 50010)
+      else if (err.code === "P0010")
         throw new ErrorExt(ec.PUD010, err);
-      else if (err.number === 50011)
+      else if (err.code === "P0011")
         throw new ErrorExt(ec.PUD011, err);
-      else if (err.number === 50012)
+      else if (err.code === "P0012")
         throw new ErrorExt(ec.PUD012, err);
       else
         throw new ErrorExt(ec.PUD020, err);
     });
+
   return categories[0];
 };
 
@@ -128,16 +129,16 @@ export const addUserToCategory = async (categoryId: string, userId: string, weig
  * @returns Edited category
  */
 export const renameCategory = async (categoryId: string, name: string) => {
-  const request = new sql.Request();
-  const category: Category[] = await request
-    .input("category_uuid", sql.UniqueIdentifier, categoryId)
-    .input("name", sql.NVarChar, name)
-    .execute("rename_category")
+  const query = {
+    text: "SELECT * FROM edit_category($1, $2);",
+    values: [categoryId, name]
+  };
+  const category: Category[] = await pool.query(query)
     .then(data => {
-      return parseCategories(data.recordset, Target.CLIENT);
+      return parseCategories(data.rows, Target.CLIENT);
     })
     .catch(err => {
-      if (err.number === 50007)
+      if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
       else
         throw new ErrorExt(ec.PUD041, err);
@@ -153,21 +154,21 @@ export const renameCategory = async (categoryId: string, name: string) => {
  * @returns Edited category
  */
 export const editUserWeight = async (categoryId: string, userId: string, weight: number) => {
-  const request = new sql.Request();
-  const categories: Category[] = await request
-    .input("category_uuid", sql.UniqueIdentifier, categoryId)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .input("weight", sql.Int, weight)
-    .execute("edit_user_weight")
+  const query = {
+    text: "SELECT * FROM edit_user_weight($1, $2, $3);",
+    values: [categoryId, userId, weight]
+  };
+  const categories: Category[] = await pool.query(query)
     .then(data => {
-      return parseCategories(data.recordset, Target.CLIENT);
+      return parseCategories(data.rows, Target.CLIENT);
     })
     .catch(err => {
-      if (err.number === 50007)
+      if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
       else
         throw new ErrorExt(ec.PUD027, err);
     });
+
   return categories[0];
 };
 
@@ -178,20 +179,21 @@ export const editUserWeight = async (categoryId: string, userId: string, weight:
  * @returns Edited category
  */
 export const editWeightStatus = async (categoryId: string, weighted: boolean) => {
-  const request = new sql.Request();
-  const categories: Category[] = await request
-    .input("category_uuid", sql.UniqueIdentifier, categoryId)
-    .input("weighted", sql.Bit, weighted)
-    .execute("edit_category_weighted_status")
+  const query = {
+    text: "SELECT * FROM edit_category_weighted_status($1, $2);",
+    values: [categoryId, weighted]
+  };
+  const categories: Category[] = await pool.query(query)
     .then(data => {
-      return parseCategories(data.recordset, Target.CLIENT);
+      return parseCategories(data.rows, Target.CLIENT);
     })
     .catch(err => {
-      if (err.number === 50007)
+      if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
       else
         throw new ErrorExt(ec.PUD026, err);
     });
+
   return categories[0];
 };
 
@@ -201,19 +203,21 @@ export const editWeightStatus = async (categoryId: string, weighted: boolean) =>
  * @returns True if successful
  */
 export const deleteCategory = async (categoryId: string) => {
-  const request = new sql.Request();
-  const success = await request
-    .input("category_uuid", sql.UniqueIdentifier, categoryId)
-    .execute("delete_category")
+  const query = {
+    text: "SELECT * FROM delete_category($1);",
+    values: [categoryId]
+  };
+  const success = await pool.query(query)
     .then(() => {
       return true;
     })
     .catch(err => {
-      if (err.number === 50007)
+      if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
       else
         throw new ErrorExt(ec.PUD022, err);
     });
+
   return success;
 };
 
@@ -224,21 +228,22 @@ export const deleteCategory = async (categoryId: string) => {
  * @returns Edited category
  */
 export const removeUserFromCategory = async (categoryId: string, userId: string) => {
-  const request = new sql.Request();
-  const categories: Category[] = await request
-    .input("category_uuid", sql.UniqueIdentifier, categoryId)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .execute("remove_user_from_category")
+  const query = {
+    text: "SELECT * FROM remove_user_from_category($1, $2);",
+    values: [categoryId, userId]
+  };
+  const categories: Category[] = await pool.query(query)
     .then(data => {
-      return parseCategories(data.recordset, Target.CLIENT);
+      return parseCategories(data.rows, Target.CLIENT);
     })
     .catch(err => {
-      if (err.number === 50007)
+      if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
-      else if (err.number === 50008)
+      else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
       else
         throw new ErrorExt(ec.PUD039, err);
     });
+
   return categories[0];
 };

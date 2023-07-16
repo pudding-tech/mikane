@@ -18,10 +18,10 @@ export const parseExpenses = (expInput: ExpenseDB[]): Expense[] => {
     }
 
     const expense: Expense = {
-      id: expObj.uuid,
+      id: expObj.id,
       name: expObj.name,
       description: expObj.description,
-      amount: expObj.amount,
+      amount: parseFloat(expObj.amount),
       created: expObj.created.getTime(),
       categoryInfo: {
         id: expObj.category_id,

@@ -6,7 +6,7 @@ export type UserDB = {
   email: string,
   phone_number: string,
   created: Date,
-  event_uuid?: string,
+  event_id?: string,
   event_admin?: boolean,
   event_joined_time?: Date
 };
@@ -40,10 +40,10 @@ export type CategoryDB = {
 };
 
 export type ExpenseDB = {
-  uuid: string,
+  id: string,
   name: string,
   description: string,
-  amount: number,
+  amount: string,
   category_id: string,
   category_name: string,
   category_icon: string;

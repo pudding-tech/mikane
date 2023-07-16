@@ -23,7 +23,7 @@ begin
   update
     user_category uc
   set
-    uc.weight = ip_weight
+    weight = ip_weight
   where
     uc.user_id = ip_user_id and
     uc.category_id = ip_category_id;

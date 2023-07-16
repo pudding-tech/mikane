@@ -1,4 +1,3 @@
-import sql from "mssql";
 import { pool } from "../db";
 import { parseExpenses } from "../parsers/parseExpenses";
 import { parseUser, parseUsers } from "../parsers/parseUsers";
@@ -14,7 +13,7 @@ import * as ec from "../types/errorCodes";
  */
 export const getUser = async (userId: string | null, username?: string | null) => {
   const query = {
-    text: "select * from get_user($1, $2)",
+    text: "SELECT * FROM get_user($1, $2)",
     values: [userId, username]
   };
   const user: User | null = await pool.query(query)
@@ -37,16 +36,18 @@ export const getUser = async (userId: string | null, username?: string | null) =
  * @returns User ID
  */
 export const getUserID = async (email: string) => {
-  const request = new sql.Request();
-  const userId: string | null = await request
-    .input("email", sql.NVarChar, email)
-    .execute("get_user_id")
+  const query = {
+    text: "SELECT * FROM get_user_id($1)",
+    values: [email]
+  };
+  const userId: string | null = await pool.query(query)
     .then(data => {
-      return data.recordset[0]?.uuid.toLowerCase() || null;
+      return data.rows[0]?.id || null;
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD071, err);
     });
+
   return userId;
 };
 
@@ -56,18 +57,19 @@ export const getUserID = async (email: string) => {
  * @returns List of users
  */
 export const getUsers = async (filter?: { eventId?: string, excludeUserId?: string }) => {
-  const request = new sql.Request();
-  return request
-    .input("event_uuid", sql.UniqueIdentifier, filter?.eventId)
-    .input("exclude_user_uuid", sql.UniqueIdentifier, filter?.excludeUserId)
-    .execute("get_users")
+  const query = {
+    text: "SELECT * FROM get_users($1, $2)",
+    values: [filter?.eventId, filter?.excludeUserId]
+  };
+  const users: User[] = await pool.query(query)
     .then(data => {
-      const users: User[] = parseUsers(data.recordset, true);
-      return users;
+      return parseUsers(data.rows, true);
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD035, err);
     });
+
+  return users;
 };
 
 /**
@@ -77,25 +79,25 @@ export const getUsers = async (filter?: { eventId?: string, excludeUserId?: stri
  * @returns List of expenses
  */
 export const getUserExpenses = async (userId: string, eventId: string) => {
-  const request = new sql.Request();
-  const expenses: Expense[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, eventId)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .input("expense_uuid", sql.UniqueIdentifier, null)
-    .execute("get_expenses")
+  const query = {
+    text: "SELECT * FROM get_expenses($1, $2, null)",
+    values: [eventId, userId]
+  };
+  const expenses: Expense[] = await pool.query(query)
     .then(data => {
-      return parseExpenses(data.recordset);
+      return parseExpenses(data.rows);
     })
     .catch(err => {
-      if (err.number === 50006)
-        throw new ErrorExt(ec.PUD006);
-      else if (err.number === 50008)
-        throw new ErrorExt(ec.PUD008);
-      else if (err.number === 50084)
-        throw new ErrorExt(ec.PUD084);
+      if (err.code === "P0006")
+        throw new ErrorExt(ec.PUD006, err);
+      else if (err.code === "P0008")
+        throw new ErrorExt(ec.PUD008, err);
+      else if (err.code === "P0084")
+        throw new ErrorExt(ec.PUD084, err);
       else
         throw new ErrorExt(ec.PUD032, err);
     });
+
   return expenses;
 };
 
@@ -109,28 +111,25 @@ export const getUserExpenses = async (userId: string, eventId: string) => {
  * @returns Newly created user
  */
 export const createUser = async (username: string, firstName: string, lastName: string, email: string, phone: string, hash: string) => {
-  const request = new sql.Request();
-  const user: User = await request
-    .input("username", sql.NVarChar, username)
-    .input("first_name", sql.NVarChar, firstName)
-    .input("last_name", sql.NVarChar, lastName)
-    .input("email", sql.NVarChar, email)
-    .input("phone_number", sql.NVarChar, phone)
-    .input("password", sql.NVarChar, hash)
-    .execute("new_user")
+  const query = {
+    text: "SELECT * FROM new_user($1, $2, $3, $4, $5, $6)",
+    values: [username, firstName, lastName, email, phone, hash]
+  };
+  const user: User = await pool.query(query)
     .then(data => {
-      return parseUser(data.recordset[0]);
+      return parseUser(data.rows[0]);
     })
     .catch(err => {
-      if (err.number === 50017)
+      if (err.code === "P0017")
         throw new ErrorExt(ec.PUD017, err);
-      else if (err.number === 50018)
+      else if (err.code === "P0018")
         throw new ErrorExt(ec.PUD018, err);
-      else if (err.number === 50019)
+      else if (err.code === "P0019")
         throw new ErrorExt(ec.PUD019, err);
       else
         throw new ErrorExt(ec.PUD038, err);
     });
+
   return user;
 };
 
@@ -141,31 +140,27 @@ export const createUser = async (username: string, firstName: string, lastName: 
  * @returns Edited user
  */
 export const editUser = async (userId: string, data: { username?: string, firstName?: string, lastName?: string, email?: string, phone?: string }) => {
-  const request = new sql.Request();
-  const user: User | null = await request
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .input("username", sql.NVarChar, data.username)
-    .input("first_name", sql.NVarChar, data.firstName)
-    .input("last_name", sql.NVarChar, data.lastName)
-    .input("email", sql.NVarChar, data.email)
-    .input("phone_number", sql.NVarChar, data.phone)
-    .execute("edit_user")
+  const query = {
+    text: "SELECT * FROM edit_user($1, $2, $3, $4, $5, $6)",
+    values: [userId, data.username, data.firstName, data.lastName, data.email, data.phone]
+  };
+  const user: User = await pool.query(query)
     .then(data => {
-      if (!data.recordset[0]) {
-        return null;
-      }
-      return parseUser(data.recordset[0]);
+      return parseUser(data.rows[0]);
     })
     .catch(err => {
-      if (err.number === 50017)
+      if (err.code === "P0008")
+        throw new ErrorExt(ec.PUD008, err);
+      else if (err.code === "P0017")
         throw new ErrorExt(ec.PUD017, err);
-      else if (err.number === 50018)
+      else if (err.code === "P0018")
         throw new ErrorExt(ec.PUD018, err);
-      else if (err.number === 50019)
+      else if (err.code === "P0019")
         throw new ErrorExt(ec.PUD019, err);
       else
         throw new ErrorExt(ec.PUD028, err);
     });
+
   return user;
 };
 
@@ -175,19 +170,21 @@ export const editUser = async (userId: string, data: { username?: string, firstN
  * @returns True if successful
  */
 export const deleteUser = async (userId: string) => {
-  const request = new sql.Request();
-  const success = request
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .execute("delete_user")
+  const query = {
+    text: "SELECT * FROM delete_user($1)",
+    values: [userId]
+  };
+  const success = await pool.query(query)
     .then(() => {
       return true;
     })
     .catch(err => {
-      if (err.number === 50008)
+      if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
       else
         throw new ErrorExt(ec.PUD025, err);
     });
+
   return success;
 };
 
@@ -198,16 +195,17 @@ export const deleteUser = async (userId: string) => {
  * @returs True if successful
  */
 export const changePassword = async (userId: string, hash: string) => {
-  const request = new sql.Request();
-  const success = await request
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .input("password", sql.NVarChar, hash)
-    .execute("change_password")
+  const query = {
+    text: "SELECT * FROM change_password($1, $2)",
+    values: [userId, hash]
+  };
+  const success = await pool.query(query)
     .then(() => {
       return true;
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD082, err);
     });
+
   return success;
 };

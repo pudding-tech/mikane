@@ -11,10 +11,4 @@ const config: DBConfig = {
 };
 
 const pool = new Pool(config);
-pool.on("connect", () => {
-  console.log("DB pool is connected!");
-});
-pool.on("acquire", () => {
-  // console.log("Got a client from pool now!");
-});
 export { pool };
