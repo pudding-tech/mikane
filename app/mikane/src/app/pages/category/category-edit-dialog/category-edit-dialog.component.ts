@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,11 +11,11 @@ import { MatInputModule } from '@angular/material/input';
 	templateUrl: 'category-edit-dialog.component.html',
 	styleUrls: ['category-edit-dialog.component.scss'],
 	standalone: true,
-	imports: [MatDialogModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+	imports: [MatDialogModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, NgIf],
 })
 export class CategoryEditDialogComponent {
 	editCategoryForm = new FormGroup({
-		weight: new FormControl(this.data.weight, [Validators.required]),
+		weight: new FormControl(this.data.weight, [Validators.required, Validators.min(1)]),
 	});
 
 	constructor(

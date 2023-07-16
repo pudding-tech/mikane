@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { JsonPipe, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,6 +28,7 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 		MatInputModule,
 		NgIf,
 		MatButtonModule,
+		JsonPipe,
 	],
 })
 export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -94,7 +95,27 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 						}
 					},
 					error: (err: ApiError) => {
-						this.messageService.showError('Failed to register');
+						switch (err.error.code) {
+							case 'PUD-004':
+								this.messageService.showError('Failed to register - Email invalid');
+								this.registerUserForm.get('email').setErrors({ invalid: true });
+								break;
+							case 'PUD-017':
+								this.messageService.showError('Username already taken');
+								this.registerUserForm.get('username').setErrors({ duplicate: true });
+								break;
+							case 'PUD-018':
+								this.messageService.showError('Email address already taken');
+								this.registerUserForm.get('email').setErrors({ duplicate: true });
+								break;
+							case 'PUD-019':
+								this.messageService.showError('Phonenumber already taken');
+								this.registerUserForm.get('phone').setErrors({ duplicate: true });
+								break;
+							default:
+								this.messageService.showError('Failed to register');
+								break;
+						}
 						console.error('Error occurred while registering user: ', err.error.message);
 					},
 				});

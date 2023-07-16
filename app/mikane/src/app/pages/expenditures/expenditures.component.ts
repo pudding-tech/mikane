@@ -50,7 +50,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	cancel$: Subject<void> = new Subject();
 
 	expenses: Expense[] = [];
-	displayedColumns: string[] = ['name', 'payer', 'amount', 'categoryName', 'description', 'delete'];
+	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description', 'delete'];
 	currentUserId: string;
 
 	@ViewChild(MatSort) sort: MatSort;

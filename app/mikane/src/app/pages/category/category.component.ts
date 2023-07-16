@@ -9,6 +9,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'lodash-es';
@@ -18,7 +19,9 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { FormControlPipe } from 'src/app/shared/forms/validators/form-control.pipe';
 import { ApiError } from 'src/app/types/apiError.type';
+import { CategoryIcon } from 'src/app/types/enums';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
@@ -44,6 +47,8 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 		MatCardModule,
 		AsyncPipe,
 		MatDialogModule,
+		FormControlPipe,
+		MatSelectModule,
 	],
 })
 export class CategoryComponent implements OnInit, AfterViewChecked {
@@ -53,7 +58,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 
 	addUserForm = new FormGroup({
 		participantName: new FormControl('', [Validators.required]),
-		weight: new FormControl(undefined, [Validators.required]),
+		weight: new FormControl(1, [Validators.required, Validators.min(1)]),
 	}) as FormGroup;
 
 	categories: Category[] = [];
@@ -131,13 +136,13 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 
 		dialogRef.afterClosed().subscribe((result) => {
 			if (result) {
-				this.createCategory(result.categoryName, result.weighted);
+				this.createCategory(result.categoryName, result.weighted, result.selectedIcon);
 			}
 		});
 	}
 
-	createCategory(name: string, weighted: boolean) {
-		this.categoryService.createCategory(name, this.eventId, weighted).subscribe({
+	createCategory(name: string, weighted: boolean, icon: CategoryIcon) {
+		this.categoryService.createCategory(name, this.eventId, weighted, icon).subscribe({
 			next: (category) => {
 				this.categories.push(category);
 				this.messageService.showSuccess('Category created!');
@@ -160,7 +165,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 					}
 					this.addUserForm.get('participantName')?.setValue('');
 					this.addUserForm.get('participantName')?.markAsUntouched();
-					this.addUserForm.get('weight')?.reset();
+					this.addUserForm.get('weight')?.setValue(1);
 
 					this.messageService.showSuccess('User added to category "' + this.categories[index].name + '"');
 				},

@@ -4,6 +4,17 @@
 		<mat-form-field appearance="fill">
 			<mat-label>Category Name</mat-label>
 			<input matInput type="text" formControlName="categoryName" name="categoryName" id="categoryName" required />
+			<button
+				mat-icon-button
+				matPrefix
+				(click)="isOpen = !isOpen"
+				cdkOverlayOrigin
+				#trigger="cdkOverlayOrigin"
+				[attr.aria-label]="'Choose category icon'"
+				[attr.aria-pressed]="addCategoryForm.value.selectedIcon"
+			>
+				<mat-icon>{{ addCategoryForm.value.selectedIcon }}</mat-icon>
+			</button>
 		</mat-form-field>
 		<div>
 			<mat-checkbox name="weighted" formControlName="weighted">Weighted</mat-checkbox>
@@ -16,3 +27,13 @@
 		Save
 	</button>
 </div>
+
+<ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="isOpen">
+	<mat-grid-list class="icon-grid" cols="5">
+		<mat-grid-tile [colspan]="1" *ngFor="let icon of categoryIcons | keyvalue">
+			<button mat-icon-button (click)="iconChange(icon.value)">
+				<mat-icon>{{ icon.value }}</mat-icon>
+			</button>
+		</mat-grid-tile>
+	</mat-grid-list>
+</ng-template>

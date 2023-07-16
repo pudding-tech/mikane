@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, of, switchMap } from 'rxjs';
+import { CategoryIcon } from 'src/app/types/enums';
 import { environment } from 'src/environments/environment';
 
 export interface Category {
 	id: string;
 	name: string;
-	icon: string;
+	icon: CategoryIcon;
 	weighted: boolean;
 	users: {
 		id: string;
@@ -27,11 +28,12 @@ export class CategoryService {
 		return this.httpClient.get<Category[]>(this.apiUrl + `?eventId=${eventId}`);
 	}
 
-	createCategory(name: string, eventId: string, weighted: boolean): Observable<Category> {
+	createCategory(name: string, eventId: string, weighted: boolean, icon: CategoryIcon): Observable<Category> {
 		return this.httpClient.post<Category>(this.apiUrl, {
 			name,
 			eventId,
 			weighted,
+			icon,
 		});
 	}
 
@@ -64,7 +66,7 @@ export class CategoryService {
 				if (category) {
 					return of(category);
 				} else {
-					return this.createCategory(categoryName, eventId, false);
+					return this.createCategory(categoryName, eventId, false, CategoryIcon.SHOPPING);
 				}
 			})
 		);

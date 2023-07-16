@@ -11,16 +11,18 @@
 		</mat-form-field>
 		<mat-form-field appearance="fill">
 			<mat-label>Expense Category</mat-label>
+			<mat-icon matPrefix>{{ findCategory(addExpenseForm.value.category)?.icon ?? "shopping_cart" }}</mat-icon>
 			<input
 				type="text"
 				placeholder="Pick or create a category"
 				aria-label="Expense category name"
 				matInput
 				formControlName="category"
-				[matAutocomplete]="auto"
+				[matAutocomplete]="categorySelector"
 			/>
-			<mat-autocomplete #auto="matAutocomplete">
+			<mat-autocomplete #categorySelector="matAutocomplete">
 				<mat-option *ngFor="let category of categories" [value]="category.name">
+					<mat-icon matPrefix>{{ category.icon ?? "shopping_cart" }}</mat-icon>
 					{{ category.name }}
 				</mat-option>
 			</mat-autocomplete>
@@ -29,14 +31,13 @@
 			<mat-label>Amount</mat-label>
 			<input matInput type="number" formControlName="amount" required />
 		</mat-form-field>
-		<mat-form-field appearance="fill">
+		<mat-form-field appearance="fill" *ngIf="(breakpointService.isMobile() | async) === false; else mobileSelect">
 			<mat-label>Payer</mat-label>
-			<select matNativeControl formControlName="payer" required>
-				<option value="" disabled>Choose payer</option>
-				<option [selected]="user.id === data.userId" *ngFor="let user of users" [value]="user.id">
+			<mat-select formControlName="payer" required>
+				<mat-option *ngFor="let user of users" [value]="user.id">
 					{{ user.name }}
-				</option>
-			</select>
+				</mat-option>
+			</mat-select>
 		</mat-form-field>
 	</form>
 </div>
@@ -46,3 +47,15 @@
 		Create
 	</button>
 </div>
+
+<ng-template #mobileSelect>
+	<mat-form-field appearance="fill">
+		<mat-label>Payer</mat-label>
+		<select matNativeControl required [formControl]="addExpenseForm.get('payer') | formControl">
+			<option value="" disabled>Choose payer</option>
+			<option [selected]="user.id === data.userId" *ngFor="let user of users" [value]="user.id">
+				{{ user.name }}
+			</option>
+		</select>
+	</mat-form-field>
+</ng-template>
