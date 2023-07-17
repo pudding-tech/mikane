@@ -24,8 +24,8 @@ begin
     from
       "user" u
     where
-      u.username ilike ip_username_email or
-      u.email ilike ip_username_email;
+      u.username ilike trim(ip_username_email) or
+      u.email ilike trim(ip_username_email);
   end if;
 end;
 $$

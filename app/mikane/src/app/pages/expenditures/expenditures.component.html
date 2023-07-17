@@ -19,7 +19,7 @@
 			<ng-container matColumnDef="icon">
 				<th mat-header-cell *matHeaderCellDef></th>
 				<td mat-cell class="expense-icon" *matCellDef="let expense">
-					<mat-icon>{{ expense.category.icon ?? "shopping_cart" }}</mat-icon>
+					<mat-icon>{{ expense.categoryInfo.icon ?? "shopping_cart" }}</mat-icon>
 				</td>
 			</ng-container>
 
