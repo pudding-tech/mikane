@@ -166,7 +166,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		if (!sort.active || sort.direction === '') {
 			this.expenses = [
 				...this.expenses.sort((a, b) => {
-					return this.compare(a.dateAdded, b.dateAdded, false);
+					return this.compare(a.created, b.created, false);
 				}),
 			];
 			return;
@@ -181,7 +181,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 					case 'payer':
 						return this.compare(a.payer.name, b.payer.name, isAsc);
 					case 'categoryName':
-						return this.compare(a.category.name, b.category.name, isAsc);
+						return this.compare(a.categoryInfo.name, b.categoryInfo.name, isAsc);
 					case 'amount':
 						return this.compare(a.amount, b.amount, isAsc);
 					case 'desscription':

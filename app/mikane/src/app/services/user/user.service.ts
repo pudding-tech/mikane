@@ -14,10 +14,10 @@ export interface User {
 	email?: string;
 	phone?: string;
 	created?: Date;
-	event?: {
+	eventInfo?: {
 		id: string;
 		isAdmin: boolean;
-		joinedDate: Date;
+		joinedTime: Date;
 	}
 	authenticated: boolean;
 }

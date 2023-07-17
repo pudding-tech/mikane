@@ -90,7 +90,7 @@ export class UserComponent implements OnInit, OnDestroy {
 							this.isAdmin = 
 								usersWithBalance.find((userWithBalance) => {
 									return userWithBalance?.user?.id === currentUser?.id;
-								})?.user.event?.isAdmin;
+								})?.user.eventInfo?.isAdmin;
 						return usersWithBalance;
 					})
 				)
