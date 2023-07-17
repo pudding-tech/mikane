@@ -41,7 +41,7 @@ begin
     raise exception 'User is already an admin for this event' using errcode = 'P0091';
   end if;
 
-  update user_event ue set ue.admin = true where ue.event_id = ip_event_id and user_id = ip_user_id;
+  update user_event ue set "admin" = true where ue.event_id = ip_event_id and ue.user_id = ip_user_id;
 
   return query
   select * from get_events(ip_event_id, null);

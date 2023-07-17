@@ -44,7 +44,7 @@ begin
     raise exception 'Cannot remove admin, as the user is the only admin and all events need at least one event admin' using errcode = 'P0093';
   end if;
 
-  update user_event ue set ue.admin = false where ue.event_id = ip_event_id and user_id = ip_user_id;
+  update user_event ue set "admin" = false where ue.event_id = ip_event_id and ue.user_id = ip_user_id;
 
   return query
   select * from get_events(ip_event_id, null);

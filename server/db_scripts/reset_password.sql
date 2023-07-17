@@ -16,8 +16,8 @@ begin
 
   select prk.user_id into tmp_user_id from password_reset_key prk where prk."key" = ip_key;
 
-  update "user" u set u."password" = ip_password where u.id = tmp_user_id;
-  update password_reset_key prk set prk.used = true where prk."key" = ip_key;
+  update "user" u set "password" = ip_password where u.id = tmp_user_id;
+  update password_reset_key prk set used = true where prk."key" = ip_key;
 
   return query
   select u.id, u.username, u.email, u.created from "user" u where u.id = tmp_user_id;
