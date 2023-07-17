@@ -77,6 +77,8 @@ export const getEventByName = async (eventName: string, userId?: string) => {
       return parseEvents(data.rows);
     })
     .catch(err => {
+      if (err.code === "P0006")
+        throw new ErrorExt(ec.PUD006, err);
       if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
       else

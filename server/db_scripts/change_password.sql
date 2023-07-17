@@ -12,7 +12,7 @@ returns table (
 $$
 begin
 
-  update "user" u set u.password = ip_password where u.id = ip_user_id;
+  update "user" u set "password" = ip_password where u.id = ip_user_id;
 
   return query
   select u.id, u.username, u.email, u.created from "user" u where u.id = ip_user_id;

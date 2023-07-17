@@ -108,6 +108,8 @@ dist
 
 # db_data
 server/db_data*
+server/pg_db_data*
 
-# SQL procedures combined into one file for deployment
+# SQL procedures/functions combined into one file for deployment
 all_procs.sql
+all_files.sql
