@@ -2816,7 +2816,7 @@
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
           },
-          "event": {
+          "eventInfo": {
             "type": "object",
             "properties": {
               "id": {
@@ -2978,7 +2978,7 @@
             "type": "boolean",
             "example": false
           },
-          "user": {
+          "userInfo": {
             "type": "object",
             "properties": {
               "id": {
@@ -3024,11 +3024,11 @@
             "type": "number",
             "example": 100
           },
-          "dateAdded": {
+          "created": {
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
           },
-          "category": {
+          "categoryInfo": {
             "type": "object",
             "properties": {
               "id": {
@@ -3082,6 +3082,10 @@
           "weighted": {
             "type": "boolean",
             "example": true
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
           },
           "users": {
             "type": "array",

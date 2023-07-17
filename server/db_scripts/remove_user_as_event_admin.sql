@@ -1,52 +1,54 @@
-if object_id ('remove_user_as_event_admin') is not null
-  drop procedure remove_user_as_event_admin
-go
-create procedure remove_user_as_event_admin
-  @event_uuid uniqueidentifier,
-  @user_uuid uniqueidentifier,
-  @by_user_uuid uniqueidentifier
-as
+drop function if exists remove_user_as_event_admin;
+create or replace function remove_user_as_event_admin(
+  ip_event_id uuid,
+  ip_user_id uuid,
+  ip_by_user_id uuid
+)
+returns table (
+  id uuid,
+  "name" varchar(255),
+  "description" varchar(255),
+  created timestamp,
+  "private" boolean,
+  admin_ids jsonb,
+  user_id uuid,
+  user_in_event boolean,
+  user_is_admin boolean
+) as
+$$
+declare
+  tmp_number_of_admins int;
 begin
 
-  declare @event_id int
-  declare @user_id int
-  declare @by_user_id int
-  select @event_id = id from [event] where uuid = @event_uuid
-  select @user_id = id from [user] where uuid = @user_uuid
-  select @by_user_id = id from [user] where uuid = @by_user_uuid
+  if not exists (select 1 from "event" e where e.id = ip_event_id) then
+    raise exception 'Event not found' using errcode = 'P0006';
+  end if;
 
-  if not exists (select 1 from [event] where id = @event_id)
-  begin
-    throw 50006, 'Event not found', 1
-  end
+  if not exists (select 1 from "user" u where u.id = ip_user_id) then
+    raise exception 'User not found' using errcode = 'P0008';
+  end if;
 
-  if not exists (select 1 from [user] where id = @user_id)
-  begin
-    throw 50008, 'User not found', 1
-  end
-
-  if not exists (select 1 from [event] e
+  if not exists (select 1 from "event" e
                   inner join user_event ue on e.id = ue.event_id
-                  where e.id = @event_id and ue.user_id = @by_user_id and ue.admin = 1)
-  begin
-    throw 50087, 'Only event admins can edit event', 1
-  end
+                  where e.id = ip_event_id and ue.user_id = ip_by_user_id and ue.admin = true)
+  then
+    raise exception 'Only event admins can edit event' using errcode = 'P0087';
+  end if;
 
-  if not exists (select 1 from user_event where event_id = @event_id and user_id = @user_id and [admin] = 1)
-  begin
-    throw 50092, 'User is not an admin for this event', 7
-  end
+  if not exists (select 1 from user_event ue where ue.event_id = ip_event_id and ue.user_id = ip_user_id and ue.admin = true) then
+    raise exception 'User is not an admin for this event' using errcode = 'P0092';
+  end if;
 
-  declare @number_of_admins int
-  select @number_of_admins = count(*) from user_event where event_id = @event_id and [admin] = 1
-  if (@number_of_admins < 2)
-  begin
-    throw 50093, 'Cannot remove admin, as the user is the only admin and all events need at least one event admin', 1
-  end
+  select count(*) into tmp_number_of_admins from user_event ue where ue.event_id = ip_event_id and ue.admin = true;
+  if (tmp_number_of_admins < 2) then
+    raise exception 'Cannot remove admin, as the user is the only admin and all events need at least one event admin' using errcode = 'P0093';
+  end if;
 
-  update user_event set [admin] = 0 where event_id = @event_id and user_id = @user_id
+  update user_event ue set "admin" = false where ue.event_id = ip_event_id and ue.user_id = ip_user_id;
 
-  exec get_events @event_uuid, null
+  return query
+  select * from get_events(ip_event_id, null);
 
-end
-go
+end;
+$$
+language plpgsql;

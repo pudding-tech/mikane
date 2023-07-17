@@ -1,4 +1,17 @@
+import { Pool } from "pg";
+import { DBConfig } from "./types";
+
 export interface StoreOptions {
+  /**
+   * Database connection pool to use (recommended connection type)
+   */
+  pool?: Pool;
+
+  /**
+   * Database connection config (alternative connection type)
+   */
+  dbConfig?: DBConfig;
+
   /**
    * Table to use as session store.
    * Default: `[session]`

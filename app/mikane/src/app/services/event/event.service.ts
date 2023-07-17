@@ -11,7 +11,7 @@ export interface PuddingEvent {
 	created: Date;
 	adminIds: string[];
 	private: boolean;
-	user?: {
+	userInfo?: {
 		id: string;
 		inEvent: boolean;
 		isAdmin: boolean;

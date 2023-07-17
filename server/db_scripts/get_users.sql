@@ -1,49 +1,65 @@
-if object_id ('get_users') is not null
-  drop procedure get_users
-go
-create procedure get_users
-  @event_uuid uniqueidentifier,
-  @exclude_user_uuid uniqueidentifier
-as
+drop function if exists get_users;
+create or replace function get_users(
+  ip_event_id uuid,
+  ip_exclude_user_id uuid
+)
+returns table (
+  id uuid,
+  username varchar(255),
+  first_name varchar(255),
+  last_name varchar(255),
+  email varchar(255),
+  phone_number varchar(20),
+  created timestamp,
+  event_id uuid,
+  is_event_admin boolean,
+  event_joined_time timestamp
+) as
+$$
 begin
 
-  declare @event_id int
-  declare @exclude_user_id int
-  select @event_id = id from [event] where uuid = @event_uuid
-  select @exclude_user_id = id from [user] where uuid = @exclude_user_uuid
+  if (ip_event_id is null) then
+  begin
+    return query
+    select
+      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created,
+      null::uuid as event_id,
+      null::boolean as is_event_admin,
+      null::timestamp as event_joined_time
+    from
+      "user" u
+    where
+      (ip_exclude_user_id is not null and u.id != ip_exclude_user_id) or
+      (ip_exclude_user_id is null and u.id = u.id)
+    order by
+      u.created desc;
+  end;
 
-  if (@event_uuid is null)
-    begin
-        
-      select
-        uuid, username, first_name, last_name, email, phone_number, created
-      from
-        [user]
-      where
-        (IsNumeric(@exclude_user_id) = 1 and id != @exclude_user_id) or
-        (IsNumeric(@exclude_user_id) = 0 and id = id)
-      order by
-        id
-      
-    end
   else
-    begin
-        
-      select
-        u.uuid, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created,
-        e.uuid as 'event_uuid', ue.admin as 'event_admin', ue.joined_date as 'event_joined_date'
-      from
-        [user] u
-        inner join user_event ue on ue.user_id = u.id
-        inner join [event] e on e.id = ue.event_id
-      where
-        ue.event_id = @event_id and
-        ((IsNumeric(@exclude_user_id) = 1 and u.id != @exclude_user_id) or
-        (IsNumeric(@exclude_user_id) = 0 and u.id = u.id))
-      order by
-        u.id
+  begin
 
-    end
+    if not exists (select 1 from "event" e where e.id = ip_event_id) then
+      raise exception 'Event not found' using errcode = 'P0006';
+    end if;
 
-end
-go
+    return query
+    select
+      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created,
+      e.id as event_id, ue.admin as is_event_admin, ue.joined_time as event_joined_time
+    from
+      "user" u
+      inner join user_event ue on ue.user_id = u.id
+      inner join "event" e on e.id = ue.event_id
+    where
+      ue.event_id = ip_event_id and
+      ((ip_exclude_user_id is not null and u.id != ip_exclude_user_id) or
+      (ip_exclude_user_id is null and u.id = u.id))
+    order by
+      ue.joined_time asc;
+  end;
+
+  end if;
+
+end;
+$$
+language plpgsql;

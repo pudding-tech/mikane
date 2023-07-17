@@ -1,95 +1,94 @@
-create table [user] (
-  id int identity(1,1) primary key,
-  username nvarchar(255) not null unique,
-  first_name nvarchar(255) not null,
-  last_name nvarchar(255),
-  email nvarchar(255) not null unique,
-  phone_number nvarchar(20) not null unique,
-  [password] nvarchar(255) not null,
-  created datetime not null,
-  uuid uniqueidentifier not null unique default newid()
+create table "user" (
+  id uuid primary key default gen_random_uuid(),
+  username varchar(255) not null unique,
+  first_name varchar(255) not null,
+  last_name varchar(255),
+  email varchar(255) not null unique,
+  phone_number varchar(20) not null unique,
+  "password" varchar(255) not null,
+  created timestamp not null
 );
 
-create table [event] (
-  id int identity(1,1) primary key,
-  [name] nvarchar(255) not null unique,
-  [description] nvarchar(400),
-  created datetime not null,
-  [private] bit not null,
-  active bit not null default 1,
-  usernames_only bit not null,
-  uuid uniqueidentifier not null unique default newid()
+create table "event" (
+  id uuid primary key default gen_random_uuid(),
+  "name" varchar(255) not null unique,
+  "description" varchar(400),
+  created timestamp not null,
+  "private" boolean not null,
+  active boolean not null default true,
+  usernames_only boolean not null
 );
+create index idx_event_created on "event"(created);
 
 create table user_event (
-  user_id int foreign key references [user](id) on delete cascade,
-  event_id int foreign key references [event](id) on delete cascade,
-  joined_date datetime not null,
-  [admin] bit not null,
+  user_id uuid references "user"(id) on delete cascade,
+  event_id uuid references "event"(id) on delete cascade,
+  joined_time timestamp not null,
+  "admin" boolean not null,
   primary key (user_id, event_id)
 );
 
 create table category (
-  id int identity(1,1) primary key,
-  [name] nvarchar(255) not null,
-  icon nvarchar(255),
-  weighted bit not null,
-  event_id int foreign key references [event](id) on delete cascade,
-  uuid uniqueidentifier not null unique default newid()
+  id uuid primary key default gen_random_uuid(),
+  "name" varchar(255) not null,
+  icon varchar(255),
+  weighted boolean not null,
+  event_id uuid references "event"(id) on delete cascade,
+  created timestamp not null
 );
+create index idx_category_created on category(created);
 
 create table expense (
-  id int identity(1,1) primary key,
-  [name] nvarchar(255) not null,
-  [description] nvarchar(255),
+  id uuid primary key default gen_random_uuid(),
+  "name" varchar(255) not null,
+  "description" varchar(255),
   amount numeric(16, 2) not null,
-  category_id int foreign key references category(id) on delete cascade,
-  payer_id int foreign key references [user](id) on delete cascade,
-  date_added datetime not null,
-  uuid uniqueidentifier not null unique default newid()
+  category_id uuid references category(id) on delete cascade,
+  payer_id uuid references "user"(id) on delete cascade,
+  created timestamp not null
 );
+create index idx_expense_created on expense(created);
 
 create table user_category (
-  user_id int foreign key references [user](id) on delete cascade,
-  category_id int foreign key references category(id) on delete cascade,
-  [weight] numeric(14),
+  user_id uuid references "user"(id) on delete cascade,
+  category_id uuid references category(id) on delete cascade,
+  "weight" numeric(14),
   primary key (user_id, category_id)
 );
 
-create table [session] (
-  [sid] nvarchar(255) not null primary key,
-  [session] nvarchar(max) not null,
-  expires datetime not null,
-  user_id int foreign key references [user](id) on delete cascade,
-  user_uuid uniqueidentifier not null
+create table "session" (
+  "sid" varchar(255) not null primary key,
+  "session" json not null,
+  expires timestamp not null,
+  user_id uuid references "user"(id) on delete cascade
 );
 
 create table api_key (
-  api_key_id uniqueidentifier primary key default newid(),
-  [name] nvarchar(255) not null unique,
-  hashed_key nvarchar(255) not null,
-  [master] bit not null,
-  valid_from datetime,
-  valid_to datetime
+  id uuid primary key default gen_random_uuid(),
+  "name" varchar(255) not null unique,
+  hashed_key varchar(255) not null,
+  "master" boolean not null,
+  valid_from timestamp,
+  valid_to timestamp
 );
 
 create table register_account_key (
-  [key] nvarchar(255) primary key,
-  email nvarchar(255) not null,
-  used bit not null,
-  expires datetime not null
+  "key" varchar(255) primary key,
+  email varchar(255) not null,
+  used boolean not null,
+  expires timestamp not null
 );
 
 create table delete_account_key (
-  [key] nvarchar(255) primary key,
-  user_id int foreign key references [user](id) on delete set null,
-  used bit not null,
-  expires datetime not null
+  "key" varchar(255) primary key,
+  user_id uuid references "user"(id) on delete set null,
+  used boolean not null,
+  expires timestamp not null
 );
 
 create table password_reset_key (
-  [key] nvarchar(255) primary key,
-  user_id int foreign key references [user](id) on delete cascade,
-  used bit not null,
-  expires datetime not null
+  "key" varchar(255) primary key,
+  user_id uuid references "user"(id) on delete cascade,
+  used boolean not null,
+  expires timestamp not null
 );

@@ -1,34 +1,28 @@
-if object_id ('delete_expense') is not null
-  drop procedure delete_expense
-go
-create procedure delete_expense
-  @expense_uuid uniqueidentifier,
-  @user_uuid uniqueidentifier
-as
+drop function if exists delete_expense;
+create or replace function delete_expense(
+  ip_expense_id uuid,
+  ip_user_id uuid
+)
+returns void as
+$$
 begin
 
-  declare @expense_id int
-  declare @user_id int
-  select @expense_id = id from expense where uuid = @expense_uuid
-  select @user_id = id from [user] where uuid = @user_uuid
-
-  if not exists (select 1 from expense where id = @expense_id)
-  begin
-    throw 50084, 'Expense not found', 1
-  end
+  if not exists (select 1 from expense ex where ex.id = ip_expense_id) then
+    raise exception 'Expense not found' using errcode = 'P0084';
+  end if;
 
   if not exists (select 1 from expense ex
-                    inner join category c on c.id = ex.category_id
-                    inner join [event] ev on ev.id = c.event_id
-                    inner join user_event ue on ue.event_id = ev.id
-                  where ex.id = @expense_id and
-                        ue.user_id = @user_id and
-                        (ex.payer_id = @user_id or ue.admin = 1))
-  begin
-    throw 50086, 'You can only delete your own expenses (unless event admin)', 1
-  end
+                  inner join category c on c.id = ex.category_id
+                  inner join user_event ue on ue.event_id = c.event_id
+                where ex.id = ip_expense_id and
+                      ue.user_id = ip_user_id and
+                      (ex.payer_id = ip_user_id or ue."admin" = true))
+  then
+    raise exception 'You can only delete your own expenses (unless event admin)' using errcode = 'P0086';
+  end if;
 
-  delete from expense where id = @expense_id
+  delete from expense ex where ex.id = ip_expense_id;
 
-end
-go
+end;
+$$
+language plpgsql;

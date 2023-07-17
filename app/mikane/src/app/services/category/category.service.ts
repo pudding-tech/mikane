@@ -9,6 +9,7 @@ export interface Category {
 	name: string;
 	icon: CategoryIcon;
 	weighted: boolean;
+	created: Date;
 	users: {
 		id: string;
 		name: string;

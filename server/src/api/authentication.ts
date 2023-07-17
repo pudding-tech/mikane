@@ -83,24 +83,22 @@ router.post("/login", async (req, res, next) => {
     }
 
     const isAuthenticated = authenticate(password, userPW.hash);
-
-    if (isAuthenticated) {
-      const user: User | null = await dbUsers.getUser(userPW.id);
-      if (!user) {
-        throw new ErrorExt(ec.PUD054);
-      }
-      req.session.authenticated = true;
-      req.session.userId = user.id;
-      req.session.username = user.username;
-      console.log(`User ${user.username} signing in...`, req.sessionID);
-      res.status(200).json({
-        authenticated: req.session.authenticated,
-        ...user
-      });
-    }
-    else {
+    if (!isAuthenticated) {
       throw new ErrorExt(ec.PUD003);
     }
+
+    const user: User | null = await dbUsers.getUser(userPW.id);
+    if (!user) {
+      throw new ErrorExt(ec.PUD054);
+    }
+    req.session.authenticated = true;
+    req.session.userId = user.id;
+    req.session.username = user.username;
+    console.log(`User ${user.username} signing in...`, req.sessionID);
+    res.status(200).json({
+      authenticated: req.session.authenticated,
+      ...user
+    });
   }
   catch (err) {
     next(err);

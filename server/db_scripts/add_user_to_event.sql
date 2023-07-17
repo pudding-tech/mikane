@@ -1,36 +1,41 @@
-if object_id ('add_user_to_event') is not null
-  drop procedure add_user_to_event
-go
-create procedure add_user_to_event
-  @event_uuid uniqueidentifier,
-  @user_uuid uniqueidentifier,
-  @admin bit
-as
+drop function if exists add_user_to_event;
+create or replace function add_user_to_event(
+  ip_event_id uuid,
+  ip_user_id uuid,
+  ip_admin boolean
+)
+returns table (
+  id uuid,
+  "name" varchar(255),
+  "description" varchar(255),
+  created timestamp,
+  "private" boolean,
+  admin_ids jsonb,
+  user_id uuid,
+  user_in_event boolean,
+  user_is_admin boolean
+) as
+$$
 begin
 
-  declare @event_id int
-  declare @user_id int
-  select @event_id = id from [event] where uuid = @event_uuid
-  select @user_id = id from [user] where uuid = @user_uuid
+  if not exists (select 1 from "event" e where e.id = ip_event_id) then
+    raise exception 'Event not found' using errcode = 'P0006';
+  end if;
 
-  if not exists (select id from [event] where id = @event_id)
-  begin
-    throw 50006, 'Event not found', 1
-  end
+  if not exists (select 1 from "user" u where u.id = ip_user_id) then
+    raise exception 'User not found' using errcode = 'P0008';
+  end if;
 
-  if not exists (select id from [user] where id = @user_id)
-  begin
-    throw 50008, 'User not found', 1
-  end
+  if exists (select 1 from user_event ue where ue.event_id = ip_event_id and ue.user_id = ip_user_id) then
+    raise exception 'User is already in this event' using errcode = 'P0009';
+  end if;
 
-  if exists (select user_id from user_event where event_id = @event_id and user_id = @user_id)
-  begin
-    throw 50009, 'User is already in this event', 7
-  end
+  insert into user_event(user_id, event_id, joined_time, "admin")
+    values (ip_user_id, ip_event_id, CURRENT_TIMESTAMP, ip_admin);
 
-  insert into user_event (user_id, event_id, joined_date, [admin]) values (@user_id, @event_id, GETDATE(), @admin)
+  return query
+  select * from get_events(ip_event_id, null);
 
-  exec get_events @event_uuid, null
-
-end
-go
+end;
+$$
+language plpgsql;

@@ -9,10 +9,10 @@ export type User = {
   email?: string;
   phone?: string;
   created?: Date;
-  event?: {
+  eventInfo?: {
     id: string;
     isAdmin: boolean;
-    joinedDate: Date;
+    joinedTime: Date;
   };
 };
 
@@ -23,7 +23,7 @@ export type Event = {
   created: Date;
   adminIds: string[];
   private: boolean;
-  user?: {
+  userInfo?: {
     id: string;
     inEvent: boolean;
     isAdmin: boolean;
@@ -35,6 +35,7 @@ export type Category = {
   name: string;
   icon: CategoryIcon;
   weighted: boolean;
+  created: Date;
   userWeights?: Map<string, number>;
   users?: {
     id: string;
@@ -50,8 +51,8 @@ export type Expense = {
   name: string;
   description: string;
   amount: number;
-  dateAdded: number;
-  category: {
+  created: number;
+  categoryInfo: {
     id: string;
     name: string;
     icon: CategoryIcon;
@@ -90,4 +91,12 @@ export type APIKey = {
   master: boolean;
   validFrom?: Date;
   validTo?: Date;
+};
+
+export type DBConfig = {
+  host: string,
+  port: number,
+  database: string,
+  user: string,
+  password: string
 };

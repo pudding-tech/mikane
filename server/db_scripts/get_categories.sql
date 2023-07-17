@@ -1,71 +1,78 @@
-if object_id ('get_categories') is not null
-  drop procedure get_categories
-go
-create procedure get_categories
-  @event_uuid uniqueidentifier,
-  @category_uuid uniqueidentifier
-as
+drop function if exists get_categories;
+create or replace function get_categories(
+  ip_event_id uuid,
+  ip_category_id uuid
+)
+returns table (
+  id uuid,
+  "name" varchar(255),
+  icon varchar(255),
+  weighted boolean,
+  event_id uuid,
+  created timestamp,
+  user_weights jsonb
+) as
+$$
 begin
+  
+  if ip_event_id is not null and not exists (select 1 from "event" e where e.id = ip_event_id) then
+    raise exception 'Event not found' using errcode = 'P0006';
+  end if;
 
-  declare @event_id int
-  declare @category_id int
-  select @event_id = id from [event] where uuid = @event_uuid
-  select @category_id = id from category where uuid = @category_uuid
+  if ip_category_id is not null and not exists (select 1 from "category" c where c.id = ip_category_id) then
+    raise exception 'Category not found' using errcode = 'P0007';
+  end if;
 
-  if @event_uuid is not null and not exists (select 1 from [event] where id = @event_id)
-  begin
-    throw 50006, 'Event not found', 1
-  end
-
-  if @category_uuid is not null and not exists (select 1 from category where id = @category_id)
-  begin
-    throw 50007, 'Category not found', 1
-  end
-
+  create temp table if not exists
+    weights_temp
+  as
   select
     uc.user_id,
-    c.id as 'category_id',
-    c.weighted,
-    'weight' = case
-      when c.weighted = 1 then uc.weight
-      when c.weighted = 0 then 1 end
-  into
-    #weights_temp
+    c.id as category_id,
+    case
+      when c.weighted = true then uc.weight
+      when c.weighted = false then 1
+    end as weight
   from user_category uc
     inner join category c on c.id = uc.category_id
   where
-    c.id = isnull(@category_id, c.id) and
-    c.event_id = isnull(@event_id, c.event_id)
+    c.id = coalesce(ip_category_id, c.id) and
+    c.event_id = coalesce(ip_event_id, c.event_id);
 
+  return query
   select
-    c.uuid,
+    c.id,
     c.name,
     c.icon,
     c.weighted,
-    e.uuid as event_uuid,
+    e.id as event_id,
+    c.created,
     (
       select
-        uc.user_id,
-        u.uuid as user_uuid,
-        u.username,
-        u.first_name,
-        u.last_name,
-        uw.weight
+        jsonb_agg(jsonb_build_object(
+          'user_id', u.id,
+          'username', u.username,
+          'first_name', u.first_name,
+          'last_name', u.last_name,
+          'weight', wt.weight
+        ))
       from
         user_category uc
-        inner join [user] u on u.id = uc.user_id
-        inner join #weights_temp uw
-          on uw.user_id = uc.user_id and
-              uw.category_id = uc.category_id
+        inner join "user" u ON u.id = uc.user_id
+        inner join weights_temp wt ON wt.user_id = uc.user_id AND wt.category_id = uc.category_id
       where
         uc.category_id = c.id
-      for json path
-    ) as 'user_weights'
+    ) as user_weights
   from category c
-    inner join [event] e on c.event_id = e.id
+    inner join "event" e on c.event_id = e.id
   where
-    c.id = isnull(@category_id, c.id) and
-    c.event_id = isnull(@event_id, c.event_id)
+    c.id = coalesce(ip_category_id, c.id) and
+    c.event_id = coalesce(ip_event_id, c.event_id)
+  order by
+    c.created desc;
 
-end
-go
+  drop table if exists weights_temp;
+
+end;
+$$
+language plpgsql;

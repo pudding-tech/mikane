@@ -1,5 +1,5 @@
 import { Event, User, UserBalance, BalanceCalculationResult } from "../types/types";
-import { EventDB, AdminIdDB } from "../types/typesDB";
+import { EventDB } from "../types/typesDB";
 
 /**
  * Build array of Event objects
@@ -9,17 +9,15 @@ import { EventDB, AdminIdDB } from "../types/typesDB";
 export const parseEvents = (eventsInput: EventDB[]) => {
   const events: Event[] = [];
   for (const eventObj of eventsInput) {
-    const adminIds: AdminIdDB[] = JSON.parse(eventObj.admin_ids) ?? [];
-
     const event: Event = {
-      id: eventObj.uuid.toLowerCase(),
+      id: eventObj.id,
       name: eventObj.name,
       description: eventObj.description,
       created: eventObj.created,
-      adminIds: adminIds.map(admin => admin.user_uuid.toLowerCase()),
+      adminIds: eventObj.admin_ids.map(admin => admin.user_id),
       private: eventObj.private,
-      user: eventObj.user_uuid && eventObj.user_in_event !== undefined && eventObj.user_is_admin !== undefined ? {
-        id: eventObj.user_uuid.toLowerCase(),
+      userInfo: eventObj.user_id && eventObj.user_in_event !== undefined && eventObj.user_is_admin !== undefined ? {
+        id: eventObj.user_id,
         inEvent: eventObj.user_in_event,
         isAdmin: eventObj.user_is_admin
       } : undefined
@@ -57,12 +55,12 @@ export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult
     });
   });
 
-  // Sort users by date joined event
+  // Sort users by time joined event
   balances.sort((a, b) => {
-    if (!a.user.event?.joinedDate || !b.user.event?.joinedDate) {
+    if (!a.user.eventInfo?.joinedTime || !b.user.eventInfo?.joinedTime) {
       return 0;
     }
-    return a.user.event?.joinedDate.getTime() - b.user.event?.joinedDate.getTime();
+    return a.user.eventInfo?.joinedTime.getTime() - b.user.eventInfo?.joinedTime.getTime();
   });
 
   return balances;

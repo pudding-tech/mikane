@@ -253,11 +253,48 @@ describe("events", async () => {
     });
   });
 
+  /* ------------------------------ */
+  /* POST /events/:id/admin/:userId */
+  /* ------------------------------ */
+  describe("POST /events/:id/admin/:id", async () => {
+    // Check that only user1 is event admin
+    test("only user1 should be event admin", async () => {
+      const res = await request(app)
+        .get("/api/events/" + event.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.adminIds.length).toEqual(1);
+      expect(res.body.adminIds[0]).toEqual(user.id);
+    });
+
+    // Add user2 as admin of event
+    test("should add user2 as event admin", async () => {
+      const res = await request(app)
+        .post(`/api/events/${event.id}/admin/${user2.id}`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+    });
+
+    // Check that user2 is also event admin
+    test("user1 and user2 should both be event admins", async () => {
+      const res = await request(app)
+        .get("/api/events/" + event.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.adminIds.length).toEqual(2);
+      expect(res.body.adminIds).toContainEqual(user.id);
+      expect(res.body.adminIds).toContainEqual(user2.id);
+    });
+  });
+
   /* ------------------------ */
   /* GET /events/:id/balances */
   /* ------------------------ */
   describe("GET /events/:id/balances", async () => {
-    test("should get balance information with 2 users", async () => {
+    test("should get balance information for event with 2 users", async () => {
       const res = await request(app)
         .get(`/api/events/${event.id}/balances`)
         .set("Cookie", authToken);
@@ -280,7 +317,7 @@ describe("events", async () => {
       );
     });
 
-    test("should get balance information with 1 user", async () => {
+    test("should get balance information for event with 1 user", async () => {
       const res = await request(app)
         .get(`/api/events/${event2.id}/balances`)
         .set("Cookie", authToken);
@@ -310,6 +347,43 @@ describe("events", async () => {
 
       expect(res.status).toEqual(200);
       expect(res.body.length).toEqual(0);
+    });
+  });
+
+  /* -------------------------------- */
+  /* DELETE /events/:id/admin/:userId */
+  /* -------------------------------- */
+  describe("DELETE /events/:id/admin/:id", async () => {
+    // Check that both user1 and user2 are event admins
+    test("user1 and user2 should both be event admins", async () => {
+      const res = await request(app)
+        .get("/api/events/" + event.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.adminIds.length).toEqual(2);
+      expect(res.body.adminIds).toContainEqual(user.id);
+      expect(res.body.adminIds).toContainEqual(user2.id);
+    });
+
+    // Remove user2 as admin of event
+    test("should remove user2 as event admin", async () => {
+      const res = await request(app)
+        .delete(`/api/events/${event.id}/admin/${user2.id}`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+    });
+
+    // Check that only user1 is event admin
+    test("only user1 should be event admin", async () => {
+      const res = await request(app)
+        .get("/api/events/" + event.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.adminIds.length).toEqual(1);
+      expect(res.body.adminIds[0]).toEqual(user.id);
     });
   });
 

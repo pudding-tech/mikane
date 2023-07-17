@@ -9,8 +9,8 @@ export interface Expense {
 	name: string;
 	description: string;
 	amount: number;
-	dateAdded: number;
-	category: {
+	created: number;
+	categoryInfo: {
 		id: string;
 		name: string;
 		icon: string;

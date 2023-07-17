@@ -1,60 +1,54 @@
-if object_id ('add_user_to_category') is not null
-  drop procedure add_user_to_category
-go
-create procedure add_user_to_category
-  @category_uuid uniqueidentifier,
-  @user_uuid uniqueidentifier,
-  @weight numeric(14)
-as
+drop function if exists add_user_to_category;
+create or replace function add_user_to_category(
+  ip_category_id uuid,
+  ip_user_id uuid,
+  ip_weight numeric(14)
+)
+returns table (
+  id uuid,
+  "name" varchar(255),
+  icon varchar(255),
+  weighted boolean,
+  event_id uuid,
+  created timestamp,
+  user_weights jsonb
+) as
+$$
+declare
+  tmp_event_id uuid;
+  tmp_weighted boolean;
 begin
 
-  declare @category_id int
-  declare @user_id int
-  select @category_id = id from category where uuid = @category_uuid
-  select @user_id = id from [user] where uuid = @user_uuid
+  select c.event_id into tmp_event_id from category c where c.id = ip_category_id;
+  select c.weighted into tmp_weighted from category c where c.id = ip_category_id;
 
-  if not exists (select id from category where id = @category_id)
-  begin
-    throw 50007, 'Category not found', 1
-  end
+  if not exists (select 1 from category c where c.id = ip_category_id) then
+    raise exception 'Category not found' using errcode = 'P0007';
+  end if;
 
-  if not exists (select id from [user] where id = @user_id)
-  begin
-    throw 50008, 'User not found', 1
-  end
+  if not exists (select 1 from "user" u where u.id = ip_user_id) then
+    raise exception 'User not found' using errcode = 'P0008';
+  end if;
 
-  declare @event_id int
-  declare @weighted bit
+  if not exists (select 1 from user_event ue where ue.event_id = tmp_event_id and ue.user_id = ip_user_id) then
+    raise exception 'User not in event, cannot be added to category' using errcode = 'P0010';
+  end if;
 
-  select @event_id = event_id, @weighted = weighted from category where id = @category_id
+  if exists (select 1 from user_category uc where uc.category_id = ip_category_id and uc.user_id = ip_user_id) then
+    raise exception 'User is already in this category' using errcode = 'P0011';
+  end if;
 
-  if not exists (select user_id from user_event where event_id = @event_id and user_id = @user_id)
-  begin
-    throw 50010, 'User not in event, cannot be added to category', 7
-  end
-
-  if exists (select user_id from user_category where category_id = @category_id and user_id = @user_id)
-  begin
-    throw 50011, 'User is already in this category', 8
-  end
-
-  if (@weighted = 1 and @weight is null)
-    begin
-      throw 50012, 'Weight required when adding user to weighted category', 9
-    end
-  else if (@weighted = 1)
-    begin
-      insert into user_category (user_id, category_id, [weight]) values (@user_id, @category_id, @weight)
-    end
+  if (tmp_weighted = true and ip_weight is null) then
+    raise exception 'Weight required when adding user to weighted category' using errcode = 'P0012';
+  elsif (tmp_weighted = true) then
+    insert into user_category(user_id, category_id, weight) values (ip_user_id, ip_category_id, ip_weight);
   else
-    begin
-      insert into user_category (user_id, category_id) values (@user_id, @category_id)
-    end
+    insert into user_category(user_id, category_id) values (ip_user_id, ip_category_id);
+  end if;
 
-  declare @event_uuid uniqueidentifier
-  select @event_uuid = uuid from [event] where id = @event_id
-  
-  exec get_categories @event_uuid, @category_uuid
+  return query
+  select * from get_categories(tmp_event_id, null);
 
-end
-go
+end;
+$$
+language plpgsql;

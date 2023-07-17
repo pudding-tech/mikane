@@ -1,6 +1,6 @@
 import { setUserUniqueNames } from "../utils/setUserDisplayNames";
 import { Category } from "../types/types";
-import { CategoryDB, UserWeightDB } from "../types/typesDB";
+import { CategoryDB } from "../types/typesDB";
 import { Target, CategoryIcon } from "../types/enums";
 
 /**
@@ -20,10 +20,11 @@ export const parseCategories = (catInput: CategoryDB[], target: Target): Categor
     }
 
     const category: Category = {
-      id: catObj.uuid.toLowerCase(),
+      id: catObj.id,
       name: catObj.name,
       icon: icon,
-      weighted: catObj.weighted
+      weighted: catObj.weighted,
+      created: catObj.created
     };
 
     if (target === Target.CLIENT) {
@@ -34,14 +35,12 @@ export const parseCategories = (catInput: CategoryDB[], target: Target): Categor
     }
 
     try {
-      const userWeights: UserWeightDB[] = JSON.parse(catObj.user_weights);
-
-      if (userWeights) {
-        userWeights.forEach(weight => {
+      if (catObj.user_weights) {
+        catObj.user_weights.forEach(weight => {
           if (target === Target.CLIENT && category.users) {
             category.users.push(
               {
-                id: weight.user_uuid.toLowerCase(),
+                id: weight.user_id,
                 name: weight.first_name,
                 firstName: weight.first_name,
                 lastName: weight.last_name,
@@ -50,7 +49,7 @@ export const parseCategories = (catInput: CategoryDB[], target: Target): Categor
             );
           }
           else if (target === Target.CALC && category.userWeights) {
-            category.userWeights.set(weight.user_uuid.toLowerCase(), weight.weight);
+            category.userWeights.set(weight.user_id, weight.weight);
           }
         });
       }

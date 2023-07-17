@@ -1,18 +1,23 @@
-if object_id ('verify_password_reset_key') is not null
-  drop procedure verify_password_reset_key
-go
-create procedure verify_password_reset_key
-  @key nvarchar(255)
-as
+drop function if exists verify_password_reset_key;
+create or replace function verify_password_reset_key(
+  ip_key varchar(255)
+)
+returns table (
+  success boolean
+) as
+$$
 begin
 
-  select 1
+  return query
+  select
+    true as success
   from
-    password_reset_key
+    password_reset_key prk
   where
-    [key] = @key and
-    used = 0 and
-    expires > GETDATE()
+    prk."key" = ip_key and
+    prk.used = false and
+    prk.expires > CURRENT_TIMESTAMP;
 
-end
-go
+end;
+$$
+language plpgsql;

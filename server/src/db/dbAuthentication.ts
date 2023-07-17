@@ -1,4 +1,4 @@
-import sql from "mssql";
+import { pool } from "../db";
 import { PUD033, PUD063, PUD064, PUD070, PUD075, PUD076, PUD077 } from "../types/errorCodes";
 import { ErrorExt } from "../types/errorExt";
 import { parseApiKeys } from "../parsers/parseKeys";
@@ -11,23 +11,24 @@ import { randomUUID } from "crypto";
  * @returns User's hashed password
  */
 export const getUserHash = async (usernameEmail?: string, userId?: string) => {
-  const request = new sql.Request();
-  const userHash = await request
-    .input("usernameEmail", sql.NVarChar, usernameEmail)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .execute("get_user_hash")
+  const query = {
+    text: "SELECT * FROM get_user_hash($1, $2);",
+    values: [usernameEmail, userId]
+  };
+  const userHash = await pool.query(query)
     .then(data => {
-      if (data.recordset.length < 1) {
+      if (data.rows.length < 1) {
         return null;
       }
       return {
-        id: (data.recordset[0].uuid as string).toLowerCase(),
-        hash: data.recordset[0].password as string
+        id: data.rows[0].id as string,
+        hash: data.rows[0].password as string
       };
     })
     .catch(err => {
       throw new ErrorExt(PUD033, err);
     });
+
   return userHash;
 };
 
@@ -46,16 +47,19 @@ export const getApiKeys = async (type: "normal" | "master" | "all") => {
       masterOnly = true;
       break;
   }
-  const request = new sql.Request();
-  const keys = await request
-    .input("master", sql.Bit, masterOnly)
-    .execute("get_api_keys")
+
+  const query = {
+    text: "SELECT * FROM get_api_keys($1);",
+    values: [masterOnly]
+  };
+  const keys = await pool.query(query)
     .then(data => {
-      return parseApiKeys(data.recordset);
+      return parseApiKeys(data.rows);
     })
     .catch(err => {
       throw new ErrorExt(PUD063, err);
     });
+
   return keys;
 };
 
@@ -68,20 +72,16 @@ export const getApiKeys = async (type: "normal" | "master" | "all") => {
  */
 export const newApiKey = async (name: string, hash: string, validFrom?: Date, validTo?: Date) => {
   const uuid = randomUUID();
-  const request = new sql.Request();
-  const key = await request
-    .input("uuid", sql.UniqueIdentifier, uuid)
-    .input("name", sql.NVarChar, name)
-    .input("hashed_key", sql.NVarChar, hash)
-    .input("master", sql.Bit, false)
-    .input("valid_from", sql.DateTime, validFrom)
-    .input("valid_to", sql.DateTime, validTo)
-    .execute("new_api_key")
+  const query = {
+    text: "SELECT * FROM new_api_key($1, $2, $3, $4, $5, $6);",
+    values: [uuid, name, hash, false, validFrom, validTo]
+  };
+  const key = await pool.query(query)
     .then(data => {
-      return parseApiKeys(data.recordset);
+      return parseApiKeys(data.rows);
     })
     .catch(err => {
-      if (err.number === 50070)
+      if (err.code === "P0070")
         throw new ErrorExt(PUD070, err);
       else
         throw new ErrorExt(PUD064, err);
@@ -96,11 +96,11 @@ export const newApiKey = async (name: string, hash: string, validFrom?: Date, va
  * @param key 
  */
 export const newPasswordResetKey = async (userId: string, key: string) => {
-  const request = new sql.Request();
-  await request
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .input("key", sql.NVarChar, key)
-    .execute("new_password_reset_key")
+  const query = {
+    text: "SELECT * FROM new_password_reset_key($1, $2);",
+    values: [userId, key]
+  };
+  await pool.query(query)
     .catch(err => {
       throw new ErrorExt(PUD075, err);
     });
@@ -111,16 +111,18 @@ export const newPasswordResetKey = async (userId: string, key: string) => {
  * @param key 
  */
 export const verifyPasswordResetKey = async (key: string) => {
-  const request = new sql.Request();
-  const keyExists = await request
-    .input("key", sql.NVarChar, key)
-    .execute("verify_password_reset_key")
+  const query = {
+    text: "SELECT * FROM verify_password_reset_key($1);",
+    values: [key]
+  };
+  const keyExists = await pool.query(query)
     .then(data => {
-      return data.recordset[0] ? true : false;
+      return data.rows[0] ? true : false;
     })
     .catch(err => {
       throw new ErrorExt(PUD076, err);
     });
+
   return keyExists;
 };
 
@@ -130,11 +132,11 @@ export const verifyPasswordResetKey = async (key: string) => {
  * @param hash Hashed new password
  */
 export const resetPassword = async (key: string, hash: string) => {
-  const request = new sql.Request();
-  await request
-    .input("key", sql.NVarChar, key)
-    .input("password", sql.NVarChar, hash)
-    .execute("reset_password")
+  const query = {
+    text: "SELECT * FROM reset_password($1, $2);",
+    values: [key, hash]
+  };
+  await pool.query(query)
     .catch(err => {
       throw new ErrorExt(PUD077, err);
     });

@@ -1,37 +1,33 @@
-if object_id ('remove_user_from_category') is not null
-  drop procedure remove_user_from_category
-go
-create procedure remove_user_from_category
-  @category_uuid uniqueidentifier,
-  @user_uuid uniqueidentifier
-as
+drop function if exists remove_user_from_category;
+create or replace function remove_user_from_category(
+  ip_category_id uuid,
+  ip_user_id uuid
+)
+returns table (
+  id uuid,
+  name varchar(255),
+  icon varchar(255),
+  weighted boolean,
+  event_id uuid,
+  created timestamp,
+  user_weights jsonb
+) as
+$$
 begin
 
-  declare @category_id int
-  declare @user_id int
-  select @category_id = id from category where uuid = @category_uuid
-  select @user_id = id from [user] where uuid = @user_uuid
+  if not exists (select 1 from category c where c.id = ip_category_id) then
+    raise exception 'Category not found' using errcode = 'P0007';
+  end if;
 
-  if not exists (select id from category where id = @category_id)
-  begin
-    throw 50007, 'Category not found', 1
-  end
+  if not exists (select 1 from "user" u where u.id = ip_user_id) then
+    raise exception 'User not found' using errcode = 'P0008';
+  end if;
 
-  if not exists (select id from [user] where id = @user_id)
-  begin
-    throw 50008, 'User not found', 1
-  end
+  delete from user_category uc where uc.category_id = ip_category_id and uc.user_id = ip_user_id;
 
-  delete from user_category where category_id = @category_id and user_id = @user_id
+  return query
+  select * from get_categories(null, ip_category_id);
 
-  declare @event_uuid uniqueidentifier
-  select
-    @event_uuid = e.uuid
-  from category c
-    inner join [event] e on c.event_id = e.id
-  where c.id = @category_id
-
-  exec get_categories @event_uuid, @category_uuid
-
-end
-go
+end;
+$$
+language plpgsql;

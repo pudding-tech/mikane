@@ -1,18 +1,19 @@
 version: "3.8"
 services:
   mikane_test_db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: postgres:15
     container_name: mikane_test_db
-    user: root
     ports:
-      - "37000:1433"
+      - "37000:5432"
     environment:
       - ENVIRONMENT=test
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=MikaneTestPassword!123
-      - DB_HOST=mikane_test_db
+      - POSTGRES_DB=mikanetest
+      - POSTGRES_USER=mikane_testuser
+      - POSTGRES_PASSWORD=MikaneTestPassword!123
+      - DB_HOST=localhost
+      - DB_USER=mikane_testuser
       - DB_PASSWORD=MikaneTestPassword!123
-    command: /bin/bash ./bash_scripts/entrypoint.sh
     volumes:
+      - ../bash_scripts/db_init.sh:/docker-entrypoint-initdb.d/db_init.sh
       - ../bash_scripts:/bash_scripts
       - ../db_scripts:/db_scripts

@@ -1,4 +1,4 @@
-import sql from "mssql";
+import { pool } from "../db";
 import { calculateBalance, calculatePayments } from "../calculations";
 import { parseBalance, parseEvents } from "../parsers/parseEvents";
 import { parseCategories } from "../parsers/parseCategories";
@@ -15,20 +15,21 @@ import * as ec from "../types/errorCodes";
  * @returns List of events
  */
 export const getEvents = async (userId?: string) => {
-  const request = new sql.Request();
-  const events: Event[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, null)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .execute("get_events")
+  const query = {
+    text: "SELECT * FROM get_events(null, $1);",
+    values: [userId]
+  };
+  const events: Event[] = await pool.query(query)
     .then(data => {
-      return parseEvents(data.recordset);
+      return parseEvents(data.rows);
     })
     .catch(err => {
-      if (err.number === 50008)
+      if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
       else
         throw new ErrorExt(ec.PUD031, err);
     });
+
   return events;
 };
 
@@ -39,20 +40,21 @@ export const getEvents = async (userId?: string) => {
  * @returns Event
  */
 export const getEvent = async (eventId: string, userId?: string) => {
-  const request = new sql.Request();
-  const events: Event[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, eventId)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .execute("get_events")
+  const query = {
+    text: "SELECT * FROM get_events($1, $2);",
+    values: [eventId, userId]
+  };
+  const events: Event[] = await pool.query(query)
     .then(data => {
-      return parseEvents(data.recordset);
+      return parseEvents(data.rows);
     })
     .catch(err => {
-      if (err.number === 50008)
+      if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
       else
         throw new ErrorExt(ec.PUD031, err);
     });
+
   if (!events.length) {
     return null;
   }
@@ -66,20 +68,23 @@ export const getEvent = async (eventId: string, userId?: string) => {
  * @returns Event
  */
 export const getEventByName = async (eventName: string, userId?: string) => {
-  const request = new sql.Request();
-  const events: Event[] = await request
-    .input("event_name", sql.NVarChar, eventName)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .execute("get_event_by_name")
+  const query = {
+    text: "SELECT * FROM get_event_by_name($1, $2);",
+    values: [eventName, userId]
+  };
+  const events: Event[] = await pool.query(query)
     .then(data => {
-      return parseEvents(data.recordset);
+      return parseEvents(data.rows);
     })
     .catch(err => {
-      if (err.number === 50008)
+      if (err.code === "P0006")
+        throw new ErrorExt(ec.PUD006, err);
+      if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
       else
         throw new ErrorExt(ec.PUD031, err);
     });
+
   if (!events.length) {
     return null;
   }
@@ -92,35 +97,52 @@ export const getEventByName = async (eventName: string, userId?: string) => {
  * @returns List of user balances for an event
  */
 export const getEventBalances = async (eventId: string) => {
-  const request = new sql.Request();
-  const data = await request
-    .input("event_uuid", sql.UniqueIdentifier, eventId)
-    .execute("get_event_payment_data")
-    .then(res => {
-      return res.recordsets as sql.IRecordSet<any>[];
-    })
-    .catch(err => {
-      if (err.number === 50006)
-        throw new ErrorExt(ec.PUD006, err);
-      else if (err.number === 50008)
-        throw new ErrorExt(ec.PUD008, err);
-      else if (err.number === 50084)
-        throw new ErrorExt(ec.PUD084, err);
-      else
-        throw new ErrorExt(ec.PUD030, err);
-    });
-  
-  if (!data || data.length < 3) {
-    throw new ErrorExt(ec.PUD061);
+  const queryUsers = {
+    text: `
+      SELECT * FROM get_users($1, null);
+    `,
+    values: [eventId]
+  };
+  const queryCategories = {
+    text: `
+      SELECT * FROM get_categories($1, null);
+    `,
+    values: [eventId]
+  };
+  const queryExpenses = {
+    text: `
+      SELECT * FROM get_expenses($1, null, null);
+    `,
+    values: [eventId]
+  };
+
+  try {
+    const queries = [queryUsers, queryCategories, queryExpenses];
+    const queryPromises = queries.map(query => pool.query(query));
+    
+    const res = await Promise.all(queryPromises);
+    if (!res || res.length < 3) {
+      throw new ErrorExt(ec.PUD061);
+    }
+
+    const users: User[] = parseUsers(res[0].rows, true);
+    const categories: Category[] = parseCategories(res[1].rows, Target.CALC);
+    const expenses: Expense[] = parseExpenses(res[2].rows);
+
+    const balance: BalanceCalculationResult = calculateBalance(expenses, categories, users);
+    const usersWithBalance: UserBalance[] = parseBalance(users, balance);
+    return usersWithBalance;
   }
-
-  const users: User[] = parseUsers(data[0], true);
-  const categories: Category[] = parseCategories(data[1], Target.CALC);
-  const expenses: Expense[] = parseExpenses(data[2]);
-
-  const balance: BalanceCalculationResult = calculateBalance(expenses, categories, users);
-  const usersWithBalance: UserBalance[] = parseBalance(users, balance);
-  return usersWithBalance;
+  catch (err: any) {
+    if (err.code === "P0006")
+      throw new ErrorExt(ec.PUD006, err);
+    else if (err.code === "P0008")
+      throw new ErrorExt(ec.PUD008, err);
+    else if (err.code === "P0084")
+      throw new ErrorExt(ec.PUD084, err);
+    else
+      throw new ErrorExt(ec.PUD061, err);
+  }
 };
 
 /**
@@ -129,34 +151,51 @@ export const getEventBalances = async (eventId: string) => {
  * @returns List of payments for an event
  */
 export const getEventPayments = async (eventId: string) => {
-  const request = new sql.Request();
-  const data = await request
-    .input("event_uuid", sql.UniqueIdentifier, eventId)
-    .execute("get_event_payment_data")
-    .then(res => {
-      return res.recordsets as sql.IRecordSet<any>[];
-    })
-    .catch(err => {
-      if (err.number === 50006)
-        throw new ErrorExt(ec.PUD006, err);
-      else if (err.number === 50008)
-        throw new ErrorExt(ec.PUD008, err);
-      else if (err.number === 50084)
-        throw new ErrorExt(ec.PUD084, err);
-      else
-        throw new ErrorExt(ec.PUD030, err);
-    });
-  
-  if (!data || data.length < 3) {
-    throw new ErrorExt(ec.PUD061);
+  const queryUsers = {
+    text: `
+      SELECT * FROM get_users($1, null);
+    `,
+    values: [eventId]
+  };
+  const queryCategories = {
+    text: `
+      SELECT * FROM get_categories($1, null);
+    `,
+    values: [eventId]
+  };
+  const queryExpenses = {
+    text: `
+      SELECT * FROM get_expenses($1, null, null);
+    `,
+    values: [eventId]
+  };
+
+  try {
+    const queries = [queryUsers, queryCategories, queryExpenses];
+    const queryPromises = queries.map(query => pool.query(query));
+
+    const res = await Promise.all(queryPromises);
+    if (!res || res.length < 3) {
+      throw new ErrorExt(ec.PUD061);
+    }
+
+    const users: User[] = parseUsers(res[0].rows, true);
+    const categories: Category[] = parseCategories(res[1].rows, Target.CALC);
+    const expenses: Expense[] = parseExpenses(res[2].rows);
+
+    const payments: Payment[] = calculatePayments(expenses, categories, users);
+    return payments;
   }
-
-  const users: User[] = parseUsers(data[0], false);
-  const categories: Category[] = parseCategories(data[1], Target.CALC);
-  const expenses: Expense[] = parseExpenses(data[2]);
-
-  const payments: Payment[] = calculatePayments(expenses, categories, users);
-  return payments;
+  catch (err: any) {
+    if (err.code === "P0006")
+      throw new ErrorExt(ec.PUD006, err);
+    else if (err.code === "P0008")
+      throw new ErrorExt(ec.PUD008, err);
+    else if (err.code === "P0084")
+      throw new ErrorExt(ec.PUD084, err);
+    else
+      throw new ErrorExt(ec.PUD061, err);
+  }
 };
 
 /**
@@ -168,26 +207,23 @@ export const getEventPayments = async (eventId: string) => {
  * @returns Newly created event
  */
 export const createEvent = async (name: string, userId: string, privateEvent: boolean, description?: string) => {
-  const request = new sql.Request();
-  const events: Event[] = await request
-    .input("name", sql.NVarChar, name)
-    .input("description", sql.NVarChar, description)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .input("private", sql.Bit, privateEvent)
-    .input("active", sql.Bit, 1)
-    .input("usernames_only", sql.Bit, 0)
-    .execute("new_event")
+  const query = {
+    text: "SELECT * FROM new_event($1, $2, $3, $4, $5, $6);",
+    values: [name, description, userId, privateEvent, true, false]
+  };
+  const events: Event[] = await pool.query(query)
     .then(data => {
-      return parseEvents(data.recordset);
+      return parseEvents(data.rows);
     })
     .catch(err => {
-      if (err.number === 50005)
+      if (err.code === "P0005")
         throw new ErrorExt(ec.PUD005, err);
-      else if (err.number === 50008)
+      else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
       else
         throw new ErrorExt(ec.PUD037, err);
     });
+
   return events[0];
 };
 
@@ -197,22 +233,23 @@ export const createEvent = async (name: string, userId: string, privateEvent: bo
  * @returns True if successful
  */
 export const deleteEvent = async (id: string, userId: string) => {
-  const request = new sql.Request();
-  const success = await request
-    .input("event_uuid", sql.UniqueIdentifier, id)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .execute("delete_event")
+  const query = {
+    text: "SELECT * FROM delete_event($1, $2);",
+    values: [id, userId]
+  };
+  const success = await pool.query(query)
     .then(() => {
       return true;
     })
     .catch(err => {
-      if (err.number === 50006)
+      if (err.code === "P0006")
         throw new ErrorExt(ec.PUD006, err);
-      else if (err.number === 50085)
+      else if (err.code === "P0085")
         throw new ErrorExt(ec.PUD085, err);
       else
         throw new ErrorExt(ec.PUD023, err);
     });
+
   return success;
 };
 
@@ -223,25 +260,25 @@ export const deleteEvent = async (id: string, userId: string) => {
  * @returns Affected event
  */
 export const addUserToEvent = async (eventId: string, userId: string) => {
-  const request = new sql.Request();
-  const events: Event[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, eventId)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .input("admin", sql.Bit, 0)
-    .execute("add_user_to_event")
+  const query = {
+    text: "SELECT * FROM add_user_to_event($1, $2, $3);",
+    values: [eventId, userId, false]
+  };
+  const events: Event[] = await pool.query(query)
     .then(data => {
-      return parseEvents(data.recordset);
+      return parseEvents(data.rows);
     })
     .catch(err => {
-      if (err.number === 50006) 
+      if (err.code === "P0006") 
         throw new ErrorExt(ec.PUD006, err);
-      else if (err.number === 50008)
+      else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
-      else if (err.number === 50009)
+      else if (err.code === "P0009")
         throw new ErrorExt(ec.PUD009, err);
       else
         throw new ErrorExt(ec.PUD021, err);
     });
+
   return events[0];
 };
 
@@ -252,22 +289,23 @@ export const addUserToEvent = async (eventId: string, userId: string) => {
  * @returns Affected event
  */
 export const removeUserFromEvent = async (eventId: string, userId: string) => {
-  const request = new sql.Request();
-  const events: Event[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, eventId)  
-    .input("user_uuid", sql.UniqueIdentifier, userId)  
-    .execute("remove_user_from_event")
+  const query = {
+    text: "SELECT * FROM remove_user_from_event($1, $2);",
+    values: [eventId, userId]
+  };
+  const events: Event[] = await pool.query(query)
     .then(data => {
-      return parseEvents(data.recordset);
+      return parseEvents(data.rows);
     })
     .catch(err => {
-      if (err.number === 50006) 
+      if (err.code === "P0006") 
         throw new ErrorExt(ec.PUD006, err);
-      else if (err.number === 50008)
+      else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
       else
         throw new ErrorExt(ec.PUD040, err);
     });
+
   return events[0];
 };
 
@@ -279,27 +317,27 @@ export const removeUserFromEvent = async (eventId: string, userId: string) => {
  * @returns Affected event
  */
 export const addUserAsEventAdmin = async (eventId: string, userId: string, byUserId: string) => {
-  const request = new sql.Request();
-  const events: Event[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, eventId)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .input("by_user_uuid", sql.UniqueIdentifier, byUserId)
-    .execute("add_user_as_event_admin")
+  const query = {
+    text: "SELECT * FROM add_user_as_event_admin($1, $2, $3);",
+    values: [eventId, userId, byUserId]
+  };
+  const events: Event[] = await pool.query(query)
     .then(data => {
-      return parseEvents(data.recordset);
+      return parseEvents(data.rows);
     })
     .catch(err => {
-      if (err.number === 50006) 
+      if (err.code === "P0006") 
         throw new ErrorExt(ec.PUD006, err);
-      else if (err.number === 50008)
+      else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
-      else if (err.number === 50090)
+      else if (err.code === "P0090")
         throw new ErrorExt(ec.PUD090, err);
-      else if (err.number === 50091)
+      else if (err.code === "P0091")
         throw new ErrorExt(ec.PUD091, err);
       else
         throw new ErrorExt(ec.PUD094, err);
     });
+
   return events[0];
 };
 
@@ -311,27 +349,27 @@ export const addUserAsEventAdmin = async (eventId: string, userId: string, byUse
  * @returns Affected event
  */
 export const removeUserAsEventAdmin = async (eventId: string, userId: string, byUserId: string) => {
-  const request = new sql.Request();
-  const events: Event[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, eventId)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .input("by_user_uuid", sql.UniqueIdentifier, byUserId)
-    .execute("remove_user_as_event_admin")
+  const query = {
+    text: "SELECT * FROM remove_user_as_event_admin($1, $2, $3);",
+    values: [eventId, userId, byUserId]
+  };
+  const events: Event[] = await pool.query(query)
     .then(data => {
-      return parseEvents(data.recordset);
+      return parseEvents(data.rows);
     })
     .catch(err => {
-      if (err.number === 50006) 
+      if (err.code === "P0006") 
         throw new ErrorExt(ec.PUD006, err);
-      else if (err.number === 50008)
+      else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
-      else if (err.number === 50092)
+      else if (err.code === "P0092")
         throw new ErrorExt(ec.PUD092, err);
-      else if (err.number === 50093)
+      else if (err.code === "P0093")
         throw new ErrorExt(ec.PUD093, err);
       else
         throw new ErrorExt(ec.PUD095, err);
     });
+
   return events[0];
 };
 
@@ -345,27 +383,25 @@ export const removeUserAsEventAdmin = async (eventId: string, userId: string, by
  * @returns Edited event
  */
 export const editEvent = async (eventId: string, userId: string, name?: string, description?: string, privateEvent?: boolean) => {
-  const request = new sql.Request();
-  const events: Event[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, eventId)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .input("name", sql.NVarChar, name)
-    .input("description", sql.NVarChar, description)
-    .input("private", sql.Bit, privateEvent)
-    .execute("edit_event")
+  const query = {
+    text: "SELECT * FROM edit_event($1, $2, $3, $4, $5);",
+    values: [eventId, userId, name, description, privateEvent]
+  };
+  const events: Event[] = await pool.query(query)
     .then(data => {
-      return parseEvents(data.recordset);
+      return parseEvents(data.rows);
     })
     .catch(err => {
-      if (err.number === 50006)
+      if (err.code === "P0006")
         throw new ErrorExt(ec.PUD006, err);
-      else if (err.number === 50005)
+      else if (err.code === "P0005")
         throw new ErrorExt(ec.PUD005, err);
-      else if (err.number === 50087)
+      else if (err.code === "P0087")
         throw new ErrorExt(ec.PUD087, err);
       else
         throw new ErrorExt(ec.PUD044, err);
     });
+
   if (!events.length) {
     return null;
   }

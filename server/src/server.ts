@@ -3,8 +3,7 @@ import session from "express-session";
 import swaggerUi from "swagger-ui-express";
 import cors from "cors";
 import helmet from "helmet";
-import sql from "mssql";
-import MSSQLSessionStore from "./session-store/MSSQLSessionStore";
+import SessionStore from "./session-store/SessionStore";
 import eventRoutes from "./api/events";
 import userRoutes from "./api/users";
 import categoryRoutes from "./api/categories";
@@ -12,40 +11,35 @@ import expenseRoutes from "./api/expenses";
 import authRoutes from "./api/authentication";
 import apiDocument from "./api.json";
 import env from "./env";
+import { pool } from "./db";
 import { errorHandler } from "./errorHandler";
-import { dbConfig } from "./dbConfig";
 
 const app = express();
 
-// Connect to DB
-const connectDB = () => {
-  sql.connect(dbConfig)
-    .then(pool => {
-      if (pool.connected) {
-        console.log(`Connected to SQL database: ${dbConfig.server} - ${dbConfig.database}`);
-        store.connect()
-          .then(() => {
-            app.set("dbReady", true);
-            app.emit("dbConnected");
-          })
-          .catch(err => {
-            console.error("Error connecting to session store\n", err);
-            app.set("dbReady", false);
-            app.emit("dbConnectionError");
-          });
-      }
-      else {
-        console.log("Database is still connecting? " + pool.connecting);
-      }
+// Check Database connection
+const checkDBConnection = () => {
+  pool.connect()
+    .then(client => {
+      console.log(`Connected to SQL database: ${env.DB_HOST} - ${env.DB_DATABASE}`);
+      client.release();
+      store.checkConnection()
+        .then(() => {
+          app.set("dbReady", true);
+          app.emit("dbConnected");
+        })
+        .catch(() => {
+          app.set("dbReady", false);
+          app.emit("dbConnectionError");
+        });
     })
     .catch(err => {
       console.log("An error occurred connecting to database: " + err);
       setTimeout(() => {
-        connectDB();
+        checkDBConnection();
       }, 10000);
     });
 };
-connectDB();
+checkDBConnection();
 
 // Set static folder
 app.use(express.static("public", { index: false }));
@@ -87,8 +81,9 @@ app.use("/", swaggerUi.serve);
 app.get("/", swaggerUi.setup(apiDocument, apiDocsOptions));
 
 // Session storage
-const store = new MSSQLSessionStore(dbConfig, {
-  table: "[session]",
+const store = new SessionStore({
+  pool: pool,
+  table: "session",
   autoDestroy: true,
   autoDestroyInterval: 1000 * 60 * 60 * 24
 });
@@ -104,7 +99,7 @@ app.use(session({
       maxAge: tenDays,
       httpOnly: true,
       secure: env.IN_PROD,
-      sameSite: "lax",
+      sameSite: "strict",
     },
     saveUninitialized: false,
     resave: false,
@@ -137,7 +132,7 @@ app.use("/api", authRoutes);
 app.use(errorHandler);
 
 // Send not found message back to client if route not found
-app.use((req, res) => {
+app.use((_req, res) => {
   res.status(404).send({ error: "404: Not found" });
 });
 

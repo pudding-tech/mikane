@@ -1,19 +1,27 @@
-if object_id ('reset_password') is not null
-  drop procedure reset_password
-go
-create procedure reset_password
-  @key nvarchar(255),
-  @password nvarchar(255)
-as
+drop function if exists reset_password;
+create or replace function reset_password(
+  ip_key varchar(255),
+  ip_password varchar(255)
+)
+returns table (
+  id uuid,
+  username varchar(255),
+  email varchar(255),
+  created timestamp
+) as
+$$
+declare
+  tmp_user_id uuid;
 begin
 
-  declare @user_id int
-  select @user_id = user_id from password_reset_key where [key] = @key
+  select prk.user_id into tmp_user_id from password_reset_key prk where prk."key" = ip_key;
 
-  update [user] set [password] = @password where id = @user_id
-  update password_reset_key set used = 1 where [key] = @key
+  update "user" u set "password" = ip_password where u.id = tmp_user_id;
+  update password_reset_key prk set used = true where prk."key" = ip_key;
 
-  select uuid, username, email, created from [user] where id = @user_id
+  return query
+  select u.id, u.username, u.email, u.created from "user" u where u.id = tmp_user_id;
 
-end
-go
+end;
+$$
+language plpgsql;

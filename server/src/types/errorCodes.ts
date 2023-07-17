@@ -276,15 +276,17 @@ export const PUD029: ErrorCode = {
   log: true
 };
 
+// OPEN
 /**
- * PUD-030: get_event_payment_data (500)
+ * PUD-030: TDB (500)
  */
 export const PUD030: ErrorCode = {
   code: "PUD-030",
-  message: "Something went wrong while getting event payment data",
+  message: "TDB",
   status: 500,
   log: true
 };
+// OPEN END
 
 /**
  * PUD-031: get_events (500)

@@ -1,4 +1,4 @@
-import sql from "mssql";
+import { pool } from "../db";
 import { parseExpenses } from "../parsers/parseExpenses";
 import { ErrorExt } from "../types/errorExt";
 import { Expense } from "../types/types";
@@ -10,25 +10,25 @@ import * as ec from "../types/errorCodes";
  * @returns List of expenses
  */
 export const getExpenses = async (eventId: string) => {
-  const request = new sql.Request();
-  const expenses: Expense[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, eventId)
-    .input("user_uuid", sql.UniqueIdentifier, null)
-    .input("expense_uuid", sql.UniqueIdentifier, null)
-    .execute("get_expenses")
+  const query = {
+    text: "SELECT * FROM get_expenses($1, null, null);",
+    values: [eventId]
+  };
+  const expenses: Expense[] = await pool.query(query)
     .then(data => {
-      return parseExpenses(data.recordset);
+      return parseExpenses(data.rows);
     })
     .catch(err => {
-      if (err.number === 50006)
+      if (err.code === "P0006")
         throw new ErrorExt(ec.PUD006);
-      else if (err.number === 50008)
+      else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008);
-      else if (err.number === 50084)
+      else if (err.code === "P0084")
         throw new ErrorExt(ec.PUD084);
       else
         throw new ErrorExt(ec.PUD032, err);
     });
+
   return expenses;
 };
 
@@ -38,25 +38,25 @@ export const getExpenses = async (eventId: string) => {
  * @returns Expense object
  */
 export const getExpense = async (expenseId: string) => {
-  const request = new sql.Request();
-  const expenses: Expense[] = await request
-    .input("event_uuid", sql.UniqueIdentifier, null)
-    .input("user_uuid", sql.UniqueIdentifier, null)
-    .input("expense_uuid", sql.UniqueIdentifier, expenseId)
-    .execute("get_expenses")
+  const query = {
+    text: "SELECT * FROM get_expenses(null, null, $1);",
+    values: [expenseId]
+  };
+  const expenses: Expense[] = await pool.query(query)
     .then(data => {
-      return parseExpenses(data.recordset);
+      return parseExpenses(data.rows);
     })
     .catch(err => {
-      if (err.number === 50006)
+      if (err.code === "P0006")
         throw new ErrorExt(ec.PUD006);
-      else if (err.number === 50008)
+      else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008);
-      else if (err.number === 50084)
+      else if (err.code === "P0084")
         throw new ErrorExt(ec.PUD084);
       else
         throw new ErrorExt(ec.PUD032, err);
     });
+
   if (!expenses.length) {
     return null;
   }
@@ -73,27 +73,25 @@ export const getExpense = async (expenseId: string) => {
  * @returns Newly created expense
  */
 export const createExpense = async (name: string, description: string, amount: number, categoryId: string, payerId: string) => {
-  const request = new sql.Request();
-  const expenses: Expense[] = await request
-    .input("name", sql.NVarChar, name)
-    .input("description", sql.NVarChar, description)
-    .input("amount", sql.Numeric(16, 2), amount)
-    .input("category_uuid", sql.UniqueIdentifier, categoryId)
-    .input("payer_uuid", sql.UniqueIdentifier, payerId)
-    .execute("new_expense")
+  const query = {
+    text: "SELECT * FROM new_expense($1, $2, $3, $4, $5);",
+    values: [name, description, amount, categoryId, payerId]
+  };
+  const expenses: Expense[] = await pool.query(query)
     .then(data => {
-      return parseExpenses(data.recordset);
+      return parseExpenses(data.rows);
     })
     .catch(err => {
-      if (err.number === 50007)
+      if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
-      else if (err.number === 50008)
+      else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
-      else if (err.number === 50062)
+      else if (err.code === "P0062")
         throw new ErrorExt(ec.PUD062, err);
       else
         throw new ErrorExt(ec.PUD043, err);
     });
+
   return expenses[0];
 };
 
@@ -103,21 +101,22 @@ export const createExpense = async (name: string, description: string, amount: n
  * @returns True if successful
  */
 export const deleteExpense = async (expenseId: string, userId: string) => {
-  const request = new sql.Request();
-  const success = await request
-    .input("expense_uuid", sql.UniqueIdentifier, expenseId)
-    .input("user_uuid", sql.UniqueIdentifier, userId)
-    .execute("delete_expense")
+  const query = {
+    text: "SELECT * FROM delete_expense($1, $2);",
+    values: [expenseId, userId]
+  };
+  const success = await pool.query(query)
     .then(() => {
       return true;
     })
     .catch(err => {
-      if (err.number === 50084)
+      if (err.code === "P0084")
         throw new ErrorExt(ec.PUD084, err);
-      else if (err.number === 50086)
+      else if (err.code === "P0086")
         throw new ErrorExt(ec.PUD086, err);
       else
         throw new ErrorExt(ec.PUD024, err);
     });
+
   return success;
 };

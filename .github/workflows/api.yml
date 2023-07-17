@@ -42,7 +42,7 @@ jobs:
       DB_HOST: localhost
       DB_PORT: 1433
       DB_DATABASE: mikanetest
-      DB_USER: SA
+      DB_USER: mikane_testuser
       DB_PASSWORD: MikaneTestPassword!123
 
     # services:
@@ -77,24 +77,19 @@ jobs:
       - name: Create DB
         run: |
           docker run -d \
-          --name mssqldb \
-          -e MSSQL_SA_PASSWORD="${{ env.DB_PASSWORD }}" \
-          -e ACCEPT_EULA=Y \
-          -p "${{ env.DB_PORT }}":1433 \
-          -v ${{ github.workspace }}/server/bash_scripts:/bash_scripts \
-          -v ${{ github.workspace }}/server/db_scripts:/db_scripts \
-          mcr.microsoft.com/mssql/server:2022-latest
-
-      - name: Run db_init
-        run: |
-          chmod -R +x ./bash_scripts
-          docker exec \
+          --name postgresdb \
           -e ENVIRONMENT=test \
+          -e POSTGRES_DB="${{ env.DB_DATABASE }}" \
+          -e POSTGRES_USER="${{ env.DB_USER }}" \
+          -e POSTGRES_PASSWORD="${{ env.DB_PASSWORD }}" \
           -e DB_HOST="${{ env.DB_HOST }}" \
-          -e DB_PORT=1433 \
           -e DB_USER="${{ env.DB_USER }}" \
           -e DB_PASSWORD="${{ env.DB_PASSWORD }}" \
-          mssqldb /bin/bash ./bash_scripts/db_init.sh
+          -p "${{ env.DB_PORT }}":5432 \
+          -v ${{ github.workspace }}/server/bash_scripts/db_init.sh:/docker-entrypoint-initdb.d/db_init.sh \
+          -v ${{ github.workspace }}/server/bash_scripts:/bash_scripts \
+          -v ${{ github.workspace }}/server/db_scripts:/db_scripts \
+          postgres:15
 
       - name: Install dependencies
         run: npm ci

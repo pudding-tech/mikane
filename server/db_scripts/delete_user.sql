@@ -1,17 +1,17 @@
-if object_id ('delete_user') is not null
-  drop procedure delete_user
-go
-create procedure delete_user
-  @user_uuid uniqueidentifier
-as
+drop function if exists delete_user;
+create or replace function delete_user(
+  ip_user_id uuid
+)
+returns void as
+$$
 begin
 
-  if not exists (select 1 from [user] where uuid = @user_uuid)
-  begin
-    throw 50008, 'User not found', 1
-  end
+  if not exists (select 1 from "user" u where u.id = ip_user_id) then
+    raise exception 'User not found' using errcode = 'P0008';
+  end if;
 
-  delete from [user] where uuid = @user_uuid
+  delete from "user" u where u.id = ip_user_id;
 
-end
-go
+end;
+$$
+language plpgsql;
