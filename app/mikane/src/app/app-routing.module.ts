@@ -21,8 +21,8 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/register/register-user.routes'),
 	},
 	{
-		path: 'settings',
-		loadChildren: () => import('./pages/settings/settings.routes'),
+		path: 'account',
+		loadChildren: () => import('./pages/account/account.routes'),
 	},
 	{
 		path: 'reset-password',

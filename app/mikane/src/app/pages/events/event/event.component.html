@@ -26,7 +26,7 @@
 </nav>
 <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
 <ng-template #mobileNavbar>
-	<mobile-navbar [activeLink]="activeLink" [links]="links()"></mobile-navbar>
+	<mobile-event-navbar [activeLink]="activeLink" [links]="links()"></mobile-event-navbar>
 </ng-template>
 <div [ngClass]="{ content: !(breakpointService.isMobile() | async), 'mobile-event': breakpointService.isMobile() | async }">
 	<router-outlet (activate)="onOutletLoaded($event)"></router-outlet>

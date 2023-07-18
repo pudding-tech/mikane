@@ -11,9 +11,9 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { UserSettingsComponent } from './user/user-settings.component';
 
 @Component({
-	selector: 'settings',
-	templateUrl: './settings.component.html',
-	styleUrls: ['./settings.component.scss'],
+	selector: 'account',
+	templateUrl: './account.component.html',
+	styleUrls: ['./account.component.scss'],
 	standalone: true,
 	imports: [
 		CommonModule,
@@ -27,6 +27,6 @@ import { UserSettingsComponent } from './user/user-settings.component';
 		MenuComponent,
 	],
 })
-export class SettingsComponent {
+export class AccountComponent {
 	constructor(public breakpointService: BreakpointService) {}
 }

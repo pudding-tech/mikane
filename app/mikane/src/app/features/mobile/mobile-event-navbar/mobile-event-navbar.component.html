@@ -5,6 +5,7 @@
 		[routerLink]="link.location"
 		(click)="activeLink = link.location"
 		[ngClass]="{ active: activeLink === link.location}"
+		matRipple
 	>
 		<mat-icon>{{ link.icon }}</mat-icon>
 		<div>{{ link.name }}</div>

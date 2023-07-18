@@ -2,10 +2,11 @@
 	<a mat-icon-button routerLink="/events" [ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
 		<mat-icon>arrow_back</mat-icon>
 	</a>
+	<span>Account</span>
 	<span class="toolbar-spacer"></span>
 	<menu></menu>
 </mat-toolbar>
-<div class="settings">
-	<user-settings class="section"></user-settings>
-	<change-password class="section"></change-password>
+<div class="account-settings">
+	<user-settings [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"></user-settings>
+	<change-password [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"></change-password>
 </div>

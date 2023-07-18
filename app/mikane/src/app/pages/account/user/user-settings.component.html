@@ -1,0 +1,191 @@
+<mat-card *ngIf="(breakpointService.isMobile() | async) === false; else mobileView">
+	<mat-card-header>
+		<div mat-card-avatar>
+			<mat-icon>person</mat-icon>
+		</div>
+		<mat-card-title>Account details</mat-card-title>
+	</mat-card-header>
+	<mat-card-content>
+		<div>
+			<form [formGroup]="editUserForm" (ngSubmit)="editUser()">
+				<div class="setting-row">
+					<span *ngIf="!editMode" class="user-padding">
+						Username:
+					</span>
+					<span *ngIf="!editMode" class="user-details">
+						{{ editUserForm.get('username').value }}
+					</span>
+					<mat-form-field *ngIf="editMode" appearance="fill" class="input-field">
+						<mat-label>Username</mat-label>
+						<input type="text" matInput placeholder="Username" formControlName="username" />
+						<mat-error *ngIf="editUserForm.get('username')?.invalid">Username required</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="setting-row">
+					<span *ngIf="!editMode" class="user-padding">
+						First name:
+					</span>
+					<span *ngIf="!editMode" class="user-details">
+						{{ editUserForm.get('firstName').value }}
+					</span>
+					<mat-form-field *ngIf="editMode" appearance="fill" class="input-field">
+						<mat-label>First Name</mat-label>
+						<input type="text" matInput placeholder="First name" formControlName="firstName" />
+						<mat-error *ngIf="editUserForm.get('firstName')?.invalid">First name required</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="setting-row">
+					<span *ngIf="!editMode" class="user-padding">
+						Last name:
+					</span>
+					<span *ngIf="!editMode" class="user-details">
+						{{ editUserForm.get('lastName').value }}
+					</span>
+					<mat-form-field *ngIf="editMode" class="input-field">
+						<mat-label>Last Name</mat-label>
+						<input type="text" matInput placeholder="Last name" formControlName="lastName" />
+						<mat-error *ngIf="editUserForm.get('lastName')?.invalid">Last name invalid</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="setting-row">
+					<span *ngIf="!editMode" class="user-padding">
+						Email:
+					</span>
+					<span *ngIf="!editMode" class="user-details">
+						{{ editUserForm.get('email').value }}
+					</span>
+					<mat-form-field *ngIf="editMode" class="input-field">
+						<mat-label>Email</mat-label>
+						<input type="text" matInput placeholder="Email" formControlName="email" />
+						<mat-error *ngIf="editUserForm.get('email')?.invalid">Invalid email</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="setting-row">
+					<span *ngIf="!editMode" class="user-padding">
+						Phone number:
+					</span>
+					<span *ngIf="!editMode" class="user-details">
+						{{ editUserForm.get('phone').value }}
+					</span>
+					<mat-form-field *ngIf="editMode" class="input-field">
+						<mat-label>Phone Number</mat-label>
+						<input type="text" matInput placeholder="Phonenumber" formControlName="phone" />
+						<mat-error *ngIf="editUserForm.get('phone')?.invalid">Invalid phonenumber</mat-error>
+					</mat-form-field>
+				</div>
+				<br />
+				<mat-card-actions class="setting-row">
+					<button *ngIf="!editMode" type="button" mat-raised-button color="primary" (click)="toggleEditMode()">
+						<mat-icon>edit</mat-icon>
+						Edit
+					</button>
+					<div>
+						<button *ngIf="editMode" type="button" mat-button color="accent" (click)="toggleEditMode()" class="user-settings-actions">
+							Cancel
+						</button>
+						<button *ngIf="editMode" type="submit" mat-raised-button color="primary">
+							<mat-icon>check_cirle</mat-icon>
+							Save changes
+						</button>
+					</div>
+					<button *ngIf="!editMode" type="button" mat-button color="warn" (click)="deleteUser()">
+						<mat-icon>delete</mat-icon>
+						Delete account
+					</button>
+				</mat-card-actions>
+			</form>
+		</div>
+	</mat-card-content>
+</mat-card>
+
+<ng-template #mobileView>
+	<div class="title-mobile">Account details</div>
+	<div class="user-settings-mobile">
+		<form [formGroup]="editUserForm" (ngSubmit)="editUser()">
+			<div>
+				<span *ngIf="!editMode" class="user-property-title">
+					Username:
+				</span>
+				<span *ngIf="!editMode" class="user-details">
+					{{ editUserForm.get('username').value }}
+				</span>
+				<mat-form-field *ngIf="editMode" appearance="fill" class="input-field">
+					<mat-label>Username</mat-label>
+					<input type="text" matInput placeholder="Username" formControlName="username" />
+					<mat-error *ngIf="editUserForm.get('username')?.invalid">Username required</mat-error>
+				</mat-form-field>
+			</div>
+			<div>
+				<span *ngIf="!editMode" class="user-property-title">
+					First name:
+				</span>
+				<span *ngIf="!editMode" class="user-details">
+					{{ editUserForm.get('firstName').value }}
+				</span>
+				<mat-form-field *ngIf="editMode" appearance="fill" class="input-field">
+					<mat-label>First Name</mat-label>
+					<input type="text" matInput placeholder="First name" formControlName="firstName" />
+					<mat-error *ngIf="editUserForm.get('firstName')?.invalid">First name required</mat-error>
+				</mat-form-field>
+			</div>
+			<div>
+				<span *ngIf="!editMode" class="user-property-title">
+					Last name:
+				</span>
+				<span *ngIf="!editMode" class="user-details">
+					{{ editUserForm.get('lastName').value }}
+				</span>
+				<mat-form-field *ngIf="editMode" class="input-field">
+					<mat-label>Last Name</mat-label>
+					<input type="text" matInput placeholder="Last name" formControlName="lastName" />
+					<mat-error *ngIf="editUserForm.get('lastName')?.invalid">Last name invalid</mat-error>
+				</mat-form-field>
+			</div>
+			<div>
+				<span *ngIf="!editMode" class="user-property-title">
+					Email:
+				</span>
+				<span *ngIf="!editMode" class="user-details">
+					{{ editUserForm.get('email').value }}
+				</span>
+				<mat-form-field *ngIf="editMode" class="input-field">
+					<mat-label>Email</mat-label>
+					<input type="text" matInput placeholder="Email" formControlName="email" />
+					<mat-error *ngIf="editUserForm.get('email')?.invalid">Invalid email</mat-error>
+				</mat-form-field>
+			</div>
+			<div>
+				<span *ngIf="!editMode" class="user-property-title">
+					Phone number:
+				</span>
+				<span *ngIf="!editMode" class="user-details">
+					{{ editUserForm.get('phone').value }}
+				</span>
+				<mat-form-field *ngIf="editMode" class="input-field">
+					<mat-label>Phone Number</mat-label>
+					<input type="text" matInput placeholder="Phone number" formControlName="phone" />
+					<mat-error *ngIf="editUserForm.get('phone')?.invalid">Invalid phone number</mat-error>
+				</mat-form-field>
+			</div>
+			<span class="buttons">
+				<button *ngIf="!editMode" type="button" mat-raised-button color="primary" (click)="toggleEditMode()">
+					<mat-icon>edit</mat-icon>
+					Edit
+				</button>
+				<div *ngIf="editMode">
+					<button type="button" mat-button color="accent" (click)="toggleEditMode()" class="user-settings-actions">
+						Cancel
+					</button>
+					<button type="submit" mat-raised-button color="primary">
+						<mat-icon>check_cirle</mat-icon>
+						Save changes
+					</button>
+				</div>
+				<button *ngIf="!editMode" type="button" mat-button color="warn" (click)="deleteUser()">
+					<mat-icon>delete</mat-icon>
+					Delete account
+				</button>
+			</span>
+		</form>
+	</div>
+</ng-template>

@@ -2,14 +2,19 @@
 	flex: 1 1 auto;
 }
 
-.settings {
+.account-settings {
 	display: flex;
-	align-items: center;
+	// justify-content: center;
 	flex-direction: column;
+	align-items: center;
 
-	.section {
+	.section-pc {
 		margin: 2em;
 		width: 36em;
 		min-width: 30em;
+	}
+
+	.section-mobile {
+		width: 100%;
 	}
 }

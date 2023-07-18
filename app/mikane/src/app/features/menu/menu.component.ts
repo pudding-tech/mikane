@@ -41,11 +41,11 @@ export class MenuComponent {
 	}
 
 	onAccountClick = () => {
-		if (this.router.url === '/settings') {
+		if (this.router.url === '/account') {
 			this.splitButton.toggled = false;
 			return;
 		}
-		this.router.navigate(['/settings']);
+		this.router.navigate(['/account']);
 	};
 
 	logout = () => {
