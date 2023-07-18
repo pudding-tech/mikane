@@ -1,4 +1,4 @@
-import { CommonModule, JsonPipe, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,9 +28,7 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 		ReactiveFormsModule,
 		MatFormFieldModule,
 		MatInputModule,
-		NgIf,
 		MatButtonModule,
-		JsonPipe,
 	],
 })
 export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {

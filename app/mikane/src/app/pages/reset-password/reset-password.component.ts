@@ -1,4 +1,4 @@
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,7 +29,6 @@ import { ApiError } from 'src/app/types/apiError.type';
 		MatFormFieldModule,
 		MatInputModule,
 		MatButtonModule,
-		NgIf,
 	],
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
