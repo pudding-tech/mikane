@@ -9,7 +9,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
-import { MobileNavbarComponent } from 'src/app/features/mobile/mobile-navbar/mobile-navbar.component';
+import { MobileEventNavbarComponent } from 'src/app/features/mobile/mobile-event-navbar/mobile-event-navbar.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -29,7 +29,7 @@ import { ExpendituresComponent } from '../../expenditures/expenditures.component
 		MatTabsModule,
 		RouterOutlet,
 		MenuComponent,
-		MobileNavbarComponent,
+		MobileEventNavbarComponent,
 	],
 })
 export class EventComponent implements OnInit {
@@ -52,7 +52,7 @@ export class EventComponent implements OnInit {
 			location: './expenses',
 		},
 		{
-			name: this.isMobile() ? 'Expenses' : 'Expense Categories',
+			name: this.isMobile() ? 'Categories' : 'Expense Categories',
 			icon: 'category',
 			location: './categories',
 		},

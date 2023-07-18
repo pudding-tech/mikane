@@ -1,4 +1,4 @@
-import { JsonPipe, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -19,6 +20,7 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 	styleUrls: ['./register-user.component.scss'],
 	standalone: true,
 	imports: [
+		CommonModule,
 		MatToolbarModule,
 		MatCardModule,
 		MatIconModule,
@@ -26,9 +28,7 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 		ReactiveFormsModule,
 		MatFormFieldModule,
 		MatInputModule,
-		NgIf,
 		MatButtonModule,
-		JsonPipe,
 	],
 })
 export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -51,7 +51,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 		}),
 	});
 
-	constructor(private userService: UserService, private messageService: MessageService, private router: Router) {}
+	constructor(private userService: UserService, private messageService: MessageService, private router: Router, public breakpointService: BreakpointService) {}
 
 	ngOnInit() {
 		if (window.history.state?.username) {

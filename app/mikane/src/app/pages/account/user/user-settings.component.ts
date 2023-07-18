@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +12,7 @@ import { NEVER, Subscription, switchMap } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
@@ -21,7 +22,7 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 	templateUrl: './user-settings.component.html',
 	styleUrls: ['./user-settings.component.scss'],
 	standalone: true,
-	imports: [MatCardModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgIf, MatButtonModule],
+	imports: [CommonModule, MatCardModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
 })
 export class UserSettingsComponent implements OnInit, OnDestroy {
 	private subscription: Subscription;
@@ -47,7 +48,8 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 		private authService: AuthService,
 		private router: Router,
 		public dialog: MatDialog,
-		private messageService: MessageService
+		private messageService: MessageService,
+		public breakpointService: BreakpointService
 	) {}
 
 	ngOnInit(): void {

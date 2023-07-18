@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { MatRippleModule } from '@angular/material/core';
 
 interface Route {
 	name: string;
@@ -10,13 +11,13 @@ interface Route {
 }
 
 @Component({
-	selector: 'mobile-navbar',
-	templateUrl: 'mobile-navbar.component.html',
-	styleUrls: ['./mobile-navbar.component.scss'],
+	selector: 'mobile-event-navbar',
+	templateUrl: 'mobile-event-navbar.component.html',
+	styleUrls: ['./mobile-event-navbar.component.scss'],
 	standalone: true,
-	imports: [CommonModule, RouterLink, RouterOutlet, MatIconModule],
+	imports: [CommonModule, RouterLink, RouterOutlet, MatIconModule, MatRippleModule],
 })
-export class MobileNavbarComponent {
+export class MobileEventNavbarComponent {
 	@Input('activeLink') activeLink: string;
 	@Input('links') links: Route[];
 }
