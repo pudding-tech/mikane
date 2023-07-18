@@ -127,10 +127,8 @@
 			</div>
 		</div>
 		<br />
-		<mat-card-actions class="register-actions">
-			<button type="submit" mat-raised-button color="primary" [ngClass]="{ 'mobile-register-button': breakpointService.isMobile() | async }">
-				Register <mat-icon aria-hidden="false">person_add</mat-icon>
-			</button>
-		</mat-card-actions>
+		<button type="submit" mat-raised-button color="primary" class="register-button">
+			Register <mat-icon aria-hidden="false">person_add</mat-icon>
+		</button>
 	</form>
 </ng-template>

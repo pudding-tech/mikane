@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { createCompareValidator } from 'src/app/shared/forms/validators/compare.validator';
 import { ApiError } from 'src/app/types/apiError.type';
 
@@ -19,6 +20,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 	styleUrls: ['./reset-password.component.scss'],
 	standalone: true,
 	imports: [
+		CommonModule,
 		MatToolbarModule,
 		MatCardModule,
 		MatIconModule,
@@ -47,7 +49,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 		private router: Router,
 		private route: ActivatedRoute,
 		private authService: AuthService,
-		private messageService: MessageService
+		private messageService: MessageService,
+		public breakpointService: BreakpointService
 	) {}
 
 	ngOnInit(): void {
