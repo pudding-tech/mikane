@@ -39,6 +39,10 @@
                     "username": {
                       "type": "string",
                       "example": "testuser"
+                    },
+                    "avatarURL": {
+                      "type": "string",
+                      "example": "https://gravatar.com/avatar/aaaa"
                     }
                   }
                 }
@@ -860,7 +864,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success - 'user' property is only present when a logged in user makes the request",
+            "description": "Success - 'userInfo' property is only present when a logged in user makes the request",
             "content": {
               "application/json": {
                 "schema": {
@@ -997,7 +1001,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success - 'user' property is only present when a logged in user makes the request",
+            "description": "Success - 'userInfo' property is only present when a logged in user makes the request",
             "content": {
               "application/json": {
                 "schema": {
@@ -1229,7 +1233,7 @@
           "Events"
         ],
         "summary": "Get an event's balance information",
-        "description": "Get an event's balance information for all users (includes 'user in event' information)",
+        "description": "Get an event's balance information for all users (includes 'eventInfo' information)",
         "operationId": "getEventBalances",
         "security": [
           { "cookieAuth": [] }
@@ -1718,7 +1722,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success - 'user' property is only present when a logged in user makes the request",
+            "description": "Success - 'userInfo' property is only present when a logged in user makes the request",
             "content": {
               "application/json": {
                 "schema": {
@@ -2790,6 +2794,10 @@
           "created": {
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "https://gravatar.com/avatar/aaaa"
           }
         }
       },
@@ -2815,6 +2823,10 @@
           "created": {
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "https://gravatar.com/avatar/aaaa"
           },
           "eventInfo": {
             "type": "object",
@@ -2876,6 +2888,10 @@
           "created": {
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "https://gravatar.com/avatar/aaaa"
           }
         }
       },
@@ -2913,6 +2929,10 @@
           "created": {
             "type": "date-time",
             "example": "2023-01-20T18:00:00"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "https://gravatar.com/avatar/aaaa"
           }
         }
       },

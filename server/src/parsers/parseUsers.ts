@@ -1,4 +1,5 @@
 import { setUserUniqueNames } from "../utils/setUserDisplayNames";
+import { getGravatarURL } from "../utils/gravatar";
 import { User } from "../types/types";
 import { UserDB } from "../types/typesDB";
 
@@ -11,6 +12,7 @@ import { UserDB } from "../types/typesDB";
 export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[] => {
   const users: User[] = [];
   usersInput.forEach(userObj => {
+    const avatarURL = getGravatarURL(userObj.email, { size: 200, default: "mp" });
     const user: User = {
       id: userObj.id,
       username: userObj.username,
@@ -19,6 +21,7 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[]
       lastName: userObj.last_name,
       email: userObj.email,
       created: userObj.created,
+      avatarURL: avatarURL,
       eventInfo: withEventData && userObj.event_id && userObj.event_joined_time ? {
         id: userObj.event_id,
         isAdmin: userObj.event_admin ?? false,
@@ -52,6 +55,7 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[]
  * @returns User object
  */
 export const parseUser = (userObj: UserDB): User => {
+  const avatarURL = getGravatarURL(userObj.email, { size: 200, default: "mp" });
   return {
     id: userObj.id,
     username: userObj.username,
@@ -61,5 +65,6 @@ export const parseUser = (userObj: UserDB): User => {
     email: userObj.email,
     phone: userObj.phone_number,
     created: userObj.created,
+    avatarURL: avatarURL
   };
 };

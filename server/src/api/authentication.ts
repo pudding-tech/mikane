@@ -25,8 +25,9 @@ router.get("/login", (req, res, next) => {
     }
     return res.status(200).json({
       authenticated: req.session.authenticated,
+      id: req.session.userId,
       username: req.session.username,
-      id: req.session.userId
+      avatarURL: req.session.avatarURL
     });
   }
   catch (err) {
@@ -94,6 +95,7 @@ router.post("/login", async (req, res, next) => {
     req.session.authenticated = true;
     req.session.userId = user.id;
     req.session.username = user.username;
+    req.session.avatarURL = user.avatarURL;
     console.log(`User ${user.username} signing in...`, req.sessionID);
     res.status(200).json({
       authenticated: req.session.authenticated,
