@@ -73,6 +73,14 @@
 						<mat-error *ngIf="editUserForm.get('phone')?.invalid">Invalid phonenumber</mat-error>
 					</mat-form-field>
 				</div>
+				<div *ngIf="!editMode" class="setting-row">
+					<span class="user-padding">
+						Avatar:
+					</span>
+					<span class="account-avatar-link user-details">
+						Manage with <a href="https://www.gravatar.com/" target="_blank">Gravatar</a>
+					</span>
+				</div>
 				<br />
 				<mat-card-actions class="setting-row">
 					<button *ngIf="!editMode" type="button" mat-raised-button color="primary" (click)="toggleEditMode()">
@@ -88,10 +96,6 @@
 							Save changes
 						</button>
 					</div>
-					<button *ngIf="!editMode" type="button" mat-button color="warn" (click)="deleteUser()">
-						<mat-icon>delete</mat-icon>
-						Delete account
-					</button>
 				</mat-card-actions>
 			</form>
 		</div>
@@ -167,6 +171,14 @@
 					<mat-error *ngIf="editUserForm.get('phone')?.invalid">Invalid phone number</mat-error>
 				</mat-form-field>
 			</div>
+			<div *ngIf="!editMode">
+				<span class="user-property-title">
+					Avatar:
+				</span>
+				<span class="account-avatar-link user-details">
+					Manage with <a href="https://www.gravatar.com/" target="_blank">Gravatar</a>
+				</span>
+			</div>
 			<span class="buttons">
 				<button *ngIf="!editMode" type="button" mat-raised-button color="primary" (click)="toggleEditMode()">
 					<mat-icon>edit</mat-icon>
@@ -181,10 +193,6 @@
 						Save changes
 					</button>
 				</div>
-				<button *ngIf="!editMode" type="button" mat-button color="warn" (click)="deleteUser()">
-					<mat-icon>delete</mat-icon>
-					Delete account
-				</button>
 			</span>
 		</form>
 	</div>

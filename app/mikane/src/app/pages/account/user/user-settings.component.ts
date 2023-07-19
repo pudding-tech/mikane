@@ -7,9 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
-import { NEVER, Subscription, switchMap } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
+import { Subscription, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -26,7 +24,6 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 })
 export class UserSettingsComponent implements OnInit, OnDestroy {
 	private subscription: Subscription;
-	private deleteSubscription: Subscription;
 	private editSubscription: Subscription;
 
 	private phone!: Phonenumber;
@@ -46,7 +43,6 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	constructor(
 		private userService: UserService,
 		private authService: AuthService,
-		private router: Router,
 		public dialog: MatDialog,
 		private messageService: MessageService,
 		public breakpointService: BreakpointService
@@ -104,47 +100,12 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 			});
 	}
 
-	deleteUser() {
-		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-			width: '400px',
-			data: {
-				title: 'Delete account',
-				content: 'Are you sure you want to delete your account? Warning: This is not reversible!',
-				confirm: 'Yes, I am sure',
-			},
-			autoFocus: false,
-		});
-
-		this.deleteSubscription = dialogRef
-			.afterClosed()
-			.pipe(
-				switchMap((confirm) => {
-					if (confirm) {
-						return this.userService.deleteUser(this.currentUser.id);
-					} else {
-						return NEVER;
-					}
-				})
-			)
-			.subscribe({
-				next: () => {
-					this.messageService.showSuccess('User deleted successfully');
-					this.router.navigate(['/login']);
-				},
-				error: (err: ApiError) => {
-					this.messageService.showError('Failed to delete user');
-					console.error('something went wrong while deleting user', err?.error?.message);
-				},
-			});
-	}
-
 	toggleEditMode() {
 		this.editMode = !this.editMode;
 	}
 
 	ngOnDestroy(): void {
 		this.subscription?.unsubscribe();
-		this.deleteSubscription?.unsubscribe();
 		this.editSubscription?.unsubscribe();
 	}
 }

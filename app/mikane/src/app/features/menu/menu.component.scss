@@ -4,10 +4,15 @@
 	margin-right: 12px;
 }
 
-.account {
+.avatar {
+	height: 36px;
+	width: 36px;
 	vertical-align: middle;
-	font-size: 30px;
-	margin-bottom: 4px;
-	height: auto;
-	width: auto;
+	margin-bottom: 3px;
+	border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-button {
+	vertical-align: middle;
 }
