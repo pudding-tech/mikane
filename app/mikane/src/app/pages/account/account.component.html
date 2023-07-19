@@ -9,4 +9,5 @@
 <div class="account-settings">
 	<user-settings [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"></user-settings>
 	<change-password [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"></change-password>
+	<danger-zone [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"></danger-zone>
 </div>
