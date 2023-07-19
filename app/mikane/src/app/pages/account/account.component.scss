@@ -8,9 +8,17 @@
 	align-items: center;
 
 	.section-pc {
-		margin: 2em;
+		margin: 1em 2em;
 		width: 40em;
 		min-width: 30em;
+
+		&.first {
+			margin-top: 2em;
+		}
+
+		&.last {
+			margin-bottom: 2em;
+		}
 	}
 
 	.section-mobile {
