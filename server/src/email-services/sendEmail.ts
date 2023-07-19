@@ -10,7 +10,7 @@ const password = env.MIKANE_EMAIL_PASSWORD;
  * Send an email to a recipient
  * @param recipient Email address of recipient
  * @param subject Subject of email
- * @param html Ccontents of email, in HTML format
+ * @param html Contents of email, formatted as HTML
  */
 export const sendEmail = async (recipient: string, subject: string, html: string) => {
 

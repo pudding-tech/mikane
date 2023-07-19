@@ -1,4 +1,4 @@
-import { Event, User, UserBalance, BalanceCalculationResult } from "../types/types";
+import { Event, User, UserBalance, BalanceCalculationResult, Expense } from "../types/types";
 import { EventDB } from "../types/typesDB";
 
 /**
@@ -30,16 +30,19 @@ export const parseEvents = (eventsInput: EventDB[]) => {
 
 /**
  * Parse BalanceCalculationResult into a list of UserBalance objects
- * @param users List of Users
  * @param balanceRes Balance Calculation Result
+ * @param users List of Users
+ * @param users List of Expenses
  */
-export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult) => {
+export const parseBalance = (balanceRes: BalanceCalculationResult, users: User[], expenses: Expense[]) => {
   const balances: UserBalance[] = [];
   users.forEach(user => {
+    const expensesCount = expenses.filter(expense => expense.payer.id === user.id).length;
     for (let i = 0; i < balanceRes.balance.length; i++) {
       if (balanceRes.balance[i].user.id === user.id) {
         balances.push({
           user: user,
+          expensesCount: expensesCount,
           spending: balanceRes.spending[i].amount,
           expenses: balanceRes.expenses[i].amount,
           balance: balanceRes.balance[i].amount
@@ -49,6 +52,7 @@ export const parseBalance = (users: User[], balanceRes: BalanceCalculationResult
     }
     balances.push({
       user: user,
+      expensesCount: expensesCount,
       spending: 0,
       expenses: 0,
       balance: 0
