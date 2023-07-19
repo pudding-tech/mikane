@@ -74,6 +74,9 @@ router.post("/expenses", authCheck, async (req, res, next) => {
     if (isNaN(amount)) {
       throw new ErrorExt(ec.PUD088);
     }
+    if (amount < 0) {
+      throw new ErrorExt(ec.PUD030);
+    }
 
     const expense: Expense = await db.createExpense(req.body.name, req.body.description, amount, categoryId, payerId);
     res.status(200).send(expense);

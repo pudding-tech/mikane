@@ -276,17 +276,14 @@ export const PUD029: ErrorCode = {
   log: true
 };
 
-// OPEN
 /**
- * PUD-030: TDB (500)
+ * PUD-030: Expense amount cannot be negative (400)
  */
 export const PUD030: ErrorCode = {
   code: "PUD-030",
-  message: "TDB",
-  status: 500,
-  log: true
+  message: "Expense amount cannot be negative",
+  status: 400
 };
-// OPEN END
 
 /**
  * PUD-031: get_events (500)

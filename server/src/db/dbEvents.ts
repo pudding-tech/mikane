@@ -179,7 +179,7 @@ export const getEventPayments = async (eventId: string) => {
       throw new ErrorExt(ec.PUD061);
     }
 
-    const users: User[] = parseUsers(res[0].rows, true);
+    const users: User[] = parseUsers(res[0].rows, false);
     const categories: Category[] = parseCategories(res[1].rows, Target.CALC);
     const expenses: Expense[] = parseExpenses(res[2].rows);
 
