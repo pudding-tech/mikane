@@ -172,11 +172,11 @@ router.put("/users/:id", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD059);
     }
     const data = {
-      username: req.body.username,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      phone: req.body.phone
+      username: req.body.username as string | undefined,
+      firstName: req.body.firstName as string | undefined,
+      lastName: req.body.lastName as string | undefined,
+      email: req.body.email as string | undefined,
+      phone: req.body.phone as string | undefined
     };
 
     const user = await db.editUser(userId, data);
