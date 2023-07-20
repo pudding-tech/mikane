@@ -149,7 +149,7 @@ export const calculatePayments = (
     payments.push({
       sender: largestDebtor.user,
       receiver: largestLeander.user,
-      amount: paymentAmount,
+      amount: roundAmount(paymentAmount),
     });
   }
 

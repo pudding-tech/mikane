@@ -202,6 +202,11 @@ input:-webkit-autofill:active {
 	color: rgba(255, 255, 255, 0.7) !important;
 }
 
+// Prevent mat dialog removing backgrounds when page is scrolled down
+.cdk-global-scrollblock {
+	overflow-y: initial;
+}
+
 // Prevent hover-selection on tooltips
 mat-tooltip-component {
 	user-select: none;

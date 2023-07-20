@@ -66,3 +66,12 @@
 	padding: 16px 16px 0;
 }
 
+.account-avatar-link a {
+	color: #d99db5;
+	text-decoration: none;
+
+	&:hover {
+		color: #dec3ce;
+		text-decoration: underline;
+	}
+}

@@ -1,7 +1,7 @@
 {
-  "name": "mikane",
-  "short_name": "mikane",
-  "theme_color": "#1976d2",
+  "name": "Mikane",
+  "short_name": "Mikane",
+  "theme_color": "#161417",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "./",

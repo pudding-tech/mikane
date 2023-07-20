@@ -5,6 +5,7 @@ declare module "express-session" {
     authenticated: boolean;
     userId: string;
     username: string;
+    avatarURL: string;
   }
   export interface Store {
     destroyExpired(): void;

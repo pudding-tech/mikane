@@ -1,4 +1,4 @@
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
@@ -15,11 +15,12 @@ import { SplitButtonItemDirective } from '../split-button/split-button-item/spli
 	templateUrl: './menu.component.html',
 	styleUrls: ['./menu.component.scss'],
 	standalone: true,
-	imports: [CommonModule, NgIf, MatIconModule, SplitButtonComponent, SplitButtonItemComponent, SplitButtonItemDirective],
+	imports: [CommonModule, MatIconModule, SplitButtonComponent, SplitButtonItemComponent, SplitButtonItemDirective],
 })
 export class MenuComponent {
 	@ViewChild('splitButton') private splitButton: SplitButtonComponent;
 	username: string;
+	avatarURL: string;
 
 	constructor(
 		private router: Router,
@@ -32,6 +33,7 @@ export class MenuComponent {
 		this.authService.getCurrentUser().subscribe({
 			next: (user) => {
 				this.username = user.username;
+				this.avatarURL = user.avatarURL;
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to get user');

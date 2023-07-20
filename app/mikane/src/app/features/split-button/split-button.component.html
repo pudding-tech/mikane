@@ -3,7 +3,12 @@
 		<ng-content select="[button]"></ng-content>
 	</mat-button-toggle>
 	<mat-button-toggle (click)="toggleDropdown()" class="split-button" [ngClass]="{ 'mobile': breakpointService.isMobile() | async }">
-		<mat-icon>arrow_drop_down</mat-icon>
+		<div #ref>
+			<ng-content select="[dropdown-button]"></ng-content>
+		</div>
+		<mat-icon *ngIf="!ref.children.length">
+			arrow_drop_down
+		</mat-icon>
 	</mat-button-toggle>
 </mat-button-toggle-group>
 

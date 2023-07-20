@@ -7,6 +7,7 @@
 	<menu></menu>
 </mat-toolbar>
 <div class="account-settings">
-	<user-settings [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"></user-settings>
+	<user-settings [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc first'"></user-settings>
 	<change-password [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"></change-password>
+	<danger-zone [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc last'"></danger-zone>
 </div>

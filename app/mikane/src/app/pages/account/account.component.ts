@@ -9,6 +9,7 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { UserSettingsComponent } from './user/user-settings.component';
+import { DangerZoneComponent } from './danger-zone/danger-zone.component';
 
 @Component({
 	selector: 'account',
@@ -24,6 +25,7 @@ import { UserSettingsComponent } from './user/user-settings.component';
 		MatIconModule,
 		UserSettingsComponent,
 		ChangePasswordComponent,
+		DangerZoneComponent,
 		MenuComponent,
 	],
 })

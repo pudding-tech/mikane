@@ -9,6 +9,7 @@ export type User = {
   email?: string;
   phone?: string;
   created?: Date;
+  avatarURL?: string;
   eventInfo?: {
     id: string;
     isAdmin: boolean;
