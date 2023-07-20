@@ -130,7 +130,7 @@ export const getEventBalances = async (eventId: string) => {
     const expenses: Expense[] = parseExpenses(res[2].rows);
 
     const balance: BalanceCalculationResult = calculateBalance(expenses, categories, users);
-    const usersWithBalance: UserBalance[] = parseBalance(users, balance);
+    const usersWithBalance: UserBalance[] = parseBalance(balance, users, expenses);
     return usersWithBalance;
   }
   catch (err: any) {

@@ -80,6 +80,7 @@ export type BalanceCalculationResult = {
 
 export type UserBalance = {
   user: User;
+  expensesCount: number;
   spending: number;
   expenses: number;
   balance: number;

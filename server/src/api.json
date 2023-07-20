@@ -3135,6 +3135,10 @@
           "user": {
             "$ref": "#/components/schemas/UserWithEvent"
           },
+          "expensesCount": {
+            "type": "number",
+            "example": 2
+          },
           "spending": {
             "type": "number",
             "example": 100
