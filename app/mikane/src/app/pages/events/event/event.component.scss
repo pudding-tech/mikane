@@ -7,7 +7,11 @@ mat-toolbar button {
 }
 
 .mobile-event {
-	margin-bottom: 58px; // Add margin to adjust for fixed navbar
+	margin-bottom: 58px; // Add margin to adjust for fixed event navbar
+
+	&.iOS {
+		margin-bottom: 88px; // Adjust margin for iOS event navbar
+	}
 }
 
 .mobile-menu {

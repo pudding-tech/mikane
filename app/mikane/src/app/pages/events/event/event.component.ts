@@ -11,6 +11,7 @@ import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { MobileEventNavbarComponent } from 'src/app/features/mobile/mobile-event-navbar/mobile-event-navbar.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ExpendituresComponent } from '../../expenditures/expenditures.component';
@@ -69,7 +70,8 @@ export class EventComponent implements OnInit {
 		private router: Router,
 		private messageService: MessageService,
 		private titleService: Title,
-		public breakpointService: BreakpointService
+		public breakpointService: BreakpointService,
+		public contextService: ContextService,
 	) {
 		const event = this.router.getCurrentNavigation()?.extras.state?.['event'];
 		if (event) {

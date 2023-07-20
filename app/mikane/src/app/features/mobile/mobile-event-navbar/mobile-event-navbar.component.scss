@@ -8,6 +8,10 @@
 	height: 58px;
 	background-color: #212121;
 	border-top: 1px solid rgba(181, 181, 181, 0.2);
+
+	&.iOS {
+		padding-bottom: 30px;
+	}
 }
 
 .nav-button {

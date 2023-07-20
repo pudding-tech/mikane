@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
+import { ContextService } from 'src/app/services/context/context.service';
 
 interface Route {
 	name: string;
@@ -20,4 +21,6 @@ interface Route {
 export class MobileEventNavbarComponent {
 	@Input('activeLink') activeLink: string;
 	@Input('links') links: Route[];
+
+	constructor (public contextService: ContextService) { }
 }

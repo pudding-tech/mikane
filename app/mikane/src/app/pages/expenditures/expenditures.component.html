@@ -86,9 +86,9 @@
 
 <ng-template #mobileView>
 	<mat-nav-list #expensesList class="expenses-list-mobile">
-		<expense-item *ngFor="let expense of expenses" [expense]="expense"> </expense-item>
+		<expense-item *ngFor="let expense of expenses" [expense]="expense"></expense-item>
 	</mat-nav-list>
-	<button mat-fab color="primary" class="add-expense-button-mobile" (click)="openDialog()">
+	<button mat-fab color="primary" class="add-expense-button-mobile" (click)="openDialog()" [ngClass]="{ 'iOS': contextService.isIos }">
 		<mat-icon>add_shopping_cart</mat-icon>
 	</button>
 </ng-template>

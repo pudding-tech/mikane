@@ -26,5 +26,13 @@ export class ContextService {
 		return false;
 	}
 
+	get isIos(): boolean {
+		if (!this.hasUserAgent) {
+			return false;
+		}
+
+		return /iPad|iPhone|iPod/.test(this.userAgent);
+	}
+
 	constructor() {}
 }
