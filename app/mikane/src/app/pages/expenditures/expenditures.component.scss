@@ -7,6 +7,10 @@
 	bottom: 80px;
 	right: 20px;
 	z-index: 999;
+
+	&.iOS {
+		bottom: 110px;
+	}
 }
 
 .expense-name {

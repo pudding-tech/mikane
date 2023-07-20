@@ -28,6 +28,6 @@
 <ng-template #mobileNavbar>
 	<mobile-event-navbar [activeLink]="activeLink" [links]="links()"></mobile-event-navbar>
 </ng-template>
-<div [ngClass]="{ content: !(breakpointService.isMobile() | async), 'mobile-event': breakpointService.isMobile() | async }">
+<div [ngClass]="{ 'content': !(breakpointService.isMobile() | async), 'mobile-event': breakpointService.isMobile() | async, 'iOS': contextService.isIos }">
 	<router-outlet (activate)="onOutletLoaded($event)"></router-outlet>
 </div>

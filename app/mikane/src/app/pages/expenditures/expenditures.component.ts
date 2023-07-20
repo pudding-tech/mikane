@@ -1,4 +1,4 @@
-import { AsyncPipe, CurrencyPipe, NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,6 +11,7 @@ import { BehaviorSubject, Subject, Subscription, filter, of, switchMap, takeUnti
 import { ExpenseItemComponent } from 'src/app/features/mobile/expense-item/expense-item.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { ContextService } from 'src/app/services/context/context.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
@@ -25,16 +26,13 @@ import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dia
 	styleUrls: ['./expenditures.component.scss'],
 	standalone: true,
 	imports: [
+		CommonModule,
 		MatButtonModule,
 		MatIconModule,
-		NgIf,
-		NgFor,
 		MatTableModule,
 		ProgressSpinnerComponent,
 		ExpenseItemComponent,
 		MatCardModule,
-		AsyncPipe,
-		CurrencyPipe,
 		MatDialogModule,
 		MatListModule,
 		MatSortModule,
@@ -61,7 +59,8 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		private authService: AuthService,
 		public dialog: MatDialog,
 		private messageService: MessageService,
-		public breakpointService: BreakpointService
+		public breakpointService: BreakpointService,
+		public contextService: ContextService,
 	) {}
 
 	ngOnInit(): void {

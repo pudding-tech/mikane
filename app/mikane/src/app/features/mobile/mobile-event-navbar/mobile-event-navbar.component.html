@@ -1,4 +1,4 @@
-<div class="navbar">
+<div class="navbar" [ngClass]="{ 'iOS': contextService.isIos}">
 	<a
 		class="nav-button"
 		*ngFor="let link of links"
