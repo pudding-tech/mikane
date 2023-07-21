@@ -1,3 +1,4 @@
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -8,10 +9,13 @@ import { Category, CategoryService } from 'src/app/services/category/category.se
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { ContextService } from 'src/app/services/context/context.service';
 import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ExpenditureDialogComponent } from '../expenditures/expenditure-dialog/expenditure-dialog.component';
 import { ExpenseDataSource } from './expense.datasource';
+import { ParticipantItemComponent } from 'src/app/features/mobile/participant-item/participant-item.component';
 import { UserDialogComponent } from './user-dialog/user-dialog.component';
 import { MatCardModule } from '@angular/material/card';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
@@ -19,8 +23,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
 
 @Component({
 	selector: 'app-users',
@@ -28,18 +32,18 @@ import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
 	styleUrls: ['./user.component.scss'],
 	standalone: true,
 	imports: [
-		NgIf,
+		CommonModule,
 		MatButtonModule,
 		MatIconModule,
 		MatExpansionModule,
-		NgFor,
 		MatProgressSpinnerModule,
 		MatTableModule,
 		ProgressSpinnerComponent,
 		MatCardModule,
-		AsyncPipe,
 		CurrencyPipe,
 		MatDialogModule,
+		MatListModule,
+		ParticipantItemComponent,
 	],
 })
 export class UserComponent implements OnInit, OnDestroy {
@@ -56,7 +60,7 @@ export class UserComponent implements OnInit, OnDestroy {
 	displayedColumns: string[] = ['name', 'amount', 'category', 'description', 'actions'];
 	dataSources: ExpenseDataSource[] = [];
 
-	showJoinEvent = false;
+	inEvent = false;
 	isAdmin = false;
 
 	constructor(
@@ -67,7 +71,9 @@ export class UserComponent implements OnInit, OnDestroy {
 		private messageService: MessageService,
 		private expenseService: ExpenseService,
 		private categoryService: CategoryService,
-		private authService: AuthService
+		private authService: AuthService,
+		public breakpointService: BreakpointService,
+		public contextService: ContextService,
 	) {}
 
 	ngOnInit() {
@@ -83,10 +89,10 @@ export class UserComponent implements OnInit, OnDestroy {
 			this.userSubscription = combineLatest([this.eventService.loadBalances(this.eventId), this.authService.getCurrentUser()])
 				.pipe(
 					map(([usersWithBalance, currentUser]): UserBalance[] => {
-						this.showJoinEvent =
+						this.inEvent =
 							usersWithBalance.filter((userWithBalance) => {
 								return userWithBalance?.user?.id === currentUser?.id;
-							}).length === 0;
+							}).length !== 0;
 							this.isAdmin = 
 								usersWithBalance.find((userWithBalance) => {
 									return userWithBalance?.user?.id === currentUser?.id;

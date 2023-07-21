@@ -25,6 +25,7 @@ export interface User {
 
 export interface UserBalance {
 	user: User;
+	expensesCount: number;
 	spending: number;
 	expenses: number;
 	balance: number;

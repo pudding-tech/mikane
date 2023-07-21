@@ -1,106 +1,129 @@
 <div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div class="add-actions">
-		<button mat-raised-button color="primary" (click)="openDialog()">
-			<mat-icon>person_add</mat-icon>
-			Add users to event
-		</button>
-		<button mat-raised-button color="primary" *ngIf="showJoinEvent; else joinedEvent" (click)="joinEvent()">Join event</button>
-		<ng-template #joinedEvent>
-			<button mat-stroked-button disabled>{{ isAdmin ? "Joined - Admin" : "Joined" }}</button>
+	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView">
+		<div class="add-actions">
+			<button mat-raised-button color="primary" (click)="openDialog()">
+				<mat-icon>person_add</mat-icon>
+				Add users to event
+			</button>
+			<button mat-raised-button color="primary" *ngIf="!inEvent; else joinedEvent" (click)="joinEvent()">Join event</button>
+			<ng-template #joinedEvent>
+				<button mat-stroked-button disabled>
+					{{ isAdmin ? "You are an admin in this event" : "You are in this event" }}
+					<mat-icon>{{ isAdmin ? "star" : "check" }}</mat-icon>
+				</button>
+			</ng-template>
+		</div>
+
+		<mat-accordion class="user-list" *ngIf="usersWithBalance.length > 0; else noUsers">
+			<mat-expansion-panel disabled>
+				<mat-expansion-panel-header>
+					<mat-panel-title class="user-panel-title">
+						<div class="first">Name</div>
+						<div>Costs</div>
+						<div>Expenses</div>
+						<div>Balance</div>
+					</mat-panel-title>
+				</mat-expansion-panel-header>
+			</mat-expansion-panel>
+			<mat-expansion-panel *ngFor="let userWithBalance of usersWithBalance; let i = index" (opened)="getExpenses(userWithBalance.user, i)" hideToggle>
+				<mat-expansion-panel-header>
+					<mat-panel-title>
+						<div class="first">
+							{{ userWithBalance.user.name }}
+						</div>
+						<div>{{ userWithBalance.spending | currency : "" : "" : "1.2-2" : "no" }} kr</div>
+						<div>{{ userWithBalance.expenses | currency : "" : "" : "1.2-2" : "no" }} kr</div>
+						<div class="amount-color">{{ userWithBalance.balance | currency : "" : "" : "1.2-2" : "no" }} kr</div>
+					</mat-panel-title>
+				</mat-expansion-panel-header>
+				<ng-template matExpansionPanelContent>
+					<!-- Deferred initialization until the panel is open. -->
+					<div class="spinner-container" *ngIf="dataSources[i].loading$ | async">
+						<mat-spinner class="spinner"></mat-spinner>
+					</div>
+					<table mat-table class="expense-table" [dataSource]="dataSources[i]">
+						<caption>
+							Expenses:
+						</caption>
+						<!-- Name Column -->
+						<ng-container matColumnDef="name">
+							<th mat-header-cell *matHeaderCellDef>Name</th>
+							<td mat-cell *matCellDef="let expense">
+								{{ expense.name }}
+							</td>
+						</ng-container>
+
+						<!-- Amount Column -->
+						<ng-container matColumnDef="amount">
+							<th mat-header-cell *matHeaderCellDef>Amount</th>
+							<td mat-cell class="amount-color" *matCellDef="let expense">
+								{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr
+							</td></ng-container
+						>
+
+						<!-- Category Column -->
+						<ng-container matColumnDef="category">
+							<th mat-header-cell *matHeaderCellDef>Category</th>
+							<td mat-cell *matCellDef="let expense">
+								{{ expense.categoryInfo.name }}
+							</td></ng-container
+						>
+
+						<!-- Description Column -->
+						<ng-container matColumnDef="description">
+							<th mat-header-cell *matHeaderCellDef>Description</th>
+							<td mat-cell *matCellDef="let expense">
+								{{ expense.description }}
+							</td>
+						</ng-container>
+
+						<!-- Action Columnn -->
+						<ng-container matColumnDef="actions">
+							<th mat-header-cell *matHeaderCellDef></th>
+							<td mat-cell *matCellDef="let expense">
+								<button mat-icon-button type="button" (click)="deleteExpense(expense.id, dataSources[i])">
+									<mat-icon>delete</mat-icon>
+								</button>
+							</td>
+						</ng-container>
+
+						<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+						<tr class="mat-row" *matNoDataRow>
+							<td class="mat-cell no-expenses" [attr.colspan]="displayedColumns.length">No expenses found</td>
+						</tr>
+					</table>
+					<div class="user-actions">
+						<button mat-raised-button color="accent" (click)="createExpenseDialog(userWithBalance.user.id, dataSources[i])">
+							Add expense
+						</button>
+						<button mat-raised-button type="button" color="warn" (click)="deleteUserDialog(userWithBalance.user.id)">
+							Remove User
+						</button>
+					</div>
+				</ng-template>
+			</mat-expansion-panel>
+		</mat-accordion>
+	</div>
+</div>
+
+<ng-template #mobileView>
+	<div class="header-mobile">
+		<span *ngIf="inEvent; else notInEvent" class="in-event">
+			{{ isAdmin ? "You are an admin in this event" : "You are in this event" }}
+			<mat-icon>{{ isAdmin ? "star" : "check" }}</mat-icon>
+		</span>
+		<ng-template #notInEvent>
+			<span class="not-in-event">You are not in this event</span>
 		</ng-template>
 	</div>
-
-	<mat-accordion class="user-list" *ngIf="usersWithBalance.length > 0; else noUsers">
-		<mat-expansion-panel disabled>
-			<mat-expansion-panel-header>
-				<mat-panel-title class="user-panel-title">
-					<div class="first">Name</div>
-					<div>Costs</div>
-					<div>Expenses</div>
-					<div>Balance</div>
-				</mat-panel-title>
-			</mat-expansion-panel-header>
-		</mat-expansion-panel>
-		<mat-expansion-panel *ngFor="let userWithBalance of usersWithBalance; let i = index" (opened)="getExpenses(userWithBalance.user, i)" hideToggle>
-			<mat-expansion-panel-header>
-				<mat-panel-title>
-					<div class="first">
-						{{ userWithBalance.user.name }}
-					</div>
-					<div>{{ userWithBalance.spending | currency : "" : "" : "1.2-2" : "no" }} kr</div>
-					<div>{{ userWithBalance.expenses | currency : "" : "" : "1.2-2" : "no" }} kr</div>
-					<div class="amount-color">{{ userWithBalance.balance | currency : "" : "" : "1.2-2" : "no" }} kr</div>
-				</mat-panel-title>
-			</mat-expansion-panel-header>
-			<ng-template matExpansionPanelContent>
-				<!-- Deferred initialization until the panel is open. -->
-				<div class="spinner-container" *ngIf="dataSources[i].loading$ | async">
-					<mat-spinner class="spinner"></mat-spinner>
-				</div>
-				<table mat-table class="expense-table" [dataSource]="dataSources[i]">
-					<caption>
-						Expenses:
-					</caption>
-					<!-- Name Column -->
-					<ng-container matColumnDef="name">
-						<th mat-header-cell *matHeaderCellDef>Name</th>
-						<td mat-cell *matCellDef="let expense">
-							{{ expense.name }}
-						</td>
-					</ng-container>
-
-					<!-- Amount Column -->
-					<ng-container matColumnDef="amount">
-						<th mat-header-cell *matHeaderCellDef>Amount</th>
-						<td mat-cell class="amount-color" *matCellDef="let expense">
-							{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr
-						</td></ng-container
-					>
-
-					<!-- Category Column -->
-					<ng-container matColumnDef="category">
-						<th mat-header-cell *matHeaderCellDef>Category</th>
-						<td mat-cell *matCellDef="let expense">
-							{{ expense.categoryInfo.name }}
-						</td></ng-container
-					>
-
-					<!-- Description Column -->
-					<ng-container matColumnDef="description">
-						<th mat-header-cell *matHeaderCellDef>Description</th>
-						<td mat-cell *matCellDef="let expense">
-							{{ expense.description }}
-						</td>
-					</ng-container>
-
-					<!-- Action Columnn -->
-					<ng-container matColumnDef="actions">
-						<th mat-header-cell *matHeaderCellDef></th>
-						<td mat-cell *matCellDef="let expense">
-							<button mat-icon-button type="button" (click)="deleteExpense(expense.id, dataSources[i])">
-								<mat-icon>delete</mat-icon>
-							</button>
-						</td>
-					</ng-container>
-
-					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-					<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-					<tr class="mat-row" *matNoDataRow>
-						<td class="mat-cell no-expenses" [attr.colspan]="displayedColumns.length">No expenses found</td>
-					</tr>
-				</table>
-				<div class="user-actions">
-					<button mat-raised-button color="accent" (click)="createExpenseDialog(userWithBalance.user.id, dataSources[i])">
-						Add expense
-					</button>
-					<button mat-raised-button type="button" color="warn" (click)="deleteUserDialog(userWithBalance.user.id)">
-						Remove User
-					</button>
-				</div>
-			</ng-template>
-		</mat-expansion-panel>
-	</mat-accordion>
-</div>
+	<mat-nav-list class="userbalances-list-mobile">
+		<participant-item *ngFor="let userWithBalance of usersWithBalance; let i = index" [userBalance]="userWithBalance"></participant-item>
+	</mat-nav-list>
+	<button mat-fab color="primary" class="add-users-button-mobile" (click)="openDialog()" [ngClass]="{ 'iOS': contextService.isIos }">
+		<mat-icon>person_add</mat-icon>
+	</button>
+</ng-template>
 
 <ng-template #loadingSpinner>
 	<loading-spinner></loading-spinner>

@@ -12,3 +12,44 @@
 .no-expenses {
 	padding-top: 10px;
 }
+
+.header-mobile {
+	display: flex;
+	align-items: center;
+	height: 40px;
+	padding-left: 16px;
+	background-color: rgba(24, 24, 24, 1);
+	border-top: 1px solid #333333;
+	stroke: #333333;
+
+	.in-event {
+		display: flex;
+		align-items: center;
+		color: #b4b4b4;
+
+		mat-icon {
+			font-size: 1em;
+			height: 17px;
+			margin-left: 6px;
+		}
+	}
+
+	.not-in-event {
+		color: #7c7c7c;
+	}
+}
+
+.userbalances-list-mobile {
+	padding: 0;
+}
+
+.add-users-button-mobile {
+	position: fixed;
+	bottom: 80px;
+	right: 20px;
+	z-index: 999;
+
+	&.iOS {
+		bottom: 110px;
+	}
+}
