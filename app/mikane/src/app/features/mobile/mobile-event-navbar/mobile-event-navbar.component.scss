@@ -22,7 +22,17 @@
 	justify-content: center;
 	text-decoration: none;
 	color: rgba(255, 255, 255, 0.6);
-	font-size: 12px;
+	font-size: 11px;
+
+	&.nav-back-button {
+		max-width: 40px;
+	}
+
+	.back-icon {
+		margin-left: 7px;
+		font-size: 30px;
+		height: 30px;
+	}
 }
 
 .active {

@@ -23,4 +23,17 @@ export class MobileEventNavbarComponent {
 	@Input('links') links: Route[];
 
 	constructor (public contextService: ContextService) { }
+
+	mobileLinks: Route[];
+
+	ngOnInit(): void {
+		this.mobileLinks = [
+			{
+				name: '',
+				icon: 'arrow_back_ios',
+				location: './events',
+			},
+			...this.links
+		];
+  }
 }
