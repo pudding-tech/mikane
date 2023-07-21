@@ -385,6 +385,16 @@ describe("events", async () => {
       expect(res.body.adminIds.length).toEqual(1);
       expect(res.body.adminIds[0]).toEqual(user.id);
     });
+
+    // Should not be able to remove user1 as event admin as all events need at least one admin
+    test("fail removal of only event admin as event admin", async () => {
+      const res = await request(app)
+        .delete(`/api/events/${event.id}/admin/${user.id}`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD093.code);
+    });
   });
 
   /* ------------------------------- */
@@ -403,7 +413,7 @@ describe("events", async () => {
     });
 
     // Remove user2 from event
-    test("should remove user from event", async () => {
+    test("should remove user2 from event", async () => {
       const res = await request(app)
         .delete(`/api/events/${event.id}/user/${user2.id}`)
         .set("Cookie", authToken);
@@ -420,6 +430,16 @@ describe("events", async () => {
 
       expect(res.status).toEqual(200);
       expect(res.body.length).toEqual(1);
+    });
+
+    // Should not be able to remove user1 from event as user1 is the sole event admin
+    test("fail removal of only event admin from event", async () => {
+      const res = await request(app)
+        .delete(`/api/events/${event.id}/user/${user.id}`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD098.code);
     });
   });
 

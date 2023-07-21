@@ -15,6 +15,8 @@ returns table (
   user_is_admin boolean
 ) as
 $$
+declare
+  tmp_number_of_admins int;
 begin
 
   if not exists (select 1 from "event" e where e.id = ip_event_id) then
@@ -23,6 +25,11 @@ begin
 
   if not exists (select 1 from "user" u where u.id = ip_user_id) then
     raise exception 'User not found' using errcode = 'P0008';
+  end if;
+
+  select count(*) into tmp_number_of_admins from user_event ue where ue.event_id = ip_event_id and ue."admin" = true;
+  if exists (select 1 from user_event ue where ue.event_id = ip_event_id and ue.user_id = ip_user_id and ue."admin" = true) and (tmp_number_of_admins < 2) then
+    raise exception 'Cannot remove user from event, as the user is the only event admin and all events need at least one event admin' using errcode = 'P0098';
   end if;
 
   delete from user_event ue where ue.event_id = ip_event_id and ue.user_id = ip_user_id;

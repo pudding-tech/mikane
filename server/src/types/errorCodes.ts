@@ -915,3 +915,12 @@ export const PUD097: ErrorCode = {
   message: "Another category in this event already has this name",
   status: 409
 };
+
+/**
+ * PUD-098: Cannot remove user from event, as the user is the only event admin and all events need at least one event admin (400)
+ */
+export const PUD098: ErrorCode = {
+  code: "PUD-098",
+  message: "Cannot remove user from event, as the user is the only event admin and all events need at least one event admin",
+  status: 400
+};

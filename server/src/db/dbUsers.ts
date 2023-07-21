@@ -8,10 +8,11 @@ import * as ec from "../types/errorCodes";
 /**
  * DB interface: Get user information
  * @param userId 
+ * @param avatarSize Pixel size of user avatar
  * @param username
  * @returns User data
  */
-export const getUser = async (userId: string | null, username?: string | null) => {
+export const getUser = async (userId: string | null, avatarSize?: number, username?: string | null) => {
   const query = {
     text: "SELECT * FROM get_user($1, $2)",
     values: [userId, username]
@@ -21,7 +22,7 @@ export const getUser = async (userId: string | null, username?: string | null) =
       if (!data.rows[0]) {
         return null;
       }
-      return parseUser(data.rows[0]);
+      return parseUser(data.rows[0], avatarSize);
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD034, err);

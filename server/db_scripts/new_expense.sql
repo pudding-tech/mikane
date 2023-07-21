@@ -18,7 +18,8 @@ returns table (
   payer_id uuid,
   payer_first_name varchar(255),
   payer_last_name varchar(255),
-  payer_username varchar(255)
+  payer_username varchar(255),
+  payer_email varchar(255)
 ) as
 $$
 declare

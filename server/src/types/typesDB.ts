@@ -7,7 +7,7 @@ export type UserDB = {
   phone_number: string,
   created: Date,
   event_id?: string,
-  event_admin?: boolean,
+  is_event_admin?: boolean,
   event_joined_time?: Date
 };
 
@@ -49,9 +49,10 @@ export type ExpenseDB = {
   category_icon: string;
   created: Date,
   payer_id: string,
-  payer_username: string,
   payer_first_name: string,
-  payer_last_name: string
+  payer_last_name: string,
+  payer_username: string,
+  payer_email: string
 };
 
 export type APIKeyDB = {
