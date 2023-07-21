@@ -22,3 +22,17 @@
 	text-align: end;
 	width: 40px;
 }
+
+.payer {
+	display: flex;
+	align-items: center;
+
+	.payer-avatar {
+		position: relative;
+		width: 20px;
+		height: 20px;
+		margin-right: 10px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+}

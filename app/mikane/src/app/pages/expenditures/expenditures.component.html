@@ -35,7 +35,10 @@
 			<ng-container matColumnDef="payer">
 				<th mat-header-cell *matHeaderCellDef mat-sort-header>Payer</th>
 				<td mat-cell *matCellDef="let expense">
-					{{ expense.payer.name }}
+					<div class="payer">
+						<img [src]="expense.payer.avatarURL" class="payer-avatar" />
+						{{ expense.payer.name }}
+					</div>
 				</td>
 			</ng-container>
 

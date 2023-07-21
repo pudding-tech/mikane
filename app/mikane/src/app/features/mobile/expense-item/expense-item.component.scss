@@ -36,7 +36,16 @@
 	margin-top: 4px;
 }
 
-.payer-icon {
-	font-size: 18px;
-	height: 18px;
+.payer-avatar {
+	position: relative;
+	width: 16px;
+	height: 16px;
+	margin-right: 6px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.payer-name {
+	position: relative;
+	top: 1px;
 }
