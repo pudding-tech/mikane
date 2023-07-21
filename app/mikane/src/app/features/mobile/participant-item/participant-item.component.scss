@@ -1,0 +1,54 @@
+.wrapper {
+	height: fit-content !important;
+	padding: 0;
+	border-bottom: 1px solid rgba(181, 181, 181, 0.1);
+}
+
+.upper {
+	display: flex;
+	align-items: center;
+	padding-top: 12px;
+	padding-bottom: 12px;
+	padding-left: 16px;
+	padding-right: 16px;
+
+	.avatar {
+		position: relative;
+		width: 24px;
+		height: 24px;
+		margin-right: 16px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+	
+	.number-of-expenses {
+		font-size: 0.8em;
+		color: rgba(255, 255, 255, 0.7);
+	}
+	
+	.name {
+		font-size: 1.1em;
+		position: relative;
+		margin-top: -2px;
+	}
+}
+
+.lower {
+	background-color: #282828;
+	padding-top: 10px;
+	padding-bottom: 10px;
+
+	.balances {
+		display: flex;
+		flex-direction: column;
+		color: rgba(255, 255, 255, 0.7);
+		font-size: 0.9em;
+		margin-left: 66px;
+		background-color: #282828;
+	
+		.text {
+			display: inline-block;
+			width: 90px;
+		}
+	}
+}
