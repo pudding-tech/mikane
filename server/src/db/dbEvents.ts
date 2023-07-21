@@ -125,7 +125,7 @@ export const getEventBalances = async (eventId: string) => {
       throw new ErrorExt(ec.PUD061);
     }
 
-    const users: User[] = parseUsers(res[0].rows, true);
+    const users: User[] = parseUsers(res[0].rows, true, 100);
     const categories: Category[] = parseCategories(res[1].rows, Target.CALC);
     const expenses: Expense[] = parseExpenses(res[2].rows);
 
@@ -179,7 +179,7 @@ export const getEventPayments = async (eventId: string) => {
       throw new ErrorExt(ec.PUD061);
     }
 
-    const users: User[] = parseUsers(res[0].rows, false);
+    const users: User[] = parseUsers(res[0].rows, false, 100);
     const categories: Category[] = parseCategories(res[1].rows, Target.CALC);
     const expenses: Expense[] = parseExpenses(res[2].rows);
 
@@ -302,6 +302,8 @@ export const removeUserFromEvent = async (eventId: string, userId: string) => {
         throw new ErrorExt(ec.PUD006, err);
       else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
+      else if (err.code === "P0098")
+        throw new ErrorExt(ec.PUD098, err);
       else
         throw new ErrorExt(ec.PUD040, err);
     });

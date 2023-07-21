@@ -2,6 +2,7 @@ import { setUserUniqueNames } from "../utils/setUserDisplayNames";
 import { Expense, User } from "../types/types";
 import { ExpenseDB } from "../types/typesDB";
 import { CategoryIcon } from "../types/enums";
+import { getGravatarURL } from "../utils/gravatar";
 
 /**
  * Build array of Expense objects
@@ -16,6 +17,9 @@ export const parseExpenses = (expInput: ExpenseDB[]): Expense[] => {
     if (icon && !Object.values(CategoryIcon).includes(icon)) {
       icon = CategoryIcon.SHOPPING;
     }
+
+    // Payer avatar
+    const avatarURL = getGravatarURL(expObj.payer_email, { size: 50, default: "mp" });
 
     const expense: Expense = {
       id: expObj.id,
@@ -34,6 +38,7 @@ export const parseExpenses = (expInput: ExpenseDB[]): Expense[] => {
         name: expObj.payer_first_name,
         firstName: expObj.payer_first_name,
         lastName: expObj.payer_last_name,
+        avatarURL: avatarURL
       },
     };
     expenses.push(expense);

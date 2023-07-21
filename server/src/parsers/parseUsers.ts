@@ -7,12 +7,13 @@ import { UserDB } from "../types/typesDB";
  * Build array of User objects
  * @param usersInput List of UserDB objects
  * @param withEventData Whether to include user-event data (if present)
+ * @param avatarSize Pixel size of user avatar
  * @returns List of User objects
  */
-export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[] => {
+export const parseUsers = (usersInput: UserDB[], withEventData: boolean, avatarSize?: number): User[] => {
   const users: User[] = [];
   usersInput.forEach(userObj => {
-    const avatarURL = getGravatarURL(userObj.email, { size: 200, default: "mp" });
+    const avatarURL = getGravatarURL(userObj.email, { size: avatarSize ?? 200, default: "mp" });
     const user: User = {
       id: userObj.id,
       username: userObj.username,
@@ -24,7 +25,7 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[]
       avatarURL: avatarURL,
       eventInfo: withEventData && userObj.event_id && userObj.event_joined_time ? {
         id: userObj.event_id,
-        isAdmin: userObj.event_admin ?? false,
+        isAdmin: userObj.is_event_admin ?? false,
         joinedTime: userObj.event_joined_time
       } : undefined
     };
@@ -52,10 +53,11 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean): User[]
 /**
  * Parse single User object
  * @param userObj UserDB object
+ * @param avatarSize Pixel size of user avatar
  * @returns User object
  */
-export const parseUser = (userObj: UserDB): User => {
-  const avatarURL = getGravatarURL(userObj.email, { size: 200, default: "mp" });
+export const parseUser = (userObj: UserDB, avatarSize?: number): User => {
+  const avatarURL = getGravatarURL(userObj.email, { size: avatarSize ?? 200, default: "mp" });
   return {
     id: userObj.id,
     username: userObj.username,
