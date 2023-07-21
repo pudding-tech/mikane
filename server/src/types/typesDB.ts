@@ -33,6 +33,7 @@ export type CategoryDB = {
   created: Date,
   user_weights: {
     user_id: string,
+    username: string;
     first_name: string,
     last_name: string,
     weight: number
@@ -62,4 +63,11 @@ export type APIKeyDB = {
   master: boolean,
   valid_from: Date,
   valid_to: Date
+};
+
+export type UserNamesDB = {
+  id: string,
+  username: string,
+  first_name: string,
+  last_name: string
 };

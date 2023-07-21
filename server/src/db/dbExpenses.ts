@@ -14,9 +14,14 @@ export const getExpenses = async (eventId: string) => {
     text: "SELECT * FROM get_expenses($1, null, null);",
     values: [eventId]
   };
-  const expenses: Expense[] = await pool.query(query)
+  const query2 = {
+    text: "SELECT * FROM get_users_name($1)",
+    values: [eventId]
+  };
+
+  const expenses: Expense[] = await Promise.all([query, query2].map(query => pool.query(query)))
     .then(data => {
-      return parseExpenses(data.rows);
+      return parseExpenses(data[0].rows, data[1].rows);
     })
     .catch(err => {
       if (err.code === "P0006")

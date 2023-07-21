@@ -41,6 +41,7 @@ export type Category = {
   users?: {
     id: string;
     name: string;
+    username?: string;
     firstName?: string;
     lastName?: string;
     weight?: number;

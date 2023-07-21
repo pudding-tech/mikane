@@ -1,6 +1,6 @@
-import { setUserUniqueNames } from "../utils/setUserDisplayNames";
-import { Category } from "../types/types";
-import { CategoryDB } from "../types/typesDB";
+import { setDisplayNames } from "../utils/setDisplayNames";
+import { Category, User } from "../types/types";
+import { CategoryDB, UserNamesDB } from "../types/typesDB";
 import { Target, CategoryIcon } from "../types/enums";
 
 /**
@@ -9,7 +9,7 @@ import { Target, CategoryIcon } from "../types/enums";
  * @param target Choose if categories are meant for client presentation or calculations
  * @returns List of Category objects
  */
-export const parseCategories = (catInput: CategoryDB[], target: Target): Category[] => {
+export const parseCategories = (catInput: CategoryDB[], target: Target, usersInEventInput?: UserNamesDB[]): Category[] => {
   const categories: Category[] = [];
   catInput.forEach(catObj => {
 
@@ -42,6 +42,7 @@ export const parseCategories = (catInput: CategoryDB[], target: Target): Categor
               {
                 id: weight.user_id,
                 name: weight.first_name,
+                username: weight.username,
                 firstName: weight.first_name,
                 lastName: weight.last_name,
                 weight: weight.weight
@@ -61,11 +62,27 @@ export const parseCategories = (catInput: CategoryDB[], target: Target): Categor
     categories.push(category);
   });
 
+  let usersInEvent: User[] | undefined;
+  if (usersInEventInput) {
+    usersInEvent = [];
+    usersInEventInput.forEach(userObj => {
+      const user: User = {
+        id: userObj.id,
+        username: userObj.username,
+        name: userObj.first_name,
+        firstName: userObj.first_name,
+        lastName: userObj.last_name
+      };
+      usersInEvent?.push(user);
+    });
+  }
+
   for (const category of categories) {
     if (category.users) {
       // Set unique names of users where they are shared
-      setUserUniqueNames(category.users);
+      setDisplayNames(category.users, usersInEvent);
       for (const user of category.users) {
+        delete user.username;
         delete user.firstName;
         delete user.lastName;
       }
