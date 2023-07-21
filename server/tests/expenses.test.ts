@@ -15,7 +15,7 @@ describe("expenses", async () => {
   let expense: Expense;
 
   /*
-   * Create 2 users, log in as both, create event, then create category
+   * Create 2 users, log in as both, create event, create category, then add user1 category
    */
   beforeAll(async () => {
     const resUser1 = await request(app)
@@ -82,6 +82,10 @@ describe("expenses", async () => {
       });
 
     category = resCategory.body;
+
+    await request(app)
+      .post(`/api/categories/${category.id}/user/${user.id}`)
+      .set("Cookie", authToken);
   });
 
   /* -------------- */
@@ -172,6 +176,64 @@ describe("expenses", async () => {
 
       expect(res.status).toEqual(404);
       expect(res.body.code).toEqual(ec.PUD084.code);
+    });
+  });
+
+  /* ---------------------------------------- */
+  /* GET /events/:id/balances (with expenses) */
+  /* ---------------------------------------- */
+  describe("GET /events/:id/balances", async () => {
+    // Add user2 to event
+    test("should add user2 to event", async () => {
+      const res = await request(app)
+        .post(`/api/events/${event.id}/user/${user2.id}`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+    });
+
+    // Add user2 to category
+    test("should add user2 to category", async () => {
+      const res = await request(app)
+        .post(`/api/categories/${category.id}/user/${user2.id}`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.users.length).toEqual(2);
+    });
+
+    test("should get correct balance information for previous expense", async () => {
+      const res = await request(app)
+        .get(`/api/events/${event.id}/balances`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.length).toEqual(2);
+      expect(res.body[0].expensesCount).toEqual(1);
+      expect(res.body[0].spending).toEqual(-50);
+      expect(res.body[0].expenses).toEqual(100);
+      expect(res.body[0].balance).toEqual(50);
+
+      expect(res.body[1].expensesCount).toEqual(0);
+      expect(res.body[1].spending).toEqual(-50);
+      expect(res.body[1].expenses).toEqual(0);
+      expect(res.body[1].balance).toEqual(-50);
+    });
+  });
+
+  /* ---------------------------------------- */
+  /* GET /events/:id/payments (with expenses) */
+  /* ---------------------------------------- */
+  describe("GET /events/:id/payments", async () => {
+    test("should get payments information with 2 payments", async () => {
+      const res = await request(app)
+        .get(`/api/events/${event.id}/payments`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body[0].sender.id).toEqual(user2.id);
+      expect(res.body[0].receiver.id).toEqual(user.id);
+      expect(res.body[0].amount).toEqual(50);
     });
   });
 

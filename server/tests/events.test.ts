@@ -122,6 +122,14 @@ describe("events", async () => {
         ])
       );
     });
+
+    test("fail get events with no authentication token cookie", async () => {
+      const res = await request(app)
+        .get("/api/events");
+
+      expect(res.status).toEqual(401);
+      expect(res.body.code).toEqual(ec.PUD001.code);
+    });
   });
 
   /* ------------------ */
@@ -150,6 +158,30 @@ describe("events", async () => {
 
       expect(res.status).toEqual(404);
       expect(res.body.code).toEqual(ec.PUD006.code);
+    });
+
+    test("should get event by name also when using API key as auth", async () => {
+      const res = await request(app)
+        .get("/api/event-by-name")
+        .set("Authorization", "886a2ef41eedfa5bb9978268965a645e")
+        .send({
+          name: "Example event"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.name).toEqual("Example event");
+    });
+
+    test("fail get event by name when using wrong API key as auth", async () => {
+      const res = await request(app)
+        .get("/api/event-by-name")
+        .set("Authorization", "886a2ef41eedfa5bb9978268965a6450")
+        .send({
+          name: "Example event"
+        });
+
+      expect(res.status).toEqual(401);
+      expect(res.body.code).toEqual(ec.PUD066.code);
     });
   });
 

@@ -14,6 +14,7 @@ services:
       - DB_USER=mikane_testuser
       - DB_PASSWORD=MikaneTestPassword!123
     volumes:
-      - ../bash_scripts/db_init.sh:/docker-entrypoint-initdb.d/db_init.sh
+      - ../bash_scripts/db_init.sh:/docker-entrypoint-initdb.d/01_db_init.sh
+      - ./master-api-key.sql:/docker-entrypoint-initdb.d/02_master-api-key.sql
       - ../bash_scripts:/bash_scripts
       - ../db_scripts:/db_scripts

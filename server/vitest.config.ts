@@ -3,6 +3,10 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     include: ["tests/**/*.test.ts"],
+    coverage: {
+      provider: "v8",
+      reporter: ["json", "html"]
+    },
     onConsoleLog (log) {
       if (log.includes("Connected to SQL database")) return false;
       if (log.includes("Session store connected")) return false;

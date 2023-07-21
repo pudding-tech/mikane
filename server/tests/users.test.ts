@@ -7,6 +7,7 @@ import { User } from "../src/types/types";
 describe("users", async () => {
 
   let authToken: string;
+  let authToken2: string;
   let user: User;
   let user2: User;
 
@@ -56,6 +57,20 @@ describe("users", async () => {
       expect(res.status).toEqual(200);
       expect(res.body).toBeDefined();
       user2 = res.body;
+    });
+
+    test("should be able to login with new user", async () => {
+      const res = await request(app)
+        .post("/api/login")
+        .send({
+          usernameEmail: "newtestuser",
+          password: "secret"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.username).toEqual(user2.username);
+      expect(res.headers["set-cookie"]).toBeDefined();
+      authToken2 = res.headers["set-cookie"][0];
     });
 
     test("fail create user with taken username", async () => {
@@ -206,7 +221,7 @@ describe("users", async () => {
     test("should delete user", async () => {
       const res = await request(app)
         .delete("/api/users/" + user2.id)
-        .set("Cookie", authToken);
+        .set("Cookie", authToken2);
 
       expect(res.status).toEqual(200);
       expect(res.body.success).toEqual(true);
