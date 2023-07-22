@@ -637,11 +637,11 @@ export const PUD067: ErrorCode = {
 };
 
 /**
- * PUD-068: API key 'name' parameter missing (400)
+ * PUD-068: API key 'name' missing in body (400)
  */
 export const PUD068: ErrorCode = {
   code: "PUD-068",
-  message: "API key 'name' parameter missing",
+  message: "API key 'name' missing in body",
   status: 400
 };
 

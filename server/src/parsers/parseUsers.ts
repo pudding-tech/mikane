@@ -1,4 +1,4 @@
-import { setUserUniqueNames } from "../utils/setUserDisplayNames";
+import { setDisplayNames } from "../utils/setDisplayNames";
 import { getGravatarURL } from "../utils/gravatar";
 import { User } from "../types/types";
 import { UserDB } from "../types/typesDB";
@@ -33,7 +33,7 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean, avatarS
   });
 
   // Set unique names of users where they are shared
-  setUserUniqueNames(users);
+  setDisplayNames(users);
   for (const user of users) {
     delete user.firstName;
     delete user.lastName;

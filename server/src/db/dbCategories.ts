@@ -15,9 +15,14 @@ export const getCategories = async (eventId: string) => {
     text: "SELECT * FROM get_categories($1, null);",
     values: [eventId]
   };
-  const categories: Category[] = await pool.query(query)
+  const query2 = {
+    text: "SELECT * FROM get_users_name($1)",
+    values: [eventId]
+  };
+
+  const categories: Category[] = await Promise.all([query, query2].map(query => pool.query(query)))
     .then(data => {
-      return parseCategories(data.rows, Target.CLIENT);
+      return parseCategories(data[0].rows, Target.CLIENT, data[1].rows);
     })
     .catch(err => {
       if (err.code === "P0006")

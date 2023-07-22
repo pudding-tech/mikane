@@ -45,6 +45,19 @@ describe("authentication", async () => {
       authToken = res.headers["set-cookie"][0];
     });
 
+    test("should log in already logged in user", async () => {
+      const res = await request(app)
+        .post("/api/login")
+        .set("Cookie", authToken)
+        .send({
+          usernameEmail: "testuser",
+          password: "secret"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.username).toEqual(user.username);
+    });
+
     test("fail login with wrong password", async () => {
       const res = await request(app)
         .post("/api/login")
@@ -113,11 +126,23 @@ describe("authentication", async () => {
   /* POST /generatekey */
   /* ----------------- */
   describe("POST /generatekey", async () => {
+    test("should create new API key", async () => {
+      const res = await request(app)
+        .post("/api/generatekey")
+        .set("Authorization", "886a2ef41eedfa5bb9978268965a645e")
+        .send({
+          name: "Common key for testing"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body).toBeDefined();
+    });
+
     test("fail when creating API key without master key", async () => {
       const res = await request(app)
         .post("/api/generatekey")
         .send({
-          name: "Testkey"
+          name: "Common key for testing2"
         });
 
       expect(res.status).toEqual(401);

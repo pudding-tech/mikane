@@ -32,7 +32,7 @@ begin
       (ip_exclude_user_id is not null and u.id != ip_exclude_user_id) or
       (ip_exclude_user_id is null and u.id = u.id)
     order by
-      u.created desc;
+      u.first_name asc;
   end;
 
   else
