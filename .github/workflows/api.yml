@@ -86,7 +86,8 @@ jobs:
           -e DB_USER="${{ env.DB_USER }}" \
           -e DB_PASSWORD="${{ env.DB_PASSWORD }}" \
           -p "${{ env.DB_PORT }}":5432 \
-          -v ${{ github.workspace }}/server/bash_scripts/db_init.sh:/docker-entrypoint-initdb.d/db_init.sh \
+          -v ${{ github.workspace }}/server/bash_scripts/db_init.sh:/docker-entrypoint-initdb.d/01_db_init.sh \
+          -v ${{ github.workspace }}/server/test_db/master_api_key.sql:/docker-entrypoint-initdb.d/02_master_api_key.sql \
           -v ${{ github.workspace }}/server/bash_scripts:/bash_scripts \
           -v ${{ github.workspace }}/server/db_scripts:/db_scripts \
           postgres:15
