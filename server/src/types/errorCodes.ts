@@ -732,12 +732,12 @@ export const PUD077: ErrorCode = {
 };
 
 /**
- * PUD-078: Invalid or expired password reset key (404)
+ * PUD-078: Invalid or expired password reset key (400)
  */
 export const PUD078: ErrorCode = {
   code: "PUD-078",
   message: "Invalid or expired password reset key",
-  status: 404
+  status: 400
 };
 
 /**
@@ -923,4 +923,43 @@ export const PUD098: ErrorCode = {
   code: "PUD-098",
   message: "Cannot remove user from event, as the user is the only event admin and all events need at least one event admin",
   status: 400
+};
+
+/**
+ * PUD-099: new_register_account_key (500)
+ */
+export const PUD099: ErrorCode = {
+  code: "PUD-099",
+  message: "Something went wrong while creating new register account key",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-100: verify_register_account_key (500)
+ */
+export const PUD100: ErrorCode = {
+  code: "PUD-100",
+  message: "Something went wrong while verifying register account key",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-101: Invalid or expired register account key (400)
+ */
+export const PUD101: ErrorCode = {
+  code: "PUD-101",
+  message: "Invalid or expired register account key",
+  status: 400
+};
+
+/**
+ * PUD-102: invalidate_register_account_key (500)
+ */
+export const PUD102: ErrorCode = {
+  code: "PUD-102",
+  message: "Something went wrong while invalidating register account key",
+  status: 500,
+  log: true
 };
