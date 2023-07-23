@@ -100,3 +100,5 @@ jobs:
         
       - name: Upload coverage report
         uses: codecov/codecov-action@v3
+        with:
+          files: server/coverage/coverage-final.json
