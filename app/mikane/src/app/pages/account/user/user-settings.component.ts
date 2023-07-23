@@ -12,7 +12,6 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
-import { Phonenumber } from 'src/app/types/phonenumber.type';
 
 @Component({
 	selector: 'user-settings',
@@ -34,7 +33,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	private subscription: Subscription;
 	private editSubscription: Subscription;
 
-	private phone!: Phonenumber;
+	// private phone!: Phonenumber;
 	// private phoneCtrl$: Subscription | undefined;
 
 	@Input('user') currentUser: User;
@@ -76,7 +75,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 				this.editUserForm.get('firstName').value,
 				this.editUserForm.get('lastName').value,
 				this.editUserForm.get('email').value,
-				this.phone
+				this.editUserForm.get('phone').value
 			)
 			.subscribe({
 				next: (user) => {
