@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
-  apiUrl: 'https://mikane.no/api/'
+	production: true,
+	apiUrl: 'https://api.mikane.no/api/',
 };
