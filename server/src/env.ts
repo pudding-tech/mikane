@@ -9,7 +9,7 @@ else {
 }
 
 interface EnvVariables {
-  NODE_ENV: "dev" | "production" | "test";
+  NODE_ENV: "dev" | "production" | "staging" | "test";
   IN_PROD: boolean;
   PORT: number;
   ALLOWED_ORIGIN: string;
@@ -52,7 +52,7 @@ const validateEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
   }
 
   return {
-    NODE_ENV: (env.NODE_ENV === "dev" || env.NODE_ENV === "production" || env.NODE_ENV === "test") ? env.NODE_ENV : "dev",
+    NODE_ENV: (env.NODE_ENV === "dev" || env.NODE_ENV === "production" || env.NODE_ENV === "staging" || env.NODE_ENV === "test") ? env.NODE_ENV : "dev",
     IN_PROD: env.NODE_ENV === "production",
     PORT: parseInt(env.PORT ?? "") || 3002,
     ALLOWED_ORIGIN: env.ALLOWED_ORIGIN || "http://localhost:4200",

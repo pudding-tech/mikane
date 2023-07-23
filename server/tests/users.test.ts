@@ -1,8 +1,12 @@
-import { describe, test, expect, beforeAll } from "vitest";
+import { describe, test, expect, beforeAll, afterEach, vi } from "vitest";
 import request from "supertest";
+import nodemailerMock from "nodemailer-mock";
 import app from "./setup";
 import * as ec from "../src/types/errorCodes";
 import { User } from "../src/types/types";
+
+// Mock nodemailer
+vi.mock("nodemailer", () => nodemailerMock);
 
 describe("users", async () => {
 
@@ -36,6 +40,10 @@ describe("users", async () => {
       });
 
     authToken = resLogin.headers["set-cookie"][0];
+  });
+
+  afterEach(async () => {
+    nodemailerMock.mock.reset();
   });
 
   /* ----------- */
@@ -290,6 +298,40 @@ describe("users", async () => {
       expect(res.status).toEqual(200);
       expect(res.body.username).toEqual(user.username);
       expect(res.headers["set-cookie"]).toBeDefined();
+      authToken = res.headers["set-cookie"][0];
+    });
+  });
+
+  /* ------------------ */
+  /* POST /users/invite */
+  /* ------------------ */
+  describe("POST /users/invite", async () => {
+    test("should send email to invited user", async () => {
+      const res = await request(app)
+        .post("/api/users/invite")
+        .set("Cookie", authToken)
+        .send({
+          email: "b@mikane.no"
+        });
+
+      const sentEmail = nodemailerMock.mock.getSentMail();
+      expect(res.status).toEqual(200);
+      expect(sentEmail.length).toEqual(1);
+      expect(sentEmail[0].to).toEqual("b@mikane.no");
+      expect(sentEmail[0].subject).toEqual("You've been invited to Mikane");
+    });
+  });
+
+  /* -------------------------- */
+  /* GET /verifyregisteraccount */
+  /* -------------------------- */
+  describe("POST /verifyregisteraccount", async () => {
+    test("fail when verifying register account key", async () => {
+      const res = await request(app)
+        .get("/api/verifyregisteraccount/2933edede2e915146d4b6082a8");
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD101.code);
     });
   });
 });

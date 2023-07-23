@@ -1,8 +1,8 @@
 import express from "express";
+import env from "../env";
 import * as dbUsers from "../db/dbUsers";
 import * as dbAuth from "../db/dbAuthentication";
 import * as ec from "../types/errorCodes";
-import env from "../env";
 import { authenticate, createHash, generateApiKey } from "../utils/auth";
 import { generateKey } from "../utils/generateKey";
 import { User } from "../types/types";
@@ -168,7 +168,7 @@ router.post("/requestpasswordreset", async (req, res, next) => {
     if (!userId) {
       const delay = Math.floor((Math.random() * 1500) + 1500);
       await new Promise(resolve => setTimeout(() => {
-        const response = res.status(200).json();
+        const response = res.status(200).json({ message: "Email successfully sent" });
         resolve(response);
       }, delay));
       return;
@@ -177,7 +177,7 @@ router.post("/requestpasswordreset", async (req, res, next) => {
     const key = generateKey();
     await dbAuth.newPasswordResetKey(userId, key);
     await sendPasswordResetEmail(email, key);
-    res.status(200).json();
+    res.status(200).json({ message: "Email successfully sent" });
   }
   catch (err) {
     next(err);

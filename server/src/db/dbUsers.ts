@@ -210,3 +210,57 @@ export const changePassword = async (userId: string, hash: string) => {
 
   return success;
 };
+
+/**
+ * DB interface: Add new register account key to database
+ * @param email 
+ * @param key 
+ */
+export const newRegisterAccountKey = async (email: string, key: string) => {
+  const query = {
+    text: "SELECT * FROM new_register_account_key($1, $2);",
+    values: [email, key]
+  };
+  await pool.query(query)
+    .catch(err => {
+      if (err.code === "P0103")
+        throw new ErrorExt(ec.PUD103, err);
+      else
+        throw new ErrorExt(ec.PUD099, err);
+    });
+};
+
+/**
+ * DB interface: Verify that a register account key is valid (not used and not expired)
+ * @param key 
+ */
+export const verifyRegisterAccountKey = async (key: string) => {
+  const query = {
+    text: "SELECT * FROM verify_register_account_key($1);",
+    values: [key]
+  };
+  const keyExists = await pool.query(query)
+    .then(data => {
+      return data.rows[0] ? true : false;
+    })
+    .catch(err => {
+      throw new ErrorExt(ec.PUD100, err);
+    });
+
+  return keyExists;
+};
+
+/**
+ * DB interface: Set a register account key as used
+ * @param key 
+ */
+export const invalidateRegisterAccountKey = async (key: string) => {
+  const query = {
+    text: "SELECT * FROM invalidate_register_account_key($1);",
+    values: [key]
+  };
+  await pool.query(query)
+    .catch(err => {
+      throw new ErrorExt(ec.PUD102, err);
+    });
+};
