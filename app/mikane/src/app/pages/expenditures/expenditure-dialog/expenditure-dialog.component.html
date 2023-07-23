@@ -4,6 +4,7 @@
 		<mat-form-field appearance="fill">
 			<mat-label>Expense Name</mat-label>
 			<input matInput formControlName="name" type="text" required />
+			<mat-error *ngIf="addExpenseForm.get('name')?.errors?.['required']"> Name is required </mat-error>
 		</mat-form-field>
 		<mat-form-field appearance="fill">
 			<mat-label>Description</mat-label>
@@ -20,6 +21,7 @@
 				formControlName="category"
 				[matAutocomplete]="categorySelector"
 			/>
+			<mat-error *ngIf="addExpenseForm.get('category')?.errors?.['required']"> Category is required </mat-error>
 			<mat-autocomplete #categorySelector="matAutocomplete">
 				<mat-option *ngFor="let category of categories" [value]="category.name">
 					<mat-icon matPrefix>{{ category.icon ?? "shopping_cart" }}</mat-icon>
@@ -29,7 +31,9 @@
 		</mat-form-field>
 		<mat-form-field appearance="fill">
 			<mat-label>Amount</mat-label>
-			<input matInput type="number" formControlName="amount" required />
+			<input matInput type="number" min="0" formControlName="amount" required />
+			<mat-error *ngIf="addExpenseForm.get('amount')?.errors?.['required']"> Amount is required </mat-error>
+			<mat-error *ngIf="addExpenseForm.get('amount')?.errors?.['min']"> Amount must be positive </mat-error>
 		</mat-form-field>
 		<mat-form-field appearance="fill" *ngIf="(breakpointService.isMobile() | async) === false; else mobileSelect">
 			<mat-label>Payer</mat-label>
@@ -38,6 +42,7 @@
 					{{ user.name }}
 				</mat-option>
 			</mat-select>
+			<mat-error *ngIf="addExpenseForm.get('payer')?.errors?.['required']"> Payer is required </mat-error>
 		</mat-form-field>
 	</form>
 </div>
