@@ -22,7 +22,7 @@ fi
 echo "Successfully inserted tables into $DATABASE_NAME"
 
 # Run all scripts within the db_scripts folder
-echo "Running all procedure scripts"
+echo "Running all function scripts"
 for script_file in db_scripts/*.sql; do
   echo "Running script: $script_file"
   psql -U "$USER" -d "$DATABASE_NAME" -f "$script_file"
