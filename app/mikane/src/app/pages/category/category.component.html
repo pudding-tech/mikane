@@ -74,7 +74,11 @@
 								{{ category.weighted ? user.weight : "" }}
 							</td>
 							<td mat-footer-cell *matFooterCellDef>
-								<mat-form-field *ngIf="category.weighted" subscriptSizing="dynamic" class="category-weight-input add-user">
+								<mat-form-field
+									*ngIf="category.weighted"
+									[subscriptSizing]="(breakpointService.isMobile() | async) === true ? 'dynamic' : 'fixed'"
+									class="category-weight-input add-user"
+								>
 									<input
 										matInput
 										type="number"
