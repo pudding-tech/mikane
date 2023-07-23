@@ -97,3 +97,6 @@ jobs:
 
       - name: Run tests
         run: npm run test
+        
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v3
