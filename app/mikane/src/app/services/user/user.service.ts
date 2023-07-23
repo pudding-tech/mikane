@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Expense } from '../expense/expense.service';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
+import { environment } from 'src/environments/environment';
+import { Expense } from '../expense/expense.service';
 
 export interface User {
 	id: string;
@@ -19,10 +19,31 @@ export interface User {
 		id: string;
 		isAdmin: boolean;
 		joinedTime: Date;
-	}
+	};
 	authenticated: boolean;
 }
 
+/**
+ * {
+ *   "user": {
+ *     "id": "24b96dad-e95a-4794-9dea-25fd2bbd21a1",
+ *     "username": "testuser",
+ *     "name": "Test",
+ *     "email": "test@user.com",
+ *     "created": "2023-01-20T18:00:00",
+ *     "avatarURL": "https://gravatar.com/avatar/aaaa",
+ *     "eventInfo": {
+ *       "id": "24b96dad-e95a-4794-9dea-25fd2bbd21a1",
+ *       "isAdmin": false,
+ *       "joinedDate": "2023-01-20T19:00:00"
+ *     }
+ *   },
+ *   "expensesCount": 2,
+ *   "spending": 100,
+ *   "expenses": 200,
+ *   "balance": 100
+ * }
+ */
 export interface UserBalance {
 	user: User;
 	expensesCount: number;
@@ -95,10 +116,9 @@ export class UserService {
 	}
 
 	changeUserPassword(currentPassword: string, newPassword: string): Observable<User> {
-		return this.httpClient
-			.post<User>(this.apiUrl + '/changepassword', {
-				currentPassword: currentPassword,
-				newPassword: newPassword,
-			});
+		return this.httpClient.post<User>(this.apiUrl + '/changepassword', {
+			currentPassword: currentPassword,
+			newPassword: newPassword,
+		});
 	}
 }

@@ -301,5 +301,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 	ngOnDestroy(): void {
 		this.userSubscription?.unsubscribe();
 		this.addUserSubscription?.unsubscribe();
+		this.dataSources.forEach((dataSource) => dataSource.destroy());
 	}
 }

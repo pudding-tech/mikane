@@ -45,7 +45,7 @@
 					<div class="spinner-container" *ngIf="dataSources[i].loading$ | async">
 						<mat-spinner class="spinner"></mat-spinner>
 					</div>
-					<table mat-table class="expense-table" [dataSource]="dataSources[i]">
+					<table mat-table class="expense-table" *ngIf="dataSources[i].notEmpty | async" [dataSource]="dataSources[i]">
 						<caption>
 							Expenses:
 						</caption>
