@@ -1,35 +1,35 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, forkJoin, map, Observable, of, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
-import { ExpenseService } from 'src/app/services/expense/expense.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { ContextService } from 'src/app/services/context/context.service';
-import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
-import { ApiError } from 'src/app/types/apiError.type';
-import { ExpenditureDialogComponent } from '../expenditures/expenditure-dialog/expenditure-dialog.component';
-import { ExpenseDataSource } from './expense.datasource';
-import { ParticipantItemComponent } from 'src/app/features/mobile/participant-item/participant-item.component';
-import { UserDialogComponent } from './user-dialog/user-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
-import { MatTableModule } from '@angular/material/table';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, forkJoin, map, of, switchMap, takeUntil } from 'rxjs';
+import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
+import { ParticipantItemComponent } from 'src/app/features/mobile/participant-item/participant-item.component';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { Category, CategoryService } from 'src/app/services/category/category.service';
+import { ContextService } from 'src/app/services/context/context.service';
+import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
+import { ExpenseService } from 'src/app/services/expense/expense.service';
+import { MessageService } from 'src/app/services/message/message.service';
+import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
+import { ApiError } from 'src/app/types/apiError.type';
+import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { ExpenditureDialogComponent } from '../expenditures/expenditure-dialog/expenditure-dialog.component';
+import { ExpenseDataSource } from './expense.datasource';
+import { ParticipantDialogComponent } from './user-dialog/participant-dialog.component';
 
 @Component({
-	selector: 'app-users',
-	templateUrl: './user.component.html',
-	styleUrls: ['./user.component.scss'],
+	selector: 'app-participant',
+	templateUrl: './participant.component.html',
+	styleUrls: ['./participant.component.scss'],
 	standalone: true,
 	imports: [
 		CommonModule,
@@ -46,7 +46,7 @@ import { MatButtonModule } from '@angular/material/button';
 		ParticipantItemComponent,
 	],
 })
-export class UserComponent implements OnInit, OnDestroy {
+export class ParticipantComponent implements OnInit, OnDestroy {
 	private eventId!: string;
 	private userSubscription: Subscription;
 	private addUserSubscription: Subscription;
@@ -73,7 +73,7 @@ export class UserComponent implements OnInit, OnDestroy {
 		private categoryService: CategoryService,
 		private authService: AuthService,
 		public breakpointService: BreakpointService,
-		public contextService: ContextService,
+		public contextService: ContextService
 	) {}
 
 	ngOnInit() {
@@ -93,10 +93,9 @@ export class UserComponent implements OnInit, OnDestroy {
 							usersWithBalance.filter((userWithBalance) => {
 								return userWithBalance?.user?.id === currentUser?.id;
 							}).length !== 0;
-							this.isAdmin = 
-								usersWithBalance.find((userWithBalance) => {
-									return userWithBalance?.user?.id === currentUser?.id;
-								})?.user.eventInfo?.isAdmin;
+						this.isAdmin = usersWithBalance.find((userWithBalance) => {
+							return userWithBalance?.user?.id === currentUser?.id;
+						})?.user.eventInfo?.isAdmin;
 						return usersWithBalance;
 					})
 				)
@@ -148,7 +147,7 @@ export class UserComponent implements OnInit, OnDestroy {
 	}
 
 	openDialog() {
-		const dialogRef = this.dialog.open(UserDialogComponent, {
+		const dialogRef = this.dialog.open(ParticipantDialogComponent, {
 			width: '350px',
 			data: {
 				users: this.userService.loadUsers().pipe(
@@ -160,7 +159,7 @@ export class UserComponent implements OnInit, OnDestroy {
 					})
 				),
 			},
-			autoFocus: false
+			autoFocus: false,
 		});
 
 		dialogRef

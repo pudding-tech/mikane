@@ -10,9 +10,9 @@ import { Observable, Subscription } from 'rxjs';
 import { User } from 'src/app/services/user/user.service';
 
 @Component({
-	selector: 'user-dialog',
-	templateUrl: './user-dialog.component.html',
-	styleUrls: ['./user-dialog.component.scss'],
+	selector: 'participant-dialog',
+	templateUrl: './participant-dialog.component.html',
+	styleUrls: ['./participant-dialog.component.scss'],
 	standalone: true,
 	imports: [
 		MatDialogModule,
@@ -25,7 +25,7 @@ import { User } from 'src/app/services/user/user.service';
 		MatButtonModule,
 	],
 })
-export class UserDialogComponent implements OnInit, OnDestroy {
+export class ParticipantDialogComponent implements OnInit, OnDestroy {
 	private subscription: Subscription;
 
 	users: User[];
@@ -35,7 +35,10 @@ export class UserDialogComponent implements OnInit, OnDestroy {
 		users: new FormControl(''),
 	});
 
-	constructor(public dialogRef: MatDialogRef<UserDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { users: Observable<User[]> }) {}
+	constructor(
+		public dialogRef: MatDialogRef<ParticipantDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: { users: Observable<User[]> }
+	) {}
 
 	ngOnInit(): void {
 		this.data.users.subscribe((users) => {

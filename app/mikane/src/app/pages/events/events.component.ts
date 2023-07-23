@@ -86,7 +86,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
 	clickEvent(event: PuddingEvent) {
 		this.selectedEvent = event;
-		this.router.navigate([this.selectedEvent.id, 'users'], {
+		this.router.navigate([this.selectedEvent.id, 'participants'], {
 			relativeTo: this.route,
 			state: { event: this.selectedEvent },
 		});

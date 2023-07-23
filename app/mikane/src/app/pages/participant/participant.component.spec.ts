@@ -7,11 +7,11 @@ import { ActivatedRoute } from '@angular/router';
 import { MockModule } from 'ng-mocks';
 import { MessageService } from 'src/app/services/message/message.service';
 
-import { UserComponent } from './user.component';
+import { ParticipantComponent } from './participant.component';
 
-describe('UserComponent', () => {
-	let component: UserComponent;
-	let fixture: ComponentFixture<UserComponent>;
+describe('ParticipantComponent', () => {
+	let component: ParticipantComponent;
+	let fixture: ComponentFixture<ParticipantComponent>;
 	let activatedRouteStub: ActivatedRoute;
 	let messageServiceStub: MessageService;
 
@@ -22,7 +22,7 @@ describe('UserComponent', () => {
 				MockModule(MatDialogModule),
 				MockModule(MatIconModule),
 				MockModule(MatCardModule),
-				UserComponent,
+				ParticipantComponent,
 			],
 			providers: [
 				{ provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -30,7 +30,7 @@ describe('UserComponent', () => {
 			],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(UserComponent);
+		fixture = TestBed.createComponent(ParticipantComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

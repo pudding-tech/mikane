@@ -8,8 +8,8 @@ export default [
 		component: EventComponent,
 		children: [
 			{
-				path: 'users',
-				loadChildren: () => import('../user/user.routes'),
+				path: 'participants',
+				loadChildren: () => import('../participant/participant.routes'),
 			},
 			{
 				path: 'expenses',

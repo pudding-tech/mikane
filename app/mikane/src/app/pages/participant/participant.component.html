@@ -25,7 +25,11 @@
 					</mat-panel-title>
 				</mat-expansion-panel-header>
 			</mat-expansion-panel>
-			<mat-expansion-panel *ngFor="let userWithBalance of usersWithBalance; let i = index" (opened)="getExpenses(userWithBalance.user, i)" hideToggle>
+			<mat-expansion-panel
+				*ngFor="let userWithBalance of usersWithBalance; let i = index"
+				(opened)="getExpenses(userWithBalance.user, i)"
+				hideToggle
+			>
 				<mat-expansion-panel-header>
 					<mat-panel-title>
 						<div class="first">
@@ -118,9 +122,12 @@
 		</ng-template>
 	</div>
 	<mat-nav-list class="userbalances-list-mobile">
-		<participant-item *ngFor="let userWithBalance of usersWithBalance; let i = index" [userBalance]="userWithBalance"></participant-item>
+		<participant-item
+			*ngFor="let userWithBalance of usersWithBalance; let i = index"
+			[userBalance]="userWithBalance"
+		></participant-item>
 	</mat-nav-list>
-	<button mat-fab color="primary" class="add-users-button-mobile" (click)="openDialog()" [ngClass]="{ 'iOS': contextService.isIos }">
+	<button mat-fab color="primary" class="add-users-button-mobile" (click)="openDialog()" [ngClass]="{ iOS: contextService.isIos }">
 		<mat-icon>person_add</mat-icon>
 	</button>
 </ng-template>
