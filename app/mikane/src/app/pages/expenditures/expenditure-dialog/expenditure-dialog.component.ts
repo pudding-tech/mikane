@@ -50,7 +50,7 @@ export class ExpenditureDialogComponent implements OnInit {
 		description: new FormControl(''),
 		category: new FormControl('', [Validators.required]),
 		selectedIcon: new FormControl(CategoryIcon.SHOPPING),
-		amount: new FormControl('', [Validators.required]),
+		amount: new FormControl('', [Validators.required, Validators.min(0)]),
 		payer: new FormControl(this.data.userId, [Validators.required]),
 	});
 
