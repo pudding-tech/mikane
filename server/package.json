@@ -33,6 +33,7 @@
     "@typescript-eslint/parser": "^5.61.0",
     "@vitest/coverage-v8": "^0.33.0",
     "eslint": "^8.44.0",
+    "nodemailer-mock": "^2.0.1",
     "nodemon": "^2.0.22",
     "rimraf": "^5.0.1",
     "supertest": "^6.3.3",

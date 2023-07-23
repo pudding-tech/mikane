@@ -1,8 +1,12 @@
-import { describe, test, expect, beforeAll } from "vitest";
+import { describe, test, expect, beforeAll, afterEach, vi } from "vitest";
 import request from "supertest";
+import nodemailerMock from "nodemailer-mock";
 import app from "./setup";
 import * as ec from "../src/types/errorCodes";
 import { User } from "../src/types/types";
+
+// Mock nodemailer
+vi.mock("nodemailer", () => nodemailerMock);
 
 describe("authentication", async () => {
 
@@ -19,12 +23,16 @@ describe("authentication", async () => {
         username: "testuser",
         firstName: "Test",
         lastName: "User",
-        email: "test@user.com",
+        email: "a@mikane.no",
         phone: "11111111",
         password: "secret"
       });
 
     user = resUser.body;
+  });
+
+  afterEach(async () => {
+    nodemailerMock.mock.reset();
   });
 
   /* ----------- */
@@ -110,15 +118,48 @@ describe("authentication", async () => {
   /* POST /requestpasswordreset */
   /* -------------------------- */
   describe("POST /requestpasswordreset", async () => {
-    test("fail when requesting password reset", async () => {
+    test("should send email when requesting password reset", async () => {
       const res = await request(app)
         .post("/api/requestpasswordreset")
         .send({
           email: "a@mikane.no"
         });
 
+      const sentEmail = nodemailerMock.mock.getSentMail();
+      expect(res.status).toEqual(200);
+      expect(sentEmail.length).toEqual(1);
+      expect(sentEmail[0].to).toEqual("a@mikane.no");
+      expect(sentEmail[0].subject).toEqual("Reset your password - Mikane");
+    });
+  });
+
+  /* ------------------------ */
+  /* GET /verifypasswordreset */
+  /* ------------------------ */
+  describe("POST /verifypasswordreset", async () => {
+    test("fail when verifying password reset key", async () => {
+      const res = await request(app)
+        .get("/api/verifypasswordreset/2933edede2e915146d4b6082a8");
+
       expect(res.status).toEqual(400);
-      expect(res.body.code).toEqual(ec.PUD073.code);
+      expect(res.body.code).toEqual(ec.PUD078.code);
+    });
+  });
+
+  /* ------------------- */
+  /* POST /resetpassword */
+  /* ------------------- */
+  describe("POST /resetpassword", async () => {
+    test("fail when resetting password", async () => {
+      const res = await request(app)
+        .post("/api/resetpassword")
+        .send({
+          key: "abcdef",
+          password: "password"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD078.code);
     });
   });
 
