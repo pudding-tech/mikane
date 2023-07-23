@@ -28,4 +28,5 @@ services:
       - ./bash_scripts/db_init.sh:/docker-entrypoint-initdb.d/db_init.sh
       - ./bash_scripts:/bash_scripts
       - ./db_scripts:/db_scripts
+    entrypoint: bash_scripts/custom-entrypoint.sh
     restart: unless-stopped
