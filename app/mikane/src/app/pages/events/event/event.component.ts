@@ -45,7 +45,7 @@ export class EventComponent implements OnInit {
 		{
 			name: 'Participants',
 			icon: 'person',
-			location: './users',
+			location: './participants',
 		},
 		{
 			name: 'Expenses',
@@ -71,7 +71,7 @@ export class EventComponent implements OnInit {
 		private messageService: MessageService,
 		private titleService: Title,
 		public breakpointService: BreakpointService,
-		public contextService: ContextService,
+		public contextService: ContextService
 	) {
 		const event = this.router.getCurrentNavigation()?.extras.state?.['event'];
 		if (event) {

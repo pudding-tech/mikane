@@ -23,6 +23,27 @@ export interface User {
 	authenticated: boolean;
 }
 
+/**
+ * {
+ *   "user": {
+ *     "id": "24b96dad-e95a-4794-9dea-25fd2bbd21a1",
+ *     "username": "testuser",
+ *     "name": "Test",
+ *     "email": "test@user.com",
+ *     "created": "2023-01-20T18:00:00",
+ *     "avatarURL": "https://gravatar.com/avatar/aaaa",
+ *     "eventInfo": {
+ *       "id": "24b96dad-e95a-4794-9dea-25fd2bbd21a1",
+ *       "isAdmin": false,
+ *       "joinedDate": "2023-01-20T19:00:00"
+ *     }
+ *   },
+ *   "expensesCount": 2,
+ *   "spending": 100,
+ *   "expenses": 200,
+ *   "balance": 100
+ * }
+ */
 export interface UserBalance {
 	user: User;
 	expensesCount: number;

@@ -17,8 +17,11 @@ export class ExpenseDataSource implements DataSource<Expense> {
 	}
 
 	disconnect(collectionViewer: CollectionViewer): void {
-		this.expenseSubject.complete();
 		this.loadingSubject.complete();
+	}
+
+	destroy() {
+		this.expenseSubject.complete();
 	}
 
 	loadExpenses(userId: string, eventId: string) {
@@ -45,9 +48,11 @@ export class ExpenseDataSource implements DataSource<Expense> {
 			expenses.splice(index, 1);
 			this.expenseSubject.next(expenses);
 		}
+		this.notEmpty.next(this.expenseSubject.value.length > 0);
 	}
 
 	addExpense(expense: Expense) {
 		this.expenseSubject.next([...this.expenseSubject.value, expense]);
+		this.notEmpty.next(this.expenseSubject.value.length > 0);
 	}
 }
