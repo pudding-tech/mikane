@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -7,10 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Subscription, switchMap } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { MessageService } from 'src/app/services/message/message.service';
+import { Subscription } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
@@ -20,7 +19,16 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 	templateUrl: './user-settings.component.html',
 	styleUrls: ['./user-settings.component.scss'],
 	standalone: true,
-	imports: [CommonModule, MatCardModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+	imports: [
+		CommonModule,
+		MatCardModule,
+		MatIconModule,
+		FormsModule,
+		ReactiveFormsModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatButtonModule,
+	],
 })
 export class UserSettingsComponent implements OnInit, OnDestroy {
 	private subscription: Subscription;
@@ -29,7 +37,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	private phone!: Phonenumber;
 	// private phoneCtrl$: Subscription | undefined;
 
-	currentUser: User;
+	@Input('user') currentUser: User;
 	editMode: boolean = false;
 
 	editUserForm = new FormGroup({
@@ -42,30 +50,13 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private userService: UserService,
-		private authService: AuthService,
 		public dialog: MatDialog,
 		private messageService: MessageService,
 		public breakpointService: BreakpointService
 	) {}
 
 	ngOnInit(): void {
-		this.subscription = this.authService
-			.getCurrentUser()
-			.pipe(
-				switchMap((user) => {
-					return this.userService.loadUserById(user?.id);
-				})
-			)
-			.subscribe({
-				next: (user) => {
-					this.currentUser = user;
-					this.editUserForm.patchValue(user);
-				},
-				error: (err: ApiError) => {
-					this.messageService.showError('Failed to get user');
-					console.error('something went wrong getting user on user setting page: ' + err?.error?.message);
-				},
-			});
+		this.editUserForm.patchValue(this.currentUser);
 	}
 
 	ngAfterViewInit(): void {
