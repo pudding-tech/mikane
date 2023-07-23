@@ -7,6 +7,10 @@ returns void as
 $$
 begin
 
+  if exists (select u.id from "user" u where u.email ilike ip_email) then
+    raise exception 'This email is already associated with another user' using errcode = 'P0103';
+  end if;
+
   insert into register_account_key("key", email, used, expires)
     values (ip_key, ip_email, false, CURRENT_TIMESTAMP + INTERVAL '3 days');
 

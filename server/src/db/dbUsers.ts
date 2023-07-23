@@ -223,7 +223,10 @@ export const newRegisterAccountKey = async (email: string, key: string) => {
   };
   await pool.query(query)
     .catch(err => {
-      throw new ErrorExt(ec.PUD099, err);
+      if (err.code === "P0103")
+        throw new ErrorExt(ec.PUD103, err);
+      else
+        throw new ErrorExt(ec.PUD099, err);
     });
 };
 

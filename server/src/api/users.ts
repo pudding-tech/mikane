@@ -197,6 +197,11 @@ router.post("/users/invite", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD072);
     }
 
+    // Validate email
+    if (!isEmail(email)) {
+      throw new ErrorExt(ec.PUD004);
+    }
+
     const user: User | null = await db.getUser(req.session.userId ?? "");
     if (!user) {
       throw new ErrorExt(ec.PUD054);

@@ -5,23 +5,24 @@ import { sendEmail } from "./sendEmail";
 const url = env.ALLOWED_ORIGIN + "/register/";
 
 /**
- * Send an email to the recipient with password reset instructions
+ * Send an email to the recipient with register account instructions
  * @param recipient Email address of recipient
- * @param key Key for password reset
+ * @param key Key for registering account
+ * @param byUser User sending the invitation
  */
 export const sendRegisterAccountEmail = async (recipient: string, key: string, byUser: User) => {
 
   const uriEncodedKey = encodeURIComponent(key);
   const subject = "You've been invited to Mikane";
-  const html = passwordResetEmailHTML(uriEncodedKey, byUser);
+  const html = registerAccountEmailHTML(uriEncodedKey, byUser);
 
   const sentMessageInfo = await sendEmail(recipient, subject, html);
   if (sentMessageInfo.accepted) {
-    console.log(`Register user email sent to ${sentMessageInfo.accepted}: ${sentMessageInfo.response}`);
+    console.log(`Register account email sent to ${sentMessageInfo.accepted}: ${sentMessageInfo.response}`);
   }
 };
 
-const passwordResetEmailHTML = (key: string, byUser: User) => {
+const registerAccountEmailHTML = (key: string, byUser: User) => {
   return `<html>
             <body>
               <h1>You've been invited to join Mikane by ${byUser.name}!</h1>

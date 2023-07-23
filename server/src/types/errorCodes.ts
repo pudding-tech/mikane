@@ -963,3 +963,12 @@ export const PUD102: ErrorCode = {
   status: 500,
   log: true
 };
+
+/**
+ * PUD-103: This email is already associated with another user (400)
+ */
+export const PUD103: ErrorCode = {
+  code: "PUD-103",
+  message: "This email is already associated with another user",
+  status: 400
+};
