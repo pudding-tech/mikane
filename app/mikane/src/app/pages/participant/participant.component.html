@@ -85,7 +85,12 @@
 						<ng-container matColumnDef="actions">
 							<th mat-header-cell *matHeaderCellDef></th>
 							<td mat-cell *matCellDef="let expense">
-								<button mat-icon-button type="button" (click)="deleteExpense(expense.id, dataSources[i])">
+								<button
+									mat-icon-button
+									type="button"
+									*ngIf="isAdmin || expense.payer.id === (authService.getCurrentUser() | async)?.id"
+									(click)="deleteExpense(expense.id, dataSources[i])"
+								>
 									<mat-icon>delete</mat-icon>
 								</button>
 							</td>

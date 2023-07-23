@@ -71,7 +71,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		private messageService: MessageService,
 		private expenseService: ExpenseService,
 		private categoryService: CategoryService,
-		private authService: AuthService,
+		protected authService: AuthService,
 		public breakpointService: BreakpointService,
 		public contextService: ContextService
 	) {}
@@ -243,6 +243,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 	}
 
 	createExpenseDialog(userId: string, dataSource: ExpenseDataSource) {
+		const expandedUserId = userId;
 		const dialogRef = this.dialog.open(ExpenditureDialogComponent, {
 			width: '400px',
 			data: {
@@ -277,7 +278,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: (expense) => {
-					dataSource.addExpense(expense);
+					if (expense.payer.id === expandedUserId) {
+						dataSource.addExpense(expense);
+					}
 					this.messageService.showSuccess('New expense created!');
 				},
 				error: () => {
