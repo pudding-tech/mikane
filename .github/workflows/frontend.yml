@@ -43,3 +43,7 @@ jobs:
         cache-dependency-path: ./app/mikane/package-lock.json
     - run: npm ci
     - run: npm test
+    - name: Upload coverage report
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./app/mikane/coverage/mikane/cobertura-coverage.xml
