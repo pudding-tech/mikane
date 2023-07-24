@@ -133,12 +133,12 @@ describe("events", async () => {
   });
 
   /* ------------------ */
-  /* GET /event-by-name */
+  /* GET /eventbyname */
   /* ------------------ */
-  describe("GET /event-by-name", async () => {
+  describe("GET /eventbyname", async () => {
     test("should get event by name", async () => {
       const res = await request(app)
-        .get("/api/event-by-name")
+        .get("/api/eventbyname")
         .set("Cookie", authToken)
         .send({
           name: "Example event"
@@ -150,7 +150,7 @@ describe("events", async () => {
 
     test("fail get event by non-exisisting name", async () => {
       const res = await request(app)
-        .get("/api/event-by-name")
+        .get("/api/eventbyname")
         .set("Cookie", authToken)
         .send({
           name: "No named event"
@@ -162,7 +162,7 @@ describe("events", async () => {
 
     test("should get event by name also when using API key as auth", async () => {
       const res = await request(app)
-        .get("/api/event-by-name")
+        .get("/api/eventbyname")
         .set("Authorization", "886a2ef41eedfa5bb9978268965a645e")
         .send({
           name: "Example event"
@@ -174,7 +174,7 @@ describe("events", async () => {
 
     test("fail get event by name when using wrong API key as auth", async () => {
       const res = await request(app)
-        .get("/api/event-by-name")
+        .get("/api/eventbyname")
         .set("Authorization", "886a2ef41eedfa5bb9978268965a6450")
         .send({
           name: "Example event"

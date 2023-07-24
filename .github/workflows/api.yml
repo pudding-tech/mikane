@@ -45,20 +45,6 @@ jobs:
       DB_USER: mikane_testuser
       DB_PASSWORD: MikaneTestPassword!123
 
-    # services:
-    #   db:
-    #     image: mcr.microsoft.com/mssql/server:2022-latest
-    #     env:
-    #       MSSQL_SA_PASSWORD: "${{ env.DB_PASSWORD }}"
-    #       ACCEPT_EULA: 'Y'
-    #     ports:
-    #       - "${{ env.DB_PORT }}":1433
-    #     volumes:
-    #       - ${{ github.workspace }}/server/bash_scripts:/bash_scripts
-    #       - ${{ github.workspace }}/server/db_scripts:/db_scripts
-    #     options: >-
-    #       --name mssqldb
-
     defaults:
       run:
         working-directory: ./server/

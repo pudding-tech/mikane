@@ -222,43 +222,6 @@
         }
       }
     },
-    "/verifypasswordreset/{key}": {
-      "get": {
-        "tags": [
-          "Authentication"
-        ],
-        "summary": "Verify a password reset key",
-        "description": "Verify that a password reset key exists and is valid",
-        "operationId": "getVerifyPasswordReset",
-        "parameters": [
-          {
-            "name": "key",
-            "in": "path",
-            "description": "Password reset key",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Key exists"
-          },
-          "404": {
-            "description": "Key not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/resetpassword": {
       "post": {
         "tags": [
@@ -294,16 +257,6 @@
           },
           "400": {
             "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Key not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -662,7 +615,7 @@
           "Users"
         ],
         "summary": "Delete user",
-        "description": "Delete a user",
+        "description": "Delete a user. A delete account key is required, and the key must be for the correct user.",
         "operationId": "deleteUser",
         "security": [
           { "cookieAuth": [] }
@@ -679,6 +632,22 @@
             }
           }
         ],
+        "requestBody": {
+          "description": "Key",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success",
@@ -893,7 +862,7 @@
         },
         "responses": {
           "200": {
-            "description": "Invitation sent sent",
+            "description": "Invitation email sent",
             "content": {
               "application/json": {
                 "schema": {
@@ -921,36 +890,30 @@
         }
       }
     },
-    "/verifyregisteraccount/{key}": {
-      "get": {
+    "/users/requestdeleteaccount": {
+      "post": {
         "tags": [
           "Users"
         ],
-        "summary": "Verify a register account key",
-        "description": "Verify that a register account key exists and is valid",
-        "operationId": "getVerifyRegisterAccount",
-        "parameters": [
-          {
-            "name": "key",
-            "in": "path",
-            "description": "Register account key",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
-          }
+        "summary": "Request account deletion",
+        "description": "Request an account deletion email",
+        "operationId": "postRequestDeleteAccount",
+        "security": [
+          { "cookieAuth": [] }
         ],
         "responses": {
           "200": {
-            "description": "Key exists"
-          },
-          "404": {
-            "description": "Key not found",
+            "description": "Delete confirmation email sent",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email successfully sent"
+                    }
+                  }
                 }
               }
             }
@@ -1799,7 +1762,7 @@
         }
       }
     },
-    "/event-by-name": {
+    "/eventbyname": {
       "get": {
         "tags": [
           "Events"
@@ -2865,6 +2828,117 @@
           },
           "404": {
             "description": "Expense not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verifykey/passwordreset/{key}": {
+      "get": {
+        "tags": [
+          "Validation"
+        ],
+        "summary": "Verify a password reset key",
+        "description": "Verify that a password reset key exists and is valid",
+        "operationId": "getVerifyPasswordReset",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "Password reset key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key exists"
+          },
+          "400": {
+            "description": "Invalid key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verifykey/register/{key}": {
+      "get": {
+        "tags": [
+          "Validation"
+        ],
+        "summary": "Verify a register account key",
+        "description": "Verify that a register account key exists and is valid",
+        "operationId": "getVerifyRegisterAccount",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "Register account key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key exists"
+          },
+          "400": {
+            "description": "Invalid key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verifykey/deleteaccount/{key}": {
+      "get": {
+        "tags": [
+          "Validation"
+        ],
+        "summary": "Verify a delete account key",
+        "description": "Verify that a delete account key exists and is valid",
+        "operationId": "getVerifyDeleteAccount",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "Delete account key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key exists"
+          },
+          "400": {
+            "description": "Invalid key",
             "content": {
               "application/json": {
                 "schema": {

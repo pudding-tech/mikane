@@ -12,6 +12,7 @@ describe("authentication", async () => {
 
   let authToken: string;
   let user: User;
+  let resetPasswordKey: string;
 
   /*
    * Create user
@@ -76,6 +77,32 @@ describe("authentication", async () => {
 
       expect(res.headers["set-cookie"]).toBeUndefined();
       expect(res.status).toEqual(401);
+      expect(res.body.code).toEqual(ec.PUD003.code);
+    });
+
+    test("fail login with no password", async () => {
+      const res = await request(app)
+        .post("/api/login")
+        .send({
+          usernameEmail: "testuser"
+        });
+
+      expect(res.headers["set-cookie"]).toBeUndefined();
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD002.code);
+    });
+
+    test("fail login with wrong usernameEmail", async () => {
+      const res = await request(app)
+        .post("/api/login")
+        .send({
+          usernameEmail: "wrongtestuser",
+          password: "wrongsecret"
+        });
+
+      expect(res.headers["set-cookie"]).toBeUndefined();
+      expect(res.status).toEqual(401);
+      expect(res.body.code).toEqual(ec.PUD003.code);
     });
   });
 
@@ -92,12 +119,12 @@ describe("authentication", async () => {
       expect(res.body.username).toEqual(user.username);
     });
 
-    test("should not be authenticated", async () => {
+    test("should not be logged in", async () => {
       const res = await request(app)
         .get("/api/login");
 
       expect(res.status).toEqual(401);
-      expect(res.body.code).toEqual(ec.PUD001.code);
+      expect(res.body.code).toEqual(ec.PUD000.code);
     });
   });
 
@@ -111,6 +138,15 @@ describe("authentication", async () => {
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(200);
+    });
+
+    test("fail log out when user is not authenticated", async () => {
+      const res = await request(app)
+        .post("/api/logout")
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(401);
+      expect(res.body.code).toEqual(ec.PUD001.code);
     });
   });
 
@@ -126,6 +162,11 @@ describe("authentication", async () => {
         });
 
       const sentEmail = nodemailerMock.mock.getSentMail();
+      const html = sentEmail[0].html as string;
+      const keyStart = html.indexOf("/reset-password/") + "/reset-password/".length;
+      const keyEnd = html.indexOf("\"", keyStart);
+      resetPasswordKey = html.substring(keyStart, keyEnd);
+
       expect(res.status).toEqual(200);
       expect(sentEmail.length).toEqual(1);
       expect(sentEmail[0].to).toEqual("a@mikane.no");
@@ -133,13 +174,20 @@ describe("authentication", async () => {
     });
   });
 
-  /* ------------------------ */
-  /* GET /verifypasswordreset */
-  /* ------------------------ */
-  describe("POST /verifypasswordreset", async () => {
-    test("fail when verifying password reset key", async () => {
+  /* ---------------------------- */
+  /* GET /verifykey/passwordreset */
+  /* ---------------------------- */
+  describe("GET /verifykey/passwordreset", async () => {
+    test("should verify the reset password key", async () => {
       const res = await request(app)
-        .get("/api/verifypasswordreset/2933edede2e915146d4b6082a8");
+        .get("/api/verifykey/passwordreset/" + resetPasswordKey);
+
+      expect(res.status).toEqual(200);
+    });
+
+    test("fail when verifying password reset key with wrong key", async () => {
+      const res = await request(app)
+        .get("/api/verifykey/passwordreset/2933edede2e915146d4b6082a8");
 
       expect(res.status).toEqual(400);
       expect(res.body.code).toEqual(ec.PUD078.code);
@@ -150,7 +198,7 @@ describe("authentication", async () => {
   /* POST /resetpassword */
   /* ------------------- */
   describe("POST /resetpassword", async () => {
-    test("fail when resetting password", async () => {
+    test("fail when resetting password with wrong key", async () => {
       const res = await request(app)
         .post("/api/resetpassword")
         .send({
@@ -160,6 +208,28 @@ describe("authentication", async () => {
 
       expect(res.status).toEqual(400);
       expect(res.body.code).toEqual(ec.PUD078.code);
+    });
+
+    test("fail when resetting password without new password", async () => {
+      const res = await request(app)
+        .post("/api/resetpassword")
+        .send({
+          key: resetPasswordKey
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD079.code);
+    });
+
+    test("should reset password", async () => {
+      const res = await request(app)
+        .post("/api/resetpassword")
+        .send({
+          key: resetPasswordKey,
+          password: "newpassword"
+        });
+
+      expect(res.status).toEqual(200);
     });
   });
 

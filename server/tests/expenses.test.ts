@@ -225,7 +225,7 @@ describe("expenses", async () => {
   /* GET /events/:id/payments (with expenses) */
   /* ---------------------------------------- */
   describe("GET /events/:id/payments", async () => {
-    test("should get payments information with 2 payments", async () => {
+    test("should get correct payments information for previous expense", async () => {
       const res = await request(app)
         .get(`/api/events/${event.id}/payments`)
         .set("Cookie", authToken);
