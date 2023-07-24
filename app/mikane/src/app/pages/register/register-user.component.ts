@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -39,6 +39,8 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 	private phone!: Phonenumber;
 	private phoneCtrl$: Subscription | undefined;
 
+	protected key: string;
+
 	registerUserForm = new FormGroup({
 		username: new FormControl<string>('', [Validators.required]),
 		firstName: new FormControl<string>('', [Validators.required]),
@@ -51,9 +53,19 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 		}),
 	});
 
-	constructor(private userService: UserService, private messageService: MessageService, private router: Router, public breakpointService: BreakpointService) {}
+	constructor(
+		private userService: UserService,
+		private messageService: MessageService,
+		private router: Router,
+		private route: ActivatedRoute,
+		public breakpointService: BreakpointService
+	) {}
 
 	ngOnInit() {
+		this.route.data.subscribe(({ key }) => {
+			this.key = key;
+		});
+
 		if (window.history.state?.username) {
 			this.registerUserForm.get('username')?.setValue(window.history.state?.email);
 		}
@@ -82,12 +94,13 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 					this.registerUserForm.get<string>('lastName')?.value,
 					this.registerUserForm.get<string>('email')?.value,
 					this.phone,
-					this.registerUserForm.get('passwordGroup').get<string>('password')?.value
+					this.registerUserForm.get('passwordGroup').get<string>('password')?.value,
+					this.key
 				)
 				.subscribe({
 					next: (user: User) => {
 						if (user) {
-							this.messageService.showSuccess('Registered successfully');
+							this.messageService.showSuccess('Registered successfully. You can now log in');
 							this.router.navigate(['/login']);
 						} else {
 							this.messageService.showError('Failed to register');

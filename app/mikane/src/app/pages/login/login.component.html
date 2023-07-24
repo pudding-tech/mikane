@@ -1,6 +1,6 @@
 <mat-toolbar *ngIf="(breakpointService.isMobile() | async) === false">
 	<span class="logo-container">
-		<img src="assets/mikane.svg" class="logo">
+		<img src="assets/mikane.svg" class="logo" />
 	</span>
 	<span>MIKANE</span>
 </mat-toolbar>
@@ -30,15 +30,11 @@
 		<div class="mobile-view">
 			<h1 class="mobile-title">
 				<span class="mobile-logo-container">
-					<img src="assets/mikane.svg" class="logo">
+					<img src="assets/mikane.svg" class="logo" />
 				</span>
-				<span class="logo-text">
-					MIKANE
-				</span>
+				<span class="logo-text"> MIKANE </span>
 			</h1>
-			<h2 *ngIf="resetPasswordView" class="reset-password-title">
-				Reset password
-			</h2>
+			<h2 *ngIf="resetPasswordView" class="reset-password-title">Reset password</h2>
 			<div *ngIf="!resetPasswordView; else resetPasswordContent">
 				<ng-container *ngTemplateOutlet="loginContent"></ng-container>
 			</div>
@@ -65,6 +61,7 @@
 					(click)="hide = !hide"
 					[attr.aria-label]="'Hide password'"
 					[attr.aria-pressed]="hide"
+					tabindex="-1"
 				>
 					<mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
 				</button>
@@ -103,7 +100,8 @@
 			</ng-template>
 		</button>
 		<div *ngIf="resetPasswordRequestSent" class="info-text">
-			Your password reset request has been received and is being processed. You will receive an email with password reset instructions shortly.
+			Your password reset request has been received and is being processed. You will receive an email with password reset instructions
+			shortly.
 		</div>
 		<div *ngIf="errorResponse" class="info-text error-text">
 			{{ errorResponse }}
