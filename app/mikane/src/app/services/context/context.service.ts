@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
 	providedIn: 'root',
@@ -34,5 +35,7 @@ export class ContextService {
 		return /iPad|iPhone|iPod/.test(this.userAgent);
 	}
 
-	constructor() {}
+	get environment(): 'dev' | 'prod' {
+		return environment.production ? 'prod' : 'dev';
+	}
 }

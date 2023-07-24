@@ -1,0 +1,40 @@
+.toolbar-spacer {
+	flex: 1 1 auto;
+}
+
+a.nostyle:link,
+a.nostyle:visited {
+	text-decoration: inherit;
+	color: inherit;
+}
+
+.invite-user-section {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	margin-top: 2em;
+}
+
+.invite-content {
+	width: 500px;
+}
+
+mat-form-field {
+	width: 100%;
+}
+
+.card-header,
+.card-content {
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
+.card-content {
+	margin-top: 15px;
+}
+
+.invite-button {
+	width: 100%;
+	height: 42px;
+	margin-bottom: 10px;
+}

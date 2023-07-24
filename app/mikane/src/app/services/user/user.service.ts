@@ -103,7 +103,8 @@ export class UserService {
 		lastName: string,
 		email: string,
 		phone: Phonenumber,
-		password: string
+		password: string,
+		key?: string
 	): Observable<User> {
 		return this.httpClient.post<User>(this.apiUrl, {
 			username,
@@ -112,6 +113,7 @@ export class UserService {
 			email,
 			phone: phone.number,
 			password,
+			key,
 		});
 	}
 
@@ -120,5 +122,15 @@ export class UserService {
 			currentPassword: currentPassword,
 			newPassword: newPassword,
 		});
+	}
+
+	inviteUser(email: string): Observable<void> {
+		return this.httpClient.post<void>(this.apiUrl + '/invite', {
+			email,
+		});
+	}
+
+	verifyRegisterKey(key: string): Observable<void> {
+		return this.httpClient.get<void>(environment.apiUrl + 'verifyregisteraccount/' + key);
 	}
 }

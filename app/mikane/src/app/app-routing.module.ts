@@ -28,6 +28,10 @@ const routes: Routes = [
 		path: 'reset-password',
 		loadChildren: () => import('./pages/reset-password/reset-password.routes'),
 	},
+	{
+		path: 'invite',
+		loadChildren: () => import('./pages/invite/invite.routes'),
+	},
 	{ path: '**', redirectTo: '/events' },
 ];
 

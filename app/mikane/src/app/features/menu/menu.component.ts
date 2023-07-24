@@ -61,4 +61,12 @@ export class MenuComponent {
 			},
 		});
 	};
+
+	inviteUser = () => {
+		if (this.router.url === '/invite') {
+			this.splitButton.toggled = false;
+			return;
+		}
+		this.router.navigate(['/invite']);
+	};
 }
