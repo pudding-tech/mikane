@@ -21,7 +21,7 @@ const router = express.Router();
 router.get("/login", (req, res, next) => {
   try {
     if (!req.session.authenticated) {
-      throw new ErrorExt(ec.PUD001);
+      throw new ErrorExt(ec.PUD000);
     }
     return res.status(200).json({
       authenticated: req.session.authenticated,
@@ -38,7 +38,7 @@ router.get("/login", (req, res, next) => {
 /*
 * Verify that a password reset key is valid
 */
-router.get("/verifypasswordreset/:key", async (req, res, next) => {
+router.get("/verifykey/passwordreset/:key", async (req, res, next) => {
   try {
     const key = req.params.key;
     const valid = await dbAuth.verifyPasswordResetKey(key);

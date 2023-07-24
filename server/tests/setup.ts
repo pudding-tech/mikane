@@ -1,7 +1,7 @@
 import { Application } from "express";
 import app from "../src/server";
 import { afterAll, beforeAll } from "vitest";
-import { resetDatabase } from "../test_db/resetDatabase";
+import { resetDatabase } from "./resetDatabase";
 
 export const waitForDB = async (app: Application) => {
   return new Promise<void>((resolve, reject) => {

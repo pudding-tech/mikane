@@ -6,6 +6,15 @@ export type ErrorCode = {
 }
 
 /**
+ * PUD-000: User is not logged in (401)
+ */
+export const PUD000: ErrorCode = {
+  code: "PUD-000",
+  message: "User is not logged in",
+  status: 401
+};
+
+/**
  * PUD-001: No user authenticated (401)
  */
 export const PUD001: ErrorCode = {
@@ -507,12 +516,13 @@ export const PUD053: ErrorCode = {
 };
 
 /**
- * PUD-054: Error getting user for authentication (500)
+ * PUD-054: Error getting signed in user (500)
  */
 export const PUD054: ErrorCode = {
   code: "PUD-054",
-  message: "Error getting user for authentication",
-  status: 500
+  message: "Error getting signed in user",
+  status: 500,
+  log: true
 };
 
 /**
@@ -521,7 +531,8 @@ export const PUD054: ErrorCode = {
 export const PUD055: ErrorCode = {
   code: "PUD-055",
   message: "Something went wrong retrieving user ID from session",
-  status: 500
+  status: 500,
+  log: true
 };
 
 /**
@@ -970,5 +981,53 @@ export const PUD102: ErrorCode = {
 export const PUD103: ErrorCode = {
   code: "PUD-103",
   message: "This email is already associated with another user",
+  status: 400
+};
+
+/**
+ * PUD-104: new_delete_account_key (500)
+ */
+export const PUD104: ErrorCode = {
+  code: "PUD-104",
+  message: "Something went wrong while creating new delete account key",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-105: verify_delete_account_key (500)
+ */
+export const PUD105: ErrorCode = {
+  code: "PUD-105",
+  message: "Something went wrong while verifying delete account key",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-106: Invalid or expired delete account key (400)
+ */
+export const PUD106: ErrorCode = {
+  code: "PUD-106",
+  message: "Invalid or expired delete account key",
+  status: 400
+};
+
+/**
+ * PUD-107: invalidate_delete_account_key (500)
+ */
+export const PUD107: ErrorCode = {
+  code: "PUD-107",
+  message: "Something went wrong while invalidating delete account key",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-108: This key is not valid for this user (400)
+ */
+export const PUD108: ErrorCode = {
+  code: "PUD-108",
+  message: "This key is not valid for this user",
   status: 400
 };

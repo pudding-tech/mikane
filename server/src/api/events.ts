@@ -50,7 +50,7 @@ router.get("/events/:id", authCheck, async (req, res, next) => {
 /*
 * Get specific event by name
 */
-router.get("/event-by-name", authKeyCheck, async (req, res, next) => {
+router.get("/eventbyname", authKeyCheck, async (req, res, next) => {
   try {
     const eventName = req.body.name;
     const userId = req.session.userId;
