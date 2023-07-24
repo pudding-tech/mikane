@@ -39,7 +39,7 @@ export class AuthService {
 	}
 
 	verifyPasswordReset(key: string): Observable<void> {
-		return this.httpClient.get<void>(this.apiUrl + 'verifypasswordreset/' + key);
+		return this.httpClient.get<void>(this.apiUrl + 'verifykey/passwordreset/' + key);
 	}
 
 	resetPassword(key: string, password: string): Observable<void> {

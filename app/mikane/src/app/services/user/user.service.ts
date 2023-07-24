@@ -131,6 +131,6 @@ export class UserService {
 	}
 
 	verifyRegisterKey(key: string): Observable<void> {
-		return this.httpClient.get<void>(environment.apiUrl + 'verifyregisteraccount/' + key);
+		return this.httpClient.get<void>(environment.apiUrl + 'verifykey/register/' + key);
 	}
 }
