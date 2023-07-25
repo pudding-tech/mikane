@@ -115,6 +115,22 @@ describe("users", async () => {
       expect(res.body.code).toEqual(ec.PUD004.code);
     });
 
+    test("fail create user with invalid phone number", async () => {
+      const res = await request(app)
+        .post("/api/users")
+        .send({
+          username: "yetanothertestuser",
+          firstName: "Test",
+          lastName: "User",
+          email: "phone@test.com",
+          phone: "5555",
+          password: "secret"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD113.code);
+    });
+
     test("fail create user with empty first name", async () => {
       const res = await request(app)
         .post("/api/users")
@@ -418,6 +434,7 @@ describe("users", async () => {
         .get("/api/verifykey/register/" + inviteKey);
 
       expect(res.status).toEqual(200);
+      expect(res.body.email).toEqual("b@mikane.no");
     });
 
     test("fail when verifying register account key with wrong key", async () => {

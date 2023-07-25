@@ -30,7 +30,8 @@ const deleteAccountEmailHTML = (key: string) => {
               <a href="${url + key}" style="display: inline-block; padding: 10px 20px; background-color: #c2185b; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">Yes, delete my account</a>
               <br><br>
               <div>This link will stay active for 1 hour.</div>
-              <div>If you changed your mind or didn't make this request, simply ignore this email.</div>
+              <div>If you changed your mind, you can simply ignore this email.</div>
+              <div>If you didn't request this email, someone has access to your account, and you should immediately change your password and contact PuddingTech.</div>
             </body>
           </html>`;
 };

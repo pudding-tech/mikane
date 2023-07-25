@@ -1031,3 +1031,48 @@ export const PUD108: ErrorCode = {
   message: "This key is not valid for this user",
   status: 400
 };
+
+/**
+ * PUD-109: 'username' not provided in body (400)
+ */
+export const PUD109: ErrorCode = {
+  code: "PUD-109",
+  message: "'username' not provided in body",
+  status: 400
+};
+
+/**
+ * PUD-110: 'email' not provided in body (400)
+ */
+export const PUD110: ErrorCode = {
+  code: "PUD-110",
+  message: "'email' not provided in body",
+  status: 400
+};
+
+/**
+ * PUD-111: 'phone' not provided in body (400)
+ */
+export const PUD111: ErrorCode = {
+  code: "PUD-111",
+  message: "'phone' not provided in body",
+  status: 400
+};
+
+/**
+ * PUD-112: 'name' not provided in body (400)
+ */
+export const PUD112: ErrorCode = {
+  code: "PUD-112",
+  message: "'name' not provided in body",
+  status: 400
+};
+
+/**
+ * PUD-113: Not a valid phone number (400)
+ */
+export const PUD113: ErrorCode = {
+  code: "PUD-113",
+  message: "Not a valid phone number",
+  status: 400
+};

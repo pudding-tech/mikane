@@ -9,6 +9,7 @@ import userRoutes from "./api/users";
 import categoryRoutes from "./api/categories";
 import expenseRoutes from "./api/expenses";
 import authRoutes from "./api/authentication";
+import validationRoutes from "./api/validation";
 import apiDocument from "./api.json";
 import env from "./env";
 import { pool } from "./db";
@@ -127,6 +128,7 @@ app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", expenseRoutes);
 app.use("/api", authRoutes);
+app.use("/api", validationRoutes);
 
 // Error handler
 app.use(errorHandler);

@@ -3,14 +3,14 @@ create or replace function verify_register_account_key(
   ip_key varchar(255)
 )
 returns table (
-  success boolean
+  email varchar(255)
 ) as
 $$
 begin
 
   return query
   select
-    true as success
+    rak.email
   from
     register_account_key rak
   where
