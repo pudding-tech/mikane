@@ -11,6 +11,19 @@ export class AuthService {
 	private apiUrl = environment.apiUrl;
 	private currentUser: User;
 
+	private _redirectUrl: string;
+
+	get redirectUrl(): string {
+		// Consume redirect URL
+		const redirectUrl = `${this._redirectUrl}`;
+		delete this._redirectUrl;
+		return redirectUrl;
+	}
+
+	set redirectUrl(value: string) {
+		this._redirectUrl = value;
+	}
+
 	constructor(private httpClient: HttpClient) {}
 
 	login(username: string, password: string): Observable<User> {
@@ -23,7 +36,11 @@ export class AuthService {
 	}
 
 	logout() {
-		return this.httpClient.post(this.apiUrl + 'logout', {});
+		return this.httpClient.post(this.apiUrl + 'logout', {}).pipe(
+			tap(() => {
+				this.clearCurrentUser();
+			})
+		);
 	}
 
 	sendResetPasswordEmail(email: string): Observable<Object> {
@@ -44,5 +61,9 @@ export class AuthService {
 
 	resetPassword(key: string, password: string): Observable<void> {
 		return this.httpClient.post<void>(this.apiUrl + 'resetpassword', { key, password });
+	}
+
+	clearCurrentUser() {
+		delete this.currentUser;
 	}
 }

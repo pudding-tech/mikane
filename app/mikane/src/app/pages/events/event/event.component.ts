@@ -111,6 +111,9 @@ export class EventComponent implements OnInit {
 						this.event = event;
 						this.titleService.setTitle(event.name);
 						this.$event.next(event);
+					} else {
+						// Event not found, redirect to event list
+						this.router.navigate(['/events']);
 					}
 				},
 				error: () => {
