@@ -14,6 +14,8 @@ describe("users", async () => {
   let authToken2: string;
   let user: User;
   let user2: User;
+  let deleteAccountKey: string;
+  let inviteKey: string;
 
   /*
    * Create user, then log in
@@ -222,14 +224,82 @@ describe("users", async () => {
     });
   });
 
+  /* -------------------------------- */
+  /* POST /users/requestdeleteaccount */
+  /* -------------------------------- */
+  describe("POST /users/requestdeleteaccount", async () => {
+    test("should send delete account confirmation email to signed in user", async () => {
+      const res = await request(app)
+        .post("/api/users/requestdeleteaccount")
+        .set("Cookie", authToken2);
+
+      const sentEmail = nodemailerMock.mock.getSentMail();
+      const html = sentEmail[0].html as string;
+      const keyStart = html.indexOf("/delete-account/") + "/delete-account/".length;
+      const keyEnd = html.indexOf("\"", keyStart);
+      deleteAccountKey = html.substring(keyStart, keyEnd);
+
+      expect(res.status).toEqual(200);
+      expect(sentEmail.length).toEqual(1);
+      expect(sentEmail[0].to).toEqual(user2.email);
+      expect(sentEmail[0].subject).toEqual("Delete your Mikane account");
+    });
+  });
+
+  /* ---------------------------- */
+  /* GET /verifykey/deleteaccount */
+  /* ---------------------------- */
+  describe("POST /verifykey/deleteaccount", async () => {
+    test("should verify the delete account key", async () => {
+      const res = await request(app)
+        .get("/api/verifykey/deleteaccount/" + deleteAccountKey)
+        .set("Cookie", authToken2);
+
+      expect(res.status).toEqual(200);
+    });
+
+    test("fail when verifying delete account key with wrong key", async () => {
+      const res = await request(app)
+        .get("/api/verifykey/deleteaccount/2933edede2e915146d4b6082a8")
+        .set("Cookie", authToken2);
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD106.code);
+    });
+  });
+
   /* ----------------- */
   /* DELETE /users/:id */
   /* ----------------- */
   describe("DELETE /users/:id", async () => {
-    test("should delete user", async () => {
+    test("fail delete user without delete account key", async () => {
       const res = await request(app)
         .delete("/api/users/" + user2.id)
         .set("Cookie", authToken2);
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD106.code);
+    });
+
+    test("fail when deleting wrong user for the key", async () => {
+      const res = await request(app)
+        .delete("/api/users/" + user.id)
+        .set("Cookie", authToken)
+        .send({
+          key: deleteAccountKey
+        });
+
+        expect(res.status).toEqual(400);
+        expect(res.body.code).toEqual(ec.PUD108.code);
+    });
+
+    test("should delete user", async () => {
+      const res = await request(app)
+        .delete("/api/users/" + user2.id)
+        .set("Cookie", authToken2)
+        .send({
+          key: deleteAccountKey
+        });
 
       expect(res.status).toEqual(200);
       expect(res.body.success).toEqual(true);
@@ -306,6 +376,18 @@ describe("users", async () => {
   /* POST /users/invite */
   /* ------------------ */
   describe("POST /users/invite", async () => {
+    test("fail when requesting invite for invalid email address", async () => {
+      const res = await request(app)
+        .post("/api/users/invite")
+        .set("Cookie", authToken)
+        .send({
+          email: "mikane.no"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD004.code);
+    });
+
     test("should send email to invited user", async () => {
       const res = await request(app)
         .post("/api/users/invite")
@@ -315,6 +397,11 @@ describe("users", async () => {
         });
 
       const sentEmail = nodemailerMock.mock.getSentMail();
+      const html = sentEmail[0].html as string;
+      const keyStart = html.indexOf("/register/") + "/register/".length;
+      const keyEnd = html.indexOf("\"", keyStart);
+      inviteKey = html.substring(keyStart, keyEnd);
+
       expect(res.status).toEqual(200);
       expect(sentEmail.length).toEqual(1);
       expect(sentEmail[0].to).toEqual("b@mikane.no");
@@ -322,13 +409,20 @@ describe("users", async () => {
     });
   });
 
-  /* -------------------------- */
-  /* GET /verifyregisteraccount */
-  /* -------------------------- */
-  describe("POST /verifyregisteraccount", async () => {
-    test("fail when verifying register account key", async () => {
+  /* ----------------------- */
+  /* GET /verifykey/register */
+  /* ----------------------- */
+  describe("GET /verifykey/register", async () => {
+    test("should verify the register account key", async () => {
       const res = await request(app)
-        .get("/api/verifyregisteraccount/2933edede2e915146d4b6082a8");
+        .get("/api/verifykey/register/" + inviteKey);
+
+      expect(res.status).toEqual(200);
+    });
+
+    test("fail when verifying register account key with wrong key", async () => {
+      const res = await request(app)
+        .get("/api/verifykey/register/2933edede2e915146d4b6082a8");
 
       expect(res.status).toEqual(400);
       expect(res.body.code).toEqual(ec.PUD101.code);

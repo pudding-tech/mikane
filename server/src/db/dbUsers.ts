@@ -167,13 +167,14 @@ export const editUser = async (userId: string, data: { username?: string, firstN
 
 /**
  * DB interface: Delete a user
- * @param userId 
+ * @param userId
+ * @param key
  * @returns True if successful
  */
-export const deleteUser = async (userId: string) => {
+export const deleteUser = async (userId: string, key: string) => {
   const query = {
-    text: "SELECT * FROM delete_user($1)",
-    values: [userId]
+    text: "SELECT * FROM delete_user($1, $2)",
+    values: [userId, key]
   };
   const success = await pool.query(query)
     .then(() => {
@@ -182,6 +183,8 @@ export const deleteUser = async (userId: string) => {
     .catch(err => {
       if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
+      else if (err.code === "P0108")
+        throw new ErrorExt(ec.PUD108, err);
       else
         throw new ErrorExt(ec.PUD025, err);
     });
@@ -263,4 +266,40 @@ export const invalidateRegisterAccountKey = async (key: string) => {
     .catch(err => {
       throw new ErrorExt(ec.PUD102, err);
     });
+};
+
+/**
+ * DB interface: Add new delete account key to database
+ * @param userId 
+ * @param key 
+ */
+export const newDeleteAccountKey = async (userId: string, key: string) => {
+  const query = {
+    text: "SELECT * FROM new_delete_account_key($1, $2);",
+    values: [userId, key]
+  };
+  await pool.query(query)
+    .catch(err => {
+      throw new ErrorExt(ec.PUD104, err);
+    });
+};
+
+/**
+ * DB interface: Verify that a delete account key is valid (not used and not expired)
+ * @param key 
+ */
+export const verifyDeleteAccountKey = async (key: string) => {
+  const query = {
+    text: "SELECT * FROM verify_delete_account_key($1);",
+    values: [key]
+  };
+  const keyExists = await pool.query(query)
+    .then(data => {
+      return data.rows[0] ? true : false;
+    })
+    .catch(err => {
+      throw new ErrorExt(ec.PUD105, err);
+    });
+
+  return keyExists;
 };

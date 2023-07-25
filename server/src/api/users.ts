@@ -9,6 +9,7 @@ import { generateKey } from "../utils/generateKey";
 import { isUUID } from "../utils/uuidValidator";
 import { isEmail } from "../utils/emailValidator";
 import { sendRegisterAccountEmail } from "../email-services/registerAccount";
+import { sendDeleteAccountEmail } from "../email-services/deleteAccount";
 import { Expense, User } from "../types/types";
 import { ErrorExt } from "../types/errorExt";
 const router = express.Router();
@@ -86,12 +87,29 @@ router.get("/users/:id/expenses/:eventId", authCheck, async (req, res, next) => 
 /*
 * Verify that a register account key is valid
 */
-router.get("/verifyregisteraccount/:key", async (req, res, next) => {
+router.get("/verifykey/register/:key", async (req, res, next) => {
   try {
     const key = req.params.key;
     const valid = await db.verifyRegisterAccountKey(key);
     if (!valid) {
       throw new ErrorExt(ec.PUD101);
+    }
+    res.status(200).json();
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
+/*
+* Verify that a delete account key is valid
+*/
+router.get("/verifykey/deleteaccount/:key", authCheck, async (req, res, next) => {
+  try {
+    const key = req.params.key;
+    const valid = await db.verifyDeleteAccountKey(key);
+    if (!valid) {
+      throw new ErrorExt(ec.PUD106);
     }
     res.status(200).json();
   }
@@ -217,6 +235,30 @@ router.post("/users/invite", authCheck, async (req, res, next) => {
   }
 });
 
+/*
+* Request an account deletion confirmation email
+*/
+router.post("/users/requestdeleteaccount", authCheck, async (req, res, next) => {
+  try {
+    if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_PASSWORD) {
+      throw new ErrorExt(ec.PUD073);
+    }
+
+    const user: User | null = await db.getUser(req.session.userId ?? "");
+    if (!user || !user.email) {
+      throw new ErrorExt(ec.PUD054);
+    }
+
+    const key = generateKey();
+    await db.newDeleteAccountKey(user.id, key);
+    await sendDeleteAccountEmail(user.email, key);
+    res.status(200).json({ message: "Email successfully sent" });
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
 /* --- */
 /* PUT */
 /* --- */
@@ -264,12 +306,18 @@ router.put("/users/:id", authCheck, async (req, res, next) => {
 */
 router.delete("/users/:id", authCheck, async (req, res, next) => {
   try {
+    const key: string = req.body.key;
     const userId = req.params.id;
     if (!isUUID(userId)) {
       throw new ErrorExt(ec.PUD016);
     }
 
-    const success = await db.deleteUser(userId);
+    const valid = await db.verifyDeleteAccountKey(key);
+    if (!valid) {
+      throw new ErrorExt(ec.PUD106);
+    }
+
+    const success = await db.deleteUser(userId, key);
 
     // Delete current session if deleted user is logged in
     if (req.session.authenticated && req.session.userId === userId) {
