@@ -1,18 +1,18 @@
 import { CommonModule, NgIf } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { ApiError } from 'src/app/types/apiError.type';
 import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { MessageService } from 'src/app/services/message/message.service';
+import { ApiError } from 'src/app/types/apiError.type';
 
 @Component({
 	templateUrl: 'login.component.html',
@@ -49,7 +49,12 @@ export class LoginComponent {
 		email: new FormControl<string>('', [Validators.required, Validators.email]),
 	});
 
-	constructor(private authService: AuthService, private router: Router, private messageService: MessageService, public breakpointService: BreakpointService) { }
+	constructor(
+		private authService: AuthService,
+		private router: Router,
+		private messageService: MessageService,
+		public breakpointService: BreakpointService
+	) {}
 
 	login() {
 		if (this.loginForm.valid) {
@@ -61,7 +66,12 @@ export class LoginComponent {
 					next: (result) => {
 						if (result) {
 							this.messageService.showSuccess('Login successful');
-							this.router.navigate(['/events']);
+							const redirectUrl = this.authService.redirectUrl;
+							if (redirectUrl) {
+								this.router.navigateByUrl(redirectUrl);
+							} else {
+								this.router.navigate(['/events']);
+							}
 						} else {
 							this.loading = false;
 							this.messageService.showError('Login failed');
@@ -107,22 +117,20 @@ export class LoginComponent {
 			this.loading = true;
 			this.resetPasswordRequestSent = false;
 			this.errorResponse = '';
-			this.authService
-				.sendResetPasswordEmail(email).subscribe({
-					next: () => {
-						this.loading = false;
-						this.resetPasswordRequestSent = true;
-					},
-					error: (err: ApiError) => {
-						this.loading = false;
-						if (err.status === 400) {
-							this.errorResponse = 'Server not configured for sending email';
-						}
-						else if (err.status >= 500) {
-							this.errorResponse = 'Something went wrong while sending email :(';
-						}
+			this.authService.sendResetPasswordEmail(email).subscribe({
+				next: () => {
+					this.loading = false;
+					this.resetPasswordRequestSent = true;
+				},
+				error: (err: ApiError) => {
+					this.loading = false;
+					if (err.status === 400) {
+						this.errorResponse = 'Server not configured for sending email';
+					} else if (err.status >= 500) {
+						this.errorResponse = 'Something went wrong while sending email :(';
 					}
-				});
+				},
+			});
 		}
 	}
 

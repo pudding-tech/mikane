@@ -1,15 +1,15 @@
-import { enableProdMode, LOCALE_ID, importProvidersFrom } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import localeNo from '@angular/common/locales/no';
-import { environment } from './environments/environment';
-import { AppComponent } from './app/app.component';
+import { LOCALE_ID, enableProdMode, importProvidersFrom } from '@angular/core';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
+import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AppRoutingModule } from './app/app-routing.module';
-import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
 import { AuthInterceptor } from './app/services/auth/auth.interceptor';
-import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
-import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
-import { registerLocaleData } from '@angular/common';
+import { environment } from './environments/environment';
 
 registerLocaleData(localeNo);
 

@@ -9,6 +9,4 @@ import { FooterComponent } from './features/footer/footer.component';
 	standalone: true,
 	imports: [RouterOutlet, FooterComponent],
 })
-export class AppComponent {
-	constructor() {}
-}
+export class AppComponent {}

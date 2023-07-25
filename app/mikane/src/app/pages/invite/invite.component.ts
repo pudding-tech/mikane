@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -40,7 +41,7 @@ export class InviteComponent {
 
 	protected loading = false;
 
-	constructor(private userService: UserService, private messageService: MessageService) {}
+	constructor(private userService: UserService, private messageService: MessageService, protected breakpointService: BreakpointService) {}
 
 	inviteUser(formDirective: FormGroupDirective) {
 		if (this.inviteForm.valid) {

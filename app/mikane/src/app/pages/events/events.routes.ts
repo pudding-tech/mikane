@@ -1,3 +1,5 @@
+import { Route } from '@angular/router';
+import { authGuard } from 'src/app/services/auth/auth.guard';
 import { EventComponent } from './event/event.component';
 import { EventsComponent } from './events.component';
 
@@ -6,6 +8,7 @@ export default [
 	{
 		path: ':eventId',
 		component: EventComponent,
+		canActivateChild: [authGuard],
 		children: [
 			{
 				path: 'participants',
@@ -25,4 +28,4 @@ export default [
 			},
 		],
 	},
-];
+] as Route[];
