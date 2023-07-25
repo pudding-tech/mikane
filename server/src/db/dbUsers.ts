@@ -242,15 +242,15 @@ export const verifyRegisterAccountKey = async (key: string) => {
     text: "SELECT * FROM verify_register_account_key($1);",
     values: [key]
   };
-  const keyExists = await pool.query(query)
+  const email = await pool.query(query)
     .then(data => {
-      return data.rows[0] ? true : false;
+      return data.rows[0]?.email as string || null;
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD100, err);
     });
 
-  return keyExists;
+  return email;
 };
 
 /**

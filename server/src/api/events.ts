@@ -111,10 +111,11 @@ router.get("/events/:id/payments", authKeyCheck, async (req, res, next) => {
 */
 router.post("/events", authCheck, async (req, res, next) => {
   try {
-    if (!req.body.name || (req.body.private === null || req.body.private === undefined)) {
+    const name: string = req.body.name;
+    if (!name || (req.body.private === null || req.body.private === undefined)) {
       throw new ErrorExt(ec.PUD014);
     }
-    if (req.body.name.length < 1) {
+    if (name.trim() === "") {
       throw new ErrorExt(ec.PUD053);
     }
     const userId = req.session.userId;
@@ -122,7 +123,7 @@ router.post("/events", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD055);
     }
 
-    const event: Event = await db.createEvent(req.body.name, userId, req.body.private, req.body.description);
+    const event: Event = await db.createEvent(name.trim(), userId, req.body.private, req.body.description);
     res.status(200).send(event);
   }
   catch (err) {

@@ -60,8 +60,12 @@ router.get("/categories/:id", authCheck, async (req, res, next) => {
 */
 router.post("/categories", authCheck, async (req, res, next) => {
   try {
-    if (!req.body.name || !req.body.eventId || req.body.weighted === undefined) {
+    const name: string = req.body.name;
+    if (!name || !req.body.eventId || req.body.weighted === undefined) {
       throw new ErrorExt(ec.PUD046);
+    }
+    if (name.trim() === "") {
+      throw new ErrorExt(ec.PUD059);
     }
     const eventId = req.body.eventId as string;
     if (!isUUID(eventId)) {
@@ -73,7 +77,7 @@ router.post("/categories", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD096);
     }
     
-    const category: Category = await db.createCategory(req.body.name, eventId, Boolean(req.body.weighted), icon);
+    const category: Category = await db.createCategory(name.trim(), eventId, Boolean(req.body.weighted), icon);
     res.status(200).json(category);
   }
   catch (err) {
@@ -123,6 +127,9 @@ router.put("/categories/:id", authCheck, async (req, res, next) => {
     }
     if (!req.body.name) {
       throw new ErrorExt(ec.PUD050);
+    }
+    if (req.body.name.trim() === "") {
+      throw new ErrorExt(ec.PUD059);
     }
 
     const category = await db.renameCategory(catId, req.body.name);

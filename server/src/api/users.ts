@@ -8,6 +8,7 @@ import { authenticate, createHash } from "../utils/auth";
 import { generateKey } from "../utils/generateKey";
 import { isUUID } from "../utils/uuidValidator";
 import { isEmail } from "../utils/emailValidator";
+import { isPhoneNumber } from "../utils/phoneValidator";
 import { sendRegisterAccountEmail } from "../email-services/registerAccount";
 import { sendDeleteAccountEmail } from "../email-services/deleteAccount";
 import { Expense, User } from "../types/types";
@@ -90,11 +91,11 @@ router.get("/users/:id/expenses/:eventId", authCheck, async (req, res, next) => 
 router.get("/verifykey/register/:key", async (req, res, next) => {
   try {
     const key = req.params.key;
-    const valid = await db.verifyRegisterAccountKey(key);
-    if (!valid) {
+    const email = await db.verifyRegisterAccountKey(key);
+    if (!email) {
       throw new ErrorExt(ec.PUD101);
     }
-    res.status(200).json();
+    res.status(200).json({ email: email });
   }
   catch (err) {
     next(err);
@@ -134,21 +135,30 @@ router.post("/users", async (req, res, next) => {
         throw new ErrorExt(ec.PUD101);
       }
     }
+    const username: string = req.body.username;
+    const firstName: string = req.body.firstName;
+    const lastName: string = req.body.lastName;
+    const email: string = req.body.email;
+    const phoneNumber: string = req.body.phone;
+    const password: string = req.body.password;
 
-    if (!req.body.username || !req.body.firstName || !req.body.email || !req.body.phone || !req.body.password) {
+    if (!username || !firstName || !email || !phoneNumber || !password) {
       throw new ErrorExt(ec.PUD052);
     }
-    if (req.body.username.trim() === "" || req.body.firstName.trim() === "" || req.body.email.trim() === "" || req.body.phone.trim() === "" || req.body.password.trim() === "") {
+    if (username.trim() === "" || firstName.trim() === "" || email.trim() === "" || phoneNumber.trim() === "" || password.trim() === "") {
       throw new ErrorExt(ec.PUD059);
     }
 
-    // Validate email
-    if (!isEmail(req.body.email)) {
+    // Validate email and phone number
+    if (!isEmail(email)) {
       throw new ErrorExt(ec.PUD004);
     }
+    if (!isPhoneNumber(phoneNumber)) {
+      throw new ErrorExt(ec.PUD113);
+    }
 
-    const hash = createHash(req.body.password);
-    const user: User = await db.createUser(req.body.username, req.body.firstName, req.body.lastName, req.body.email, req.body.phone, hash);
+    const hash = createHash(password);
+    const user: User = await db.createUser(username.trim(), firstName.trim(), lastName.trim(), email.trim(), phoneNumber.trim(), hash);
     if (env.IN_PROD) {
       await db.invalidateRegisterAccountKey(req.body.key as string);
     }
@@ -272,18 +282,34 @@ router.put("/users/:id", authCheck, async (req, res, next) => {
     if (!isUUID(userId)) {
       throw new ErrorExt(ec.PUD016);
     }
-    if (!req.body.username && !req.body.firstName && !req.body.lastName && !req.body.email && !req.body.phone) {
+
+    const username: string | undefined = req.body.username;
+    const firstName: string | undefined = req.body.firstName;
+    const lastName: string | undefined = req.body.lastName;
+    const email: string | undefined = req.body.email;
+    const phoneNumber: string | undefined = req.body.phone;
+
+    if (!username && !firstName && !lastName && !email && !phoneNumber) {
       throw new ErrorExt(ec.PUD058);
     }
-    if (req.body.username?.trim() === "" || req.body.firstName?.trim() === "" || req.body.email?.trim() === "" || req.body.phone?.trim() === "") {
+    if (username?.trim() === "" || firstName?.trim() === "" || email?.trim() === "" || phoneNumber?.trim() === "") {
       throw new ErrorExt(ec.PUD059);
     }
+
+    // Validate email and phone number
+    if (email && !isEmail(email)) {
+      throw new ErrorExt(ec.PUD004);
+    }
+    if (phoneNumber && !isPhoneNumber(phoneNumber)) {
+      throw new ErrorExt(ec.PUD113);
+    }
+    
     const data = {
-      username: req.body.username as string | undefined,
-      firstName: req.body.firstName as string | undefined,
-      lastName: req.body.lastName as string | undefined,
-      email: req.body.email as string | undefined,
-      phone: req.body.phone as string | undefined
+      username: username,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phoneNumber
     };
 
     const user = await db.editUser(userId, data);
