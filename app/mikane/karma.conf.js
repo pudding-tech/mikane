@@ -33,7 +33,7 @@ module.exports = function (config) {
 
 		// test results reporter to use
 		// possible values: 'dots', 'progress', 'junit', 'growl', 'coverage', 'spec'
-		reporters: ["junit"],
+		reporters: ["junit", "dots"],
 		junitReporter: {
 			outputDir: "./junit/",
 			outputFile: "test-results.xml",
@@ -47,5 +47,6 @@ module.exports = function (config) {
 		browsers: ["ChromeHeadless"],
 		singleRun: false,
 		restartOnFileChange: true,
+		browserNoActivityTimeout: 400000,
 	});
 };

@@ -36,15 +36,15 @@ export class AuthService {
 	}
 
 	logout() {
-		return this.httpClient.post(this.apiUrl + 'logout', {}).pipe(
+		return this.httpClient.post<void>(this.apiUrl + 'logout', {}).pipe(
 			tap(() => {
 				this.clearCurrentUser();
 			})
 		);
 	}
 
-	sendResetPasswordEmail(email: string): Observable<Object> {
-		return this.httpClient.post(this.apiUrl + 'requestpasswordreset', { email });
+	sendResetPasswordEmail(email: string): Observable<void> {
+		return this.httpClient.post<void>(this.apiUrl + 'requestpasswordreset', { email });
 	}
 
 	getCurrentUser(): Observable<User> {
