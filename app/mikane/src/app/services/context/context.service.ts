@@ -36,6 +36,7 @@ export class ContextService {
 	}
 
 	get environment(): 'dev' | 'prod' {
+		return 'prod';
 		return environment.production ? 'prod' : 'dev';
 	}
 }

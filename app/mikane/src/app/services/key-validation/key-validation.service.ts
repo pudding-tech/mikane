@@ -10,8 +10,8 @@ export class KeyValidationService {
 	private apiUrl = environment.apiUrl + 'verifykey';
 	constructor(private httpClient: HttpClient) {}
 
-	verifyRegisterKey(key: string): Observable<void> {
-		return this.httpClient.get<void>(this.apiUrl + '/register/' + key);
+	verifyRegisterKey(key: string): Observable<{ email: string }> {
+		return this.httpClient.get<{ email: string }>(this.apiUrl + '/register/' + key);
 	}
 
 	verifyDeleteAccountKey(key: string): Observable<void> {

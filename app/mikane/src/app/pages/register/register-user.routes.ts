@@ -7,7 +7,7 @@ import { MessageService } from 'src/app/services/message/message.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { RegisterUserComponent } from './register-user.component';
 
-const registerResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
+const registerResolver: ResolveFn<{ key: string; email: string }> = (route: ActivatedRouteSnapshot) => {
 	const router = inject(Router);
 	const keyValidationService = inject(KeyValidationService);
 	const environment = inject(ContextService).environment;
@@ -15,14 +15,14 @@ const registerResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 	const key = route.paramMap.get('key');
 
 	if (environment === 'dev') {
-		return of('');
+		return of({ key: '', email: '' });
 	} else if (!key) {
 		router.navigate(['/login']);
 		return EMPTY;
 	} else {
 		return keyValidationService.verifyRegisterKey(key).pipe(
-			switchMap(() => {
-				return of(key);
+			switchMap((email: { email: string }) => {
+				return of({ key, email: email?.email });
 			}),
 			catchError((err: ApiError) => {
 				if (err.error.code === 'PUD-101') {
@@ -41,6 +41,6 @@ const registerResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 };
 
 export default [
-	{ path: '', component: RegisterUserComponent, resolve: { key: registerResolver } },
-	{ path: ':key', component: RegisterUserComponent, resolve: { key: registerResolver } },
+	{ path: '', component: RegisterUserComponent, resolve: { res: registerResolver } },
+	{ path: ':key', component: RegisterUserComponent, resolve: { res: registerResolver } },
 ] as Route[];

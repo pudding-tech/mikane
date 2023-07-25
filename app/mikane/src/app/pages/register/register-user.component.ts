@@ -63,8 +63,9 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 	) {}
 
 	ngOnInit() {
-		this.route.data.subscribe(({ key }) => {
-			this.key = key;
+		this.route.data.subscribe(({ res }) => {
+			this.key = res.key;
+			this.registerUserForm.get('email').patchValue(res.email);
 		});
 
 		if (window.history.state?.username) {
