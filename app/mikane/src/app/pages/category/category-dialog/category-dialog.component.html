@@ -28,7 +28,12 @@
 	</button>
 </div>
 
-<ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="isOpen">
+<ng-template
+	cdkConnectedOverlay
+	(overlayOutsideClick)="isOpen = false"
+	[cdkConnectedOverlayOrigin]="trigger"
+	[cdkConnectedOverlayOpen]="isOpen"
+>
 	<mat-grid-list class="icon-grid" cols="5">
 		<mat-grid-tile [colspan]="1" *ngFor="let icon of categoryIcons | keyvalue">
 			<button mat-icon-button (click)="iconChange(icon.value)">
