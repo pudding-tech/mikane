@@ -40,6 +40,11 @@ const routes: Routes = [
 		canActivate: [authGuard],
 		loadChildren: () => import('./pages/invite/invite.routes'),
 	},
+	{
+		path: 'delete-account',
+		canActivate: [authGuard],
+		loadChildren: () => import('./pages/delete-account/delete-account.routes'),
+	},
 	{ path: '**', redirectTo: '/events' },
 ];
 

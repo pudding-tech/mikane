@@ -120,7 +120,7 @@
 			</div>
 		</div>
 		<br />
-		<button type="submit" mat-raised-button color="primary" class="register-button">
+		<button type="submit" mat-raised-button color="primary" [class.spinner]="loading" [disabled]="loading" class="register-button">
 			Register <mat-icon aria-hidden="false">person_add</mat-icon>
 		</button>
 	</form>

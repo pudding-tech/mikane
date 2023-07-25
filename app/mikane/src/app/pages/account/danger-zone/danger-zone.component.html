@@ -1,8 +1,7 @@
-
 <mat-card *ngIf="(breakpointService.isMobile() | async) === false; else mobileView">
 	<mat-card-header>
 		<div mat-card-avatar>
-			<mat-icon aria-hidden="false">key</mat-icon>
+			<mat-icon aria-hidden="false">warning</mat-icon>
 		</div>
 		<mat-card-title>Danger zone</mat-card-title>
 	</mat-card-header>
@@ -19,18 +18,20 @@
 </ng-template>
 
 <ng-template #dangerZoneContent>
-  <div>
-    <h2>Delete your account</h2>
-  </div>
-  <div class="delete-account-text">
-    When the deletion process is initiated by clicking the button below you will get a confirmation email with the deletion link. Think hard before you press this link!
-    <br><br>
-    If you decide to proceed, you should know: once an account has been deleted you cannot go back. There is no undo button. The data is gone permanently and no one can get it back for you.
-  </div>
-  <mat-card-actions>
-    <button type="button" mat-stroked-button color="warn" (click)="deleteUser()">
-      <mat-icon>email</mat-icon>
-      Send delete account email
-    </button>
-  </mat-card-actions>
+	<div>
+		<h2>Delete your account</h2>
+	</div>
+	<div class="delete-account-text">
+		When the deletion process is initiated by clicking the button below you will get a confirmation email with the deletion link. Think
+		hard before you press this link!
+		<br /><br />
+		If you decide to proceed, you should know: once an account has been deleted you cannot go back. There is no undo button. The data is
+		gone permanently and no one can get it back for you.
+	</div>
+	<mat-card-actions>
+		<button type="button" mat-stroked-button color="warn" (click)="deleteUser()">
+			<mat-icon>email</mat-icon>
+			Send delete account email
+		</button>
+	</mat-card-actions>
 </ng-template>
