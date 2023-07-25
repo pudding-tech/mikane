@@ -10,8 +10,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { MessageService } from 'src/app/services/message/message.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { KeyValidationService } from 'src/app/services/key-validation/key-validation.service';
+import { MessageService } from 'src/app/services/message/message.service';
 import { createCompareValidator } from 'src/app/shared/forms/validators/compare.validator';
 import { ApiError } from 'src/app/types/apiError.type';
 
@@ -48,6 +49,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 		private router: Router,
 		private route: ActivatedRoute,
 		private authService: AuthService,
+		private keyValidationService: KeyValidationService,
 		private messageService: MessageService,
 		public breakpointService: BreakpointService
 	) {}
@@ -58,7 +60,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 		]);
 
 		const key = this.route.snapshot.paramMap.get('key');
-		this.authSub = this.authService.verifyPasswordReset(key).subscribe({
+		this.authSub = this.keyValidationService.verifyPasswordReset(key).subscribe({
 			next: () => {
 				this.resetKey = key;
 			},

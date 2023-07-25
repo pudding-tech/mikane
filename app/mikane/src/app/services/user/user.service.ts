@@ -93,8 +93,8 @@ export class UserService {
 		});
 	}
 
-	deleteUser(userId: string): Observable<User[]> {
-		return this.httpClient.delete<User[]>(this.apiUrl + `/${userId}`);
+	deleteUser(userId: string, key: string): Observable<User[]> {
+		return this.httpClient.delete<User[]>(this.apiUrl + `/${userId}`, { body: { key } });
 	}
 
 	registerUser(
@@ -130,7 +130,7 @@ export class UserService {
 		});
 	}
 
-	verifyRegisterKey(key: string): Observable<void> {
-		return this.httpClient.get<void>(environment.apiUrl + 'verifykey/register/' + key);
+	requestDeleteAccount(): Observable<void> {
+		return this.httpClient.post<void>(this.apiUrl + '/requestdeleteaccount', {});
 	}
 }

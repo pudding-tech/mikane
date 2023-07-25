@@ -60,7 +60,7 @@ export class DangerZoneComponent implements OnDestroy {
 			.pipe(
 				switchMap((confirm) => {
 					if (confirm) {
-						return this.userService.deleteUser(this.currentUser.id);
+						return this.userService.requestDeleteAccount();
 					} else {
 						return NEVER;
 					}
@@ -68,12 +68,12 @@ export class DangerZoneComponent implements OnDestroy {
 			)
 			.subscribe({
 				next: () => {
-					this.messageService.showSuccess('User deleted successfully');
+					this.messageService.showSuccess('Email sent!');
 					this.router.navigate(['/login']);
 				},
 				error: (err: ApiError) => {
-					this.messageService.showError('Failed to delete user');
-					console.error('something went wrong while deleting user', err?.error?.message);
+					this.messageService.showError('Failed to send email!');
+					console.error('something went wrong while sending account deletion email', err?.error?.message);
 				},
 			});
 	}

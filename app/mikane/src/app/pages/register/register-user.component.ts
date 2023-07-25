@@ -40,6 +40,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 	private phoneCtrl$: Subscription | undefined;
 
 	protected key: string;
+	protected loading = false;
 
 	registerUserForm = new FormGroup({
 		username: new FormControl<string>('', [Validators.required]),
@@ -87,6 +88,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	register() {
 		if (this.registerUserForm.valid) {
+			this.loading = true;
 			this.userSub = this.userService
 				.registerUser(
 					this.registerUserForm.get<string>('username')?.value,
@@ -99,6 +101,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 				)
 				.subscribe({
 					next: (user: User) => {
+						this.loading = false;
 						if (user) {
 							this.messageService.showSuccess('Registered successfully. You can now log in');
 							this.router.navigate(['/login']);
@@ -108,6 +111,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 						}
 					},
 					error: (err: ApiError) => {
+						this.loading = false;
 						switch (err.error.code) {
 							case 'PUD-004':
 								this.messageService.showError('Failed to register - Email invalid');
