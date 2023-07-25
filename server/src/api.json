@@ -2921,6 +2921,9 @@
         "summary": "Verify a delete account key",
         "description": "Verify that a delete account key exists and is valid",
         "operationId": "getVerifyDeleteAccount",
+        "security": [
+          { "cookieAuth": [] }
+        ],
         "parameters": [
           {
             "name": "key",
