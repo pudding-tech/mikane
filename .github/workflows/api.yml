@@ -87,4 +87,5 @@ jobs:
       - name: Upload coverage report
         uses: codecov/codecov-action@v3
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: server/coverage/coverage-final.json
