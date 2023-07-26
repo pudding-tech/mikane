@@ -7,6 +7,8 @@ import { MockComponent, MockModule } from 'ng-mocks';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
 
+import { Environment } from 'src/environments/environment.interface';
+import { ENV } from 'src/environments/environment.provider';
 import { ExpendituresComponent } from './expenditures.component';
 
 describe('ExpendituresComponent', () => {
@@ -27,6 +29,7 @@ describe('ExpendituresComponent', () => {
 			providers: [
 				{ provide: ActivatedRoute, useValue: activatedRouteStub },
 				{ provide: MessageService, useValue: messageServiceStub },
+				{ provide: ENV, useValue: {} as Environment },
 			],
 		}).compileComponents();
 

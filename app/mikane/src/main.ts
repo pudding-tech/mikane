@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app/app-routing.module';
 import { AppComponent } from './app/app.component';
 import { AuthInterceptor } from './app/services/auth/auth.interceptor';
 import { environment } from './environments/environment';
+import { ENV, getEnv } from './environments/environment.provider';
 
 registerLocaleData(localeNo);
 
@@ -44,6 +45,10 @@ bootstrapApplication(AppComponent, {
 			provide: HTTP_INTERCEPTORS,
 			useClass: AuthInterceptor,
 			multi: true,
+		},
+		{
+			provide: ENV,
+			useFactory: getEnv,
 		},
 		provideAnimations(),
 		provideHttpClient(withInterceptorsFromDi()),

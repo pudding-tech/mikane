@@ -1,5 +1,7 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { Environment } from 'src/environments/environment.interface';
+import { ENV } from 'src/environments/environment.provider';
 import { KeyValidationService } from './key-validation.service';
 
 describe('KeyValidationService', () => {
@@ -7,7 +9,11 @@ describe('KeyValidationService', () => {
 	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({ providers: [KeyValidationService], imports: [HttpClientTestingModule] });
+		const env = { apiUrl: 'http://localhost:3002/api/' } as Environment;
+		TestBed.configureTestingModule({
+			providers: [KeyValidationService, { provide: ENV, useValue: env }],
+			imports: [HttpClientTestingModule],
+		});
 		service = TestBed.inject(KeyValidationService);
 
 		// Inject the http service and test controller for each test

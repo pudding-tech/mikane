@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { Environment } from 'src/environments/environment.interface';
+import { ENV } from 'src/environments/environment.provider';
 import { User, UserBalance } from '../user/user.service';
 
 export interface PuddingEvent {
@@ -28,9 +29,9 @@ export interface Payment {
 	providedIn: 'root',
 })
 export class EventService {
-	private apiUrl = environment.apiUrl + 'events';
+	private apiUrl = this.env.apiUrl + 'events';
 
-	constructor(private httpClient: HttpClient) {}
+	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
 
 	loadEvents(): Observable<PuddingEvent[]> {
 		return this.httpClient.get<PuddingEvent[]>(this.apiUrl);

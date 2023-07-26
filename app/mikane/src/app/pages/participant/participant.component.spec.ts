@@ -7,6 +7,8 @@ import { ActivatedRoute } from '@angular/router';
 import { MockModule } from 'ng-mocks';
 import { MessageService } from 'src/app/services/message/message.service';
 
+import { Environment } from 'src/environments/environment.interface';
+import { ENV } from 'src/environments/environment.provider';
 import { ParticipantComponent } from './participant.component';
 
 describe('ParticipantComponent', () => {
@@ -27,6 +29,7 @@ describe('ParticipantComponent', () => {
 			providers: [
 				{ provide: ActivatedRoute, useValue: activatedRouteStub },
 				{ provide: MessageService, useValue: messageServiceStub },
+				{ provide: ENV, useValue: {} as Environment },
 			],
 		}).compileComponents();
 

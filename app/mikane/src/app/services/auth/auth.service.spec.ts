@@ -1,19 +1,23 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { Environment } from 'src/environments/environment.interface';
+import { ENV } from 'src/environments/environment.provider';
 import { User } from '../user/user.service';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
 	let service: AuthService;
-	// let httpClient: HttpClient;
 	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({ providers: [AuthService], imports: [HttpClientTestingModule] });
+		const env = { apiUrl: 'http://localhost:3002/api/' } as Environment;
+		TestBed.configureTestingModule({
+			providers: [AuthService, { provide: ENV, useValue: env }],
+			imports: [HttpClientTestingModule],
+		});
 		service = TestBed.inject(AuthService);
 
 		// Inject the http service and test controller for each test
-		// httpClient = TestBed.inject(HttpClient);
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 

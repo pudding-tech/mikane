@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { Environment } from 'src/environments/environment.interface';
+import { ENV } from 'src/environments/environment.provider';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class KeyValidationService {
-	private apiUrl = environment.apiUrl + 'verifykey';
-	constructor(private httpClient: HttpClient) {}
+	private apiUrl = this.env.apiUrl + 'verifykey';
+	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
 
 	verifyRegisterKey(key: string): Observable<{ email: string }> {
 		return this.httpClient.get<{ email: string }>(this.apiUrl + '/register/' + key);
