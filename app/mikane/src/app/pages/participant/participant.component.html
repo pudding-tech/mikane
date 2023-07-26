@@ -19,6 +19,7 @@
 				<mat-expansion-panel-header>
 					<mat-panel-title class="user-panel-title">
 						<div class="first">Name</div>
+						<div class="count">Number of expenses</div>
 						<div>Costs</div>
 						<div>Expenses</div>
 						<div>Balance</div>
@@ -32,9 +33,11 @@
 			>
 				<mat-expansion-panel-header>
 					<mat-panel-title>
-						<div class="first">
+						<div class="user first">
+							<img [src]="userWithBalance.user.avatarURL" class="avatar" />
 							{{ userWithBalance.user.name }}
 						</div>
+						<div class="count">{{ userWithBalance.expensesCount }}</div>
 						<div>{{ userWithBalance.spending | currency : "" : "" : "1.2-2" : "no" }} kr</div>
 						<div>{{ userWithBalance.expenses | currency : "" : "" : "1.2-2" : "no" }} kr</div>
 						<div class="amount-color">{{ userWithBalance.balance | currency : "" : "" : "1.2-2" : "no" }} kr</div>
@@ -106,9 +109,16 @@
 						<button mat-raised-button color="accent" (click)="createExpenseDialog(userWithBalance.user.id, dataSources[i])">
 							Add expense
 						</button>
-						<button mat-raised-button type="button" color="warn" (click)="deleteUserDialog(userWithBalance.user.id)">
+						<button *ngIf="userWithBalance.expensesCount === 0; else noRemoveButton" mat-raised-button type="button" color="warn" (click)="deleteUserDialog(userWithBalance.user.id)">
 							Remove User
 						</button>
+						<ng-template #noRemoveButton>
+							<span matTooltip="Cannot remove users with expenses in event" style="padding: 8px 0">
+								<button mat-stroked-button disabled>
+									Remove User
+								</button>
+							</span>
+						</ng-template>
 					</div>
 				</ng-template>
 			</mat-expansion-panel>

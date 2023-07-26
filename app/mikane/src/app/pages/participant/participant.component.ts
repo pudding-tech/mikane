@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, forkJoin, map, of, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
@@ -38,6 +39,7 @@ import { ParticipantDialogComponent } from './user-dialog/participant-dialog.com
 		MatExpansionModule,
 		MatProgressSpinnerModule,
 		MatTableModule,
+		MatTooltipModule,
 		ProgressSpinnerComponent,
 		MatCardModule,
 		CurrencyPipe,
@@ -212,7 +214,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			width: '380px',
 			data: {
 				title: 'Remove User',
-				content: 'Are you sure you want to remove this user? All of their expenses will be permanently deleted!',
+				content: 'Are you sure you want to remove this user?',
 				confirm: 'I am sure',
 			},
 		});
