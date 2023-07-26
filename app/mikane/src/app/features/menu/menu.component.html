@@ -2,7 +2,7 @@
 	<span class="name" *ngIf="(breakpointService.isMobile() | async) === false">
 		{{ username }}
 	</span>
-	<split-button #splitButton [onClick]="onAccountClick">
+	<split-button #splitButton (onClick)="onAccountClick()">
 		<div button>
 			<img *ngIf="avatarURL" [src]="avatarURL" class="avatar" />
 		</div>
@@ -14,8 +14,8 @@
 				<mat-icon dropdown-button class="dropdown-button">arrow_drop_down</mat-icon>
 			</ng-template>
 		</div>
-		<split-button-item *splitButtonItem [onClick]="onAccountClick" icon="person" text="Account"></split-button-item>
-		<split-button-item *splitButtonItem [onClick]="inviteUser" icon="person_add" text="Invite"></split-button-item>
-		<split-button-item *splitButtonItem [onClick]="logout" icon="logout" text="Log out"></split-button-item>
+		<split-button-item *splitButtonItem (onClick)="onAccountClick()" icon="person" text="Account"></split-button-item>
+		<split-button-item *splitButtonItem (onClick)="inviteUser()" icon="person_add" text="Invite"></split-button-item>
+		<split-button-item *splitButtonItem (onClick)="logout()" icon="logout" text="Log out"></split-button-item>
 	</split-button>
 </div>
