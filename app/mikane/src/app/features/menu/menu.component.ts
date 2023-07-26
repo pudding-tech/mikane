@@ -42,15 +42,15 @@ export class MenuComponent {
 		});
 	}
 
-	onAccountClick = () => {
+	onAccountClick() {
 		if (this.router.url === '/account') {
 			this.splitButton.toggled = false;
 			return;
 		}
 		this.router.navigate(['/account']);
-	};
+	}
 
-	logout = () => {
+	logout() {
 		this.authService.logout().subscribe({
 			next: () => {
 				this.router.navigate(['/login']);
@@ -60,13 +60,13 @@ export class MenuComponent {
 				console.error('something went wrong while trying to log out', err?.error?.message);
 			},
 		});
-	};
+	}
 
-	inviteUser = () => {
+	inviteUser() {
 		if (this.router.url === '/invite') {
 			this.splitButton.toggled = false;
 			return;
 		}
 		this.router.navigate(['/invite']);
-	};
+	}
 }

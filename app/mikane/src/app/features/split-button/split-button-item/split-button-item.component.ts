@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -10,7 +10,11 @@ import { MatIconModule } from '@angular/material/icon';
 	imports: [MatIconModule, MatRippleModule],
 })
 export class SplitButtonItemComponent {
-	@Input({ required: true }) onClick: () => void;
+	@Output() onClick = new EventEmitter();
 	@Input('icon') icon: string = '';
 	@Input('text') text: string = '';
+
+	click() {
+		this.onClick.emit();
+	}
 }
