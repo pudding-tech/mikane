@@ -29,7 +29,7 @@
 		gone permanently and no one can get it back for you.
 	</div>
 	<mat-card-actions>
-		<button type="button" mat-stroked-button color="warn" (click)="deleteUser()">
+		<button type="button" [class.spinner]="loading" [disabled]="loading" mat-stroked-button color="warn" (click)="deleteUser()">
 			<mat-icon>email</mat-icon>
 			Send delete account email
 		</button>

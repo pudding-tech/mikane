@@ -33,6 +33,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 })
 export class DangerZoneComponent implements OnDestroy {
 	private deleteSubscription: Subscription;
+	protected loading: boolean = false;
 
 	@Input('user') currentUser: User;
 
@@ -60,6 +61,7 @@ export class DangerZoneComponent implements OnDestroy {
 			.pipe(
 				switchMap((confirm) => {
 					if (confirm) {
+						this.loading = true;
 						return this.userService.requestDeleteAccount();
 					} else {
 						return NEVER;
@@ -68,10 +70,12 @@ export class DangerZoneComponent implements OnDestroy {
 			)
 			.subscribe({
 				next: () => {
+					this.loading = false;
 					this.messageService.showSuccess('Email sent!');
 					this.router.navigate(['/login']);
 				},
 				error: (err: ApiError) => {
+					this.loading = false;
 					this.messageService.showError('Failed to send email!');
 					console.error('something went wrong while sending account deletion email', err?.error?.message);
 				},
