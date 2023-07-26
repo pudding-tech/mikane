@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
+import { Inject, Injectable } from '@angular/core';
+import { Environment } from 'src/environments/environment.interface';
+import { ENV } from 'src/environments/environment.provider';
 
 @Injectable({
 	providedIn: 'root',
@@ -36,6 +37,8 @@ export class ContextService {
 	}
 
 	get environment(): 'dev' | 'prod' {
-		return environment.production ? 'prod' : 'dev';
+		return this.env.production ? 'prod' : 'dev';
 	}
+
+	constructor(@Inject(ENV) private env: Environment) {}
 }

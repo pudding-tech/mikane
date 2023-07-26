@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
-import { environment } from 'src/environments/environment';
+import { Environment } from 'src/environments/environment.interface';
+import { ENV } from 'src/environments/environment.provider';
 import { Expense } from '../expense/expense.service';
 
 export interface User {
@@ -56,8 +57,8 @@ export interface UserBalance {
 	providedIn: 'root',
 })
 export class UserService {
-	private apiUrl = environment.apiUrl + 'users';
-	constructor(private httpClient: HttpClient) {}
+	private apiUrl = this.env.apiUrl + 'users';
+	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
 
 	loadUsers(excludeSelf: boolean = false) {
 		return this.httpClient.get<User[]>(this.apiUrl + (excludeSelf ? '?exclude=self' : ''));

@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { Environment } from 'src/environments/environment.interface';
+import { ENV } from 'src/environments/environment.provider';
 import { User } from '../user/user.service';
 
 export interface Expense {
@@ -22,9 +23,9 @@ export interface Expense {
 	providedIn: 'root',
 })
 export class ExpenseService {
-	private apiUrl = environment.apiUrl + 'expenses';
+	private apiUrl = this.env.apiUrl + 'expenses';
 
-	constructor(private httpClient: HttpClient) {}
+	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
 
 	loadExpenses(eventId: string): Observable<Expense[]> {
 		return this.httpClient.get<Expense[]>(this.apiUrl + `?eventId=${eventId}`);

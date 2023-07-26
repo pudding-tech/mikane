@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { map, Observable, of, switchMap } from 'rxjs';
+import { Inject, Injectable } from '@angular/core';
+import { Observable, map, of, switchMap } from 'rxjs';
 import { CategoryIcon } from 'src/app/types/enums';
-import { environment } from 'src/environments/environment';
+import { Environment } from 'src/environments/environment.interface';
+import { ENV } from 'src/environments/environment.provider';
 
 export interface Category {
 	id: string;
@@ -21,9 +22,9 @@ export interface Category {
 	providedIn: 'root',
 })
 export class CategoryService {
-	private apiUrl = environment.apiUrl + 'categories';
+	private apiUrl = this.env.apiUrl + 'categories';
 
-	constructor(private httpClient: HttpClient) {}
+	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
 
 	loadCategories(eventId: string): Observable<Category[]> {
 		return this.httpClient.get<Category[]>(this.apiUrl + `?eventId=${eventId}`);

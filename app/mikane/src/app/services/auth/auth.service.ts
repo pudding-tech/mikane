@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { Environment } from 'src/environments/environment.interface';
+import { ENV } from 'src/environments/environment.provider';
 import { User } from '../user/user.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class AuthService {
-	private apiUrl = environment.apiUrl;
+	private apiUrl = this.env.apiUrl;
 	private currentUser: User;
 
 	private _redirectUrl: string;
@@ -24,7 +25,7 @@ export class AuthService {
 		this._redirectUrl = value;
 	}
 
-	constructor(private httpClient: HttpClient) {}
+	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
 
 	login(username: string, password: string): Observable<User> {
 		return this.httpClient
@@ -36,15 +37,15 @@ export class AuthService {
 	}
 
 	logout() {
-		return this.httpClient.post(this.apiUrl + 'logout', {}).pipe(
+		return this.httpClient.post<void>(this.apiUrl + 'logout', {}).pipe(
 			tap(() => {
 				this.clearCurrentUser();
 			})
 		);
 	}
 
-	sendResetPasswordEmail(email: string): Observable<Object> {
-		return this.httpClient.post(this.apiUrl + 'requestpasswordreset', { email });
+	sendResetPasswordEmail(email: string): Observable<void> {
+		return this.httpClient.post<void>(this.apiUrl + 'requestpasswordreset', { email });
 	}
 
 	getCurrentUser(): Observable<User> {
