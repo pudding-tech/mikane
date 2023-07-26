@@ -59,10 +59,6 @@ describe("validation", async () => {
       });
 
     category = resCategory.body;
-
-    // await request(app)
-    //   .post(`/api/categories/${category.id}/user/${user.id}`)
-    //   .set("Cookie", authToken);
   });
 
   /* ----------------------------- */
@@ -72,7 +68,6 @@ describe("validation", async () => {
     test("fail when validating username already in use", async () => {
       const res = await request(app)
         .post("/api/validation/user/username")
-        .set("Cookie", authToken)
         .send({
           username: user.username
         });
@@ -84,7 +79,6 @@ describe("validation", async () => {
     test("fail when validating username without username in body", async () => {
       const res = await request(app)
         .post("/api/validation/user/username")
-        .set("Cookie", authToken)
         .send({});
 
       expect(res.status).toEqual(400);
@@ -94,7 +88,6 @@ describe("validation", async () => {
     test("fail when validating invalid username", async () => {
       const res = await request(app)
         .post("/api/validation/user/username")
-        .set("Cookie", authToken)
         .send({
           username: " "
         });
@@ -106,7 +99,6 @@ describe("validation", async () => {
     test("should successfully validate username not already in use", async () => {
       const res = await request(app)
         .post("/api/validation/user/username")
-        .set("Cookie", authToken)
         .send({
           username: "testuser2"
         });

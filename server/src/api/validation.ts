@@ -11,7 +11,7 @@ const router = express.Router();
 /*
 * User: Username validation
 */
-router.post("/validation/user/username", authCheck, async (req, res, next) => {
+router.post("/validation/user/username", async (req, res, next) => {
   try {
     const username: string = req.body.username;
     if (!username) {
@@ -35,7 +35,7 @@ router.post("/validation/user/username", authCheck, async (req, res, next) => {
 /*
 * User: Email validation
 */
-router.post("/validation/user/email", authCheck, async (req, res, next) => {
+router.post("/validation/user/email", async (req, res, next) => {
   try {
     const email: string = req.body.email;
     if (!email) {
@@ -59,7 +59,7 @@ router.post("/validation/user/email", authCheck, async (req, res, next) => {
 /*
 * User: Phone number validation
 */
-router.post("/validation/user/phone", authCheck, async (req, res, next) => {
+router.post("/validation/user/phone", async (req, res, next) => {
   try {
     const phoneNumber: string = req.body.phone;
     if (!phoneNumber) {

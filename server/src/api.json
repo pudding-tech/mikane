@@ -2969,9 +2969,6 @@
         "summary": "Validate username",
         "description": "Check if a given username is available for use",
         "operationId": "getValidateUsername",
-        "security": [
-          { "cookieAuth": [] }
-        ],
         "requestBody": {
           "description": "Username",
           "content": {
@@ -3036,9 +3033,6 @@
         "summary": "Validate email",
         "description": "Check if a given email is available for use",
         "operationId": "getValidateEmail",
-        "security": [
-          { "cookieAuth": [] }
-        ],
         "requestBody": {
           "description": "Email",
           "content": {
@@ -3103,9 +3097,6 @@
         "summary": "Validate phone number",
         "description": "Check if a given phone number is available for use",
         "operationId": "getValidatePhone",
-        "security": [
-          { "cookieAuth": [] }
-        ],
         "requestBody": {
           "description": "Phone number",
           "content": {
