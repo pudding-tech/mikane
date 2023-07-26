@@ -101,6 +101,37 @@ export const createExpense = async (name: string, description: string, amount: n
 };
 
 /**
+ * DB interface: Edit an expense
+ * @param userId Expense ID to edit
+ * @param data Data object
+ * @returns Edited expense
+ */
+export const editExpense = async (expenseId: string, data: { name?: string, description?: string, amount?: number, categoryId?: string, payerId?: string }) => {
+  const query = {
+    text: "SELECT * FROM edit_expense($1, $2, $3, $4, $5, $6)",
+    values: [expenseId, data.name, data.description, data.amount, data.categoryId, data.payerId]
+  };
+  const expense: Expense[] = await pool.query(query)
+    .then(data => {
+      return parseExpenses(data.rows);
+    })
+    .catch(err => {
+      if (err.code === "P0084")
+        throw new ErrorExt(ec.PUD084, err);
+      else if (err.code === "P0007")
+        throw new ErrorExt(ec.PUD007, err);
+      else if (err.code === "P0008")
+        throw new ErrorExt(ec.PUD008, err);
+      else if (err.code === "P0062")
+        throw new ErrorExt(ec.PUD062, err);
+      else
+        throw new ErrorExt(ec.PUD117, err);
+    });
+
+  return expense[0];
+};
+
+/**
  * DB interface: Delete an expense
  * @param expenseId 
  * @returns True if successful
