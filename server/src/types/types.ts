@@ -44,7 +44,8 @@ export type Category = {
     username?: string;
     firstName?: string;
     lastName?: string;
-    weight?: number;
+    avatarURL: string;
+    weight: number;
   }[];
 };
 

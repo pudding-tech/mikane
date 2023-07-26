@@ -1,4 +1,5 @@
 import { setDisplayNames } from "../utils/setDisplayNames";
+import { getGravatarURL } from "../utils/gravatar";
 import { Category, User } from "../types/types";
 import { CategoryDB, UserNamesDB } from "../types/typesDB";
 import { Target, CategoryIcon } from "../types/enums";
@@ -36,21 +37,22 @@ export const parseCategories = (catInput: CategoryDB[], target: Target, usersInE
 
     try {
       if (catObj.user_weights) {
-        catObj.user_weights.forEach(weight => {
+        catObj.user_weights.forEach(user => {
           if (target === Target.CLIENT && category.users) {
             category.users.push(
               {
-                id: weight.user_id,
-                name: weight.first_name,
-                username: weight.username,
-                firstName: weight.first_name,
-                lastName: weight.last_name,
-                weight: weight.weight
+                id: user.user_id,
+                name: user.first_name,
+                username: user.username,
+                firstName: user.first_name,
+                lastName: user.last_name,
+                avatarURL: getGravatarURL(user.email, { size: 50, default: "mp" }),
+                weight: user.weight
               }
             );
           }
           else if (target === Target.CALC && category.userWeights) {
-            category.userWeights.set(weight.user_id, weight.weight);
+            category.userWeights.set(user.user_id, user.weight);
           }
         });
       }

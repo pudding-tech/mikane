@@ -304,6 +304,8 @@ export const removeUserFromEvent = async (eventId: string, userId: string) => {
         throw new ErrorExt(ec.PUD008, err);
       else if (err.code === "P0098")
         throw new ErrorExt(ec.PUD098, err);
+      else if (err.code === "P0114")
+        throw new ErrorExt(ec.PUD114, err);
       else
         throw new ErrorExt(ec.PUD040, err);
     });

@@ -39,7 +39,10 @@
 			<mat-label>Payer</mat-label>
 			<mat-select formControlName="payer" required>
 				<mat-option *ngFor="let user of users" [value]="user.id">
-					{{ user.name }}
+					<span class="user">
+						<img [src]="user.avatarURL" class="avatar" />
+						{{ user.name }}
+					</span>
 				</mat-option>
 			</mat-select>
 			<mat-error *ngIf="addExpenseForm.get('payer')?.errors?.['required']"> Payer is required </mat-error>

@@ -1,3 +1,17 @@
 mat-form-field {
 	width: 100%;
 }
+
+.user {
+	display: flex;
+	align-items: center;
+
+	.avatar {
+		position: relative;
+		width: 24px;
+		height: 24px;
+		margin-right: 12px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+}

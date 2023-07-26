@@ -132,13 +132,14 @@ a.nostyle:visited {
 
 .user-list {
 	mat-panel-title {
-		display: contents;
+		display: flex;
+		align-items: center;
 		div {
 			width: 30%;
 			text-align: right;
 		}
 		div.first {
-			width: 10%;
+			min-width: 150px;
 			text-align: left;
 		}
 	}
@@ -198,6 +199,11 @@ input:-webkit-autofill:active {
 // Change color of input labels
 .mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
 	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+// Change color of selected items in dropdown
+.mdc-list-item--selected .mdc-list-item__primary-text {
+	color: #ff589a !important;
 }
 
 // Prevent mat dialog removing backgrounds when page is scrolled down

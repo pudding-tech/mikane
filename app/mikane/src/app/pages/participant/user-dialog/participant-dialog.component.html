@@ -4,7 +4,12 @@
 		<mat-form-field appearance="fill">
 			<mat-label>User</mat-label>
 			<mat-select formControlName="users" multiple>
-				<mat-option *ngFor="let user of users" [value]="user">{{ user.name }}</mat-option>
+				<mat-option *ngFor="let user of users" [value]="user">
+					<span class="user">
+						<img [src]="user.avatarURL" class="avatar" />
+						{{ user.name }}
+					</span>
+				</mat-option>
 			</mat-select>
 		</mat-form-field>
 	</form>

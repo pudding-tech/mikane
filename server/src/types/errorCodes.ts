@@ -1076,3 +1076,12 @@ export const PUD113: ErrorCode = {
   message: "Not a valid phone number",
   status: 400
 };
+
+/**
+ * PUD-114: Cannot remove user from event, as the user has one or more expenses in the event (400)
+ */
+export const PUD114: ErrorCode = {
+  code: "PUD-114",
+  message: "Cannot remove user from event, as the user has one or more expenses in the event",
+  status: 400
+};
