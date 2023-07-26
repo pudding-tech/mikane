@@ -11,7 +11,7 @@ const router = express.Router();
 /*
 * User: Username validation
 */
-router.get("/validation/user/username", authCheck, async (req, res, next) => {
+router.post("/validation/user/username", authCheck, async (req, res, next) => {
   try {
     const username: string = req.body.username;
     if (!username) {
@@ -35,7 +35,7 @@ router.get("/validation/user/username", authCheck, async (req, res, next) => {
 /*
 * User: Email validation
 */
-router.get("/validation/user/email", authCheck, async (req, res, next) => {
+router.post("/validation/user/email", authCheck, async (req, res, next) => {
   try {
     const email: string = req.body.email;
     if (!email) {
@@ -59,7 +59,7 @@ router.get("/validation/user/email", authCheck, async (req, res, next) => {
 /*
 * User: Phone number validation
 */
-router.get("/validation/user/phone", authCheck, async (req, res, next) => {
+router.post("/validation/user/phone", authCheck, async (req, res, next) => {
   try {
     const phoneNumber: string = req.body.phone;
     if (!phoneNumber) {
@@ -83,7 +83,7 @@ router.get("/validation/user/phone", authCheck, async (req, res, next) => {
 /*
 * Event: Name validation
 */
-router.get("/validation/event/name", authCheck, async (req, res, next) => {
+router.post("/validation/event/name", authCheck, async (req, res, next) => {
   try {
     const name: string = req.body.name;
     if (!name) {
@@ -107,7 +107,7 @@ router.get("/validation/event/name", authCheck, async (req, res, next) => {
 /*
 * Category: Name validation
 */
-router.get("/validation/category/name", authCheck, async (req, res, next) => {
+router.post("/validation/category/name", authCheck, async (req, res, next) => {
   try {
     const name: string = req.body.name;
     const eventId: string = req.body.eventId;

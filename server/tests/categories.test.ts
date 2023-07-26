@@ -98,6 +98,21 @@ describe("categories", async () => {
       expect(res.body.code).toEqual(ec.PUD046.code);
     });
 
+    test("fail create category with invalid UUID event ID", async () => {
+      const res = await request(app)
+        .post("/api/categories")
+        .set("Cookie", authToken)
+        .send({
+          name: "Test category 2",
+          icon: "shopping_cart",
+          weighted: false,
+          eventId: "56e901ad-374f"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD013.code);
+    });
+
     test("fail create category with invalid event ID", async () => {
       const res = await request(app)
         .post("/api/categories")
@@ -181,20 +196,19 @@ describe("categories", async () => {
   /* PUT /categories/:id */
   /* ------------------- */
   describe("PUT /categories/:id", async () => {
-    test("should edit category", async () => {
+    test("fail edit category - invalid UUID", async () => {
       const res = await request(app)
-        .put("/api/categories/" + category.id)
+        .put("/api/categories/56e901ad-374f")
         .set("Cookie", authToken)
         .send({
           name: "New test category name"
         });
 
-      expect(res.status).toEqual(200);
-      expect(res.body.id).toEqual(category.id);
-      category.name = res.body.name;
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD045.code);
     });
 
-    test("fail edit category with invalid ID", async () => {
+    test("fail edit category - invalid ID", async () => {
       const res = await request(app)
         .put("/api/categories/56e901ad-374f-4e1d-92f1-d02dd22d11d3")
         .set("Cookie", authToken)
@@ -204,6 +218,55 @@ describe("categories", async () => {
 
       expect(res.status).toEqual(404);
       expect(res.body.code).toEqual(ec.PUD007.code);
+    });
+
+    test("fail edit category - no properties provided", async () => {
+      const res = await request(app)
+        .put("/api/categories/56e901ad-374f-4e1d-92f1-d02dd22d11d3")
+        .set("Cookie", authToken)
+        .send({});
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD115.code);
+    });
+
+    test("fail edit category - name is empty string", async () => {
+      const res = await request(app)
+        .put("/api/categories/56e901ad-374f-4e1d-92f1-d02dd22d11d3")
+        .set("Cookie", authToken)
+        .send({
+          name: " "
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD059.code);
+    });
+
+    test("fail edit category - icon not valid", async () => {
+      const res = await request(app)
+        .put("/api/categories/56e901ad-374f-4e1d-92f1-d02dd22d11d3")
+        .set("Cookie", authToken)
+        .send({
+          icon: "goofy"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD096.code);
+    });
+
+    test("should edit category", async () => {
+      const res = await request(app)
+        .put("/api/categories/" + category.id)
+        .set("Cookie", authToken)
+        .send({
+          name: "New test category name",
+          icon: "movie"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.id).toEqual(category.id);
+      expect(res.body.icon).toEqual("movie");
+      category.name = res.body.name;
     });
   });
 
@@ -283,6 +346,18 @@ describe("categories", async () => {
   /* PUT /categories/:id/user/:userId */
   /* -------------------------------- */
   describe("PUT /categories/:id/user/:userId", async () => {
+    test("fail edit user's weight in category with less than 1", async () => {
+      const res = await request(app)
+        .put(`/api/categories/${category.id}/user/${user.id}`)
+        .set("Cookie", authToken)
+        .send({
+          weight: -1
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD049.code);
+    });
+
     test("should edit user's weight in category", async () => {
       const res = await request(app)
         .put(`/api/categories/${category.id}/user/${user.id}`)
@@ -318,6 +393,15 @@ describe("categories", async () => {
   /* DELETE /categories/:id */
   /* ---------------------- */
   describe("DELETE /categories/:id", async () => {
+    test("fail delete category with invalid UUID", async () => {
+      const res = await request(app)
+        .delete("/api/categories/a7dfg-dfg3")
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD045.code);
+    });
+
     test("should delete category", async () => {
       const res = await request(app)
         .delete("/api/categories/" + category.id)

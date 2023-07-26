@@ -128,15 +128,15 @@ export const addUserToCategory = async (categoryId: string, userId: string, weig
 };
 
 /**
- * DB interface: Rename a category
+ * DB interface: Edit a category
  * @param categoryId 
- * @param name New name of category
+ * @param data Data object
  * @returns Edited category
  */
-export const renameCategory = async (categoryId: string, name: string) => {
+export const editCategory = async (categoryId: string, data: { name?: string, icon?: CategoryIcon }) => {
   const query = {
-    text: "SELECT * FROM edit_category($1, $2);",
-    values: [categoryId, name]
+    text: "SELECT * FROM edit_category($1, $2, $3);",
+    values: [categoryId, data.name, data.icon]
   };
   const category: Category[] = await pool.query(query)
     .then(data => {

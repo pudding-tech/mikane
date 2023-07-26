@@ -71,7 +71,7 @@ describe("validation", async () => {
   describe("GET /validation/user/username", async () => {
     test("fail when validating username already in use", async () => {
       const res = await request(app)
-        .get("/api/validation/user/username")
+        .post("/api/validation/user/username")
         .set("Cookie", authToken)
         .send({
           username: user.username
@@ -83,7 +83,7 @@ describe("validation", async () => {
 
     test("fail when validating username without username in body", async () => {
       const res = await request(app)
-        .get("/api/validation/user/username")
+        .post("/api/validation/user/username")
         .set("Cookie", authToken)
         .send({});
 
@@ -93,7 +93,7 @@ describe("validation", async () => {
 
     test("fail when validating invalid username", async () => {
       const res = await request(app)
-        .get("/api/validation/user/username")
+        .post("/api/validation/user/username")
         .set("Cookie", authToken)
         .send({
           username: " "
@@ -105,7 +105,7 @@ describe("validation", async () => {
 
     test("should successfully validate username not already in use", async () => {
       const res = await request(app)
-        .get("/api/validation/user/username")
+        .post("/api/validation/user/username")
         .set("Cookie", authToken)
         .send({
           username: "testuser2"
@@ -122,7 +122,7 @@ describe("validation", async () => {
   describe("GET /validation/user/email", async () => {
     test("fail when validating email already in use", async () => {
       const res = await request(app)
-        .get("/api/validation/user/email")
+        .post("/api/validation/user/email")
         .set("Cookie", authToken)
         .send({
           email: user.email
@@ -134,7 +134,7 @@ describe("validation", async () => {
 
     test("fail when validating email without email in body", async () => {
       const res = await request(app)
-        .get("/api/validation/user/email")
+        .post("/api/validation/user/email")
         .set("Cookie", authToken)
         .send({});
 
@@ -144,7 +144,7 @@ describe("validation", async () => {
 
     test("fail when validating invalid email", async () => {
       const res = await request(app)
-        .get("/api/validation/user/email")
+        .post("/api/validation/user/email")
         .set("Cookie", authToken)
         .send({
           email: "testuser.com"
@@ -156,7 +156,7 @@ describe("validation", async () => {
 
     test("fail when validating invalid email (too long domain)", async () => {
       const res = await request(app)
-        .get("/api/validation/user/email")
+        .post("/api/validation/user/email")
         .set("Cookie", authToken)
         .send({
           email: "test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.com"
@@ -168,7 +168,7 @@ describe("validation", async () => {
 
     test("should successfully validate email not already in use", async () => {
       const res = await request(app)
-        .get("/api/validation/user/email")
+        .post("/api/validation/user/email")
         .set("Cookie", authToken)
         .send({
           email: "anothertest@user.com"
@@ -185,7 +185,7 @@ describe("validation", async () => {
   describe("GET /validation/user/phone", async () => {
     test("fail when validating phone number already in use", async () => {
       const res = await request(app)
-        .get("/api/validation/user/phone")
+        .post("/api/validation/user/phone")
         .set("Cookie", authToken)
         .send({
           phone: user.phone
@@ -197,7 +197,7 @@ describe("validation", async () => {
 
     test("fail when validating phone number without phone in body", async () => {
       const res = await request(app)
-        .get("/api/validation/user/phone")
+        .post("/api/validation/user/phone")
         .set("Cookie", authToken)
         .send({});
 
@@ -207,7 +207,7 @@ describe("validation", async () => {
 
     test("fail when validating invalid phone number", async () => {
       const res = await request(app)
-        .get("/api/validation/user/phone")
+        .post("/api/validation/user/phone")
         .set("Cookie", authToken)
         .send({
           phone: "1234"
@@ -219,7 +219,7 @@ describe("validation", async () => {
 
     test("should successfully validate phone number not already in use", async () => {
       const res = await request(app)
-        .get("/api/validation/user/phone")
+        .post("/api/validation/user/phone")
         .set("Cookie", authToken)
         .send({
           phone: "11111112"
@@ -236,7 +236,7 @@ describe("validation", async () => {
   describe("GET /validation/event/name", async () => {
     test("fail when validating event name already in use", async () => {
       const res = await request(app)
-        .get("/api/validation/event/name")
+        .post("/api/validation/event/name")
         .set("Cookie", authToken)
         .send({
           name: event.name
@@ -248,7 +248,7 @@ describe("validation", async () => {
 
     test("fail when validating event name without name in body", async () => {
       const res = await request(app)
-        .get("/api/validation/event/name")
+        .post("/api/validation/event/name")
         .set("Cookie", authToken)
         .send({});
 
@@ -258,7 +258,7 @@ describe("validation", async () => {
 
     test("fail when validating invalid event name", async () => {
       const res = await request(app)
-        .get("/api/validation/event/name")
+        .post("/api/validation/event/name")
         .set("Cookie", authToken)
         .send({
           name: " "
@@ -270,7 +270,7 @@ describe("validation", async () => {
 
     test("should successfully validate event name not already in use", async () => {
       const res = await request(app)
-        .get("/api/validation/event/name")
+        .post("/api/validation/event/name")
         .set("Cookie", authToken)
         .send({
           name: "New event"
@@ -287,7 +287,7 @@ describe("validation", async () => {
   describe("GET /validation/category/name", async () => {
     test("fail when validating category name already in use within event", async () => {
       const res = await request(app)
-        .get("/api/validation/category/name")
+        .post("/api/validation/category/name")
         .set("Cookie", authToken)
         .send({
           name: category.name,
@@ -300,7 +300,7 @@ describe("validation", async () => {
 
     test("fail when validating category name without name in body", async () => {
       const res = await request(app)
-        .get("/api/validation/category/name")
+        .post("/api/validation/category/name")
         .set("Cookie", authToken)
         .send({
           eventId: event.id
@@ -312,7 +312,7 @@ describe("validation", async () => {
 
     test("fail when validating invalid category name", async () => {
       const res = await request(app)
-        .get("/api/validation/category/name")
+        .post("/api/validation/category/name")
         .set("Cookie", authToken)
         .send({
           name: " ",
@@ -325,7 +325,7 @@ describe("validation", async () => {
 
     test("fail when validating category name with invalid UUID as event ID", async () => {
       const res = await request(app)
-        .get("/api/validation/category/name")
+        .post("/api/validation/category/name")
         .set("Cookie", authToken)
         .send({
           name: "New category",
@@ -338,7 +338,7 @@ describe("validation", async () => {
 
     test("fail when validating category name with invalid event ID", async () => {
       const res = await request(app)
-        .get("/api/validation/category/name")
+        .post("/api/validation/category/name")
         .set("Cookie", authToken)
         .send({
           name: "New category",
@@ -351,7 +351,7 @@ describe("validation", async () => {
 
     test("should successfully validate category name not already in use within event", async () => {
       const res = await request(app)
-        .get("/api/validation/category/name")
+        .post("/api/validation/category/name")
         .set("Cookie", authToken)
         .send({
           name: "New category",

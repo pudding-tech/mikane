@@ -117,7 +117,7 @@ router.post("/categories/:id/user/:userId", authCheck, async (req, res, next) =>
 /* --- */
 
 /*
-* Rename a category
+* Edit a category
 */
 router.put("/categories/:id", authCheck, async (req, res, next) => {
   try {
@@ -125,14 +125,25 @@ router.put("/categories/:id", authCheck, async (req, res, next) => {
     if (!isUUID(catId)) {
       throw new ErrorExt(ec.PUD045);
     }
-    if (!req.body.name) {
-      throw new ErrorExt(ec.PUD050);
+
+    const name: string | undefined = req.body.name;
+    const icon: CategoryIcon | undefined = req.body.icon;
+    if (!name && !icon) {
+      throw new ErrorExt(ec.PUD115);
     }
-    if (req.body.name.trim() === "") {
+    if (name && name.trim() === "") {
       throw new ErrorExt(ec.PUD059);
     }
+    if (icon && !Object.values(CategoryIcon).includes(icon)) {
+      throw new ErrorExt(ec.PUD096);
+    }
 
-    const category = await db.renameCategory(catId, req.body.name);
+    const data = {
+      name: name,
+      icon: icon
+    };
+
+    const category = await db.editCategory(catId, data);
     if (!category) {
       throw new ErrorExt(ec.PUD007);
     }

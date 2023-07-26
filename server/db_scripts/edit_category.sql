@@ -1,7 +1,8 @@
 drop function if exists edit_category;
 create or replace function edit_category(
   ip_category_id uuid,
-  ip_name varchar(255)
+  ip_name varchar(255),
+  ip_icon varchar(255)
 )
 returns table (
   id uuid,
@@ -22,7 +23,8 @@ begin
   update
     category c
   set
-    "name" = ip_name
+    "name" = coalesce(ip_name, c.name),
+    icon = coalesce(ip_icon, c.icon)
   where
     c.id = ip_category_id;
 

@@ -92,6 +92,70 @@ describe("expenses", async () => {
   /* POST /expenses */
   /* -------------- */
   describe("POST /expenses", async () => {
+    test("fail creating expense - amount is not a number", async () => {
+      const res = await request(app)
+        .post("/api/expenses")
+        .set("Cookie", authToken)
+        .send({
+          name: "Test expense 1",
+          description: "This is test",
+          amount: "a33",
+          categoryId: category.id,
+          payerId: user.id
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD088.code);
+    });
+
+    test("fail creating expense - amount is negative", async () => {
+      const res = await request(app)
+        .post("/api/expenses")
+        .set("Cookie", authToken)
+        .send({
+          name: "Test expense 1",
+          description: "This is test",
+          amount: -1,
+          categoryId: category.id,
+          payerId: user.id
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD030.code);
+    });
+
+    test("fail creating expense - categoryId is invalid UUID", async () => {
+      const res = await request(app)
+        .post("/api/expenses")
+        .set("Cookie", authToken)
+        .send({
+          name: "Test expense 1",
+          description: "This is test",
+          amount: 100,
+          categoryId: "nb3hgi",
+          payerId: user.id
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD045.code);
+    });
+
+    test("fail creating expense - name is empty string", async () => {
+      const res = await request(app)
+        .post("/api/expenses")
+        .set("Cookie", authToken)
+        .send({
+          name: " ",
+          description: "This is test",
+          amount: 100,
+          categoryId: category.id,
+          payerId: user.id
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD059.code);
+    });
+
     test("should create expense", async () => {
       const res = await request(app)
         .post("/api/expenses")
@@ -234,6 +298,107 @@ describe("expenses", async () => {
       expect(res.body[0].sender.id).toEqual(user2.id);
       expect(res.body[0].receiver.id).toEqual(user.id);
       expect(res.body[0].amount).toEqual(50);
+    });
+  });
+
+  /* ----------------- */
+  /* PUT /expenses/:id */
+  /* ----------------- */
+  describe("PUT /expenses/:id", async () => {
+    test("fail editing expense - no properties provided", async () => {
+      const res = await request(app)
+        .put("/api/expenses/" + expense.id)
+        .set("Cookie", authToken)
+        .send({});
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD116.code);
+    });
+
+    test("fail editing expense amount - not a number", async () => {
+      const res = await request(app)
+        .put("/api/expenses/" + expense.id)
+        .set("Cookie", authToken)
+        .send({
+          amount: "expenseAmount"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD116.code);
+    });
+
+    test("fail editing expense amount - negative number", async () => {
+      const res = await request(app)
+        .put("/api/expenses/" + expense.id)
+        .set("Cookie", authToken)
+        .send({
+          amount: -1
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD030.code);
+    });
+
+    test("fail editing expense categoryId - invalid UUID", async () => {
+      const res = await request(app)
+        .put("/api/expenses/" + expense.id)
+        .set("Cookie", authToken)
+        .send({
+          categoryId: "nb3hgi"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD045.code);
+    });
+
+    test("fail editing expense name - empty string", async () => {
+      const res = await request(app)
+        .put("/api/expenses/" + expense.id)
+        .set("Cookie", authToken)
+        .send({
+          name: " "
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD059.code);
+    });
+
+    test("fail editing expense payer - user is not in event", async () => {
+      const userRes = await request(app)
+      .post("/api/users")
+      .send({
+        username: "expenseuser",
+        firstName: "Test",
+        lastName: "User",
+        email: "expense@user.com",
+        phone: "11111133",
+        password: "secret"
+      });
+      const user3 = userRes.body;
+      expect(user3.id).toBeDefined();
+
+      const res = await request(app)
+        .put("/api/expenses/" + expense.id)
+        .set("Cookie", authToken)
+        .send({
+          payerId: user3.id
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD062.code);
+    });
+
+    test("should edit expense amount", async () => {
+      const res = await request(app)
+        .put("/api/expenses/" + expense.id)
+        .set("Cookie", authToken)
+        .send({
+          name: "Edited expense",
+          amount: 200
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.amount).toEqual(200);
     });
   });
 

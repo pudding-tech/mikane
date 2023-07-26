@@ -77,8 +77,69 @@ router.post("/expenses", authCheck, async (req, res, next) => {
     if (amount < 0) {
       throw new ErrorExt(ec.PUD030);
     }
+    if (req.body.name?.trim() === "" || req.body.description?.trim() === "") {
+      throw new ErrorExt(ec.PUD059);
+    }
 
     const expense: Expense = await db.createExpense(req.body.name, req.body.description, amount, categoryId, payerId);
+    res.status(200).send(expense);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
+/* --- */
+/* PUT */
+/* --- */
+
+/*
+* Edit expense
+*/
+router.put("/expenses/:id", authCheck, async (req, res, next) => {
+  try {
+    const expenseId = req.params.id;
+    if (!isUUID(expenseId)) {
+      throw new ErrorExt(ec.PUD056);
+    }
+
+    const name: string | undefined = req.body.name;
+    const description: string | undefined = req.body.description;
+    const amount: number | undefined = req.body.amount !== undefined ? Number(req.body.amount) : undefined;
+    const categoryId: string | undefined = req.body.categoryId;
+    const payerId: string | undefined = req.body.payerId;
+
+    if (!name && !description && !categoryId && !amount && !payerId) {
+      throw new ErrorExt(ec.PUD116);
+    }
+    if (categoryId && !isUUID(categoryId)) {
+      throw new ErrorExt(ec.PUD045);
+    }
+    if (payerId && !isUUID(payerId)) {
+      throw new ErrorExt(ec.PUD089);
+    }
+    if (amount && isNaN(amount)) {
+      throw new ErrorExt(ec.PUD088);
+    }
+    if (amount && amount < 0) {
+      throw new ErrorExt(ec.PUD030);
+    }
+    if (name?.trim() === "" || description?.trim() === "") {
+      throw new ErrorExt(ec.PUD059);
+    }
+
+    const data = {
+      name: name,
+      description: description,
+      amount: amount,
+      categoryId: categoryId,
+      payerId: payerId
+    };
+
+    const expense = await db.editExpense(expenseId, data);
+    if (!expense) {
+      throw new ErrorExt(ec.PUD084);
+    }
     res.status(200).send(expense);
   }
   catch (err) {

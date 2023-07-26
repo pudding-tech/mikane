@@ -395,11 +395,11 @@ export const PUD040: ErrorCode = {
 };
 
 /**
- * PUD-041: rename_category (500)
+ * PUD-041: edit_category (500)
  */
 export const PUD041: ErrorCode = {
   code: "PUD-041",
-  message: "Something went wrong while renaming category",
+  message: "Something went wrong while editing category",
   status: 500,
   log: true
 };
@@ -1084,4 +1084,32 @@ export const PUD114: ErrorCode = {
   code: "PUD-114",
   message: "Cannot remove user from event, as the user has one or more expenses in the event",
   status: 400
+};
+
+/**
+ * PUD-115: Request body must include at least one category property (400)
+ */
+export const PUD115: ErrorCode = {
+  code: "PUD-115",
+  message: "Request body must include at least one category property",
+  status: 400
+};
+
+/**
+ * PUD-116: Request body must include at least one expense property (400)
+ */
+export const PUD116: ErrorCode = {
+  code: "PUD-116",
+  message: "Request body must include at least one expense property",
+  status: 400
+};
+
+/**
+ * PUD-117: edit_expense (500)
+ */
+export const PUD117: ErrorCode = {
+  code: "PUD-117",
+  message: "Something went wrong while editing expense",
+  status: 500,
+  log: true
 };

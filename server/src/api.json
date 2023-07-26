@@ -2962,7 +2962,7 @@
       }
     },
     "/validation/user/username": {
-      "get": {
+      "post": {
         "tags": [
           "Validation"
         ],
@@ -3029,7 +3029,7 @@
       }
     },
     "/validation/user/email": {
-      "get": {
+      "post": {
         "tags": [
           "Validation"
         ],
@@ -3046,7 +3046,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "username": {
+                  "email": {
                     "type": "string",
                     "example": "a@b.com"
                   }
@@ -3096,7 +3096,7 @@
       }
     },
     "/validation/user/phone": {
-      "get": {
+      "post": {
         "tags": [
           "Validation"
         ],
@@ -3113,7 +3113,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "username": {
+                  "phone": {
                     "type": "string",
                     "example": "12131415"
                   }
@@ -3163,7 +3163,7 @@
       }
     },
     "/validation/event/name": {
-      "get": {
+      "post": {
         "tags": [
           "Validation"
         ],
@@ -3180,7 +3180,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "username": {
+                  "name": {
                     "type": "string",
                     "example": "Text event"
                   }
@@ -3230,7 +3230,7 @@
       }
     },
     "/validation/category/name": {
-      "get": {
+      "post": {
         "tags": [
           "Validation"
         ],
@@ -3247,7 +3247,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "username": {
+                  "name": {
                     "type": "string",
                     "example": "Text event"
                   },
