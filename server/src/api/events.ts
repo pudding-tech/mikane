@@ -90,11 +90,22 @@ router.get("/events/:id/balances", authCheck, async (req, res, next) => {
 router.get("/events/:id/payments", authKeyCheck, async (req, res, next) => {
   try {
     const eventId = req.params.id;
+    const userId = req.session.userId;
     if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
     const payments: Payment[] = await db.getEventPayments(eventId);
+
+    // Put logged in user first in list
+    if (userId) {
+      const index = payments.findIndex(payment => payment.sender.id === userId);
+      if (index !== -1) {
+        const user = payments.splice(index, 1)[0];
+        payments.unshift(user);
+      }
+    }
+
     res.status(200).send(payments);
   }
   catch (err) {

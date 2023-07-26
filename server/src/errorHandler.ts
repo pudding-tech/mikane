@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorExt } from "./types/errorExt";
 
-export const errorHandler = (err: ErrorExt | Error, req: Request, res: Response, next: NextFunction) => {
+export const errorHandler = (err: ErrorExt | Error, _req: Request, res: Response, next: NextFunction) => {
   if (!err) {
     return next();
   }
