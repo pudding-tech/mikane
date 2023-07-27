@@ -2967,7 +2967,7 @@
           "Validation"
         ],
         "summary": "Validate username",
-        "description": "Check if a given username is available for use. User ID in body is optional, and used when validation against a specific user.",
+        "description": "Check if a given username is available for use. User ID in body is optional, and used when validating against a specific user.",
         "operationId": "getValidateUsername",
         "requestBody": {
           "description": "Username",
@@ -3038,7 +3038,7 @@
           "Validation"
         ],
         "summary": "Validate email",
-        "description": "Check if a given email is available for use. User ID in body is optional, and used when validation against a specific user.",
+        "description": "Check if a given email is available for use. User ID in body is optional, and used when validating against a specific user.",
         "operationId": "getValidateEmail",
         "requestBody": {
           "description": "Email",
@@ -3109,7 +3109,7 @@
           "Validation"
         ],
         "summary": "Validate phone number",
-        "description": "Check if a given phone number is available for use. User ID in body is optional, and used when validation against a specific user.",
+        "description": "Check if a given phone number is available for use. User ID in body is optional, and used when validating against a specific user.",
         "operationId": "getValidatePhone",
         "requestBody": {
           "description": "Phone number",
@@ -3180,7 +3180,7 @@
           "Validation"
         ],
         "summary": "Validate event name",
-        "description": "Check if a given event name is available for use. Event ID in body is optional, and used when validation against a specific event.",
+        "description": "Check if a given event name is available for use. Event ID in body is optional, and used when validating against a specific event.",
         "operationId": "getValidateEventName",
         "security": [
           { "cookieAuth": [] }
@@ -3254,7 +3254,7 @@
           "Validation"
         ],
         "summary": "Validate category name",
-        "description": "Check if a given category name is available for use within an event. Category ID in body is optional, and used when validation against a specific category.",
+        "description": "Check if a given category name is available for use within an event. Category ID in body is optional, and used when validating against a specific category.",
         "operationId": "getValidateCategoryName",
         "security": [
           { "cookieAuth": [] }
