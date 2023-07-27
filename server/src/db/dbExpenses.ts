@@ -71,13 +71,13 @@ export const getExpense = async (expenseId: string) => {
 /**
  * DB interface: Add a new expense to the database
  * @param name 
- * @param description 
  * @param amount 
  * @param categoryId 
  * @param payerId 
+ * @param description 
  * @returns Newly created expense
  */
-export const createExpense = async (name: string, description: string, amount: number, categoryId: string, payerId: string) => {
+export const createExpense = async (name: string, amount: number, categoryId: string, payerId: string, description?: string) => {
   const query = {
     text: "SELECT * FROM new_expense($1, $2, $3, $4, $5);",
     values: [name, description, amount, categoryId, payerId]

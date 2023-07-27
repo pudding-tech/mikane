@@ -62,6 +62,9 @@ router.post("/expenses", authCheck, async (req, res, next) => {
     if (!req.body.name || !req.body.amount || !req.body.categoryId || !req.body.payerId) {
       throw new ErrorExt(ec.PUD057);
     }
+
+    const name: string = req.body.name;
+    const description: string | undefined = req.body.description;
     const categoryId = req.body.categoryId as string;
     const payerId = req.body.payerId as string;
     const amount = Number(req.body.amount);
@@ -77,11 +80,11 @@ router.post("/expenses", authCheck, async (req, res, next) => {
     if (amount < 0) {
       throw new ErrorExt(ec.PUD030);
     }
-    if (req.body.name?.trim() === "" || req.body.description?.trim() === "") {
+    if (name.trim() === "") {
       throw new ErrorExt(ec.PUD059);
     }
 
-    const expense: Expense = await db.createExpense(req.body.name, req.body.description, amount, categoryId, payerId);
+    const expense: Expense = await db.createExpense(name, amount, categoryId, payerId, description);
     res.status(200).send(expense);
   }
   catch (err) {
