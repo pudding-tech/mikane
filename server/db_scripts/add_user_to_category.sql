@@ -47,7 +47,7 @@ begin
   end if;
 
   return query
-  select * from get_categories(tmp_event_id, null);
+  select * from get_categories(null, ip_category_id);
 
 end;
 $$
