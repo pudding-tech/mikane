@@ -96,11 +96,36 @@ describe("validation", async () => {
       expect(res.body.code).toEqual(ec.PUD059.code);
     });
 
+    test("fail when validating username with invalid user ID", async () => {
+      const res = await request(app)
+        .post("/api/validation/user/username")
+        .set("Cookie", authToken)
+        .send({
+          username: "testuser2",
+          userId: "a212e758"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD016.code);
+    });
+
     test("should successfully validate username not already in use", async () => {
       const res = await request(app)
         .post("/api/validation/user/username")
         .send({
           username: "testuser2"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.valid).toEqual(true);
+    });
+
+    test("should successfully validate username already in use when given same user in body", async () => {
+      const res = await request(app)
+        .post("/api/validation/user/username")
+        .send({
+          username: user.username,
+          userId: user.id
         });
 
       expect(res.status).toEqual(200);
@@ -158,12 +183,37 @@ describe("validation", async () => {
       expect(res.body.code).toEqual(ec.PUD004.code);
     });
 
+    test("fail when validating email with invalid user ID", async () => {
+      const res = await request(app)
+        .post("/api/validation/user/email")
+        .set("Cookie", authToken)
+        .send({
+          email: "anothertest@user.com",
+          userId: "a212e758"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD016.code);
+    });
+
     test("should successfully validate email not already in use", async () => {
       const res = await request(app)
         .post("/api/validation/user/email")
         .set("Cookie", authToken)
         .send({
           email: "anothertest@user.com"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.valid).toEqual(true);
+    });
+
+    test("should successfully validate email already in use when given same user in body", async () => {
+      const res = await request(app)
+        .post("/api/validation/user/email")
+        .send({
+          email: user.email,
+          userId: user.id
         });
 
       expect(res.status).toEqual(200);
@@ -209,12 +259,37 @@ describe("validation", async () => {
       expect(res.body.code).toEqual(ec.PUD113.code);
     });
 
+    test("fail when validating phone number with invalid user ID", async () => {
+      const res = await request(app)
+        .post("/api/validation/user/phone")
+        .set("Cookie", authToken)
+        .send({
+          phone: "11111112",
+          userId: "a212e758"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD016.code);
+    });
+
     test("should successfully validate phone number not already in use", async () => {
       const res = await request(app)
         .post("/api/validation/user/phone")
         .set("Cookie", authToken)
         .send({
           phone: "11111112"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.valid).toEqual(true);
+    });
+
+    test("should successfully validate phone number already in use when given same user in body", async () => {
+      const res = await request(app)
+        .post("/api/validation/user/phone")
+        .send({
+          phone: user.phone,
+          userId: user.id
         });
 
       expect(res.status).toEqual(200);
@@ -260,12 +335,38 @@ describe("validation", async () => {
       expect(res.body.code).toEqual(ec.PUD059.code);
     });
 
+    test("fail when validating event name with invalid event ID", async () => {
+      const res = await request(app)
+        .post("/api/validation/event/name")
+        .set("Cookie", authToken)
+        .send({
+          name: "New event",
+          eventId: "a212e758"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD013.code);
+    });
+
     test("should successfully validate event name not already in use", async () => {
       const res = await request(app)
         .post("/api/validation/event/name")
         .set("Cookie", authToken)
         .send({
           name: "New event"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.valid).toEqual(true);
+    });
+
+    test("should successfully validate event name already in use when given same event in body", async () => {
+      const res = await request(app)
+        .post("/api/validation/event/name")
+        .set("Cookie", authToken)
+        .send({
+          name: event.name,
+          eventId: event.id
         });
 
       expect(res.status).toEqual(200);
@@ -341,6 +442,20 @@ describe("validation", async () => {
       expect(res.body.code).toEqual(ec.PUD006.code);
     });
 
+    test("fail when validating category name with invalid category ID", async () => {
+      const res = await request(app)
+        .post("/api/validation/category/name")
+        .set("Cookie", authToken)
+        .send({
+          name: "New category",
+          eventId: event.id,
+          categoryId: "a212e758"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD045.code);
+    });
+
     test("should successfully validate category name not already in use within event", async () => {
       const res = await request(app)
         .post("/api/validation/category/name")
@@ -348,6 +463,20 @@ describe("validation", async () => {
         .send({
           name: "New category",
           eventId: event.id
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.valid).toEqual(true);
+    });
+
+    test("should successfully validate category name already in use when given same category in body", async () => {
+      const res = await request(app)
+        .post("/api/validation/category/name")
+        .set("Cookie", authToken)
+        .send({
+          name: category.name,
+          eventId: event.id,
+          categoryId: category.id
         });
 
       expect(res.status).toEqual(200);

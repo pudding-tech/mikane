@@ -2967,7 +2967,7 @@
           "Validation"
         ],
         "summary": "Validate username",
-        "description": "Check if a given username is available for use",
+        "description": "Check if a given username is available for use. User ID in body is optional, and used when validating against a specific user.",
         "operationId": "getValidateUsername",
         "requestBody": {
           "description": "Username",
@@ -2979,8 +2979,15 @@
                   "username": {
                     "type": "string",
                     "example": "testuser"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                   }
-                }
+                },
+                "required": [
+                  "username"
+                ]
               }
             }
           }
@@ -3031,7 +3038,7 @@
           "Validation"
         ],
         "summary": "Validate email",
-        "description": "Check if a given email is available for use",
+        "description": "Check if a given email is available for use. User ID in body is optional, and used when validating against a specific user.",
         "operationId": "getValidateEmail",
         "requestBody": {
           "description": "Email",
@@ -3043,8 +3050,15 @@
                   "email": {
                     "type": "string",
                     "example": "a@b.com"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                   }
-                }
+                },
+                "required": [
+                  "email"
+                ]
               }
             }
           }
@@ -3095,7 +3109,7 @@
           "Validation"
         ],
         "summary": "Validate phone number",
-        "description": "Check if a given phone number is available for use",
+        "description": "Check if a given phone number is available for use. User ID in body is optional, and used when validating against a specific user.",
         "operationId": "getValidatePhone",
         "requestBody": {
           "description": "Phone number",
@@ -3107,8 +3121,15 @@
                   "phone": {
                     "type": "string",
                     "example": "12131415"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                   }
-                }
+                },
+                "required": [
+                  "phone"
+                ]
               }
             }
           }
@@ -3159,7 +3180,7 @@
           "Validation"
         ],
         "summary": "Validate event name",
-        "description": "Check if a given event name is available for use",
+        "description": "Check if a given event name is available for use. Event ID in body is optional, and used when validating against a specific event.",
         "operationId": "getValidateEventName",
         "security": [
           { "cookieAuth": [] }
@@ -3174,8 +3195,15 @@
                   "name": {
                     "type": "string",
                     "example": "Text event"
+                  },
+                  "eventId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                   }
-                }
+                },
+                "required": [
+                  "name"
+                ]
               }
             }
           }
@@ -3226,7 +3254,7 @@
           "Validation"
         ],
         "summary": "Validate category name",
-        "description": "Check if a given category name is available for use within an event",
+        "description": "Check if a given category name is available for use within an event. Category ID in body is optional, and used when validating against a specific category.",
         "operationId": "getValidateCategoryName",
         "security": [
           { "cookieAuth": [] }
@@ -3245,8 +3273,16 @@
                   "eventId": {
                     "type": "string",
                     "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                   }
-                }
+                },
+                "required": [
+                  "name",
+                  "eventId"
+                ]
               }
             }
           }
