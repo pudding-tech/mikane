@@ -1,5 +1,5 @@
 import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
-import { KeyValuePipe, NgFor } from '@angular/common';
+import { KeyValuePipe, NgFor, NgIf } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
+import { categoryNameValidator } from 'src/app/shared/forms/validators/async-category-name.validator';
 import { CategoryIcon } from 'src/app/types/enums';
 
 @Component({
@@ -30,6 +32,7 @@ import { CategoryIcon } from 'src/app/types/enums';
 		MatGridListModule,
 		KeyValuePipe,
 		NgFor,
+		NgIf,
 	],
 })
 export class CategoryDialogComponent {
@@ -37,7 +40,7 @@ export class CategoryDialogComponent {
 	isOpen = false;
 	categoryIcons = CategoryIcon;
 	addCategoryForm = new FormGroup({
-		categoryName: new FormControl('', [Validators.required]),
+		categoryName: new FormControl('', [Validators.required], categoryNameValidator(this.formValidationService, this.data.eventId)),
 		weighted: new FormControl(false),
 		selectedIcon: new FormControl(CategoryIcon.SHOPPING),
 	});
@@ -45,7 +48,8 @@ export class CategoryDialogComponent {
 	constructor(
 		public dialogRef: MatDialogRef<CategoryDialogComponent>,
 		@Inject(MAT_DIALOG_DATA)
-		public data: { name: string; weighted: boolean }
+		public data: { name: string; weighted: boolean; eventId: string },
+		private formValidationService: FormValidationService
 	) {}
 
 	getErrorMessage() {

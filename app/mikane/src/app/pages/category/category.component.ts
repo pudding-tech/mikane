@@ -19,7 +19,7 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
-import { FormControlPipe } from 'src/app/shared/forms/validators/form-control.pipe';
+import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 import { ApiError } from 'src/app/types/apiError.type';
 import { CategoryIcon } from 'src/app/types/enums';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
@@ -131,7 +131,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 	openDialog() {
 		const dialogRef = this.dialog.open(CategoryDialogComponent, {
 			width: '380px',
-			data: { weighted: false },
+			data: { weighted: false, eventId: this.eventId },
 		});
 
 		dialogRef.afterClosed().subscribe((result) => {

@@ -1,17 +1,29 @@
+import { NgIf } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { PuddingEvent } from 'src/app/services/event/event.service';
-import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { PuddingEvent } from 'src/app/services/event/event.service';
+import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
 
 @Component({
 	selector: 'event-dialog',
 	templateUrl: 'event-dialog.component.html',
 	styleUrls: ['event-dialog.component.scss'],
 	standalone: true,
-	imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule],
+	imports: [
+		MatDialogModule,
+		MatFormFieldModule,
+		MatInputModule,
+		FormsModule,
+		MatButtonModule,
+		NgIf,
+		EventNameValidatorDirective,
+		MatProgressSpinnerModule,
+	],
 })
 export class EventDialogComponent {
 	event: { id?: string; name: string; description: string } = { name: '', description: '' };

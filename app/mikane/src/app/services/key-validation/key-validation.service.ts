@@ -9,6 +9,7 @@ import { ENV } from 'src/environments/environment.provider';
 })
 export class KeyValidationService {
 	private apiUrl = this.env.apiUrl + 'verifykey';
+
 	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
 
 	verifyRegisterKey(key: string): Observable<{ email: string }> {

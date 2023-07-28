@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { User, UserService } from 'src/app/services/user/user.service';
-import { FormControlPipe } from 'src/app/shared/forms/validators/form-control.pipe';
+import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 import { CategoryIcon } from 'src/app/types/enums';
 
 @Component({

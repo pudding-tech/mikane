@@ -40,37 +40,39 @@
 				<mat-label>Username</mat-label>
 				<input type="text" matInput placeholder="Username" formControlName="username" />
 				<mat-error *ngIf="registerUserForm.get('username')?.errors?.['required']"> Username required </mat-error>
+				<mat-error *ngIf="registerUserForm.get('username')?.errors?.['invalid']"> Invalid username </mat-error>
 				<mat-error *ngIf="registerUserForm.get('username')?.errors?.['duplicate']"> Username already taken </mat-error>
 			</mat-form-field>
 		</div>
 		<div>
 			<mat-form-field appearance="fill">
 				<mat-label>First Name</mat-label>
-				<input type="text" matInput placeholder="First name" formControlName="firstName" />
+				<input type="text" matInput placeholder="First name" autocomplete="given-name" formControlName="firstName" />
 				<mat-error *ngIf="registerUserForm.get('firstName')?.errors?.['required']"> First name required </mat-error>
 			</mat-form-field>
 		</div>
 		<div>
 			<mat-form-field appearance="fill">
 				<mat-label>Last Name</mat-label>
-				<input type="text" matInput placeholder="Last name" formControlName="lastName" />
+				<input type="text" matInput placeholder="Last name" autocomplete="family-name" formControlName="lastName" />
 				<mat-error *ngIf="registerUserForm.get('lastName')?.invalid"> Invalid last name </mat-error>
 			</mat-form-field>
 		</div>
 		<div>
 			<mat-form-field appearance="fill">
 				<mat-label>Email</mat-label>
-				<input type="text" matInput placeholder="Email" formControlName="email" />
+				<input type="text" matInput placeholder="Email" autocomplete="email" formControlName="email" />
 				<mat-error *ngIf="registerUserForm.get('email')?.errors?.['required']"> Email required </mat-error>
-				<mat-error *ngIf="registerUserForm.get('email')?.errors?.['invalid']"> Email invalid </mat-error>
+				<mat-error *ngIf="registerUserForm.get('email')?.errors?.['invalid']"> Invalid email </mat-error>
 				<mat-error *ngIf="registerUserForm.get('email')?.errors?.['duplicate']"> Email address already taken </mat-error>
 			</mat-form-field>
 		</div>
 		<div>
 			<mat-form-field appearance="fill">
 				<mat-label>Phone Number</mat-label>
-				<input type="tel" matInput placeholder="Phone number" formControlName="phone" />
-				<mat-error *ngIf="registerUserForm.get('phone')?.errors?.['required']"> Invalid phone number </mat-error>
+				<input type="tel" matInput placeholder="Phone number" autocomplete="tel" formControlName="phone" />
+				<mat-error *ngIf="registerUserForm.get('phone')?.errors?.['required']"> Phone number required </mat-error>
+				<mat-error *ngIf="registerUserForm.get('phone')?.errors?.['invalid']"> Invalid phone number </mat-error>
 				<mat-error *ngIf="registerUserForm.get('phone')?.errors?.['duplicate']"> Phone number already taken </mat-error>
 			</mat-form-field>
 		</div>
@@ -78,7 +80,13 @@
 			<div>
 				<mat-form-field appearance="fill">
 					<mat-label>Password</mat-label>
-					<input [type]="hide ? 'password' : 'text'" matInput placeholder="Password" formControlName="password" />
+					<input
+						[type]="hide ? 'password' : 'text'"
+						matInput
+						placeholder="Password"
+						autocomplete="off"
+						formControlName="password"
+					/>
 					<button
 						mat-icon-button
 						matSuffix
@@ -99,7 +107,13 @@
 			<div>
 				<mat-form-field appearance="fill">
 					<mat-label>Retype Password</mat-label>
-					<input [type]="hide ? 'password' : 'text'" matInput placeholder="Retype Password" formControlName="passwordRetype" />
+					<input
+						[type]="hide ? 'password' : 'text'"
+						matInput
+						placeholder="Retype Password"
+						autocomplete="off"
+						formControlName="passwordRetype"
+					/>
 					<button
 						mat-icon-button
 						matSuffix
@@ -120,7 +134,14 @@
 			</div>
 		</div>
 		<br />
-		<button type="submit" mat-raised-button color="primary" [class.spinner]="loading" [disabled]="loading" class="register-button">
+		<button
+			type="submit"
+			mat-raised-button
+			color="primary"
+			[class.spinner]="loading"
+			[disabled]="loading || registerUserForm.invalid || registerUserForm.pending"
+			class="register-button"
+		>
 			Register <mat-icon aria-hidden="false">person_add</mat-icon>
 		</button>
 	</form>

@@ -10,8 +10,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { emailValidator } from 'src/app/shared/forms/validators/async-email.validator';
+import { phoneValidator } from 'src/app/shared/forms/validators/async-phone.validator';
+import { usernameValidator } from 'src/app/shared/forms/validators/async-username.validator';
 import { ApiError } from 'src/app/types/apiError.type';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
 
@@ -43,11 +47,11 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 	protected loading = false;
 
 	registerUserForm = new FormGroup({
-		username: new FormControl<string>('', [Validators.required]),
+		username: new FormControl<string>('', [Validators.required], [usernameValidator(this.formValidationService)]),
 		firstName: new FormControl<string>('', [Validators.required]),
 		lastName: new FormControl<string>(''),
-		email: new FormControl<string>('', [Validators.required, Validators.email]),
-		phone: new FormControl<string>('', [Validators.required]),
+		email: new FormControl<string>('', [Validators.required, Validators.email], [emailValidator(this.formValidationService)]),
+		phone: new FormControl<string>('', [Validators.required], [phoneValidator(this.formValidationService)]),
 		passwordGroup: new FormGroup({
 			password: new FormControl<string>('', [Validators.required]),
 			passwordRetype: new FormControl<string>('', [Validators.required]),
@@ -59,6 +63,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 		private messageService: MessageService,
 		private router: Router,
 		private route: ActivatedRoute,
+		private formValidationService: FormValidationService,
 		public breakpointService: BreakpointService
 	) {}
 
