@@ -5,6 +5,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,6 +17,7 @@ import { map } from 'lodash-es';
 import { BehaviorSubject } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { ContextService } from 'src/app/services/context/context.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
@@ -25,6 +27,7 @@ import { CategoryIcon } from 'src/app/types/enums';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
+import { CategoryItemComponent } from 'src/app/features/mobile/category-item/category-item.component';
 
 @Component({
 	selector: 'app-category',
@@ -39,6 +42,7 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 		MatExpansionModule,
 		NgFor,
 		MatTableModule,
+		MatListModule,
 		FormsModule,
 		ReactiveFormsModule,
 		MatFormFieldModule,
@@ -49,6 +53,7 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 		MatDialogModule,
 		FormControlPipe,
 		MatSelectModule,
+		CategoryItemComponent,
 	],
 })
 export class CategoryComponent implements OnInit, AfterViewChecked {
@@ -72,7 +77,8 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		public dialog: MatDialog,
 		private cd: ChangeDetectorRef,
 		private messageService: MessageService,
-		public breakpointService: BreakpointService
+		public breakpointService: BreakpointService,
+		public contextService: ContextService,
 	) {}
 
 	ngOnInit(): void {
@@ -114,7 +120,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		});
 	}
 
-	filterUsers(categoryId: string) {
+	filterUsers = (categoryId: string) => {
 		const category = this.categories.find((category) => {
 			return category.id === categoryId;
 		});
@@ -145,7 +151,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		this.categoryService.createCategory(name, this.eventId, weighted, icon).subscribe({
 			next: (category) => {
 				this.categories.push(category);
-				this.messageService.showSuccess('Category created!');
+				this.messageService.showSuccess('Category created');
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Error creating category');
@@ -219,7 +225,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 					});
 					if (userIndex > -1) {
 						this.categories[catIndex].users[userIndex].weight = weight;
-						this.messageService.showSuccess('Category edited!');
+						this.messageService.showSuccess('Category updated');
 					}
 				}
 			},
@@ -271,7 +277,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 			next: () => {
 				const index = this.categories.findIndex((category) => category.id === categoryId);
 				this.categories.splice(index, 1);
-				this.messageService.showSuccess('Successfully deleted category!');
+				this.messageService.showSuccess('Successfully deleted category');
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Error deleting category');

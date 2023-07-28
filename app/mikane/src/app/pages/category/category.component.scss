@@ -23,6 +23,10 @@
 .add-user {
 	margin-top: 20px;
 	margin-bottom: 20px;
+
+	&.save-button {
+		margin-bottom: 42px;
+	}
 }
 
 .category-icon {
@@ -46,4 +50,19 @@
 			margin-right: 12px;
 		}
 	}
+}
+
+.add-category-button-mobile {
+	position: fixed;
+	bottom: 80px;
+	right: 20px;
+	z-index: 999;
+
+	&.iOS {
+		bottom: 110px;
+	}
+}
+
+.categories-list-mobile {
+	padding: 0;
 }

@@ -1,4 +1,4 @@
-<div *ngIf="!(breakpointService.isMobile() | async)" class="add-button">
+<div *ngIf="(breakpointService.isMobile() | async) === false" class="add-button">
 	<button mat-raised-button color="primary" (click)="openDialog()">
 		<mat-icon>add_shopping_cart</mat-icon>
 		Add expense
@@ -6,7 +6,7 @@
 </div>
 
 <div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView">
 		<table
 			*ngIf="expenses.length > 0; else noExpenses"
 			class="expense-table"
