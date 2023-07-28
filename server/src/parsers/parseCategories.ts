@@ -8,6 +8,7 @@ import { Target, CategoryIcon } from "../types/enums";
  * Build array of Category objects. Format for either client or calculate function
  * @param catInput List of CategoryDB objects
  * @param target Choose if categories are meant for client presentation or calculations
+ * @param usersInEventInput List of all users in event (optional)
  * @returns List of Category objects
  */
 export const parseCategories = (catInput: CategoryDB[], target: Target, usersInEventInput?: UserNamesDB[]): Category[] => {
@@ -40,6 +41,13 @@ export const parseCategories = (catInput: CategoryDB[], target: Target, usersInE
         catObj.user_weights.forEach(user => {
           if (target === Target.CLIENT && category.users) {
             category.users.push(
+              user.deleted ?
+              {
+                id: user.user_id,
+                name: "Deleted user",
+                avatarURL: getGravatarURL("", { size: 50, default: "mp" }),
+                weight: user.weight
+              } :
               {
                 id: user.user_id,
                 name: user.first_name,

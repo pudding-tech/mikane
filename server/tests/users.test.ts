@@ -321,7 +321,7 @@ describe("users", async () => {
       expect(res.body.success).toEqual(true);
     });
 
-    test("confirm deleted user does not exist", async () => {
+    test("confirm deleted user is deleted", async () => {
       const res = await request(app)
         .get("/api/users/" + user2.id)
         .set("Cookie", authToken);

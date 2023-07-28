@@ -17,7 +17,8 @@ returns table (
   payer_first_name varchar(255),
   payer_last_name varchar(255),
   payer_username varchar(255),
-  payer_email varchar(255)
+  payer_email varchar(255),
+  payer_deleted boolean
 ) as
 $$
 begin
@@ -32,7 +33,7 @@ begin
     select
       ex.id, ex.name, ex.description, ex.amount, ex.created,
       c.id as category_id, c.name as category_name, c.icon as category_icon,
-      u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email
+      u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email, u.deleted as payer_deleted
     from
       expense ex
       inner join category c on c.id = ex.category_id
@@ -58,7 +59,7 @@ begin
     select
       ex.id, ex.name, ex.description, ex.amount, ex.created,
       c.id as category_id, c.name as category_name, c.icon as category_icon,
-      u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email
+      u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email, u.deleted as payer_deleted
     from
       expense ex
       inner join category c on c.id = ex.category_id
@@ -81,7 +82,7 @@ begin
     select
       ex.id, ex.name, ex.description, ex.amount, ex.created,
       c.id as category_id, c.name as category_name, c.icon as category_icon,
-      u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email
+      u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email, u.deleted as payer_deleted
     from
       expense ex
       inner join category c on c.id = ex.category_id

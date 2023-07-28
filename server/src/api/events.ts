@@ -134,7 +134,8 @@ router.post("/events", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD055);
     }
 
-    const event: Event = await db.createEvent(name.trim(), userId, req.body.private, req.body.description);
+    const createdEvent: Event = await db.createEvent(name.trim(), userId, req.body.private, req.body.description);
+    const event = await db.getEvent(createdEvent.id, userId);
     res.status(200).send(event);
   }
   catch (err) {

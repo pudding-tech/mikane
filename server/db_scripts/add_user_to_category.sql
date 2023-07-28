@@ -26,7 +26,7 @@ begin
     raise exception 'Category not found' using errcode = 'P0007';
   end if;
 
-  if not exists (select 1 from "user" u where u.id = ip_user_id) then
+  if not exists (select 1 from "user" u where u.id = ip_user_id and u.deleted = false) then
     raise exception 'User not found' using errcode = 'P0008';
   end if;
 
@@ -41,9 +41,9 @@ begin
   if (tmp_weighted = true and ip_weight is null) then
     raise exception 'Weight required when adding user to weighted category' using errcode = 'P0012';
   elsif (tmp_weighted = true) then
-    insert into user_category(user_id, category_id, weight) values (ip_user_id, ip_category_id, ip_weight);
+    insert into user_category(user_id, category_id, weight, joined_time) values (ip_user_id, ip_category_id, ip_weight, CURRENT_TIMESTAMP);
   else
-    insert into user_category(user_id, category_id) values (ip_user_id, ip_category_id);
+    insert into user_category(user_id, category_id, joined_time) values (ip_user_id, ip_category_id, CURRENT_TIMESTAMP);
   end if;
 
   return query

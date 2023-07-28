@@ -32,8 +32,8 @@ begin
     raise exception 'Phone number already taken' using errcode = 'P0019';
   end if;
 
-  insert into "user"(username, first_name, last_name, email, phone_number, "password", created)
-    values (ip_username, ip_first_name, nullif(ip_last_name, ''), ip_email, ip_phone_number, ip_password, CURRENT_TIMESTAMP)
+  insert into "user"(username, first_name, last_name, email, phone_number, "password", created, deleted)
+    values (ip_username, ip_first_name, nullif(ip_last_name, ''), ip_email, ip_phone_number, ip_password, CURRENT_TIMESTAMP, false)
     returning "user".id into tmp_user_id;
 
   return query

@@ -59,7 +59,7 @@ export const getUserID = async (email: string) => {
  */
 export const getUsers = async (filter?: { eventId?: string, excludeUserId?: string }) => {
   const query = {
-    text: "SELECT * FROM get_users($1, $2)",
+    text: "SELECT * FROM get_users($1, $2, false)",
     values: [filter?.eventId, filter?.excludeUserId]
   };
   const users: User[] = await pool.query(query)

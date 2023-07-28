@@ -1,7 +1,8 @@
 drop function if exists get_users;
 create or replace function get_users(
   ip_event_id uuid,
-  ip_exclude_user_id uuid
+  ip_exclude_user_id uuid,
+  ip_deleted boolean
 )
 returns table (
   id uuid,
@@ -11,6 +12,7 @@ returns table (
   email varchar(255),
   phone_number varchar(20),
   created timestamp,
+  deleted boolean,
   event_id uuid,
   is_event_admin boolean,
   event_joined_time timestamp
@@ -22,15 +24,16 @@ begin
   begin
     return query
     select
-      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created,
+      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, u.deleted,
       null::uuid as event_id,
       null::boolean as is_event_admin,
       null::timestamp as event_joined_time
     from
       "user" u
     where
-      (ip_exclude_user_id is not null and u.id != ip_exclude_user_id) or
-      (ip_exclude_user_id is null and u.id = u.id)
+      ((ip_exclude_user_id is not null and u.id != ip_exclude_user_id) or
+      (ip_exclude_user_id is null and u.id = u.id)) and
+      u.deleted = coalesce(ip_deleted, u.deleted)
     order by
       u.first_name asc;
   end;
@@ -44,7 +47,7 @@ begin
 
     return query
     select
-      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created,
+      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, u.deleted,
       e.id as event_id, ue.admin as is_event_admin, ue.joined_time as event_joined_time
     from
       "user" u
@@ -53,7 +56,8 @@ begin
     where
       ue.event_id = ip_event_id and
       ((ip_exclude_user_id is not null and u.id != ip_exclude_user_id) or
-      (ip_exclude_user_id is null and u.id = u.id))
+      (ip_exclude_user_id is null and u.id = u.id)) and
+      u.deleted = coalesce(ip_deleted, u.deleted)
     order by
       ue.joined_time asc;
   end;

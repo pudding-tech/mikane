@@ -6,6 +6,7 @@ export type UserDB = {
   email: string,
   phone_number: string,
   created: Date,
+  deleted: boolean,
   event_id?: string,
   is_event_admin?: boolean,
   event_joined_time?: Date
@@ -37,7 +38,8 @@ export type CategoryDB = {
     first_name: string,
     last_name: string,
     email: string,
-    weight: number
+    weight: number,
+    deleted: boolean
   }[]
 };
 
@@ -54,7 +56,8 @@ export type ExpenseDB = {
   payer_first_name: string,
   payer_last_name: string,
   payer_username: string,
-  payer_email: string
+  payer_email: string,
+  payer_deleted: boolean
 };
 
 export type APIKeyDB = {

@@ -19,7 +19,8 @@ returns table (
   payer_first_name varchar(255),
   payer_last_name varchar(255),
   payer_username varchar(255),
-  payer_email varchar(255)
+  payer_email varchar(255),
+  payer_deleted boolean
 ) as
 $$
 declare
@@ -30,7 +31,7 @@ begin
     raise exception 'Category not found' using errcode = 'P0007';
   end if;
 
-  if not exists (select 1 from "user" u where u.id = ip_payer_id) then
+  if not exists (select 1 from "user" u where u.id = ip_payer_id and u.deleted = false) then
     raise exception 'User not found' using errcode = 'P0008';
   end if;
 

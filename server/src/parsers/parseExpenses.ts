@@ -19,9 +19,6 @@ export const parseExpenses = (expInput: ExpenseDB[], usersInEventInput?: UserNam
       icon = CategoryIcon.SHOPPING;
     }
 
-    // Payer avatar
-    const avatarURL = getGravatarURL(expObj.payer_email, { size: 50, default: "mp" });
-
     const expense: Expense = {
       id: expObj.id,
       name: expObj.name,
@@ -33,13 +30,18 @@ export const parseExpenses = (expInput: ExpenseDB[], usersInEventInput?: UserNam
         name: expObj.category_name,
         icon: icon,
       },
-      payer: {
+      payer: expObj.payer_deleted ? {
+        id: expObj.payer_id,
+        username: "Deleted user",
+        name: "Deleted user",
+        avatarURL: getGravatarURL("", { size: 50, default: "mp" })
+      } : {
         id: expObj.payer_id,
         username: expObj.payer_username,
         name: expObj.payer_first_name,
         firstName: expObj.payer_first_name,
         lastName: expObj.payer_last_name,
-        avatarURL: avatarURL
+        avatarURL: getGravatarURL(expObj.payer_email, { size: 50, default: "mp" })
       },
     };
     expenses.push(expense);
