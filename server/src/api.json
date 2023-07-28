@@ -2046,7 +2046,7 @@
           "Categories"
         ],
         "summary": "Edit category",
-        "description": "Edit a category (rename)",
+        "description": "Edit a category",
         "operationId": "putCategory",
         "security": [
           { "cookieAuth": [] }
@@ -2073,6 +2073,10 @@
                   "name": {
                     "type": "string",
                     "example": "New category name"
+                  },
+                  "icon": {
+                    "type": "string",
+                    "example": "shopping_cart"
                   }
                 }
               }
@@ -2720,6 +2724,103 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Expense not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "Edit expense",
+        "description": "Edit an expense",
+        "operationId": "putExpense",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Expense ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Expense details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "New expense name"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "New expense description"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 120
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  },
+                  "payerId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success",
