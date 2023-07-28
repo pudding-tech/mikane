@@ -135,7 +135,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			.subscribe({
 				next: (expense) => {
 					this.expenses = [expense, ...this.expenses];
-					this.messageService.showSuccess('New expense created!');
+					this.messageService.showSuccess('New expense created');
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to create expense');

@@ -1,4 +1,4 @@
-<div class="add-button">
+<div *ngIf="(breakpointService.isMobile() | async) === false" class="add-button">
 	<button mat-raised-button color="primary" (click)="openDialog()">
 		<mat-icon>post_add</mat-icon>
 		Add category
@@ -6,6 +6,7 @@
 </div>
 
 <div *ngIf="(loading | async) === false; else loadingSpinner">
+	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView">
 	<mat-accordion *ngIf="categories.length > 0; else noCategories">
 		<mat-expansion-panel *ngFor="let category of categories" class="categories">
 			<mat-expansion-panel-header>
@@ -32,12 +33,11 @@
 								<mat-form-field
 									class="category-user-input add-user"
 									subscriptSizinig="dynamic"
-									*ngIf="(breakpointService.isMobile() | async) === false"
 								>
 									<mat-select
 										[formControl]="addUserForm.get('participantName') | formControl"
 										name="participantName"
-										placeholder="Choose participant"
+										placeholder="Add participant"
 										required
 									>
 										<mat-option *ngFor="let user of filterUsers(category.id)" [value]="user.id">
@@ -47,24 +47,6 @@
 											</span>
 										</mat-option>
 									</mat-select>
-								</mat-form-field>
-
-								<mat-form-field
-									class="category-user-input add-user"
-									subscriptSizing="dynamic"
-									*ngIf="(breakpointService.isMobile() | async) === true"
-								>
-									<select
-										matNativeControl
-										[formControl]="addUserForm.get('participantName') | formControl"
-										name="participantName"
-										required
-									>
-										<option value="" disabled selected>Choose participant</option>
-										<option *ngFor="let user of filterUsers(category.id)" [value]="user.id">
-											{{ user.name }}
-										</option>
-									</select>
 								</mat-form-field>
 							</td>
 						</ng-container>
@@ -124,7 +106,7 @@
 										!addUserForm.get('participantName')?.dirty ||
 										(category.weighted && addUserForm.get('weight')?.invalid)
 									"
-									class="add-user"
+									class="add-user save-button"
 								>
 									<mat-icon>add_circle</mat-icon>
 								</button>
@@ -148,7 +130,28 @@
 			</ng-template>
 		</mat-expansion-panel>
 	</mat-accordion>
+	</div>
 </div>
+
+<ng-template #mobileView>
+	<mat-nav-list class="categories-list-mobile">
+		<category-item
+			*ngFor="let category of categories"
+			[category]="category"
+			[addUserForm]="addUserForm"
+			[filterUsers]="filterUsers"
+			(addUser)="addUser($event.categoryId)"
+			(removeUser)="removeUser($event.categoryId, $event.userId)"
+			(openEditDialog)="openEditDialog($event.categoryId, $event.userId, $event.weight)"
+			(toggleWeighted)="toggleWeighted($event.categoryId, $event.weighted)"
+			(deleteCategoryDialog)="deleteCategoryDialog($event.categoryId)"
+			>
+		</category-item>
+	</mat-nav-list>
+	<button mat-fab color="primary" class="add-category-button-mobile" (click)="openDialog()" [ngClass]="{ 'iOS': contextService.isIos }">
+		<mat-icon>post_add</mat-icon>
+	</button>
+</ng-template>
 
 <ng-template #loadingSpinner>
 	<loading-spinner></loading-spinner>

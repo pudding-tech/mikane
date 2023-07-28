@@ -201,7 +201,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			next: () => {
 				// Reload users and balances
 				this.loadUsers();
-				this.messageService.showSuccess('User created!');
+				this.messageService.showSuccess('User created');
 			},
 			error: () => {
 				this.messageService.showError('Failed to create user');
@@ -283,7 +283,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 					if (expense.payer.id === expandedUserId) {
 						dataSource.addExpense(expense);
 					}
-					this.messageService.showSuccess('New expense created!');
+					this.messageService.showSuccess('New expense created');
 				},
 				error: () => {
 					this.messageService.showError('Failed to create expense');
@@ -295,7 +295,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		this.expenseService.deleteExpense(id).subscribe({
 			next: () => {
 				dataSource.removeExpense(id);
-				this.messageService.showSuccess('Expense deleted!');
+				this.messageService.showSuccess('Expense deleted');
 			},
 			error: () => {
 				this.messageService.showError('Failed to delete expense from user');

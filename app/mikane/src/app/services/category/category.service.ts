@@ -14,6 +14,7 @@ export interface Category {
 	users: {
 		id: string;
 		name: string;
+		avatarURL: string;
 		weight?: number;
 	}[];
 }
