@@ -16,7 +16,7 @@ export const getCategories = async (eventId: string) => {
     values: [eventId]
   };
   const query2 = {
-    text: "SELECT * FROM get_users_name($1)",
+    text: "SELECT * FROM get_users_name($1, null)",
     values: [eventId]
   };
 
@@ -105,9 +105,14 @@ export const addUserToCategory = async (categoryId: string, userId: string, weig
     text: "SELECT * FROM add_user_to_category($1, $2, $3);",
     values: [categoryId, userId, weight]
   };
-  const categories: Category[] = await pool.query(query)
+  const query2 = {
+    text: "SELECT * FROM get_users_name(null, $1)",
+    values: [categoryId]
+  };
+
+  const categories: Category[] = await Promise.all([query, query2].map(query => pool.query(query)))
     .then(data => {
-      return parseCategories(data.rows, Target.CLIENT);
+      return parseCategories(data[0].rows, Target.CLIENT, data[1].rows);
     })
     .catch(err => {
       if (err.code === "P0007")
@@ -188,9 +193,14 @@ export const editWeightStatus = async (categoryId: string, weighted: boolean) =>
     text: "SELECT * FROM edit_category_weighted_status($1, $2);",
     values: [categoryId, weighted]
   };
-  const categories: Category[] = await pool.query(query)
+  const query2 = {
+    text: "SELECT * FROM get_users_name(null, $1)",
+    values: [categoryId]
+  };
+
+  const categories: Category[] = await Promise.all([query, query2].map(query => pool.query(query)))
     .then(data => {
-      return parseCategories(data.rows, Target.CLIENT);
+      return parseCategories(data[0].rows, Target.CLIENT, data[1].rows);
     })
     .catch(err => {
       if (err.code === "P0007")
@@ -237,9 +247,14 @@ export const removeUserFromCategory = async (categoryId: string, userId: string)
     text: "SELECT * FROM remove_user_from_category($1, $2);",
     values: [categoryId, userId]
   };
-  const categories: Category[] = await pool.query(query)
+  const query2 = {
+    text: "SELECT * FROM get_users_name(null, $1)",
+    values: [categoryId]
+  };
+
+  const categories: Category[] = await Promise.all([query, query2].map(query => pool.query(query)))
     .then(data => {
-      return parseCategories(data.rows, Target.CLIENT);
+      return parseCategories(data[0].rows, Target.CLIENT, data[1].rows);
     })
     .catch(err => {
       if (err.code === "P0007")

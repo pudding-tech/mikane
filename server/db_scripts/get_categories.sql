@@ -55,8 +55,9 @@ begin
           'first_name', u.first_name,
           'last_name', u.last_name,
           'email', u.email,
-          'weight', wt.weight
-        ))
+          'weight', wt.weight,
+          'deleted', u.deleted
+        ) order by uc.joined_time asc)
       from
         user_category uc
         inner join "user" u ON u.id = uc.user_id

@@ -15,7 +15,7 @@ export const getExpenses = async (eventId: string) => {
     values: [eventId]
   };
   const query2 = {
-    text: "SELECT * FROM get_users_name($1)",
+    text: "SELECT * FROM get_users_name($1, null)",
     values: [eventId]
   };
 

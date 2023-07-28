@@ -22,7 +22,8 @@ begin
     from
       "user" u
     where
-      u.id = ip_user_id;
+      u.id = ip_user_id and
+      u.deleted = false;
   elsif (ip_username is not null) then
     return query
     select
@@ -30,7 +31,8 @@ begin
     from
       "user" u
     where
-      u.username = ip_username;
+      u.username = ip_username and
+      u.deleted = false;
   end if;
 end;
 $$

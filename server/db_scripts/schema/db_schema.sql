@@ -4,9 +4,10 @@ create table "user" (
   first_name varchar(255) not null,
   last_name varchar(255),
   email varchar(255) not null unique,
-  phone_number varchar(20) not null unique,
+  phone_number varchar(255) not null unique,
   "password" varchar(255) not null,
-  created timestamp not null
+  created timestamp not null,
+  deleted boolean not null
 );
 
 create table "event" (
@@ -38,6 +39,14 @@ create table category (
 );
 create index idx_category_created on category(created);
 
+create table user_category (
+  user_id uuid references "user"(id) on delete cascade,
+  category_id uuid references category(id) on delete cascade,
+  "weight" numeric(14),
+   joined_time timestamp not null,
+  primary key (user_id, category_id)
+);
+
 create table expense (
   id uuid primary key default gen_random_uuid(),
   "name" varchar(255) not null,
@@ -48,13 +57,6 @@ create table expense (
   created timestamp not null
 );
 create index idx_expense_created on expense(created);
-
-create table user_category (
-  user_id uuid references "user"(id) on delete cascade,
-  category_id uuid references category(id) on delete cascade,
-  "weight" numeric(14),
-  primary key (user_id, category_id)
-);
 
 create table "session" (
   "sid" varchar(255) not null primary key,
@@ -92,3 +94,5 @@ create table password_reset_key (
   used boolean not null,
   expires timestamp not null
 );
+
+create extension if not exists pgcrypto;

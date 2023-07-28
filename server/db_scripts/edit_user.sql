@@ -20,7 +20,7 @@ returns table (
 $$
 begin
 
-  if not exists (select 1 from "user" u where u.id = ip_user_id) then
+  if not exists (select 1 from "user" u where u.id = ip_user_id and u.deleted = false) then
     raise exception 'User not found' using errcode = 'P0008';
   end if;
 

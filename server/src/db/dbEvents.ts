@@ -99,7 +99,7 @@ export const getEventByName = async (eventName: string, userId?: string) => {
 export const getEventBalances = async (eventId: string) => {
   const queryUsers = {
     text: `
-      SELECT * FROM get_users($1, null);
+      SELECT * FROM get_users($1, null, null);
     `,
     values: [eventId]
   };
@@ -153,7 +153,7 @@ export const getEventBalances = async (eventId: string) => {
 export const getEventPayments = async (eventId: string) => {
   const queryUsers = {
     text: `
-      SELECT * FROM get_users($1, null);
+      SELECT * FROM get_users($1, null, null);
     `,
     values: [eventId]
   };
