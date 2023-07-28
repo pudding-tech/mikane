@@ -9,8 +9,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Subscription } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { emailValidator } from 'src/app/shared/forms/validators/async-email.validator';
+import { phoneValidator } from 'src/app/shared/forms/validators/async-phone.validator';
+import { usernameValidator } from 'src/app/shared/forms/validators/async-username.validator';
 import { ApiError } from 'src/app/types/apiError.type';
 
 @Component({
@@ -33,9 +37,6 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	private subscription: Subscription;
 	private editSubscription: Subscription;
 
-	// private phone!: Phonenumber;
-	// private phoneCtrl$: Subscription | undefined;
-
 	@Input('user') currentUser: User;
 	editMode: boolean = false;
 
@@ -51,20 +52,16 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 		private userService: UserService,
 		public dialog: MatDialog,
 		private messageService: MessageService,
-		public breakpointService: BreakpointService
+		public breakpointService: BreakpointService,
+		private formValidationService: FormValidationService
 	) {}
 
 	ngOnInit(): void {
 		this.editUserForm.patchValue(this.currentUser);
-	}
 
-	ngAfterViewInit(): void {
-		/* 		this.phoneCtrl$ = this.editUserForm.get('phone')?.valueChanges.subscribe((number) => {
-			// TODO: Phonenumber validation
-			this.phone = {
-				number: number ? number : '',
-			};
-		}); */
+		this.editUserForm.get('username').addAsyncValidators(usernameValidator(this.formValidationService, this.currentUser.id));
+		this.editUserForm.get('email').addAsyncValidators(emailValidator(this.formValidationService, this.currentUser.id));
+		this.editUserForm.get('phone').addAsyncValidators(phoneValidator(this.formValidationService, this.currentUser.id));
 	}
 
 	editUser() {

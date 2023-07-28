@@ -15,6 +15,8 @@
 			>
 				<mat-icon>{{ addCategoryForm.value.selectedIcon }}</mat-icon>
 			</button>
+			<mat-error *ngIf="addCategoryForm?.get('categoryName')?.errors?.['duplicate']">Category already exists</mat-error>
+			<mat-error *ngIf="addCategoryForm?.get('categoryName')?.errors?.['invalid']">Invalid category name</mat-error>
 		</mat-form-field>
 		<div>
 			<mat-checkbox name="weighted" formControlName="weighted">Weighted</mat-checkbox>
