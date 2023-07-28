@@ -31,7 +31,7 @@ begin
   end if;
 
   insert into "event"("name", "description", created, "private", active, usernames_only)
-    values (ip_name, ip_description, CURRENT_TIMESTAMP, ip_private, ip_active, ip_usernames_only)
+    values (ip_name, nullif(trim(ip_description), ''), CURRENT_TIMESTAMP, ip_private, ip_active, ip_usernames_only)
     returning "event".id into tmp_event_id;
 
   return query

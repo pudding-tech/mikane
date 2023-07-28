@@ -112,7 +112,7 @@ router.put("/expenses/:id", authCheck, async (req, res, next) => {
     const categoryId: string | undefined = req.body.categoryId;
     const payerId: string | undefined = req.body.payerId;
 
-    if (!name && !description && !categoryId && !amount && !payerId) {
+    if (!name && !categoryId && !amount && !payerId && description === undefined) {
       throw new ErrorExt(ec.PUD116);
     }
     if (categoryId && !isUUID(categoryId)) {
@@ -127,7 +127,7 @@ router.put("/expenses/:id", authCheck, async (req, res, next) => {
     if (amount && amount < 0) {
       throw new ErrorExt(ec.PUD030);
     }
-    if (name?.trim() === "" || description?.trim() === "") {
+    if (name?.trim() === "") {
       throw new ErrorExt(ec.PUD059);
     }
 

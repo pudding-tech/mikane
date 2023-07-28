@@ -46,7 +46,7 @@ begin
     expense e
   set
     name = coalesce(ip_name, e.name),
-    description = coalesce(ip_description, e.description),
+    description = nullif(trim(coalesce(ip_description, e.description)), ''),
     amount = coalesce(ip_amount, e.amount),
     category_id = coalesce(ip_category_id, e.category_id),
     payer_id = coalesce(ip_payer_id, e.payer_id)

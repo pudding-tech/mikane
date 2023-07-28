@@ -40,7 +40,7 @@ begin
   end if;
 
   insert into expense("name", "description", amount, category_id, payer_id, created)
-    values (ip_name, ip_description, ip_amount, ip_category_id, ip_payer_id, CURRENT_TIMESTAMP)
+    values (ip_name, nullif(trim(ip_description), ''), ip_amount, ip_category_id, ip_payer_id, CURRENT_TIMESTAMP)
     returning expense.id into tmp_expense_id;
 
   return query
