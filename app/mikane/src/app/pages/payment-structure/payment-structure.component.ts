@@ -8,11 +8,15 @@ import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payment-item.component';
 
 @Component({
 	selector: 'app-payment-structure',
@@ -28,8 +32,10 @@ import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
 		MatTableModule,
 		ProgressSpinnerComponent,
 		MatCardModule,
+		MatListModule,
 		AsyncPipe,
 		CurrencyPipe,
+		PaymentItemComponent,
 	],
 })
 export class PaymentStructureComponent implements OnInit {
@@ -50,14 +56,32 @@ export class PaymentStructureComponent implements OnInit {
 			amount: number;
 		}[];
 	}[] = [];
+	currentUser: User;
 
-	constructor(private eventService: EventService, private route: ActivatedRoute, private messageService: MessageService) {}
+	constructor(
+		private authService: AuthService,
+		private eventService: EventService,
+		private route: ActivatedRoute,
+		private messageService: MessageService,
+		public breakpointService: BreakpointService
+	) {}
 
 	ngOnInit(): void {
 		this.route?.parent?.parent?.params.subscribe((params) => {
 			this.eventId = params['eventId'];
 			this.loadPayments();
 		});
+		this.authService.getCurrentUser().subscribe({
+			next: (user) => {
+				this.currentUser = user;
+				this.loading.next(false);
+			},
+			error: (error: ApiError) => {
+				this.messageService.showError('Something went wrong');
+				console.error('something went wrong when getting current user on account page', error);
+				this.loading.next(false);
+			},
+		})
 	}
 
 	loadPayments() {

@@ -30,9 +30,9 @@ import { User } from 'src/app/services/user/user.service';
 	],
 })
 export class CategoryItemComponent {
-	@ViewChild('lower') lower!: ElementRef;
+	@ViewChild('lower') lower: ElementRef;
 	@Input('category') category: Category;
-	@Input() addUserForm!: FormGroup;
+	@Input() addUserForm: FormGroup;
 	@Input() filterUsers: (categoryId: string) => User[];
 	@Output() addUser = new EventEmitter<{ categoryId: string }>();
 	@Output() removeUser = new EventEmitter<{ categoryId: string, userId: string }>();
