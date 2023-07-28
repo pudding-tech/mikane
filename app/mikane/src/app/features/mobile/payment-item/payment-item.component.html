@@ -1,0 +1,31 @@
+<div class="wrapper">
+	<mat-list-item (click)="toggleDropdown()">
+		<div class="upper">
+			<img [src]="sender.sender.avatarURL" class="avatar" />
+			<mat-icon matListItemIcon class="dropdown-arrow">
+				{{ dropdownOpen ? "arrow_drop_up" : "arrow_drop_down" }}
+			</mat-icon>
+			<div>
+				<div class="name">
+					{{ self ? "You" : sender.sender.name }}
+				</div>
+				<div class="subtext">
+					{{ self ? "Owe money to..." : "Owes money to..." }}
+				</div>
+			</div>
+		</div>
+	</mat-list-item>
+	<div #lower class="lower" [style.height.px]="lowerHeight">
+		<mat-list-item *ngFor="let receiver of sender.receivers" >
+			<div class="payment">
+				<span class="name">
+					<img [src]="receiver.receiver.avatarURL" class="avatar" />
+					{{ receiver.receiver.name }}
+				</span>
+				<span class="amount-color">
+					{{ receiver.amount | currency : "" : "" : "1.2-2" : "no" }} kr
+				</span>
+			</div>
+		</mat-list-item>
+	</div>
+</div>
