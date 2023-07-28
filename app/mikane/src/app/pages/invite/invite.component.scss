@@ -32,3 +32,18 @@ mat-form-field {
 	height: 42px;
 	margin-bottom: 10px;
 }
+
+.mobile-view {
+	margin-left: 10vw;
+	margin-right: 10vw;
+	display: flex;
+	flex-direction: column;
+	padding-bottom: 40px;
+
+	.mobile-text {
+		display: flex;
+		justify-content: center;
+		margin-top: 20px;
+		margin-bottom: 20px;
+	}
+}
