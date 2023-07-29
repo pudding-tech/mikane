@@ -394,11 +394,13 @@ describe("expenses", async () => {
         .set("Cookie", authToken)
         .send({
           name: "Edited expense",
+          description: "",
           amount: 200
         });
 
       expect(res.status).toEqual(200);
       expect(res.body.amount).toEqual(200);
+      expect(res.body.description).toEqual(null);
     });
   });
 

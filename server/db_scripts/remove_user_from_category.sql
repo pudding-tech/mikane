@@ -19,7 +19,7 @@ begin
     raise exception 'Category not found' using errcode = 'P0007';
   end if;
 
-  if not exists (select 1 from "user" u where u.id = ip_user_id and u.deleted = false) then
+  if not exists (select 1 from "user" u where u.id = ip_user_id) then
     raise exception 'User not found' using errcode = 'P0008';
   end if;
 
