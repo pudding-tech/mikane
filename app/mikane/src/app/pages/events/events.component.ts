@@ -164,6 +164,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 				this.eventService.createEvent(event).subscribe({
 					next: (event) => {
 						this.events.unshift(event);
+						this.pagedEvents = this.events.slice(0, this.pageSize);
 						this.router.navigate([event.id, 'users'], {
 							relativeTo: this.route,
 							state: { event: event },
@@ -185,6 +186,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 			endIndex = this.length;
 		}
 		this.pagedEvents = this.events.slice(startIndex, endIndex);
+		this.pageSize = event.pageSize;
 	}
 
 	ngOnDestroy(): void {
