@@ -1,0 +1,252 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+	color-scheme: dark;
+	-webkit-tap-highlight-color: rgba(237, 237, 237, 0.2);
+}
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: Roboto, "Helvetica Neue", sans-serif;
+	overflow-y: scroll;
+}
+
+#app {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	// background-color: #2a2a2a;
+}
+
+a.nostyle:link {
+	text-decoration: inherit;
+	color: inherit;
+}
+
+a.nostyle:visited {
+	text-decoration: inherit;
+	color: inherit;
+}
+
+.logo-container {
+	min-width: 26px;
+	height: 26px;
+	padding-right: 14px;
+
+	.logo {
+		height: 26px;
+	}
+}
+
+.mobile-logo-container {
+	display: flex;
+	align-items: center;
+	min-width: 26px;
+	height: 26px;
+	padding-right: 10px;
+
+	.logo {
+		height: 26px;
+	}
+}
+
+.content {
+	margin-left: 10%;
+	padding-bottom: 3em;
+	width: 80%;
+}
+
+.navbar {
+	border-top: solid 1px #333333;
+	background-color: #202020;
+}
+
+.flex-spacer {
+	flex: 1 1 auto;
+}
+
+.expense-table {
+	width: 100%;
+	caption {
+		text-align: left;
+	}
+}
+
+.back-button {
+	margin-right: 1em !important;
+}
+
+.back-button-mobile {
+	margin-right: 0.2em !important;
+}
+
+.user-actions {
+	button {
+		margin: 1em;
+	}
+}
+
+.mat-mdc-dialog-content {
+	overflow: initial !important;
+}
+
+#category-actions {
+	button {
+		margin: 1em;
+	}
+}
+
+.category-table {
+	width: 30%;
+}
+
+.category-actions {
+	display: flex;
+}
+
+.loading-spinner-container {
+	margin: {
+		top: 60px;
+		bottom: 60px;
+	}
+
+	.progress-spinner {
+		margin: auto;
+		position: relative;
+	}
+}
+
+.payment-actions {
+	margin: 1em 0 1em 1em;
+	button {
+		margin: 0 2em 0 0;
+	}
+}
+
+.user-list {
+	mat-panel-title {
+		display: flex;
+		align-items: center;
+		div {
+			width: 30%;
+			text-align: right;
+		}
+		div.first {
+			min-width: 150px;
+			text-align: left;
+		}
+	}
+}
+
+.user-panel-title {
+	color: #242424;
+}
+
+.category-user-name {
+	width: 90%;
+}
+
+.user-list {
+	background-color: #242424;
+}
+
+.add-button {
+	margin: 2em;
+}
+
+.dialog-buttons {
+	padding-left: 24px !important;
+	padding-bottom: 20px !important;
+}
+
+.snackbar {
+	margin-bottom: 90px !important;
+	justify-content: center;
+	text-align: center;
+}
+
+.amount-color {
+	color: rgb(255 133 181);
+}
+
+.amount-color-darker {
+	color: rgb(253, 89, 154);
+}
+
+.mobile-toolbar {
+	padding: 0 6px !important;
+}
+
+// Hide background of autocompleted inputs
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+	-webkit-background-clip: text;
+}
+
+/* ------------------ */
+/* Material overrides */
+/* ------------------ */
+
+// Change color of input labels
+.mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+// Change color of selected items in dropdown
+.mdc-list-item--selected .mdc-list-item__primary-text {
+	color: #ff589a !important;
+}
+
+// Prevent mat dialog removing backgrounds when page is scrolled down
+.cdk-global-scrollblock {
+	overflow-y: initial;
+}
+
+// Prevent hover-selection on tooltips
+mat-tooltip-component {
+	user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+// Set width of material card header
+.mat-mdc-card-header-text {
+	width: 100%;
+}
+
+// Set padding of material card title
+.mat-mdc-card-title {
+	padding-left: 0 !important;
+}
+
+// Form submit button loading spinner
+@keyframes spinner {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.spinner:before {
+	content: "";
+	box-sizing: border-box;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 20px;
+	height: 20px;
+	margin-top: -10px;
+	margin-left: -10px;
+	border-radius: 50%;
+	border: 2px solid #ffffff;
+	border-top-color: #000000;
+	animation: spinner 0.8s linear infinite;
+}

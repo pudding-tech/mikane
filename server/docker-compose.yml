@@ -1,10 +1,12 @@
 version: "3.8"
-# name: puddingdebt
 services:
   server:
-    depends_on:
-      - db
-    build: ./
+    build:
+      context: ./
+      args:
+        SERVER_URL: 
+        SERVER_DESCRIPTION: 
+    image: mikane:latest
     container_name: api
     ports:
       - "3002:3002"
@@ -12,18 +14,19 @@ services:
       - .env
     restart: unless-stopped
   db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: postgres:15
     container_name: db
-    user: root
     ports:
-      - "1433:1433"
+      - "5432:5432"
     env_file:
       - .env
     environment:
-      - ACCEPT_EULA=Y
-    command: /bin/bash ./entrypoint.sh
+      - POSTGRES_DB=mikane
+      - DB_HOST=localhost
     volumes:
-      - ./entrypoint.sh:/entrypoint.sh
-      - ./db_scripts/:/db_scripts/
-      - ./db_data:/var/opt/mssql/data
+      - ./pg_db_data:/var/lib/postgresql/data
+      - ./bash_scripts/db_init.sh:/docker-entrypoint-initdb.d/db_init.sh
+      - ./bash_scripts:/bash_scripts
+      - ./db_scripts:/db_scripts
+    entrypoint: bash_scripts/custom-entrypoint.sh
     restart: unless-stopped

@@ -1,22 +1,36 @@
-if object_id ('edit_user_weight') is not null
-  drop procedure edit_user_weight
-go
-create procedure edit_user_weight
-  @category_id int,
-  @user_id int,
-  @weight numeric(14)
-as
+drop function if exists edit_user_weight;
+create or replace function edit_user_weight(
+  ip_category_id uuid,
+  ip_user_id uuid,
+  ip_weight numeric(14)
+)
+returns table (
+  id uuid,
+  "name" varchar(255),
+  icon varchar(255),
+  weighted boolean,
+  event_id uuid,
+  created timestamp,
+  user_weights jsonb
+) as
+$$
 begin
 
-  update category_user
-  set [weight] = @weight
-  where category_id = @category_id
-    and user_id = @user_id
+  if not exists (select 1 from category c where c.id = ip_category_id) then
+    raise exception 'Category not found' using errcode = 'P0007';
+  end if;
 
-  declare @event_id int
-  select @event_id = event_id from category where id = @category_id
+  update
+    user_category uc
+  set
+    weight = ip_weight
+  where
+    uc.user_id = ip_user_id and
+    uc.category_id = ip_category_id;
+  
+  return query
+  select * from get_categories(null, ip_category_id);
 
-  exec get_categories @event_id, @category_id
-
-end
-go
+end;
+$$
+language plpgsql;

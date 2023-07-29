@@ -1,0 +1,70 @@
+<h1 mat-dialog-title>Add Expense</h1>
+<div mat-dialog-content>
+	<form [formGroup]="addExpenseForm" autocomplete="off">
+		<mat-form-field appearance="fill">
+			<mat-label>Expense Name</mat-label>
+			<input matInput formControlName="name" type="text" required />
+			<mat-error *ngIf="addExpenseForm.get('name')?.errors?.['required']"> Name is required </mat-error>
+		</mat-form-field>
+		<mat-form-field appearance="fill">
+			<mat-label>Description</mat-label>
+			<input matInput formControlName="description" type="text" />
+		</mat-form-field>
+		<mat-form-field appearance="fill">
+			<mat-label>Expense Category</mat-label>
+			<mat-icon matPrefix>{{ findCategory(addExpenseForm.value.category)?.icon ?? "shopping_cart" }}</mat-icon>
+			<input
+				type="text"
+				placeholder="Pick or create a category"
+				aria-label="Expense category name"
+				matInput
+				formControlName="category"
+				autocomplete="off"
+				[matAutocomplete]="categorySelector"
+			/>
+			<mat-error *ngIf="addExpenseForm.get('category')?.errors?.['required']"> Category is required </mat-error>
+			<mat-autocomplete #categorySelector="matAutocomplete">
+				<mat-option *ngFor="let category of categories" [value]="category.name">
+					<mat-icon matPrefix>{{ category.icon ?? "shopping_cart" }}</mat-icon>
+					{{ category.name }}
+				</mat-option>
+			</mat-autocomplete>
+		</mat-form-field>
+		<mat-form-field appearance="fill">
+			<mat-label>Amount</mat-label>
+			<input matInput type="number" min="0" formControlName="amount" required />
+			<mat-error *ngIf="addExpenseForm.get('amount')?.errors?.['required']"> Amount is required </mat-error>
+			<mat-error *ngIf="addExpenseForm.get('amount')?.errors?.['min']"> Amount must be positive </mat-error>
+		</mat-form-field>
+		<mat-form-field appearance="fill" *ngIf="(breakpointService.isMobile() | async) === false; else mobileSelect">
+			<mat-label>Payer</mat-label>
+			<mat-select formControlName="payer" required>
+				<mat-option *ngFor="let user of users" [value]="user.id">
+					<span class="user">
+						<img [src]="user.avatarURL" class="avatar" />
+						{{ user.name }}
+					</span>
+				</mat-option>
+			</mat-select>
+			<mat-error *ngIf="addExpenseForm.get('payer')?.errors?.['required']"> Payer is required </mat-error>
+		</mat-form-field>
+	</form>
+</div>
+<div mat-dialog-actions class="dialog-buttons">
+	<button mat-button (click)="onNoClick()">Cancel</button>
+	<button mat-button [mat-dialog-close]="addExpenseForm.getRawValue()" [disabled]="addExpenseForm.invalid || !addExpenseForm.dirty">
+		{{ data.expense ? "Edit" : "Create" }}
+	</button>
+</div>
+
+<ng-template #mobileSelect>
+	<mat-form-field appearance="fill">
+		<mat-label>Payer</mat-label>
+		<select matNativeControl required [formControl]="addExpenseForm.get('payer') | formControl">
+			<option value="" disabled>Choose payer</option>
+			<option [selected]="user.id === data.userId" *ngFor="let user of users" [value]="user.id">
+				{{ user.name }}
+			</option>
+		</select>
+	</mat-form-field>
+</ng-template>

@@ -1,0 +1,9 @@
+comment: false
+github_checks: false
+coverage:
+  range: 60..80
+  round: down
+  precision: 2
+  status:
+    project: off
+    patch: off

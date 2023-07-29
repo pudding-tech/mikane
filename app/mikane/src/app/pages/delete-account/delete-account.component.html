@@ -1,0 +1,51 @@
+<mat-toolbar [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
+	<a mat-icon-button routerLink="/events" [ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
+		<mat-icon>arrow_back</mat-icon>
+	</a>
+	<span>Delete account</span>
+	<span class="toolbar-spacer"></span>
+	<menu></menu>
+</mat-toolbar>
+<div *ngIf="key">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="delete-account-section">
+		<mat-card class="delete-content">
+			<mat-card-header class="card-header">
+				<div mat-card-avatar>
+					<mat-icon>warning</mat-icon>
+				</div>
+				<mat-card-title>Delete Account</mat-card-title>
+			</mat-card-header>
+			<mat-card-content class="card-content">
+				<p>Are you sure you want to PERMANENTLY delete your account?</p>
+			</mat-card-content>
+			<mat-card-actions class="card-actions">
+				<button
+					[class.spinner]="loading"
+					[disabled]="loading"
+					class="delete-button"
+					color="warn"
+					mat-raised-button
+					(click)="deleteAccount()"
+				>
+					YES, DELETE MY ACCOUNT <mat-icon>delete_forever</mat-icon>
+				</button>
+			</mat-card-actions>
+		</mat-card>
+	</div>
+</div>
+
+<ng-template #mobileView>
+	<div class="mobile-view">
+		<p class="mobile-text">Are you sure you want to PERMANENTLY delete your account?</p>
+		<button
+			[class.spinner]="loading"
+			[disabled]="loading"
+			class="delete-button"
+			color="warn"
+			mat-raised-button
+			(click)="deleteAccount()"
+		>
+			YES, DELETE MY ACCOUNT <mat-icon>delete_forever</mat-icon>
+		</button>
+	</div>
+</ng-template>

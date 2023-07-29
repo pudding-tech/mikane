@@ -1,0 +1,77 @@
+.user-settings-actions {
+	margin-right: 1em;
+}
+
+.setting-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.user-details {
+	font-size: large;
+}
+
+.user-settings-mobile {
+	margin-left: 10vw;
+	margin-right: 10vw;
+}
+
+.user-padding {
+	display: flex;
+	height: 38px;
+	align-items: center;
+	color: rgba(255, 255, 255, 0.58);
+}
+
+.user-property-title {
+	display: flex;
+	margin-top: 20px;
+	margin-bottom: 8px;
+	align-items: center;
+	color: rgba(255, 255, 255, 0.58);
+}
+
+.title-mobile {
+	display: flex;
+	align-items: center;
+	height: 50px;
+	margin-bottom: 20px;
+	padding-left: 16px;
+	background-color: rgba(24, 24, 24, 1);
+	border-top: 1px solid #333333;
+	stroke: #333333;
+}
+
+.input-field {
+	width: 100%;
+}
+
+.buttons {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 40px;
+	margin-bottom: 30px;
+}
+
+.mdc-card__actions {
+	padding: 0px !important;
+}
+
+.mat-mdc-card-content {
+	padding: 0 55px 16px !important;
+}
+
+.mat-mdc-card-header {
+	padding: 16px 16px 0;
+}
+
+.account-avatar-link a {
+	color: #d99db5;
+	text-decoration: none;
+
+	&:hover {
+		color: #dec3ce;
+		text-decoration: underline;
+	}
+}

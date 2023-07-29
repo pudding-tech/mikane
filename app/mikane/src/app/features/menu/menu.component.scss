@@ -1,0 +1,18 @@
+.name {
+	display: inline-block;
+	font-size: 1.1rem;
+	margin-right: 12px;
+}
+
+.avatar {
+	height: 36px;
+	width: 36px;
+	vertical-align: middle;
+	margin-bottom: 3px;
+	border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-button {
+	vertical-align: middle;
+}

@@ -1,0 +1,120 @@
+<div *ngIf="(breakpointService.isMobile() | async) === false" class="add-button">
+	<button mat-raised-button color="primary" (click)="openDialog()">
+		<mat-icon>add_shopping_cart</mat-icon>
+		Add expense
+	</button>
+</div>
+
+<div *ngIf="(loading | async) === false; else loadingSpinner">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView">
+		<table
+			*ngIf="expenses.length > 0; else noExpenses"
+			class="expense-table"
+			mat-table
+			matSort
+			[dataSource]="expenses"
+			(matSortChange)="sortData($event)"
+		>
+			<!-- Icon Column -->
+			<ng-container matColumnDef="icon">
+				<th mat-header-cell *matHeaderCellDef></th>
+				<td mat-cell class="expense-icon" *matCellDef="let expense">
+					<mat-icon>{{ expense.categoryInfo.icon ?? "shopping_cart" }}</mat-icon>
+				</td>
+			</ng-container>
+
+			<!-- Name Column -->
+			<ng-container matColumnDef="name">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+				<td mat-cell class="expense-name" *matCellDef="let expense">
+					{{ expense.name }}
+				</td>
+			</ng-container>
+
+			<!-- Payer Column -->
+			<ng-container matColumnDef="payer">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Payer</th>
+				<td mat-cell *matCellDef="let expense">
+					<div class="payer">
+						<img [src]="expense.payer.avatarURL" class="payer-avatar" />
+						{{ expense.payer.name }}
+					</div>
+				</td>
+			</ng-container>
+
+			<!-- Expense Category -->
+			<ng-container matColumnDef="categoryName">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+				<td mat-cell *matCellDef="let expense">
+					{{ expense.categoryInfo.name }}
+				</td>
+			</ng-container>
+
+			<!-- Amount Column -->
+			<ng-container matColumnDef="amount">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
+				<td mat-cell class="amount-color" *matCellDef="let expense">
+					<div>{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr</div>
+				</td>
+			</ng-container>
+
+			<!-- Description Column -->
+			<ng-container matColumnDef="description">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+				<td mat-cell *matCellDef="let expense">
+					{{ expense.description }}
+				</td>
+			</ng-container>
+
+			<!-- Edit Column -->
+			<ng-container matColumnDef="edit">
+				<th mat-header-cell *matHeaderCellDef></th>
+				<td mat-cell *matCellDef="let expense">
+					<button
+						*ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin"
+						mat-icon-button
+						type="button"
+						(click)="editExpense(expense.id)"
+					>
+						<mat-icon>edit</mat-icon>
+					</button>
+				</td>
+			</ng-container>
+
+			<!-- Delete Column -->
+			<ng-container matColumnDef="delete">
+				<th mat-header-cell *matHeaderCellDef></th>
+				<td mat-cell *matCellDef="let expense">
+					<button
+						*ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin"
+						mat-icon-button
+						type="button"
+						(click)="removeExpense(expense.id)"
+					>
+						<mat-icon>delete</mat-icon>
+					</button>
+				</td>
+			</ng-container>
+
+			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+		</table>
+	</div>
+</div>
+
+<ng-template #mobileView>
+	<mat-nav-list #expensesList class="expenses-list-mobile">
+		<expense-item *ngFor="let expense of expenses" [expense]="expense"></expense-item>
+	</mat-nav-list>
+	<button mat-fab color="primary" class="add-expense-button-mobile" (click)="openDialog()" [ngClass]="{ iOS: contextService.isIos }">
+		<mat-icon>add_shopping_cart</mat-icon>
+	</button>
+</ng-template>
+
+<ng-template #loadingSpinner>
+	<loading-spinner></loading-spinner>
+</ng-template>
+
+<ng-template #noExpenses>
+	<mat-card appearance="outlined"> No expenses </mat-card>
+</ng-template>

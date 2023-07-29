@@ -1,0 +1,34 @@
+.toolbar-spacer {
+	flex: 1 1 auto;
+}
+
+.account-settings {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	.section-pc {
+		margin: 1em 2em;
+		width: 40em;
+		min-width: 30em;
+
+		&.first {
+			margin-top: 2em;
+		}
+
+		&.last {
+			margin-bottom: 2em;
+		}
+	}
+
+	.section-mobile {
+		width: 100%;
+	}
+}
+
+.no-user {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 2em;
+}

@@ -1,0 +1,24 @@
+<mat-list-item class="wrapper">
+	<div class="event-title">
+		<span class="title-text">{{ event.name }}</span>
+		<mat-icon
+			*ngIf="event.userInfo.inEvent"
+			matTooltip="You are in this event"
+			[matTooltipShowDelay]="200"
+			class="joined-icon"
+		>
+			how_to_reg
+		</mat-icon>
+		<span
+			*ngIf="event.userInfo.isAdmin"
+			matTooltip="You are an admin for this event"
+			[matTooltipShowDelay]="200"
+			class="admin-icon"
+		>
+			A
+		</span>
+	</div>
+	<div *ngIf="event.description" class="description">
+		{{ event.description }}
+	</div>
+</mat-list-item>

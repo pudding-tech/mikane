@@ -1,0 +1,46 @@
+<h1 mat-dialog-title>{{ data.icon ? "Edit Expense Category" : "Add Expense Category" }}</h1>
+<div mat-dialog-content>
+	<form [formGroup]="addCategoryForm">
+		<mat-form-field appearance="fill">
+			<mat-label>Category Name</mat-label>
+			<input matInput type="text" formControlName="categoryName" name="categoryName" id="categoryName" required />
+			<button
+				mat-icon-button
+				matPrefix
+				(click)="isOpen = !isOpen"
+				cdkOverlayOrigin
+				#trigger="cdkOverlayOrigin"
+				[attr.aria-label]="'Choose category icon'"
+				[attr.aria-pressed]="addCategoryForm.value.selectedIcon"
+			>
+				<mat-icon>{{ addCategoryForm.value.selectedIcon }}</mat-icon>
+			</button>
+			<mat-error *ngIf="addCategoryForm?.get('categoryName')?.errors?.['duplicate']">Category already exists</mat-error>
+			<mat-error *ngIf="addCategoryForm?.get('categoryName')?.errors?.['invalid']">Invalid category name</mat-error>
+		</mat-form-field>
+		<div *ngIf="!data.icon">
+			<mat-checkbox name="weighted" formControlName="weighted">Weighted</mat-checkbox>
+		</div>
+	</form>
+</div>
+<div mat-dialog-actions class="dialog-buttons">
+	<button mat-button (click)="onNoClick()">Cancel</button>
+	<button mat-button [mat-dialog-close]="addCategoryForm.value" [disabled]="addCategoryForm.invalid || !addCategoryForm.dirty">
+		Save
+	</button>
+</div>
+
+<ng-template
+	cdkConnectedOverlay
+	(overlayOutsideClick)="isOpen = false"
+	[cdkConnectedOverlayOrigin]="trigger"
+	[cdkConnectedOverlayOpen]="isOpen"
+>
+	<mat-grid-list class="icon-grid" cols="5">
+		<mat-grid-tile [colspan]="1" *ngFor="let icon of categoryIcons | keyvalue">
+			<button mat-icon-button (click)="iconChange(icon.value)">
+				<mat-icon>{{ icon.value }}</mat-icon>
+			</button>
+		</mat-grid-tile>
+	</mat-grid-list>
+</ng-template>

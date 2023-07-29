@@ -1,184 +1,246 @@
 import express from "express";
-import sql from "mssql";
+import * as db from "../db/dbCategories";
+import { authCheck } from "../middlewares/authCheck";
+import { isUUID } from "../utils/uuidValidator";
 import { Category } from "../types/types";
-import { parseCategories } from "../parsers";
+import { CategoryIcon } from "../types/enums";
+import { ErrorExt } from "../types/errorExt";
+import * as ec from "../types/errorCodes";
 const router = express.Router();
 
 /* --- */
 /* GET */
 /* --- */
 
-// Get a list of all categories for a given event
-router.get("/categories", (req, res, next) => {
-  if (!req.query.eventId) {
-    return res.status(400).send("EventId not provided!");
+/*
+* Get a list of all categories for a given event
+*/
+router.get("/categories", authCheck, async (req, res, next) => {
+  try {
+    const eventId = req.query.eventId as string;
+    if (!isUUID(eventId)) {
+      throw new ErrorExt(ec.PUD013);
+    }
+
+    const categories: Category[] = await db.getCategories(eventId);
+    res.send(categories);
   }
-  const request = new sql.Request();
-  request
-    .input("event_id", sql.Int, req.query.eventId)
-    .input("category_id", sql.Int, null)
-    .execute("get_categories")
-    .then( (data) => {
-      const categories: Category[] = parseCategories(data.recordset, "client");
-      res.send(categories);
-    })
-    .catch(err => next(err));
+  catch (err) {
+    next(err);
+  }
+});
+
+/*
+* Get a specific category
+*/
+router.get("/categories/:id", authCheck, async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    if (!isUUID(id)) {
+      throw new ErrorExt(ec.PUD045);
+    }
+
+    const category = await db.getCategory(id);
+    if (!category) {
+      throw new ErrorExt(ec.PUD007);
+    }
+    res.status(200).json(category);
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 /* ---- */
 /* POST */
 /* ---- */
 
-// Create a new category
-router.post("/categories", (req, res, next) => {
-  if (!req.body.name || !req.body.eventId || req.body.weighted === undefined) {
-    return res.status(400).send("Name, event ID or weighted not provided!");
+/*
+* Create a new category
+*/
+router.post("/categories", authCheck, async (req, res, next) => {
+  try {
+    const name: string = req.body.name;
+    if (!name || !req.body.eventId || req.body.weighted === undefined) {
+      throw new ErrorExt(ec.PUD046);
+    }
+    if (name.trim() === "") {
+      throw new ErrorExt(ec.PUD059);
+    }
+    const eventId = req.body.eventId as string;
+    if (!isUUID(eventId)) {
+      throw new ErrorExt(ec.PUD013);
+    }
+
+    const icon: CategoryIcon = req.body.icon;
+    if (icon && !Object.values(CategoryIcon).includes(icon)) {
+      throw new ErrorExt(ec.PUD096);
+    }
+    
+    const category: Category = await db.createCategory(name.trim(), eventId, Boolean(req.body.weighted), icon);
+    res.status(200).json(category);
   }
-  const request = new sql.Request();
-  request
-    .input("name", sql.NVarChar, req.body.name)
-    .input("event_id", sql.Int, req.body.eventId)
-    .input("weighted", sql.Bit, req.body.weighted)
-    .execute("new_category")
-    .then( (data) => {
-      res.send(data.recordset[0]);
-    })
-    .catch(err => next(err));
+  catch (err) {
+    next(err);
+  }
 });
 
-// Add a user to a category
-router.post("/categories/:catId/user", (req, res) => {
-  const catId = Number(req.params.catId);
-  if (isNaN(catId)) {
-    return res.status(400).send("Category ID is not a number!");
+/*
+* Add a user to a category
+*/
+router.post("/categories/:id/user/:userId", authCheck, async (req, res, next) => {
+  try {
+    const catId = req.params.id;
+    const userId = req.params.userId;
+    const weight = req.body.weight ? Number(req.body.weight) : undefined;
+
+    if (!isUUID(catId) || !isUUID(userId)) {
+      throw new ErrorExt(ec.PUD047);
+    }
+    if (weight && isNaN(weight)) {
+      throw new ErrorExt(ec.PUD048);
+    }
+    if (weight && weight < 1) {
+      throw new ErrorExt(ec.PUD049);
+    }
+
+    const category: Category = await db.addUserToCategory(catId, userId, weight);
+    res.send(category);
   }
-  if (!req.body.userId) {
-    return res.status(400).send("UserId not provided!");
+  catch (err) {
+    next(err);
   }
-  if (req.body.weight < 1) {
-    return res.status(400).send("Weight can not be less than 1!");
-  }
-  const request = new sql.Request();
-  request
-    .input("category_id", sql.Int, catId)
-    .input("user_id", sql.Int, req.body.userId)
-    .input("weight", sql.Numeric(14), req.body.weight)
-    .execute("add_user_to_category")
-    .then( (data) => {
-      const categories: Category[] = parseCategories(data.recordset, "client");
-      res.send(categories[0]);
-    })
-    .catch(() => res.status(400).send("Weight required when adding user to weighted category"));
 });
 
 /* --- */
 /* PUT */
 /* --- */
 
-// Rename a category
-router.put("/categories/:id/name", (req, res, next) => {
-  const catId = Number(req.params.id);
-  if (isNaN(catId)) {
-    return res.status(400).send("Category ID must be a number!");
+/*
+* Edit a category
+*/
+router.put("/categories/:id", authCheck, async (req, res, next) => {
+  try {
+    const catId = req.params.id;
+    if (!isUUID(catId)) {
+      throw new ErrorExt(ec.PUD045);
+    }
+
+    const name: string | undefined = req.body.name;
+    const icon: CategoryIcon | undefined = req.body.icon;
+    if (!name && !icon) {
+      throw new ErrorExt(ec.PUD115);
+    }
+    if (name && name.trim() === "") {
+      throw new ErrorExt(ec.PUD059);
+    }
+    if (icon && !Object.values(CategoryIcon).includes(icon)) {
+      throw new ErrorExt(ec.PUD096);
+    }
+
+    const data = {
+      name: name,
+      icon: icon
+    };
+
+    const category = await db.editCategory(catId, data);
+    if (!category) {
+      throw new ErrorExt(ec.PUD007);
+    }
+    res.status(200).send(category);
   }
-  if (!req.body.name) {
-    return res.status(400).send("Category name not provided!");
+  catch (err) {
+    next(err);
   }
-  const request = new sql.Request();
-  request
-    .input("category_id", sql.Int, catId)
-    .input("name", sql.NVarChar, req.body.name)
-    .execute("rename_category")
-    .then( (data) => {
-      res.send(data.recordset);
-    })
-    .catch(err => next(err));
 });
 
-// Edit a user's weight for a category
-router.put("/categories/:catId/user/:userId", (req, res, next) => {
-  const catId = Number(req.params.catId);
-  const userId = Number(req.params.userId);
-  if (isNaN(catId) || isNaN(userId)) {
-    return res.status(400).send("Category ID and user ID must be numbers!");
+/*
+* Change weight status for a category (weighted or non-weighted)
+*/
+router.put("/categories/:id/weighted", authCheck, async (req, res, next) => {
+  try {
+    const catId = req.params.id;
+    if (!isUUID(catId)) {
+      throw new ErrorExt(ec.PUD045);
+    }
+    if (typeof(req.body.weighted) !== "boolean") {
+      throw new ErrorExt(ec.PUD051);
+    }
+
+    const category: Category = await db.editWeightStatus(catId, Boolean(req.body.weighted));
+    res.status(200).send(category);
   }
-  if (!req.body.weight) {
-    return res.status(400).send("Weight not provided!");
+  catch (err) {
+    next(err);
   }
-  if (req.body.weight < 1) {
-    return res.status(400).send("Weight can not be less than 1!");
-  }
-  const request = new sql.Request();
-  request
-    .input("category_id", sql.Int, catId)
-    .input("user_id", sql.Int, userId)
-    .input("weight", sql.Int, req.body.weight)
-    .execute("edit_user_weight")
-    .then( (data) => {
-      const categories: Category[] = parseCategories(data.recordset, "client");
-      res.send(categories[0]);
-    })
-    .catch(err => next(err));
 });
 
-// Change weight status for a category (weighted or non-weighted)
-router.put("/categories/:catId/weighted", (req, res, next) => {
-  const catId = Number(req.params.catId);
-  if (isNaN(catId)) {
-    return res.status(400).send("Category ID and user ID must be numbers!");
+/*
+* Edit a user's weight for a category
+*/
+router.put("/categories/:id/user/:userId", authCheck, async (req, res, next) => {
+  try {
+    const catId = req.params.id;
+    const userId = req.params.userId;
+    const weight = req.body.weight ? Number(req.body.weight) : undefined;
+
+    if (!isUUID(catId) || !isUUID(userId)) {
+      throw new ErrorExt(ec.PUD047);
+    }
+    if (!weight || isNaN(weight)) {
+      throw new ErrorExt(ec.PUD048);
+    }
+    if (weight < 1) {
+      throw new ErrorExt(ec.PUD049);
+    }
+
+    const category: Category = await db.editUserWeight(catId, userId, weight);
+    res.status(200).send(category);
   }
-  if (req.body.weighted === undefined) {
-    return res.status(400).send("Weighted boolean not provided!");
+  catch (err) {
+    next(err);
   }
-  const request = new sql.Request();
-  request
-    .input("category_id", sql.Int, catId)
-    .input("weighted", sql.Bit, req.body.weighted)
-    .execute("edit_category_weighted_status")
-    .then( (data) => {
-      const categories: Category[] = parseCategories(data.recordset, "client");
-      res.send(categories[0]);
-    })
-    .catch(err => next(err));
 });
 
 /* ------ */
 /* DELETE */
 /* ------ */
 
-// Delete a category
-router.delete("/categories/:catId", (req, res, next) => {
-  const catId = Number(req.params.catId);
-  if (isNaN(catId)) {
-    return res.status(400).send("Category ID must be a number!");
+/*
+* Delete a category
+*/
+router.delete("/categories/:id", authCheck, async (req, res, next) => {
+  try {
+    const catId = req.params.id;
+    if (!isUUID(catId)) {
+      throw new ErrorExt(ec.PUD045);
+    }
+
+    const success = await db.deleteCategory(catId);
+    res.status(200).send({ success: success });
   }
-  const request = new sql.Request();
-  request
-    .input("category_id", sql.Int, catId)
-    .execute("delete_category")
-    .then( () => {
-      res.send({});
-    })
-    .catch(err => next(err));
+  catch (err) {
+    next(err);
+  }
 });
 
-// Remove a user from a category
-router.delete("/categories/:catId/user/:userId", (req, res, next) => {
-  const catId = Number(req.params.catId);
-  const userId = Number(req.params.userId);
-  if (isNaN(catId) || isNaN(userId)) {
-    return res.status(400).send("Category ID and user ID must be numbers!");
+/*
+* Remove a user from a category
+*/
+router.delete("/categories/:id/user/:userId", authCheck, async (req, res, next) => {
+  try {
+    const catId = req.params.id;
+    const userId = req.params.userId;
+    if (!isUUID(catId) || !isUUID(userId)) {
+      throw new ErrorExt(ec.PUD047);
+    }
+
+    const category: Category = await db.removeUserFromCategory(catId, userId);
+    res.status(200).send(category);
   }
-  const request = new sql.Request();
-  request
-    .input("category_id", sql.Int, catId)
-    .input("user_id", sql.Int, userId)
-    .execute("remove_user_from_category")
-    .then( (data) => {
-      const categories: Category[] = parseCategories(data.recordset, "client");
-      res.send(categories[0]);
-    })
-    .catch(err => next(err));
+  catch (err) {
+    next(err);
+  }
 });
 
 export default router;

@@ -1,0 +1,33 @@
+<mat-toolbar [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
+	<div>
+		<a
+			mat-icon-button
+			routerLink="../../events"
+			[ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'"
+		>
+			<mat-icon>arrow_back</mat-icon>
+		</a>
+	</div>
+	<div class="name">
+		{{ event.name }}
+	</div>
+	<span class="toolbar-spacer"></span>
+	<menu [ngClass]="{ 'mobile-menu': breakpointService.isMobile() | async }"></menu>
+</mat-toolbar>
+<nav *ngIf="!(breakpointService.isMobile() | async); else mobileNavbar" class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
+	<a
+		mat-tab-link
+		*ngFor="let link of links()"
+		[routerLink]="link.location"
+		(click)="activeLink = link.location"
+		[active]="activeLink == link.location"
+		>{{ link.name }}</a
+	>
+</nav>
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+<ng-template #mobileNavbar>
+	<mobile-event-navbar [activeLink]="activeLink" [links]="links()"></mobile-event-navbar>
+</ng-template>
+<div [ngClass]="{ 'content': !(breakpointService.isMobile() | async), 'mobile-event': breakpointService.isMobile() | async, 'iOS': contextService.isIos }">
+	<router-outlet (activate)="onOutletLoaded($event)"></router-outlet>
+</div>

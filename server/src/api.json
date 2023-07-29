@@ -1,0 +1,3941 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "2.0.0",
+    "title": "Mikane API",
+    "description": "Documentation for all endpoints in the Mikane API"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3002/api",
+      "description": "Local test server"
+    }
+  ],
+  "paths": {
+    "/login": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Check login status",
+        "description": "Check whether user is logged in or not",
+        "operationId": "getLogin",
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "authenticated": {
+                      "type": "boolean",
+                      "example": "true"
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "testuser"
+                    },
+                    "avatarURL": {
+                      "type": "string",
+                      "example": "https://gravatar.com/avatar/aaaa"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Log in user",
+        "description": "Log in user with username/email and password",
+        "operationId": "postLogin",
+        "requestBody": {
+          "description": "User credentials",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "usernameEmail": {
+                    "type": "string",
+                    "example": "testuser"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "secret"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated. The session ID is returned in a cookie named `mikane.sid`. You need to include this cookie in subsequent requests.",
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string",
+                  "example": "mikane.sid=abcdef12345; Path=/; HttpOnly;"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Log out user",
+        "description": "Log out user",
+        "operationId": "postLogout",
+        "responses": {
+          "200": {
+            "description": "Signed out successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "Signed out successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No user authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/requestpasswordreset": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Request a password reset",
+        "description": "Request a password reset for a user",
+        "operationId": "postRequestPasswordReset",
+        "requestBody": {
+          "description": "Email",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "test@test.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email successfully sent"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resetpassword": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Reset password",
+        "description": "Reset a user's password",
+        "operationId": "postResetPassword",
+        "requestBody": {
+          "description": "Password reset key, and new password",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "test"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password has been reset, and key invalidated",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generatekey": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Generate API key",
+        "description": "Generate a new API key and save it in the database. This endpoint requires a master key in the Authorization header.",
+        "operationId": "postKey",
+        "security": [
+          { "apiKeyAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Name of API key",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Example key"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "API key created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "2kj5bvh39nbm2h6lkj8"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get users",
+        "description": "Get a list of all users, optionally in an event",
+        "operationId": "getUsers",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "description": "Get only users connected to this event",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          },
+          {
+            "name": "exclude",
+            "in": "query",
+            "description": "Set this to 'self' to remove logged in user from response",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - 'event' property is only present when eventId is given as input parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserWithEvent"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create new user",
+        "description": "Register a new user. A register account key is required in the body when running in production.",
+        "operationId": "postUsers",
+        "requestBody": {
+          "description": "User details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUserObject"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user",
+        "description": "Get information about a specific user",
+        "operationId": "getUser",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Edit user",
+        "description": "Edit a user",
+        "operationId": "putUser",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "User details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditUserObject"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete user",
+        "description": "Delete a user. A delete account key is required, and the key must be for the correct user.",
+        "operationId": "deleteUser",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Key",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSuccess"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/expenses/{eventId}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get a user's expenses",
+        "description": "Get a list of a user's expenses",
+        "operationId": "getUserExpenses",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Expense"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User/event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/changepassword": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Change user's password",
+        "description": "Change signed in user's password",
+        "operationId": "postChangePassword",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Current password and new password",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currentPassword": {
+                    "type": "string",
+                    "example": "test"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "example": "newtest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password successfully changed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password successfully changed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/invite": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Invite a new user",
+        "description": "Invite a new user to Mikane",
+        "operationId": "postInvite",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Email to send invitation to",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "a@b.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invitation email sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email successfully sent"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/requestdeleteaccount": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Request account deletion",
+        "description": "Request an account deletion email",
+        "operationId": "postRequestDeleteAccount",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete confirmation email sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email successfully sent"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Get events",
+        "description": "Get all events",
+        "operationId": "getEvents",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - 'userInfo' property is only present when a logged in user makes the request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventWithUser"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Create event",
+        "description": "Create a new event",
+        "operationId": "postEvent",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Event details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Example event"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Example description"
+                  },
+                  "private": {
+                    "type": "boolean",
+                    "example": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/events/{id}": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Get event",
+        "description": "Get an event",
+        "operationId": "getEvent",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - 'userInfo' property is only present when a logged in user makes the request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventWithUser"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Edit event",
+        "description": "Edit an event. Only allowed for event admins.",
+        "operationId": "putEvent",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Event details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "New event name"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "New event description"
+                  },
+                  "private": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - only allowed for event admins",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Delete event",
+        "description": "Delete an event. Only allowed for event admins.",
+        "operationId": "deleteEvent",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSuccess"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - only allowed for event admins",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/events/{id}/balances": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Get an event's balance information",
+        "description": "Get an event's balance information for all users (includes 'eventInfo' information)",
+        "operationId": "getEventBalances",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserBalance"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/events/{id}/payments": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Get an event's payments information",
+        "description": "Get an event's payments information for all users",
+        "operationId": "getEventPayments",
+        "security": [
+          { "cookieAuth": [] },
+          { "apiKeyAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Payment"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/events/{id}/user/{userId}": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Add user to event",
+        "description": "Add a user to an event",
+        "operationId": "postUserToEvent",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event/user not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Remove user from event",
+        "description": "Remove a user from an event",
+        "operationId": "deleteUserFromEvent",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event/user not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/events/{id}/admin/{userId}": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Set user as event admin",
+        "description": "Set a user as admin for an event (user must be in event already). Only allowed for existing event admins.",
+        "operationId": "postAdminToEvent",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event/user not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Remove user as event admin",
+        "description": "Remove a user as an admin for an event. Only allowed for existing event admins.",
+        "operationId": "deleteAdminFromEvent",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event/user not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/eventbyname": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Get event by name",
+        "description": "Get an event by the event's name",
+        "operationId": "getEventByName",
+        "security": [
+          { "cookieAuth": [] },
+          { "apiKeyAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Event name",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Example Event"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - 'userInfo' property is only present when a logged in user makes the request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventWithUser"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Get categories",
+        "description": "Get all categories in an event",
+        "operationId": "getCategories",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Create category",
+        "description": "Create a new category",
+        "operationId": "postCategory",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Category details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Example category"
+                  },
+                  "icon": {
+                    "type": "string",
+                    "example": "shopping_cart"
+                  },
+                  "weighted": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "eventId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  }                 
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Get category",
+        "description": "Get a specific category",
+        "operationId": "getCategory",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Category ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Edit category",
+        "description": "Edit a category",
+        "operationId": "putCategory",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Category ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Category details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "New category name"
+                  },
+                  "icon": {
+                    "type": "string",
+                    "example": "shopping_cart"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Delete category",
+        "description": "Delete a category",
+        "operationId": "deleteCategory",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Category ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSuccess"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}/weighted": {
+      "put": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Edit category weighted status",
+        "description": "Change weight status for a category (weighted or non-weighted)",
+        "operationId": "putCategoryWeighted",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Category ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Weighted status",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "weighted": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}/user/{userId}": {
+      "post": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Add user to category",
+        "description": "Add a user to a category",
+        "operationId": "postUserToCategory",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Category ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Weight",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "weight": {
+                    "type": "number",
+                    "example": 3
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category/user not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Edit user in category",
+        "description": "Edit a user's weight for a category",
+        "operationId": "PutUserCategoryWeight",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Category ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Weight",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "weight": {
+                    "type": "number",
+                    "example": 3
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category/user not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Remove user from category",
+        "description": "Remove a user from a category",
+        "operationId": "deleteUserFromCategory",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Category ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category/user not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/expenses": {
+      "get": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "Get expenses",
+        "description": "Get all expenses for an event",
+        "operationId": "getExpenses",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Expense"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "Create expense",
+        "description": "Create a new expense",
+        "operationId": "postExpense",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Expense details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Example expense"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Example description"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 100
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  },
+                  "payerId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/expenses/{id}": {
+      "get": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "Get expense",
+        "description": "Get a specific expense",
+        "operationId": "getExpense",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Expense ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Expense not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "Edit expense",
+        "description": "Edit an expense",
+        "operationId": "putExpense",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Expense ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Expense details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "New expense name"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "New expense description"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 120
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  },
+                  "payerId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Expense not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "Delete expense",
+        "description": "Delete an expense. You can only delete your own expenses (unless event admin).",
+        "operationId": "deleteExpense",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Expense ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSuccess"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - only allowed for your own expenses and for event admins",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Expense not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verifykey/passwordreset/{key}": {
+      "get": {
+        "tags": [
+          "Validation"
+        ],
+        "summary": "Verify a password reset key",
+        "description": "Verify that a password reset key exists and is valid",
+        "operationId": "getVerifyPasswordReset",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "Password reset key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key exists"
+          },
+          "400": {
+            "description": "Invalid key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verifykey/register/{key}": {
+      "get": {
+        "tags": [
+          "Validation"
+        ],
+        "summary": "Verify a register account key",
+        "description": "Verify that a register account key exists and is valid. Returns email the invite was sent to.",
+        "operationId": "getVerifyRegisterAccount",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "Register account key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email invite was sent to",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "a@b.com"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verifykey/deleteaccount/{key}": {
+      "get": {
+        "tags": [
+          "Validation"
+        ],
+        "summary": "Verify a delete account key",
+        "description": "Verify that a delete account key exists and is valid",
+        "operationId": "getVerifyDeleteAccount",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "Delete account key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key exists"
+          },
+          "400": {
+            "description": "Invalid key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/validation/user/username": {
+      "post": {
+        "tags": [
+          "Validation"
+        ],
+        "summary": "Validate username",
+        "description": "Check if a given username is available for use. User ID in body is optional, and used when validating against a specific user.",
+        "operationId": "getValidateUsername",
+        "requestBody": {
+          "description": "Username",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "testuser"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  }
+                },
+                "required": [
+                  "username"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Username is available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "valid": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/validation/user/email": {
+      "post": {
+        "tags": [
+          "Validation"
+        ],
+        "summary": "Validate email",
+        "description": "Check if a given email is available for use. User ID in body is optional, and used when validating against a specific user.",
+        "operationId": "getValidateEmail",
+        "requestBody": {
+          "description": "Email",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "a@b.com"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email is available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "valid": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/validation/user/phone": {
+      "post": {
+        "tags": [
+          "Validation"
+        ],
+        "summary": "Validate phone number",
+        "description": "Check if a given phone number is available for use. User ID in body is optional, and used when validating against a specific user.",
+        "operationId": "getValidatePhone",
+        "requestBody": {
+          "description": "Phone number",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "example": "12131415"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  }
+                },
+                "required": [
+                  "phone"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Phone number is available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "valid": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/validation/event/name": {
+      "post": {
+        "tags": [
+          "Validation"
+        ],
+        "summary": "Validate event name",
+        "description": "Check if a given event name is available for use. Event ID in body is optional, and used when validating against a specific event.",
+        "operationId": "getValidateEventName",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Event name",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Text event"
+                  },
+                  "eventId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Event name is available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "valid": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/validation/category/name": {
+      "post": {
+        "tags": [
+          "Validation"
+        ],
+        "summary": "Validate category name",
+        "description": "Check if a given category name is available for use within an event. Category ID in body is optional, and used when validating against a specific category.",
+        "operationId": "getValidateCategoryName",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Category name",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Text event"
+                  },
+                  "eventId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  }
+                },
+                "required": [
+                  "name",
+                  "eventId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category name is available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "valid": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+          },
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "name": {
+            "type": "string",
+            "example": "Test"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@user.com"
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "https://gravatar.com/avatar/aaaa"
+          }
+        }
+      },
+      "UserWithEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+          },
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "name": {
+            "type": "string",
+            "example": "Test"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@user.com"
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "https://gravatar.com/avatar/aaaa"
+          },
+          "eventInfo": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+              },
+              "isAdmin": {
+                "type": "boolean",
+                "example": false
+              },
+              "joinedDate": {
+                "type": "date-time",
+                "example": "2023-01-20T19:00:00"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "name",
+          "email",
+          "created"
+        ]
+      },
+      "UserDetailed": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+          },
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "name": {
+            "type": "string",
+            "example": "Test"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Test"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "McTesty"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@user.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "12131415"
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "https://gravatar.com/avatar/aaaa"
+          }
+        }
+      },
+      "UserLoginResponse": {
+        "type": "object",
+        "properties": {
+          "authenticated": {
+            "type": "boolean",
+            "example": "true"
+          },
+          "id": {
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+          },
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "name": {
+            "type": "string",
+            "example": "Test"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Test"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "McTesty"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@user.com"
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "https://gravatar.com/avatar/aaaa"
+          }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Example Event"
+          },
+          "description": {
+            "type": "string",
+            "example": "Example description"
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "adminIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          },
+          "private": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "EventWithUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Example Event"
+          },
+          "description": {
+            "type": "string",
+            "example": "Example description"
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "adminIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          },
+          "private": {
+            "type": "boolean",
+            "example": false
+          },
+          "userInfo": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+              },
+              "inEvent": {
+                "type": "boolean",
+                "example": true
+              },
+              "isAdmin": {
+                "type": "boolean",
+                "example": false
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "created",
+          "adminIds",
+          "private"
+        ]
+      },
+      "Expense": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Example expense"
+          },
+          "description": {
+            "type": "string",
+            "example": "Example description"
+          },
+          "amount": {
+            "type": "number",
+            "example": 100
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "categoryInfo": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+              },
+              "name": {
+                "type": "string",
+                "example": "Example category"
+              },
+              "icon": {
+                "type": "string",
+                "example": "shopping_cart"
+              }
+            }
+          },
+          "payer": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+              },
+              "username": {
+                "type": "string",
+                "example": "Example user"
+              },
+              "name": {
+                "type": "string",
+                "example": "Test"
+              },
+              "avatarURL": {
+                "type": "string",
+                "example": "https://gravatar.com/avatar/aaaa"
+              }
+            }
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Test category"
+          },
+          "icon": {
+            "type": "string",
+            "example": "shopping_cart"
+          },
+          "weighted": {
+            "type": "boolean",
+            "example": true
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Test name"
+                },
+                "weight": {
+                  "type": "number",
+                  "example": 3
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserBalance": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserWithEvent"
+          },
+          "expensesCount": {
+            "type": "number",
+            "example": 2
+          },
+          "spending": {
+            "type": "number",
+            "example": 100
+          },
+          "expenses": {
+            "type": "number",
+            "example": 200
+          },
+          "balance": {
+            "type": "number",
+            "example": 100
+          }
+        }
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "sender": {
+            "$ref": "#/components/schemas/User"
+          },
+          "receiver": {
+            "$ref": "#/components/schemas/User"
+          },
+          "amount": {
+            "type": "number",
+            "example": 100
+          }
+        }
+      },
+      "RegisterUserObject": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Test"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "User"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@user.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "12131415"
+          },
+          "password": {
+            "type": "string",
+            "example": "secret"
+          },
+          "key": {
+            "type": "string",
+            "example": "2933edede2e915146d4b6082a8398afbb42c946decb09018123af99065807a842b01e6620e1084f004b142a6112166c5"
+          }
+        }
+      },
+      "EditUserObject": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "testuser2"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Albert"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Pooh"
+          },
+          "email": {
+            "type": "string",
+            "example": "albert@user.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "12131415"
+          }
+        }
+      },
+      "DeleteSuccess": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "NoAuthResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "PUD-001"
+          },
+          "message": {
+            "type": "string",
+            "example": "No user authenticated"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "PUD-XXX"
+          },
+          "message": {
+            "type": "string",
+            "example": "Error message"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "mikane.sid"
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    }
+  }
+}

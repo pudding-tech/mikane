@@ -1,27 +1,35 @@
-if object_id ('edit_category_weighted_status') is not null
-  drop procedure edit_category_weighted_status
-go
-create procedure edit_category_weighted_status
-  @category_id int,
-  @weighted bit
-as
+drop function if exists edit_category_weighted_status;
+create or replace function edit_category_weighted_status(
+  ip_category_id uuid,
+  ip_weighted boolean
+)
+returns table (
+  id uuid,
+  "name" varchar(255),
+  icon varchar(255),
+  weighted boolean,
+  event_id uuid,
+  created timestamp,
+  user_weights jsonb
+) as
+$$
 begin
 
-  declare @event_id int
-  declare @currently_weighted bit
+  if not exists (select 1 from category c where c.id = ip_category_id) then
+    raise exception 'Category not found' using errcode = 'P0007';
+  end if;
 
-  select @currently_weighted = weighted from category where id = @category_id
+  update category c set weighted = ip_weighted where c.id = ip_category_id;
 
-  update category set weighted = @weighted where id = @category_id
-  update category_user set [weight] = 1 where category_id = @category_id
+  if (ip_weighted = true) then
+    if exists (select 1 from user_category uc where uc.category_id = ip_category_id and uc.weight is null) then
+      update user_category uc set weight = 1 where category_id = ip_category_id and uc.weight is null;
+    end if;
+  end if;
 
-  select top 1
-    @event_id = e.id
-  from [event] e
-    inner join category c on c.event_id = e.id
-  where c.id = @category_id
+  return query
+  select * from get_categories(null, ip_category_id);
 
-  exec get_categories @event_id, @category_id
-
-end
-go
+end;
+$$
+language plpgsql;

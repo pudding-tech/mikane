@@ -1,0 +1,38 @@
+.wrapper {
+	height: fit-content !important;
+	padding-top: 18px;
+	padding-bottom: 18px;
+	border-bottom: 1px solid rgba(181, 181, 181, 0.1);
+}
+
+.event-title {
+	display: flex;
+	align-items: center;
+
+	.title-text {
+		white-space: normal;
+		max-height: 3em;
+		max-width: 74%;
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+	}
+
+	.joined-icon {
+		margin-left: 10px;
+		opacity: 30%;
+	}
+
+	.admin-icon {
+		padding-left: 4px;
+		padding-right: 10px;
+		opacity: 30%;
+		font-size: large;
+	}
+}
+
+.description {
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 0.8em;
+}

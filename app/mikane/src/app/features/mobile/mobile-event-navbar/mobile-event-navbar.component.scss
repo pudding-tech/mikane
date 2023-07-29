@@ -1,0 +1,40 @@
+.navbar {
+	display: flex;
+	justify-content: space-between;
+	position: fixed;
+	z-index: 999;
+	bottom: 0px;
+	width: 100vw;
+	height: 58px;
+	background-color: #212121;
+	border-top: 1px solid rgba(181, 181, 181, 0.2);
+
+	&.iOS {
+		padding-bottom: 30px;
+	}
+}
+
+.nav-button {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 11px;
+
+	&.nav-back-button {
+		max-width: 40px;
+	}
+
+	.back-icon {
+		margin-left: 7px;
+		font-size: 30px;
+		height: 30px;
+	}
+}
+
+.active {
+	color: rgb(253, 89, 154);
+}

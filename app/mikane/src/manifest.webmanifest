@@ -1,0 +1,9 @@
+{
+  "name": "Mikane",
+  "short_name": "Mikane",
+  "theme_color": "#161417",
+  "background_color": "#1d1d1d",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./"
+}

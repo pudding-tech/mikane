@@ -1,0 +1,29 @@
+.payments-empty {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 2em;
+}
+
+.amount-cell {
+	width: 50%;
+}
+
+.user {
+	display: flex;
+	align-items: center;
+	height: inherit;
+
+	.avatar {
+		position: relative;
+		width: 24px;
+		height: 24px;
+		margin-right: 16px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+}
+
+.payments-list-mobile {
+	padding: 0;
+}

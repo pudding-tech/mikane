@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Add users to event</h1>
+<div mat-dialog-content>
+	<form [formGroup]="addUserForm">
+		<mat-form-field appearance="fill">
+			<mat-label>User</mat-label>
+			<mat-select formControlName="users" multiple>
+				<mat-option *ngFor="let user of users" [value]="user">
+					<span class="user">
+						<img [src]="user.avatarURL" class="avatar" />
+						{{ user.name }}
+					</span>
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</form>
+</div>
+<div mat-dialog-actions class="dialog-buttons">
+	<button mat-button (click)="onNoClick()">Cancel</button>
+	<button mat-button [mat-dialog-close]="addUserForm.value" [disabled]="addUserForm.invalid || !addUserForm.dirty">Add</button>
+</div>

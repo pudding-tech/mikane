@@ -1,0 +1,43 @@
+.button-group {
+	border: none;
+}
+
+.split-button {
+	background-color: #212121;
+	color: #d5d5d5;
+}
+
+.split-button.mobile {
+	border: none !important;
+}
+
+.main-button {
+	width: 64px;
+}
+
+.dropdown {
+	right: 16px;
+	width: 124px;
+	background: rgb(37, 37, 37);
+	position: absolute;
+	z-index: 9999;
+	transform-origin: center top;
+	padding: 0.25rem 0;
+	box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0 1px 10px 0 rgb(0 0 0 / 12%);
+	border: 1px solid #383838;
+}
+
+.dropdown-mobile-override {
+	right: 6px !important;
+}
+
+.menu-list {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.menu-separator {
+	border-top: 1px solid #383838;
+	margin: 0.25rem 0;
+}

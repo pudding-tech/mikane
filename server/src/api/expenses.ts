@@ -1,72 +1,179 @@
 import express from "express";
-import sql from "mssql";
+import * as db from "../db/dbExpenses";
+import { authCheck } from "../middlewares/authCheck";
+import { isUUID } from "../utils/uuidValidator";
 import { Expense } from "../types/types";
-import { parseExpenses } from "../parsers";
+import { ErrorExt } from "../types/errorExt";
+import * as ec from "../types/errorCodes";
 const router = express.Router();
 
 /* --- */
 /* GET */
 /* --- */
 
-// Get a list of all expenses for a given event
-router.get("/expenses", (req, res, next) => {
-  if (!req.query.eventId) {
-    return res.status(400).send("EventId not provided!");
+/*
+* Get a list of all expenses for a given event
+*/
+router.get("/expenses", authCheck, async (req, res, next) => {
+  try {
+    const eventId = req.query.eventId as string;
+    if (!isUUID(eventId)) {
+      throw new ErrorExt(ec.PUD013);
+    }
+
+    const expenses: Expense[] = await db.getExpenses(eventId);
+    res.status(200).send(expenses);
   }
-  const request = new sql.Request();
-  request
-    .input("event_id", sql.Int, req.query.eventId)
-    .input("user_id", sql.Int, null)
-    .execute("get_expenses")
-    .then(data => {
-      const expenses: Expense[] = parseExpenses(data.recordset);
-      res.send(expenses);
-    })
-    .catch(err => next(err));
+  catch (err) {
+    next(err);
+  }
+});
+
+/*
+* Get a specific expense
+*/
+router.get("/expenses/:id", authCheck, async (req, res, next) => {
+  try {
+    const expenseId = req.params.id;
+    if (!isUUID(expenseId)) {
+      throw new ErrorExt(ec.PUD056);
+    }
+
+    const expense: Expense | null = await db.getExpense(expenseId);
+    if (!expense) {
+      throw new ErrorExt(ec.PUD084);
+    }
+    res.status(200).send(expense);
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 /* ---- */
 /* POST */
 /* ---- */
 
-// Create a new expense
-router.post("/expenses", (req, res, next) => {
-  if (!req.body.name || !req.body.categoryId || !req.body.payerId) {
-    return res.status(400).send("Name, categoryId or payerId not provided!");
+/*
+* Create a new expense
+*/
+router.post("/expenses", authCheck, async (req, res, next) => {
+  try {
+    if (!req.body.name || !req.body.amount || !req.body.categoryId || !req.body.payerId) {
+      throw new ErrorExt(ec.PUD057);
+    }
+
+    const name: string = req.body.name;
+    const description: string | undefined = req.body.description;
+    const categoryId = req.body.categoryId as string;
+    const payerId = req.body.payerId as string;
+    const amount = Number(req.body.amount);
+    if (!isUUID(categoryId)) {
+      throw new ErrorExt(ec.PUD045);
+    }
+    if (!isUUID(payerId)) {
+      throw new ErrorExt(ec.PUD089);
+    }
+    if (isNaN(amount)) {
+      throw new ErrorExt(ec.PUD088);
+    }
+    if (amount < 0) {
+      throw new ErrorExt(ec.PUD030);
+    }
+    if (name.trim() === "") {
+      throw new ErrorExt(ec.PUD059);
+    }
+
+    const expense: Expense = await db.createExpense(name, amount, categoryId, payerId, description);
+    res.status(200).send(expense);
   }
-  const request = new sql.Request();
-  request
-    .input("name", sql.NVarChar, req.body.name)
-    .input("description", sql.NVarChar, req.body.description)
-    .input("amount", sql.Numeric(16, 2), req.body.amount)
-    .input("category_id", sql.Int, req.body.categoryId)
-    .input("payer_id", sql.Int, req.body.payerId)
-    .execute("new_expense")
-    .then(data => {
-      const expenses: Expense[] = parseExpenses(data.recordset);
-      res.send(expenses[0]);
-    })
-    .catch(err => next(err));
+  catch (err) {
+    next(err);
+  }
+});
+
+/* --- */
+/* PUT */
+/* --- */
+
+/*
+* Edit expense
+*/
+router.put("/expenses/:id", authCheck, async (req, res, next) => {
+  try {
+    const expenseId = req.params.id;
+    if (!isUUID(expenseId)) {
+      throw new ErrorExt(ec.PUD056);
+    }
+
+    const name: string | undefined = req.body.name;
+    const description: string | undefined = req.body.description;
+    const amount: number | undefined = req.body.amount !== undefined ? Number(req.body.amount) : undefined;
+    const categoryId: string | undefined = req.body.categoryId;
+    const payerId: string | undefined = req.body.payerId;
+
+    if (!name && !categoryId && !amount && !payerId && description === undefined) {
+      throw new ErrorExt(ec.PUD116);
+    }
+    if (categoryId && !isUUID(categoryId)) {
+      throw new ErrorExt(ec.PUD045);
+    }
+    if (payerId && !isUUID(payerId)) {
+      throw new ErrorExt(ec.PUD089);
+    }
+    if (amount && isNaN(amount)) {
+      throw new ErrorExt(ec.PUD088);
+    }
+    if (amount && amount < 0) {
+      throw new ErrorExt(ec.PUD030);
+    }
+    if (name?.trim() === "") {
+      throw new ErrorExt(ec.PUD059);
+    }
+
+    const data = {
+      name: name,
+      description: description,
+      amount: amount,
+      categoryId: categoryId,
+      payerId: payerId
+    };
+
+    const expense = await db.editExpense(expenseId, data);
+    if (!expense) {
+      throw new ErrorExt(ec.PUD084);
+    }
+    res.status(200).send(expense);
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 /* ------ */
 /* DELETE */
 /* ------ */
 
-// Delete an expense
-router.delete("/expenses/:expenseId", (req, res, next) => {
-  const expId = Number(req.params.expenseId);
-  if (isNaN(expId)) {
-    return res.status(400).send("Expense ID must be a number!");
+/*
+* Delete an expense
+*/
+router.delete("/expenses/:id", authCheck, async (req, res, next) => {
+  try {
+    const expenseId = req.params.id;
+    if (!isUUID(expenseId)) {
+      throw new ErrorExt(ec.PUD056);
+    }
+    const userId = req.session.userId;
+    if (!userId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const success = await db.deleteExpense(expenseId, userId);
+    res.status(200).send({ success: success });
   }
-  const request = new sql.Request();
-  request
-    .input("expense_id", sql.Int, expId)
-    .execute("delete_expense")
-    .then(() => {
-      res.send({});
-    })
-    .catch(err => next(err));
+  catch (err) {
+    next(err);
+  }
 });
 
 export default router;

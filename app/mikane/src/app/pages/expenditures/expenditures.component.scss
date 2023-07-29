@@ -1,0 +1,38 @@
+.expenses-list-mobile {
+	padding: 0;
+}
+
+.add-expense-button-mobile {
+	position: fixed;
+	bottom: 80px;
+	right: 20px;
+	z-index: 999;
+
+	&.iOS {
+		bottom: 110px;
+	}
+}
+
+.expense-name {
+	max-width: 400px;
+}
+
+.expense-icon {
+	padding-right: 0;
+	text-align: end;
+	width: 40px;
+}
+
+.payer {
+	display: flex;
+	align-items: center;
+
+	.payer-avatar {
+		position: relative;
+		width: 20px;
+		height: 20px;
+		margin-right: 10px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+}

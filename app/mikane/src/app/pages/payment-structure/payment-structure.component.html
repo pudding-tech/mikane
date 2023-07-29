@@ -1,0 +1,70 @@
+<div class="payment-actions" *ngIf="senders.length > 0 && (breakpointService.isMobile() | async) === false">
+	<button mat-button color="accent" (click)="toggleExpand()">
+		<mat-icon>{{ allExpanded ? "visibility_off" : "visibility" }}</mat-icon>
+		{{ allExpanded ? "Collapse all payments" : "Show all payments" }}
+	</button>
+</div>
+<div *ngIf="(loading | async) === false; else loadingSpinner">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView">
+		<mat-accordion *ngIf="senders.length > 0; else noPayments" class="payments" multi>
+			<mat-expansion-panel *ngFor="let sender of senders" expanded="true">
+				<mat-expansion-panel-header (click)="panelToggled()">
+					<div class="user">
+						<img [src]="sender.sender.avatarURL" class="avatar" />
+						<mat-panel-title>{{ sender.sender.name }}</mat-panel-title>
+					</div>
+				</mat-expansion-panel-header>
+				<ng-template matExpansionPanelContent>
+					<table mat-table class="expense-table" [dataSource]="sender.receivers">
+						<!-- Name Column -->
+						<ng-container matColumnDef="name">
+							<th mat-header-cell *matHeaderCellDef>Owes money to</th>
+							<td mat-cell *matCellDef="let receiver" class="user">
+								<img [src]="receiver.receiver.avatarURL" class="avatar" />
+								{{ receiver.receiver.name }}
+							</td>
+						</ng-container>
+
+						<!-- Amount Column -->
+						<ng-container matColumnDef="amount">
+							<th mat-header-cell *matHeaderCellDef>Amount</th>
+							<td mat-cell *matCellDef="let receiver" class="amount-cell amount-color">
+								{{ receiver.amount | currency : "" : "" : "1.2-2" : "no" }}
+								kr
+							</td></ng-container
+						>
+
+						<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+						<tr class="mat-row" *matNoDataRow>
+							<td class="mat-cell" [attr.colspan]="displayedColumns.length">No payments</td>
+						</tr>
+					</table>
+				</ng-template>
+			</mat-expansion-panel>
+		</mat-accordion>
+	</div>
+</div>
+
+<ng-template #mobileView>
+	<mat-nav-list class="payments-list-mobile">
+		<payment-item
+			*ngFor="let sender of senders"
+			[sender]="sender"
+			[self]="sender.sender.id === currentUser.id"
+			>
+		</payment-item>
+	</mat-nav-list>
+</ng-template>
+
+<ng-template #loadingSpinner>
+	<loading-spinner></loading-spinner>
+</ng-template>
+
+<ng-template #noPayments>
+	<div class="payments-empty">
+		<mat-card appearance="outlined">
+			<mat-card-content> <h1>No payments</h1></mat-card-content>
+		</mat-card>
+	</div>
+</ng-template>

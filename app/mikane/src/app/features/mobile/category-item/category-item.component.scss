@@ -1,0 +1,101 @@
+.wrapper {
+	border-bottom: 1px solid rgba(181, 181, 181, 0.1);
+
+	mat-list-item {
+		height: fit-content !important;
+		padding: 0;
+	}
+}
+
+.upper {
+	display: flex;
+	align-items: center;
+	padding-top: 12px;
+	padding-bottom: 12px;
+	padding-left: 16px;
+	padding-right: 16px;
+
+	.category-icon {
+		margin-right: 2px !important;
+	}
+
+	.dropdown-arrow {
+		margin-right: 14px;
+	}
+
+	.number-of-participants {
+		font-size: 0.8em;
+		color: rgba(255, 255, 255, 0.7);
+	}
+}
+
+.lower {
+	background-color: #282828;
+	transition: height 0.3s ease;
+	overflow: hidden;
+
+	.user {
+		display: flex;
+		align-items: center;
+		padding: 6px 10px;
+		font-size: 0.8em;
+
+		&.header {
+			border-bottom: 1px solid rgba(181, 181, 181, 0.1);
+			color: rgba(255, 255, 255, 0.7);
+			background-color: #1c1c1c;
+		}
+
+		.name {
+			width: 50%;
+			display: flex;
+			align-items: center;
+
+			.avatar {
+				position: relative;
+				width: 24px;
+				height: 24px;
+				margin-right: 16px;
+				border-radius: 50%;
+				object-fit: cover;
+			}
+		}
+
+		.button {
+			margin-left: auto;
+		}
+	}
+
+	.new-user {
+		padding: 12px 10px 6px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		.inputs {
+			display: flex;
+			width: 80%;
+
+			.user-input-weighted {
+				width: 80%;
+			}
+	
+			.weight-input {
+				width: 70px;
+				margin-left: 20px;
+			}
+		}
+	}
+
+	.all-users-in-category {
+		padding: 12px 10px 6px;
+		color: rgba(255, 255, 255, 0.7);
+	}
+
+	.sub-buttons {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 6px 10px;
+	}
+}

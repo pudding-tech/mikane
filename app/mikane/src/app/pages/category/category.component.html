@@ -1,0 +1,187 @@
+<div *ngIf="(breakpointService.isMobile() | async) === false" class="add-button">
+	<button mat-raised-button color="primary" (click)="openDialog()">
+		<mat-icon>post_add</mat-icon>
+		Add category
+	</button>
+</div>
+
+<div *ngIf="(loading | async) === false; else loadingSpinner">
+	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView">
+		<mat-accordion *ngIf="categories.length > 0; else noCategories">
+			<mat-expansion-panel *ngFor="let category of categories" class="categories">
+				<mat-expansion-panel-header>
+					<mat-panel-title>
+						<mat-icon class="category-icon">
+							{{ category.icon ?? "shopping_cart" }}
+						</mat-icon>
+						<span class="category-name">{{ category.name }}</span>
+						<span class="number-of-participants">
+							<span class="number">{{ category.users.length }}</span>
+							participants
+						</span>
+					</mat-panel-title>
+				</mat-expansion-panel-header>
+
+				<ng-template matExpansionPanelContent>
+					<!-- Deferred initialization until the panel is open. -->
+					<table
+						mat-table
+						[class]="category.weighted ? 'category-table-weighted' : 'category-table'"
+						[dataSource]="category.users"
+					>
+						<form [formGroup]="addUserForm">
+							<!-- Name Column -->
+							<ng-container matColumnDef="name">
+								<th mat-header-cell *matHeaderCellDef>Participant</th>
+								<td mat-cell *matCellDef="let user" class="user">
+									<img [src]="user.avatarURL" class="avatar" />
+									{{ user.name }}
+								</td>
+								<td mat-footer-cell *matFooterCellDef>
+									<mat-form-field
+										class="category-user-input add-user"
+										subscriptSizinig="dynamic"
+										*ngIf="filterUsers(category.id).length !== 0; else allUsersAdded"
+									>
+										<mat-select
+											[formControl]="addUserForm.get('participantName') | formControl"
+											name="participantName"
+											placeholder="Add participant"
+											required
+										>
+											<mat-option *ngFor="let user of filterUsers(category.id)" [value]="user.id">
+												<span class="user">
+													<img [src]="user.avatarURL" class="avatar option" />
+													{{ user.name }}
+												</span>
+											</mat-option>
+										</mat-select>
+									</mat-form-field>
+									<ng-template #allUsersAdded>
+										<div class="all-users-in-category" [class]="{ 'category-user-input': !category.weighted }">
+											No more participants to add
+										</div>
+									</ng-template>
+								</td>
+							</ng-container>
+
+							<!-- Weight Column -->
+							<ng-container matColumnDef="weight">
+								<th mat-header-cell *matHeaderCellDef>
+									{{ category.weighted ? "Weight" : "" }}
+								</th>
+								<td mat-cell *matCellDef="let user">
+									{{ category.weighted ? user.weight : "" }}
+								</td>
+								<td mat-footer-cell *matFooterCellDef>
+									<mat-form-field
+										*ngIf="category.weighted && filterUsers(category.id).length !== 0"
+										[subscriptSizing]="(breakpointService.isMobile() | async) === true ? 'dynamic' : 'fixed'"
+										class="category-weight-input add-user"
+									>
+										<input
+											matInput
+											type="number"
+											min="1"
+											formControlName="weight"
+											name="weight"
+											placeholder="Weight"
+											readonly="false"
+										/>
+									</mat-form-field>
+								</td>
+							</ng-container>
+
+							<!-- Save button column -->
+							<ng-container matColumnDef="save">
+								<th mat-header-cell *matHeaderCellDef></th>
+								<td mat-cell *matCellDef="let user">
+									<div class="category-actions">
+										<button
+											mat-icon-button
+											type="button"
+											(click)="openWeightEditDialog(category.id, user.id, user.weight)"
+											*ngIf="category.weighted"
+										>
+											<mat-icon>edit</mat-icon>
+										</button>
+										<button mat-icon-button type="button" (click)="removeUser(category.id, user.id)">
+											<mat-icon>delete</mat-icon>
+										</button>
+									</div>
+								</td>
+								<td mat-footer-cell *matFooterCellDef>
+									<button
+										mat-icon-button
+										type="button"
+										(click)="addUser(category.id)"
+										[disabled]="
+											addUserForm.get('participantName')?.invalid ||
+											!addUserForm.get('participantName')?.dirty ||
+											(category.weighted && addUserForm.get('weight')?.invalid)
+										"
+										class="add-user save-button"
+									>
+										<mat-icon>add_circle</mat-icon>
+									</button>
+								</td>
+							</ng-container>
+
+							<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+							<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+							<tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+						</form>
+					</table>
+					<div id="category-actions">
+						<button
+							mat-raised-button
+							type="button"
+							color="primary"
+							(click)="openEditCategoryDialog(category.id, category.name, category.icon)"
+						>
+							Edit category
+							<mat-icon>edit</mat-icon>
+						</button>
+						<button mat-raised-button type="button" color="accent" (click)="toggleWeighted(category.id, category.weighted)">
+							Toggle weighted
+						</button>
+						<button mat-raised-button type="button" color="warn" (click)="deleteCategoryDialog(category.id)">
+							Delete category
+							<mat-icon>delete</mat-icon>
+						</button>
+					</div>
+				</ng-template>
+			</mat-expansion-panel>
+		</mat-accordion>
+	</div>
+</div>
+
+<ng-template #mobileView>
+	<mat-nav-list class="categories-list-mobile">
+		<category-item
+			*ngFor="let category of categories"
+			[category]="category"
+			[addUserForm]="addUserForm"
+			[filterUsers]="filterUsers"
+			(addUser)="addUser($event.categoryId)"
+			(removeUser)="removeUser($event.categoryId, $event.userId)"
+			(openWeightEditDialog)="openWeightEditDialog($event.categoryId, $event.userId, $event.weight)"
+			(openEditCategoryDialog)="openEditCategoryDialog(category.id, category.name, category.icon)"
+			(toggleWeighted)="toggleWeighted($event.categoryId, $event.weighted)"
+			(deleteCategoryDialog)="deleteCategoryDialog($event.categoryId)"
+		>
+		</category-item>
+	</mat-nav-list>
+	<button mat-fab color="primary" class="add-category-button-mobile" (click)="openDialog()" [ngClass]="{ iOS: contextService.isIos }">
+		<mat-icon>post_add</mat-icon>
+	</button>
+</ng-template>
+
+<ng-template #loadingSpinner>
+	<loading-spinner></loading-spinner>
+</ng-template>
+
+<ng-template #noCategories>
+	<mat-card appearance="outlined"> No expense categories </mat-card>
+</ng-template>

@@ -1,0 +1,96 @@
+.login-section {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	margin-top: 2em;
+}
+
+.login-content {
+	width: 370px;
+}
+
+.login-input {
+	width: 100%;
+
+	&.button {
+		margin-top: 20px;
+		margin-bottom: 8px;
+		height: 42px;
+	}
+}
+
+.bg {
+	height: 100vh;
+	background-color: #262626;
+}
+
+.mobile-view {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 80vw;
+}
+
+.mobile-title {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 30px;
+}
+
+.logo-text {
+	margin-right: 14px;
+}
+
+.reset-password-title {
+	margin-bottom: 10px;
+}
+
+.card-header, .card-content {
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
+.card-content {
+	margin-top: 15px;
+}
+
+.forgot-password {
+	text-align: center;
+	font-size: small;
+	margin-top: 20px;
+	margin-bottom: 8px;
+}
+
+.forgot-password-button {
+	opacity: 60%;
+	background: none;
+	color: white;
+	border: none;
+	margin: 0;
+	padding: 0;
+	cursor: pointer;
+}
+
+.forgot-password-button:hover {
+	opacity: 100%;
+}
+
+.forgot-password-text {
+	margin-bottom: 20px;
+}
+
+.info-text {
+	margin-top: 20px;
+	font-size: small;
+	text-align: center;
+}
+
+.error-text {
+	color: red;
+}
+
+.mat-spinner::ng-deep circle{
+	stroke: #FFFFFF !important;
+}

@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>{{ data?.edit ? "Edit Event" : "Create event" }}</h1>
+<div mat-dialog-content>
+	<mat-form-field appearance="fill">
+		<mat-label>Event Name</mat-label>
+		<input matInput name="name" [(ngModel)]="event.name" required [eventName]="event.id" #name="ngModel" />
+		<mat-error *ngIf="name.errors?.['required']">Event name is required</mat-error>
+		<mat-error *ngIf="name.errors?.['duplicate']">Event name already exists</mat-error>
+		<mat-error *ngIf="name.errors?.['invalid']">Invalid event name</mat-error>
+	</mat-form-field>
+	<mat-form-field appearance="fill">
+		<mat-label>Event Description</mat-label>
+		<input matInput name="description" [(ngModel)]="event.description" />
+	</mat-form-field>
+</div>
+<div mat-dialog-actions class="dialog-buttons">
+	<button mat-button (click)="onNoClick()">Cancel</button>
+	<button mat-button type="submit" [mat-dialog-close]="event" [disabled]="!isChanged() || name.invalid || name.pending">
+		{{ data?.edit ? "Save" : "Create" }}
+	</button>
+</div>
