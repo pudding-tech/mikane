@@ -1,5 +1,17 @@
 .categories {
 	min-width: 664px;
+
+	.category-name {
+		width: 20%;
+	}
+
+	.number-of-participants {
+		color: rgba(255, 255, 255, 0.45);
+		.number {
+			color: rgba(255, 255, 255, 0.8);
+			margin-right: 4px;
+		}
+	}
 }
 
 .category-table {
@@ -31,6 +43,11 @@
 
 .category-icon {
 	margin-right: 20px;
+}
+
+.all-users-in-category {
+	color: rgba(255, 255, 255, 0.7);
+	margin-bottom: 18px;
 }
 
 .user {

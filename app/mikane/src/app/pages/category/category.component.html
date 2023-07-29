@@ -14,7 +14,11 @@
 						<mat-icon class="category-icon">
 							{{ category.icon ?? "shopping_cart" }}
 						</mat-icon>
-						{{ category.name }}
+						<span class="category-name">{{ category.name }}</span>
+						<span class="number-of-participants">
+							<span class="number">{{ category.users.length }}</span>
+							participants
+						</span>
 					</mat-panel-title>
 				</mat-expansion-panel-header>
 
@@ -33,6 +37,7 @@
 									<mat-form-field
 										class="category-user-input add-user"
 										subscriptSizinig="dynamic"
+										*ngIf="filterUsers(category.id).length !== 0; else allUsersAdded"
 									>
 										<mat-select
 											[formControl]="addUserForm.get('participantName') | formControl"
@@ -48,6 +53,11 @@
 											</mat-option>
 										</mat-select>
 									</mat-form-field>
+									<ng-template #allUsersAdded>
+										<div class="all-users-in-category" [class]="{ 'category-user-input': !category.weighted}">
+											No more participants to add
+										</div>
+									</ng-template>
 								</td>
 							</ng-container>
 
@@ -61,7 +71,7 @@
 								</td>
 								<td mat-footer-cell *matFooterCellDef>
 									<mat-form-field
-										*ngIf="category.weighted"
+										*ngIf="category.weighted && filterUsers(category.id).length !== 0"
 										[subscriptSizing]="(breakpointService.isMobile() | async) === true ? 'dynamic' : 'fixed'"
 										class="category-weight-input add-user"
 									>
