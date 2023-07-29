@@ -66,6 +66,21 @@
 				</td>
 			</ng-container>
 
+			<!-- Edit Column -->
+			<ng-container matColumnDef="edit">
+				<th mat-header-cell *matHeaderCellDef></th>
+				<td mat-cell *matCellDef="let expense">
+					<button
+						*ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin"
+						mat-icon-button
+						type="button"
+						(click)="editExpense(expense.id)"
+					>
+						<mat-icon>edit</mat-icon>
+					</button>
+				</td>
+			</ng-container>
+
 			<!-- Delete Column -->
 			<ng-container matColumnDef="delete">
 				<th mat-header-cell *matHeaderCellDef></th>
@@ -91,7 +106,7 @@
 	<mat-nav-list #expensesList class="expenses-list-mobile">
 		<expense-item *ngFor="let expense of expenses" [expense]="expense"></expense-item>
 	</mat-nav-list>
-	<button mat-fab color="primary" class="add-expense-button-mobile" (click)="openDialog()" [ngClass]="{ 'iOS': contextService.isIos }">
+	<button mat-fab color="primary" class="add-expense-button-mobile" (click)="openDialog()" [ngClass]="{ iOS: contextService.isIos }">
 		<mat-icon>add_shopping_cart</mat-icon>
 	</button>
 </ng-template>

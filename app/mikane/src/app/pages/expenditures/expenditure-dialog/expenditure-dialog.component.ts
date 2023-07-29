@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
+import { Expense } from 'src/app/services/expense/expense.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 import { CategoryIcon } from 'src/app/types/enums';
@@ -50,7 +51,7 @@ export class ExpenditureDialogComponent implements OnInit {
 		description: new FormControl(''),
 		category: new FormControl('', [Validators.required]),
 		selectedIcon: new FormControl(CategoryIcon.SHOPPING),
-		amount: new FormControl('', [Validators.required, Validators.min(0)]),
+		amount: new FormControl(0, [Validators.required, Validators.min(0)]),
 		payer: new FormControl(this.data.userId, [Validators.required]),
 	});
 
@@ -60,6 +61,7 @@ export class ExpenditureDialogComponent implements OnInit {
 		public data: {
 			eventId: string;
 			userId: string;
+			expense?: Expense;
 		},
 		private categoryService: CategoryService,
 		private userService: UserService,
@@ -74,6 +76,18 @@ export class ExpenditureDialogComponent implements OnInit {
 		this.userService.loadUsersByEvent(this.data.eventId).subscribe((users) => {
 			this.users = users;
 		});
+
+		if (this.data.expense) {
+			// Expense is being edited
+			this.addExpenseForm.get('name').patchValue(this.data.expense.name);
+			this.addExpenseForm.get('description').patchValue(this.data.expense.description);
+			this.addExpenseForm.get('category').patchValue(this.data.expense.categoryInfo.name);
+			this.addExpenseForm.get('selectedIcon').patchValue(this.data.expense.categoryInfo.icon as CategoryIcon);
+			this.addExpenseForm.get('amount').patchValue(this.data.expense.amount);
+			this.addExpenseForm.get('payer').patchValue(this.data.expense.payer.id);
+
+			this.addExpenseForm.markAsDirty();
+		}
 	}
 
 	onNoClick(): void {

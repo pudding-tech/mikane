@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Add Expense</h1>
 <div mat-dialog-content>
-	<form [formGroup]="addExpenseForm">
+	<form [formGroup]="addExpenseForm" autocomplete="off">
 		<mat-form-field appearance="fill">
 			<mat-label>Expense Name</mat-label>
 			<input matInput formControlName="name" type="text" required />
@@ -19,6 +19,7 @@
 				aria-label="Expense category name"
 				matInput
 				formControlName="category"
+				autocomplete="off"
 				[matAutocomplete]="categorySelector"
 			/>
 			<mat-error *ngIf="addExpenseForm.get('category')?.errors?.['required']"> Category is required </mat-error>
@@ -52,7 +53,7 @@
 <div mat-dialog-actions class="dialog-buttons">
 	<button mat-button (click)="onNoClick()">Cancel</button>
 	<button mat-button [mat-dialog-close]="addExpenseForm.getRawValue()" [disabled]="addExpenseForm.invalid || !addExpenseForm.dirty">
-		Create
+		{{ data.expense ? "Edit" : "Create" }}
 	</button>
 </div>
 

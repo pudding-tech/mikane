@@ -47,6 +47,23 @@ export class ExpenseService {
 		});
 	}
 
+	editExpense(
+		expenseId: string,
+		name: string,
+		description: string,
+		amount: number,
+		categoryId: string,
+		payerId: string
+	): Observable<Expense> {
+		return this.httpClient.put<Expense>(this.apiUrl + `/${expenseId}`, {
+			name,
+			description,
+			amount,
+			categoryId,
+			payerId,
+		});
+	}
+
 	deleteExpense(expenseId: string): Observable<void> {
 		return this.httpClient.delete<void>(this.apiUrl + `/${expenseId}`);
 	}
