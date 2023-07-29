@@ -11,8 +11,8 @@ import { BehaviorSubject, Subject, Subscription, filter, of, switchMap, takeUnti
 import { ExpenseItemComponent } from 'src/app/features/mobile/expense-item/expense-item.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { ContextService } from 'src/app/services/context/context.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
+import { ContextService } from 'src/app/services/context/context.service';
 import { PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -46,9 +46,10 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 	cancel$: Subject<void> = new Subject();
+	destroy$: Subject<void> = new Subject();
 
 	expenses: Expense[] = [];
-	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description', 'delete'];
+	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description', 'edit', 'delete'];
 	currentUserId: string;
 
 	@ViewChild(MatSort) sort: MatSort;
@@ -60,7 +61,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		public dialog: MatDialog,
 		private messageService: MessageService,
 		public breakpointService: BreakpointService,
-		public contextService: ContextService,
+		public contextService: ContextService
 	) {}
 
 	ngOnInit(): void {
@@ -130,7 +131,8 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 						category.id,
 						newExpense.payer
 					);
-				})
+				}),
+				takeUntil(this.destroy$)
 			)
 			.subscribe({
 				next: (expense) => {
@@ -140,6 +142,61 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to create expense');
 					console.error('something went wrong while creating expense', err?.error?.message);
+				},
+			});
+	}
+
+	editExpense(expenseId: string) {
+		const oldExpense = this.expenses.find((expense) => expense.id === expenseId);
+		let newExpense: Expense;
+
+		this.dialog
+			.open(ExpenditureDialogComponent, {
+				width: '350px',
+				data: {
+					eventId: this.event.id,
+					userId: this.currentUserId,
+					expense: oldExpense,
+				},
+			})
+			.afterClosed()
+			.pipe(
+				switchMap((expense) => {
+					if (!expense) {
+						this.cancel$.next();
+					}
+					newExpense = expense;
+					return this.categoryService.findOrCreate(this.event.id, expense?.category);
+				}),
+				takeUntil(this.cancel$)
+			)
+			.pipe(
+				switchMap((category: Category) => {
+					return this.expenseService.editExpense(
+						oldExpense.id,
+						newExpense.name,
+						newExpense.description ?? undefined,
+						newExpense.amount,
+						category.id,
+						newExpense.payer as unknown as string
+					);
+				}),
+				takeUntil(this.destroy$)
+			)
+			.subscribe({
+				next: (newExpense) => {
+					this.expenses = this.expenses.map((expense) => {
+						if (expense.id === newExpense.id) {
+							return newExpense;
+						} else {
+							return expense;
+						}
+					});
+					this.messageService.showSuccess('Expense edited');
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to edit expense');
+					console.error('something went wrong while editing expense', err);
 				},
 			});
 	}
@@ -183,7 +240,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 						return this.compare(a.categoryInfo.name, b.categoryInfo.name, isAsc);
 					case 'amount':
 						return this.compare(a.amount, b.amount, isAsc);
-					case 'desscription':
+					case 'description':
 						return this.compare(a.description, b.description, isAsc);
 					default:
 						return 0;
@@ -199,5 +256,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy(): void {
 		this.eventSubscription?.unsubscribe();
+		this.destroy$.next();
+		this.destroy$.complete();
 	}
 }

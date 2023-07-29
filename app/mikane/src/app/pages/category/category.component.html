@@ -24,7 +24,11 @@
 
 				<ng-template matExpansionPanelContent>
 					<!-- Deferred initialization until the panel is open. -->
-					<table mat-table [class]="category.weighted ? 'category-table-weighted' : 'category-table'" [dataSource]="category.users">
+					<table
+						mat-table
+						[class]="category.weighted ? 'category-table-weighted' : 'category-table'"
+						[dataSource]="category.users"
+					>
 						<form [formGroup]="addUserForm">
 							<!-- Name Column -->
 							<ng-container matColumnDef="name">
@@ -54,7 +58,7 @@
 										</mat-select>
 									</mat-form-field>
 									<ng-template #allUsersAdded>
-										<div class="all-users-in-category" [class]="{ 'category-user-input': !category.weighted}">
+										<div class="all-users-in-category" [class]="{ 'category-user-input': !category.weighted }">
 											No more participants to add
 										</div>
 									</ng-template>
@@ -96,7 +100,7 @@
 										<button
 											mat-icon-button
 											type="button"
-											(click)="openEditDialog(category.id, user.id, user.weight)"
+											(click)="openWeightEditDialog(category.id, user.id, user.weight)"
 											*ngIf="category.weighted"
 										>
 											<mat-icon>edit</mat-icon>
@@ -130,11 +134,21 @@
 						</form>
 					</table>
 					<div id="category-actions">
+						<button
+							mat-raised-button
+							type="button"
+							color="primary"
+							(click)="openEditCategoryDialog(category.id, category.name, category.icon)"
+						>
+							Edit category
+							<mat-icon>edit</mat-icon>
+						</button>
 						<button mat-raised-button type="button" color="accent" (click)="toggleWeighted(category.id, category.weighted)">
 							Toggle weighted
 						</button>
 						<button mat-raised-button type="button" color="warn" (click)="deleteCategoryDialog(category.id)">
 							Delete category
+							<mat-icon>delete</mat-icon>
 						</button>
 					</div>
 				</ng-template>
@@ -152,13 +166,14 @@
 			[filterUsers]="filterUsers"
 			(addUser)="addUser($event.categoryId)"
 			(removeUser)="removeUser($event.categoryId, $event.userId)"
-			(openEditDialog)="openEditDialog($event.categoryId, $event.userId, $event.weight)"
+			(openWeightEditDialog)="openWeightEditDialog($event.categoryId, $event.userId, $event.weight)"
+			(openEditCategoryDialog)="openEditCategoryDialog(category.id, category.name, category.icon)"
 			(toggleWeighted)="toggleWeighted($event.categoryId, $event.weighted)"
 			(deleteCategoryDialog)="deleteCategoryDialog($event.categoryId)"
-			>
+		>
 		</category-item>
 	</mat-nav-list>
-	<button mat-fab color="primary" class="add-category-button-mobile" (click)="openDialog()" [ngClass]="{ 'iOS': contextService.isIos }">
+	<button mat-fab color="primary" class="add-category-button-mobile" (click)="openDialog()" [ngClass]="{ iOS: contextService.isIos }">
 		<mat-icon>post_add</mat-icon>
 	</button>
 </ng-template>

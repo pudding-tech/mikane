@@ -1,15 +1,15 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { CurrencyPipe } from '@angular/common';
-import { MatListModule } from '@angular/material/list';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { Category } from 'src/app/services/category/category.service';
 import { User } from 'src/app/services/user/user.service';
+import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
+import { CategoryIcon } from 'src/app/types/enums';
 
 @Component({
 	selector: 'category-item',
@@ -35,9 +35,10 @@ export class CategoryItemComponent {
 	@Input() addUserForm: FormGroup;
 	@Input() filterUsers: (categoryId: string) => User[];
 	@Output() addUser = new EventEmitter<{ categoryId: string }>();
-	@Output() removeUser = new EventEmitter<{ categoryId: string, userId: string }>();
-	@Output() openEditDialog = new EventEmitter<{ categoryId: string, userId: string, weight: number }>();
-	@Output() toggleWeighted = new EventEmitter<{ categoryId: string, weighted: boolean }>();
+	@Output() removeUser = new EventEmitter<{ categoryId: string; userId: string }>();
+	@Output() openEditCategoryDialog = new EventEmitter<{ categoryId: string; name: string; icon: CategoryIcon }>();
+	@Output() openWeightEditDialog = new EventEmitter<{ categoryId: string; userId: string; weight: number }>();
+	@Output() toggleWeighted = new EventEmitter<{ categoryId: string; weighted: boolean }>();
 	@Output() deleteCategoryDialog = new EventEmitter<{ categoryId: string }>();
 
 	dropdownOpen: boolean = false;
@@ -49,9 +50,8 @@ export class CategoryItemComponent {
 		this.dropdownOpen = !this.dropdownOpen;
 
 		if (this.lowerHeight === 0) {
-			this.lowerHeight = this.lower.nativeElement.scrollHeight;	
-		}
-		else {
+			this.lowerHeight = this.lower.nativeElement.scrollHeight;
+		} else {
 			this.lowerHeight = 0;
 		}
 	};
@@ -59,7 +59,7 @@ export class CategoryItemComponent {
 	addUserToCategory = (categoryId: string) => {
 		this.addUser.emit({ categoryId });
 		setTimeout(() => {
-			this.lowerHeight = this.lower.nativeElement.scrollHeight;	
+			this.lowerHeight = this.lower.nativeElement.scrollHeight;
 		}, 100);
 	};
 
@@ -68,8 +68,12 @@ export class CategoryItemComponent {
 		this.renderer.setStyle(this.lower.nativeElement, 'height', 'auto');
 	};
 
-	openEdit = (categoryId: string, userId: string, weight: number) => {
-		this.openEditDialog.emit({ categoryId, userId, weight });
+	openEditWeight = (categoryId: string, userId: string, weight: number) => {
+		this.openWeightEditDialog.emit({ categoryId, userId, weight });
+	};
+
+	openEdit = (categoryId: string, name: string, icon: CategoryIcon) => {
+		this.openEditCategoryDialog.emit({ categoryId, name, icon });
 	};
 
 	toggleWeightedCategory = (categoryId: string, weighted: boolean) => {

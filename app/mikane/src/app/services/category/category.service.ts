@@ -40,6 +40,14 @@ export class CategoryService {
 		});
 	}
 
+	editCategory(categoryId: string, name: string, icon: CategoryIcon): Observable<Category> {
+		return this.httpClient.put<Category>(this.apiUrl + `/${categoryId}`, {
+			categoryId,
+			name,
+			icon,
+		});
+	}
+
 	addUser(categoryId: string, userId: string, weight: number): Observable<Category> {
 		return this.httpClient.post<Category>(this.apiUrl + `/${categoryId}/user/${userId}`, { weight });
 	}

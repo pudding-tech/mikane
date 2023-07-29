@@ -5,20 +5,21 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'lodash-es';
 import { BehaviorSubject } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
+import { CategoryItemComponent } from 'src/app/features/mobile/category-item/category-item.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { ContextService } from 'src/app/services/context/context.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
+import { ContextService } from 'src/app/services/context/context.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
@@ -27,7 +28,6 @@ import { CategoryIcon } from 'src/app/types/enums';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
-import { CategoryItemComponent } from 'src/app/features/mobile/category-item/category-item.component';
 
 @Component({
 	selector: 'app-category',
@@ -78,7 +78,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		private cd: ChangeDetectorRef,
 		private messageService: MessageService,
 		public breakpointService: BreakpointService,
-		public contextService: ContextService,
+		public contextService: ContextService
 	) {}
 
 	ngOnInit(): void {
@@ -132,7 +132,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 				}).indexOf(user.id) < 0
 			);
 		});
-	}
+	};
 
 	openDialog() {
 		const dialogRef = this.dialog.open(CategoryDialogComponent, {
@@ -147,6 +147,19 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		});
 	}
 
+	openEditCategoryDialog(categoryId: string, name: string, icon: CategoryIcon) {
+		const dialogRef = this.dialog.open(CategoryDialogComponent, {
+			width: '380px',
+			data: { categoryId, name, icon, eventId: this.eventId },
+		});
+
+		dialogRef.afterClosed().subscribe((result) => {
+			if (result) {
+				this.editCategory(categoryId, result.categoryName, result.selectedIcon);
+			}
+		});
+	}
+
 	createCategory(name: string, weighted: boolean, icon: CategoryIcon) {
 		this.categoryService.createCategory(name, this.eventId, weighted, icon).subscribe({
 			next: (category) => {
@@ -156,6 +169,24 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 			error: (err: ApiError) => {
 				this.messageService.showError('Error creating category');
 				console.error('something went wrong while creating category', err?.error?.message);
+			},
+		});
+	}
+
+	editCategory(categoryId: string, name: string, icon: CategoryIcon) {
+		this.categoryService.editCategory(categoryId, name, icon).subscribe({
+			next: (newCategory) => {
+				Object.assign(
+					this.categories.find((category) => {
+						return category.id === categoryId;
+					}),
+					newCategory
+				);
+				this.messageService.showSuccess('Category edited');
+			},
+			error: (err: ApiError) => {
+				this.messageService.showError('Error editing category');
+				console.error('something went wrong while editing category', err);
 			},
 		});
 	}
@@ -200,7 +231,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		});
 	}
 
-	openEditDialog(categoryId: string, userId: string, weight: number) {
+	openWeightEditDialog(categoryId: string, userId: string, weight: number) {
 		const dialogRef = this.dialog.open(CategoryEditDialogComponent, {
 			width: '300px',
 			data: { categoryId, userId, weight },
@@ -208,12 +239,12 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 
 		dialogRef.afterClosed().subscribe((res) => {
 			if (res) {
-				this.editCategory(categoryId, userId, res.weight);
+				this.editCategoryWeight(categoryId, userId, res.weight);
 			}
 		});
 	}
 
-	editCategory(categoryId: string, userId: string, weight: number) {
+	editCategoryWeight(categoryId: string, userId: string, weight: number) {
 		this.categoryService.editUser(categoryId, userId, weight).subscribe({
 			next: (res) => {
 				const catIndex = this.categories.findIndex((category) => {
