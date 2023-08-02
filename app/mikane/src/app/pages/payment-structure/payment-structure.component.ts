@@ -1,5 +1,6 @@
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'lodash-es';
 import { BehaviorSubject } from 'rxjs';
@@ -13,10 +14,18 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { PaymentExpansionPanelItemComponent } from 'src/app/pages/payment-structure/payment-expansion-panel-item/payment-expansion-panel-item.component';
 import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payment-item.component';
+
+interface Sender {
+	sender: User;
+	receivers: {
+		receiver: User;
+		amount: number;
+	}[];
+}
 
 @Component({
 	selector: 'app-payment-structure',
@@ -24,38 +33,34 @@ import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payme
 	styleUrls: ['./payment-structure.component.scss'],
 	standalone: true,
 	imports: [
-		NgIf,
+		CommonModule,
 		MatButtonModule,
 		MatIconModule,
 		MatExpansionModule,
-		NgFor,
 		MatTableModule,
 		ProgressSpinnerComponent,
 		MatCardModule,
 		MatListModule,
-		AsyncPipe,
 		CurrencyPipe,
+		PaymentExpansionPanelItemComponent,
 		PaymentItemComponent,
 	],
 })
 export class PaymentStructureComponent implements OnInit {
-	@ViewChild(MatAccordion) accordion!: MatAccordion;
+	@ViewChild('paymentsSelfRef') paymentsSelfRef!: PaymentExpansionPanelItemComponent;
+	@ViewChild('paymentsOthersRef') paymentsOthersRef!: PaymentExpansionPanelItemComponent;
 
 	private eventId!: string;
 
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-	displayedColumns: string[] = ['name', 'amount'];
-	allExpanded = true;
+	allExpandedSelf = true;
+	allExpandedOthers = false;
 
 	payments: Payment[] = [];
-	senders: {
-		sender: User;
-		receivers: {
-			receiver: User;
-			amount: number;
-		}[];
-	}[] = [];
+	senders: Sender[] = [];
+	paymentsSelf: Sender[] = [];
+	paymentsOthers: Sender[] = [];
 	currentUser: User;
 
 	constructor(
@@ -116,6 +121,17 @@ export class PaymentStructureComponent implements OnInit {
 					);
 				});
 
+				this.senders.map((sender) => {
+					if (sender.sender.id === this.currentUser.id ||
+						sender.receivers.find(receiver => receiver.receiver.id === this.currentUser.id)
+					) {
+						this.paymentsSelf.push(sender);
+					}
+					else {
+						this.paymentsOthers.push(sender);
+					}
+				})
+
 				this.loading.next(false);
 			},
 			error: (err: ApiError) => {
@@ -126,21 +142,35 @@ export class PaymentStructureComponent implements OnInit {
 		});
 	}
 
-	toggleExpand() {
-		if (this.allExpanded) {
-			this.accordion.closeAll();
-			this.allExpanded = false;
-		} else {
-			this.accordion.openAll();
-			this.allExpanded = true;
+	toggleExpand = (index: number) => {
+		if (index === 1) {
+			if (this.allExpandedSelf) {
+				this.paymentsSelfRef.openExpand(false);
+				this.allExpandedSelf = false;
+			}
+			else {
+				this.paymentsSelfRef.openExpand(true);
+				this.allExpandedSelf = true;
+			}
 		}
-	}
+		else if (index === 2) {
+			if (this.allExpandedOthers) {
+				this.paymentsOthersRef.openExpand(false);
+				this.allExpandedOthers = false;
+			}
+			else {
+				this.paymentsOthersRef.openExpand(true);
+				this.allExpandedOthers = true;
+			}
+		}
+	};
 
-	panelToggled() {
-		if (this.accordion._headers.toArray().every((panel) => panel._isExpanded())) {
-			this.allExpanded = true;
-		} else if (!this.accordion._headers.some((panel) => panel._isExpanded())) {
-			this.allExpanded = false;
+	panelToggled = (index: number, allPanelsExpanded: boolean) => {
+		if (index === 1) {
+			this.allExpandedSelf = allPanelsExpanded;
 		}
-	}
+		else if (index === 2) {
+			this.allExpandedOthers = allPanelsExpanded;
+		}
+	};
 }

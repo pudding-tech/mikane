@@ -5,25 +5,45 @@
 	margin-top: 2em;
 }
 
-.amount-cell {
-	width: 50%;
+.payments-list-mobile {
+	padding: 0;
 }
 
-.user {
+.payments-header {
 	display: flex;
+	justify-content: space-between;
 	align-items: center;
-	height: inherit;
+	padding: 10px 0;
+	padding-left: 22px;
+	margin: 20px 0;
+	background-color: #1c1c1c;
+	border-radius: 4px;
 
-	.avatar {
-		position: relative;
-		width: 24px;
-		height: 24px;
-		margin-right: 16px;
-		border-radius: 50%;
-		object-fit: cover;
+	&.no-payments {
+		padding-top: 14px;
+		padding-bottom: 14px;
+	}
+
+	.payments-title {
+		margin: 0;
+	}
+
+	.collapse-button {
+		margin-right: 10px;
 	}
 }
 
-.payments-list-mobile {
-	padding: 0;
+.no-payments-text {
+	margin-left: 24px;
+}
+
+.title-mobile {
+	display: flex;
+	align-items: center;
+	height: 40px;
+	padding-left: 16px;
+	background-color: rgba(24, 24, 24, 1);
+	border-top: 1px solid #333333;
+	stroke: #333333;
+	color: #b4b4b4;
 }

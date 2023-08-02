@@ -7,10 +7,10 @@
 			</mat-icon>
 			<div>
 				<div class="name">
-					{{ self ? "You" : sender.sender.name }}
+					{{ self && sender.sender.id === currentUser.id ? "You" : sender.sender.name }}
 				</div>
 				<div class="subtext">
-					{{ self ? "Owe money to..." : "Owes money to..." }}
+					{{ self && sender.sender.id === currentUser.id ? "Owe money to..." : "Owes money to..." }}
 				</div>
 			</div>
 		</div>
@@ -20,7 +20,7 @@
 			<div class="payment">
 				<span class="name">
 					<img [src]="receiver.receiver.avatarURL" class="avatar" />
-					{{ receiver.receiver.name }}
+					{{ self && receiver.receiver.id === currentUser.id ? 'You' : receiver.receiver.name }}
 				</span>
 				<span class="amount-color">
 					{{ receiver.amount | currency : "" : "" : "1.2-2" : "no" }} kr

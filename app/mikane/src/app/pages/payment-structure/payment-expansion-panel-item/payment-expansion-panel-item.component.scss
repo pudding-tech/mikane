@@ -1,0 +1,18 @@
+.amount-cell {
+	width: 50%;
+}
+
+.user {
+	display: flex;
+	align-items: center;
+	height: inherit;
+
+	.avatar {
+		position: relative;
+		width: 24px;
+		height: 24px;
+		margin-right: 16px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+}
