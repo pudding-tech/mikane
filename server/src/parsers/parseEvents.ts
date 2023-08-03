@@ -59,13 +59,5 @@ export const parseBalance = (balanceRes: BalanceCalculationResult, users: User[]
     });
   });
 
-  // Sort users by time joined event
-  balances.sort((a, b) => {
-    if (!a.user.eventInfo?.joinedTime || !b.user.eventInfo?.joinedTime) {
-      return 0;
-    }
-    return a.user.eventInfo?.joinedTime.getTime() - b.user.eventInfo?.joinedTime.getTime();
-  });
-
   return balances;
 };
