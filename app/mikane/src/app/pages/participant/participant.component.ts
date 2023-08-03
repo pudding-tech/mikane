@@ -1,12 +1,13 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute } from '@angular/router';
@@ -46,6 +47,7 @@ import { ParticipantDialogComponent } from './user-dialog/participant-dialog.com
 		MatDialogModule,
 		MatListModule,
 		ParticipantItemComponent,
+		MatSortModule,
 	],
 })
 export class ParticipantComponent implements OnInit, OnDestroy {
@@ -58,12 +60,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
 	users: User[] = [];
 	usersWithBalance: UserBalance[] = [];
+	usersWithBalance$ = new BehaviorSubject<UserBalance[]>([]);
 
+	displayedParticipantColumns = ['icon', 'name', 'expensesCount', 'costs', 'expenses', 'balance'];
 	displayedColumns: string[] = ['name', 'amount', 'category', 'description', 'actions'];
 	dataSources: ExpenseDataSource[] = [];
 
 	inEvent = false;
 	isAdmin = false;
+
+	@ViewChild(MatAccordion) accordion: MatAccordion;
 
 	constructor(
 		private userService: UserService,
@@ -104,6 +110,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 				.subscribe({
 					next: (usersWithBalance) => {
 						this.usersWithBalance = usersWithBalance;
+						this.usersWithBalance$.next(usersWithBalance);
 						this.loading.next(false);
 						for (let i = 0; i < usersWithBalance.length; i++) {
 							this.dataSources.push(new ExpenseDataSource(this.userService));
@@ -301,6 +308,47 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 				this.messageService.showError('Failed to delete expense from user');
 			},
 		});
+	}
+
+	sortData(sort: Sort) {
+		// Close all open expansion panels
+		this.accordion.closeAll();
+
+		if (!sort.active || sort.direction === '') {
+			this.usersWithBalance = [
+				...this.usersWithBalance.sort((a, b) => {
+					return this.compare(a.user.name, b.user.name, false);
+				}),
+			];
+			this.usersWithBalance$.next(this.usersWithBalance);
+			return;
+		}
+
+		this.usersWithBalance = [
+			...this.usersWithBalance.sort((a, b) => {
+				const isAsc = sort.direction === 'asc';
+				switch (sort.active) {
+					case 'name':
+						return this.compare(a.user.name, b.user.name, isAsc);
+					case 'expensesCount':
+						return this.compare(a.expensesCount, b.expensesCount, isAsc);
+					case 'costs':
+						return this.compare(a.spending, b.spending, isAsc);
+					case 'expenses':
+						return this.compare(a.expenses, b.expenses, isAsc);
+					case 'balance':
+						return this.compare(a.balance, b.balance, isAsc);
+					default:
+						return 0;
+				}
+			}),
+		];
+		this.usersWithBalance$.next(this.usersWithBalance);
+	}
+
+	private compare(a: string | number, b: string | number, isAsc: boolean) {
+		if (a === b) return 0;
+		return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 	}
 
 	ngOnDestroy(): void {

@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { BehaviorSubject, Subject, Subscription, filter, of, switchMap, takeUntil } from 'rxjs';
 import { ExpenseItemComponent } from 'src/app/features/mobile/expense-item/expense-item.component';
@@ -51,8 +51,6 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	expenses: Expense[] = [];
 	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description', 'edit', 'delete'];
 	currentUserId: string;
-
-	@ViewChild(MatSort) sort: MatSort;
 
 	constructor(
 		private expenseService: ExpenseService,
