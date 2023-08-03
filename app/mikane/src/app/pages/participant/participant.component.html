@@ -14,20 +14,32 @@
 			</ng-template>
 		</div>
 
-		<mat-accordion class="user-list" *ngIf="usersWithBalance.length > 0; else noUsers">
-			<mat-expansion-panel disabled>
-				<mat-expansion-panel-header>
-					<mat-panel-title class="user-panel-title">
-						<div class="first">Name</div>
-						<div class="count">Number of expenses</div>
-						<div>Costs</div>
-						<div>Expenses</div>
-						<div>Balance</div>
-					</mat-panel-title>
-				</mat-expansion-panel-header>
-			</mat-expansion-panel>
+		<mat-accordion class="user-list" *ngIf="usersWithBalance.length > 0; else noUsers" #accordion>
+			<!-- HEADER ROW -->
+			<table mat-table matSort (matSortChange)="sortData($event)">
+				<ng-container matColumnDef="icon">
+					<th mat-header-cell *matHeaderCellDef></th>
+				</ng-container>
+				<ng-container matColumnDef="name">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+				</ng-container>
+				<ng-container matColumnDef="expensesCount">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>Number of expenses</th>
+				</ng-container>
+				<ng-container matColumnDef="costs">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>Costs</th>
+				</ng-container>
+				<ng-container matColumnDef="expenses">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>Expenses</th>
+				</ng-container>
+				<ng-container matColumnDef="balance">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>Balance</th>
+				</ng-container>
+				<tr mat-header-row *matHeaderRowDef="displayedParticipantColumns"></tr>
+			</table>
+			<!-- PARTICIPANT EXPANSION PANELS -->
 			<mat-expansion-panel
-				*ngFor="let userWithBalance of usersWithBalance; let i = index"
+				*ngFor="let userWithBalance of usersWithBalance$ | async; let i = index"
 				(opened)="getExpenses(userWithBalance.user, i)"
 				hideToggle
 			>
@@ -109,14 +121,18 @@
 						<button mat-raised-button color="accent" (click)="createExpenseDialog(userWithBalance.user.id, dataSources[i])">
 							Add expense
 						</button>
-						<button *ngIf="userWithBalance.expensesCount === 0; else noRemoveButton" mat-raised-button type="button" color="warn" (click)="deleteUserDialog(userWithBalance.user.id)">
+						<button
+							*ngIf="userWithBalance.expensesCount === 0; else noRemoveButton"
+							mat-raised-button
+							type="button"
+							color="warn"
+							(click)="deleteUserDialog(userWithBalance.user.id)"
+						>
 							Remove User
 						</button>
 						<ng-template #noRemoveButton>
 							<span matTooltip="Cannot remove users with expenses in event" style="padding: 8px 0">
-								<button mat-stroked-button disabled>
-									Remove User
-								</button>
+								<button mat-stroked-button disabled>Remove User</button>
 							</span>
 						</ng-template>
 					</div>
