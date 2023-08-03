@@ -142,6 +142,45 @@ describe("categories", async () => {
       expect(res.status).toEqual(400);
       expect(res.body.code).toEqual(ec.PUD096.code);
     });
+
+    test("should set event as archived", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: false
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(false);
+    });
+
+    test("fail creating category in archived event", async () => {
+      const res = await request(app)
+        .post("/api/categories")
+        .set("Cookie", authToken)
+        .send({
+          name: "Another category",
+          icon: "shopping_cart",
+          weighted: false,
+          eventId: event.id
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD118.code);
+    });
+
+    test("should set event as active", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: true
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(true);
+    });
   });
 
   /* --------------- */

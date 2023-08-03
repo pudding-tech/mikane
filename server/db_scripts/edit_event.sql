@@ -4,7 +4,8 @@ create or replace function edit_event(
   ip_user_id uuid,
   ip_name varchar(255),
   ip_description varchar(400),
-  ip_private boolean
+  ip_private boolean,
+  ip_active boolean
 )
 returns table (
   id uuid,
@@ -12,6 +13,7 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
+  active boolean,
   admin_ids jsonb,
   user_id uuid,
   user_in_event boolean,
@@ -31,6 +33,10 @@ begin
     raise exception 'Only event admins can edit event' using errcode = 'P0087';
   end if;
 
+  if exists (select 1 from "event" e where e.id = ip_event_id and e.active = false) and ip_active is not true then
+    raise exception 'Archived events cannot be edited' using errcode = 'P0118';
+  end if;
+
   if exists (select 1 from "event" e where e.name ilike ip_name and e.id != ip_event_id) then
     raise exception 'Another event already has this name' using errcode = 'P0005';
   end if;
@@ -38,14 +44,15 @@ begin
   update
     "event" e
   set
-    name = coalesce(ip_name, e.name),
-    description = nullif(trim(coalesce(ip_description, e.description)), ''),
-    private = coalesce(ip_private, e.private)
+    "name" = coalesce(ip_name, e.name),
+    "description" = nullif(trim(coalesce(ip_description, e.description)), ''),
+    "private" = coalesce(ip_private, e.private),
+    active = coalesce(ip_active, e.active)
   where
     e.id = ip_event_id;
 
   return query
-  select * from get_events(ip_event_id, ip_user_id);
+  select * from get_events(ip_event_id, ip_user_id, false);
 
 end;
 $$

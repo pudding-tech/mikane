@@ -1113,3 +1113,12 @@ export const PUD117: ErrorCode = {
   status: 500,
   log: true
 };
+
+/**
+ * PUD-118: Archived events cannot be edited
+ */
+export const PUD118: ErrorCode = {
+  code: "PUD-118",
+  message: "Archived events cannot be edited",
+  status: 400
+};

@@ -86,6 +86,8 @@ export const createCategory = async (name: string, eventId: string, weighted: bo
         throw new ErrorExt(ec.PUD006, err);
       if (err.code === "P0097")
         throw new ErrorExt(ec.PUD097, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD036, err);
     });
@@ -125,6 +127,8 @@ export const addUserToCategory = async (categoryId: string, userId: string, weig
         throw new ErrorExt(ec.PUD011, err);
       else if (err.code === "P0012")
         throw new ErrorExt(ec.PUD012, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD020, err);
     });
@@ -150,6 +154,8 @@ export const editCategory = async (categoryId: string, data: { name?: string, ic
     .catch(err => {
       if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD041, err);
     });
@@ -175,6 +181,8 @@ export const editUserWeight = async (categoryId: string, userId: string, weight:
     .catch(err => {
       if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD027, err);
     });
@@ -205,6 +213,8 @@ export const editWeightStatus = async (categoryId: string, weighted: boolean) =>
     .catch(err => {
       if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD026, err);
     });
@@ -229,6 +239,8 @@ export const deleteCategory = async (categoryId: string) => {
     .catch(err => {
       if (err.code === "P0007")
         throw new ErrorExt(ec.PUD007, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD022, err);
     });
@@ -261,6 +273,8 @@ export const removeUserFromCategory = async (categoryId: string, userId: string)
         throw new ErrorExt(ec.PUD007, err);
       else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD039, err);
     });

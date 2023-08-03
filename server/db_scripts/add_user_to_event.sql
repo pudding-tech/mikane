@@ -10,6 +10,7 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
+  active boolean,
   admin_ids jsonb,
   user_id uuid,
   user_in_event boolean,
@@ -26,6 +27,10 @@ begin
     raise exception 'User not found' using errcode = 'P0008';
   end if;
 
+  if exists (select 1 from "event" e where e.id = ip_event_id and e.active = false) then
+    raise exception 'Archived events cannot be edited' using errcode = 'P0118';
+  end if;
+
   if exists (select 1 from user_event ue where ue.event_id = ip_event_id and ue.user_id = ip_user_id) then
     raise exception 'User is already in this event' using errcode = 'P0009';
   end if;
@@ -34,7 +39,7 @@ begin
     values (ip_user_id, ip_event_id, CURRENT_TIMESTAMP, ip_admin);
 
   return query
-  select * from get_events(ip_event_id, null);
+  select * from get_events(ip_event_id, null, false);
 
 end;
 $$

@@ -23,6 +23,10 @@ begin
     raise exception 'User not found' using errcode = 'P0008';
   end if;
 
+  if exists (select 1 from "event" e inner join category c on c.event_id = e.id where c.id = ip_category_id and e.active = false) then
+    raise exception 'Archived events cannot be edited' using errcode = 'P0118';
+  end if;
+
   delete from user_category uc where uc.category_id = ip_category_id and uc.user_id = ip_user_id;
 
   return query

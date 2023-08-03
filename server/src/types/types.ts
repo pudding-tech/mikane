@@ -24,6 +24,7 @@ export type Event = {
   created: Date;
   adminIds: string[];
   private: boolean;
+  active: boolean;
   userInfo?: {
     id: string;
     inEvent: boolean;
