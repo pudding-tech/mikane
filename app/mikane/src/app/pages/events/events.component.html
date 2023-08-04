@@ -9,51 +9,96 @@
 <div *ngIf="(loading | async) === false; else loadingSpinner">
 	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="events-container">
 		<mat-card class="event-card">
-			<mat-card-header id="header">
-				<mat-card-title> Events </mat-card-title>
-			</mat-card-header>
 			<mat-card-content class="card-content">
-				<mat-card *ngFor="let event of pagedEvents" class="event-item">
-					<mat-card-header class="event-header clickable" (click)="clickEvent(event)">
-						<mat-card-title class="event-title">
-							<span class="event-name">
-								<span class="name-text">{{ event.name }}</span>
-								<mat-icon
-									*ngIf="event.userInfo.inEvent"
-									matTooltip="You are in this event"
-									[matTooltipShowDelay]="200"
-									class="joined-icon"
-								>
-									how_to_reg
-								</mat-icon>
-								<span
-									*ngIf="event.userInfo.isAdmin"
-									matTooltip="You are an admin for this event"
-									[matTooltipShowDelay]="200"
-									class="admin-icon"
-								>
-									A
+				<div class="header">Active Events</div>
+				<div *ngIf="pagedEventsActive().length > 0; else noActiveEvents">
+					<mat-card *ngFor="let event of pagedEventsActive()" class="event-item">
+						<mat-card-header class="event-header clickable" (click)="clickEvent(event)">
+							<mat-card-title class="event-title">
+								<span class="event-name">
+									<span class="name-text">{{ event.name }}</span>
+									<mat-icon
+										*ngIf="event.userInfo.inEvent"
+										matTooltip="You are in this event"
+										[matTooltipShowDelay]="200"
+										class="joined-icon"
+									>
+										how_to_reg
+									</mat-icon>
+									<span
+										*ngIf="event.userInfo.isAdmin"
+										matTooltip="You are an admin for this event"
+										[matTooltipShowDelay]="200"
+										class="admin-icon"
+									>
+										A
+									</span>
 								</span>
+							</mat-card-title>
+							<mat-card-subtitle>
+								{{ event.description }}
+							</mat-card-subtitle>
+							<span *ngIf="event.userInfo.isAdmin" class="event-actions">
+								<button mat-icon-button (click)="editEvent(event); $event.stopPropagation()">
+									<mat-icon>edit</mat-icon>
+								</button>
 							</span>
-						</mat-card-title>
-						<mat-card-subtitle>
-							{{ event.description }}
-						</mat-card-subtitle>
-						<span *ngIf="event.userInfo.isAdmin" class="event-actions">
-							<button mat-icon-button (click)="editEvent(event); $event.stopPropagation()">
-								<mat-icon>edit</mat-icon>
-							</button>
-						</span>
-					</mat-card-header>
-				</mat-card>
-				<mat-paginator
-					[length]="length"
-					[pageSize]="pageSize"
-					[pageSizeOptions]="pageSizeOptions"
-					(page)="onPageChange($event)"
-					class="events-paginator"
-				>
-				</mat-paginator>
+						</mat-card-header>
+					</mat-card>
+					<mat-paginator
+						[length]="lengthActive()"
+						[pageSize]="pageSizeActive()"
+						[pageSizeOptions]="pageSizeOptions"
+						(page)="onPageChange($event, 'active')"
+						class="events-paginator"
+					>
+					</mat-paginator>
+				</div>
+				<ng-template #noActiveEvents>
+					<div class="no-events">There are currently no active events</div>
+				</ng-template>
+				<div class="header archived-events">Archived events</div>
+				<div *ngIf="pagedEventsArchived().length > 0; else noArchivedEvents">
+					<mat-card *ngFor="let event of pagedEventsArchived()" class="event-item">
+						<mat-card-header class="event-header clickable" (click)="clickEvent(event)">
+							<mat-card-title class="event-title">
+								<span class="event-name">
+									<span class="name-text">{{ event.name }}</span>
+									<mat-icon
+										*ngIf="event.userInfo.inEvent"
+										matTooltip="You are in this event"
+										[matTooltipShowDelay]="200"
+										class="joined-icon"
+									>
+										how_to_reg
+									</mat-icon>
+									<span
+										*ngIf="event.userInfo.isAdmin"
+										matTooltip="You are an admin for this event"
+										[matTooltipShowDelay]="200"
+										class="admin-icon"
+									>
+										A
+									</span>
+								</span>
+							</mat-card-title>
+							<mat-card-subtitle>
+								{{ event.description }}
+							</mat-card-subtitle>
+						</mat-card-header>
+					</mat-card>
+					<mat-paginator
+						[length]="lengthArchived()"
+						[pageSize]="pageSizeArchived()"
+						[pageSizeOptions]="pageSizeOptions"
+						(page)="onPageChange($event, 'archived')"
+						class="events-paginator"
+					>
+					</mat-paginator>
+				</div>
+				<ng-template #noArchivedEvents>
+					<div class="no-events">There are currently no archived events</div>
+				</ng-template>
 			</mat-card-content>
 			<mat-card-actions>
 				<div class="add-button">
@@ -68,10 +113,20 @@
 </div>
 
 <ng-template #mobileView>
-	<div class="title-mobile">EVENTS</div>
-	<mat-nav-list #eventsList class="events-list-mobile">
-		<event-item *ngFor="let event of events" [event]="event" (click)="clickEvent(event)"></event-item>
+	<div class="title-mobile">ACTIVE EVENTS</div>
+	<mat-nav-list *ngIf="pagedEventsActive().length > 0; else noActiveEvents" class="events-list-mobile">
+		<event-item *ngFor="let event of eventsActive()" [event]="event" (click)="clickEvent(event)"></event-item>
 	</mat-nav-list>
+	<ng-template #noActiveEvents>
+		<div class="no-events-mobile">There are currently no active events</div>
+	</ng-template>
+	<div class="title-mobile">ARCHIVED EVENTS</div>
+	<mat-nav-list *ngIf="pagedEventsArchived().length > 0; else noArchivedEvents" class="events-list-mobile">
+		<event-item *ngFor="let event of eventsArchived()" [event]="event" (click)="clickEvent(event)"></event-item>
+	</mat-nav-list>
+	<ng-template #noArchivedEvents>
+		<div class="no-events-mobile">There are currently no archived events</div>
+	</ng-template>
 	<button mat-fab color="primary" class="add-event-button-mobile" (click)="openDialog()">
 		<mat-icon>edit_calendar</mat-icon>
 	</button>
