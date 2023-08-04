@@ -9,6 +9,7 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
+  active boolean,
   admin_ids jsonb,
   user_id uuid,
   user_in_event boolean,
@@ -25,6 +26,10 @@ begin
 
   if not exists (select 1 from "user" u where u.id = ip_user_id) then
     raise exception 'User not found' using errcode = 'P0008';
+  end if;
+
+  if exists (select 1 from "event" e where e.id = ip_event_id and e.active = false) then
+    raise exception 'Archived events cannot be edited' using errcode = 'P0118';
   end if;
 
   if exists (select 1 from expense ex inner join category c on ex.category_id = c.id where c.event_id = ip_event_id and ex.payer_id = ip_user_id) then
@@ -54,7 +59,7 @@ begin
   );
 
   return query
-  select * from get_events(ip_event_id, null);
+  select * from get_events(ip_event_id, null, false);
 
 end;
 $$

@@ -35,7 +35,8 @@ begin
       (ip_exclude_user_id is null and u.id = u.id)) and
       u.deleted = coalesce(ip_deleted, u.deleted)
     order by
-      u.first_name asc;
+      u.first_name asc,
+      u.last_name asc;
   end;
 
   else
@@ -59,7 +60,8 @@ begin
       (ip_exclude_user_id is null and u.id = u.id)) and
       u.deleted = coalesce(ip_deleted, u.deleted)
     order by
-      ue.joined_time asc;
+      u.first_name asc,
+      u.last_name asc;
   end;
 
   end if;

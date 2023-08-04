@@ -49,14 +49,6 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean, avatarS
     delete user.lastName;
   }
 
-  // Sort users by time joined event
-  users.sort((a, b) => {
-    if (!a.eventInfo?.joinedTime || !b.eventInfo?.joinedTime) {
-      return 0;
-    }
-    return a.eventInfo?.joinedTime.getTime() - b.eventInfo?.joinedTime.getTime();
-  });
-
   return users;
 };
 

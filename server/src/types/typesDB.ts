@@ -21,6 +21,7 @@ export type EventDB = {
     user_id: string
   }[],
   private: boolean,
+  active: boolean,
   user_id?: string,
   user_in_event?: boolean,
   user_is_admin?: boolean

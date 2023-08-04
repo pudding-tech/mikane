@@ -16,7 +16,7 @@ import * as ec from "../types/errorCodes";
  */
 export const getEvents = async (userId?: string) => {
   const query = {
-    text: "SELECT * FROM get_events(null, $1);",
+    text: "SELECT * FROM get_events(null, $1, false);",
     values: [userId]
   };
   const events: Event[] = await pool.query(query)
@@ -41,7 +41,7 @@ export const getEvents = async (userId?: string) => {
  */
 export const getEvent = async (eventId: string, userId?: string) => {
   const query = {
-    text: "SELECT * FROM get_events($1, $2);",
+    text: "SELECT * FROM get_events($1, $2, false);",
     values: [eventId, userId]
   };
   const events: Event[] = await pool.query(query)
@@ -275,6 +275,8 @@ export const addUserToEvent = async (eventId: string, userId: string) => {
         throw new ErrorExt(ec.PUD008, err);
       else if (err.code === "P0009")
         throw new ErrorExt(ec.PUD009, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD021, err);
     });
@@ -306,6 +308,8 @@ export const removeUserFromEvent = async (eventId: string, userId: string) => {
         throw new ErrorExt(ec.PUD098, err);
       else if (err.code === "P0114")
         throw new ErrorExt(ec.PUD114, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD040, err);
     });
@@ -384,12 +388,13 @@ export const removeUserAsEventAdmin = async (eventId: string, userId: string, by
  * @param name New name
  * @param description New description
  * @param privateEvent Whether event should be open for all or invite only
+ * @param active Whether event should be active or not
  * @returns Edited event
  */
-export const editEvent = async (eventId: string, userId: string, name?: string, description?: string, privateEvent?: boolean) => {
+export const editEvent = async (eventId: string, userId: string, name?: string, description?: string, privateEvent?: boolean, active?: boolean) => {
   const query = {
-    text: "SELECT * FROM edit_event($1, $2, $3, $4, $5);",
-    values: [eventId, userId, name, description, privateEvent]
+    text: "SELECT * FROM edit_event($1, $2, $3, $4, $5, $6);",
+    values: [eventId, userId, name, description, privateEvent, active]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {
@@ -402,6 +407,8 @@ export const editEvent = async (eventId: string, userId: string, name?: string, 
         throw new ErrorExt(ec.PUD005, err);
       else if (err.code === "P0087")
         throw new ErrorExt(ec.PUD087, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD044, err);
     });

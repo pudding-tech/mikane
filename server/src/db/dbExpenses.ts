@@ -93,6 +93,8 @@ export const createExpense = async (name: string, amount: number, categoryId: st
         throw new ErrorExt(ec.PUD008, err);
       else if (err.code === "P0062")
         throw new ErrorExt(ec.PUD062, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD043, err);
     });
@@ -124,6 +126,8 @@ export const editExpense = async (expenseId: string, data: { name?: string, desc
         throw new ErrorExt(ec.PUD008, err);
       else if (err.code === "P0062")
         throw new ErrorExt(ec.PUD062, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD117, err);
     });
@@ -150,6 +154,8 @@ export const deleteExpense = async (expenseId: string, userId: string) => {
         throw new ErrorExt(ec.PUD084, err);
       else if (err.code === "P0086")
         throw new ErrorExt(ec.PUD086, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
       else
         throw new ErrorExt(ec.PUD024, err);
     });

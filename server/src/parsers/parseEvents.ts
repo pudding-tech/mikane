@@ -16,6 +16,7 @@ export const parseEvents = (eventsInput: EventDB[]) => {
       created: eventObj.created,
       adminIds: eventObj.admin_ids.map(admin => admin.user_id),
       private: eventObj.private,
+      active: eventObj.active,
       userInfo: eventObj.user_id && eventObj.user_in_event !== undefined && eventObj.user_is_admin !== undefined ? {
         id: eventObj.user_id,
         inEvent: eventObj.user_in_event,
@@ -57,14 +58,6 @@ export const parseBalance = (balanceRes: BalanceCalculationResult, users: User[]
       expenses: 0,
       balance: 0
     });
-  });
-
-  // Sort users by time joined event
-  balances.sort((a, b) => {
-    if (!a.user.eventInfo?.joinedTime || !b.user.eventInfo?.joinedTime) {
-      return 0;
-    }
-    return a.user.eventInfo?.joinedTime.getTime() - b.user.eventInfo?.joinedTime.getTime();
   });
 
   return balances;

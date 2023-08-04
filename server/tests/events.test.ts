@@ -247,6 +247,42 @@ describe("events", async () => {
       expect(res.status).toEqual(400);
       expect(res.body.code).toEqual(ec.PUD053.code);
     });
+
+    test("should set event as archived", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: false
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(false);
+    });
+
+    test("fail editing archived event", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          name: "New name"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD118.code);
+    });
+
+    test("should set event as active", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: true
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(true);
+    });
   });
 
   /* ----------------------------- */
@@ -262,6 +298,39 @@ describe("events", async () => {
 
       expect(res.status).toEqual(200);
       expect(res.body.length).toEqual(1);
+    });
+
+    test("should set event as archived", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: false
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(false);
+    });
+
+    test("fail adding user2 to archived event", async () => {
+      const res = await request(app)
+        .post(`/api/events/${event.id}/user/${user2.id}`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD118.code);
+    });
+
+    test("should set event as active", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: true
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(true);
     });
 
     // Add user2 to event
@@ -300,13 +369,37 @@ describe("events", async () => {
       expect(res.body.adminIds[0]).toEqual(user.id);
     });
 
+    test("should set event as archived", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: false
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(false);
+    });
+
     // Add user2 as admin of event
-    test("should add user2 as event admin", async () => {
+    test("should add user2 as event admin, even if archived", async () => {
       const res = await request(app)
         .post(`/api/events/${event.id}/admin/${user2.id}`)
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(200);
+    });
+
+    test("should set event as active", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: true
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(true);
     });
 
     // Check that user2 is also event admin
@@ -442,6 +535,39 @@ describe("events", async () => {
 
       expect(res.status).toEqual(200);
       expect(res.body.length).toEqual(2);
+    });
+
+    test("should set event as archived", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: false
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(false);
+    });
+
+    test("fail removal of user2 in archived event", async () => {
+      const res = await request(app)
+        .delete(`/api/events/${event.id}/user/${user2.id}`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD118.code);
+    });
+
+    test("should set event as active", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: true
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(true);
     });
 
     // Remove user2 from event

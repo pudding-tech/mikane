@@ -206,7 +206,7 @@ router.put("/events/:id", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD055);
     }
 
-    const event = await db.editEvent(eventId, userId, req.body.name, req.body.description, req.body.private);
+    const event = await db.editEvent(eventId, userId, req.body.name, req.body.description, req.body.private, req.body.active);
     if (!event) {
       throw new ErrorExt(ec.PUD006);
     }

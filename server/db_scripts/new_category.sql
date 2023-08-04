@@ -23,6 +23,10 @@ begin
     raise exception 'Event not found' using errcode = 'P0006';
   end if;
 
+  if exists (select 1 from "event" e where e.id = ip_event_id and e.active = false) then
+    raise exception 'Archived events cannot be edited' using errcode = 'P0118';
+  end if;
+
   if exists (select 1 from category c where c.name ilike ip_name and c.event_id = ip_event_id) then
     raise exception 'Another category in this event already has this name' using errcode = 'P0097';
   end if;
