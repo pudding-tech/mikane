@@ -46,6 +46,7 @@
 						</mat-card-header>
 					</mat-card>
 					<mat-paginator
+						*ngIf="pagedEventsActive().length > 4"
 						[length]="lengthActive()"
 						[pageSize]="pageSizeActive()"
 						[pageSizeOptions]="pageSizeOptions"
