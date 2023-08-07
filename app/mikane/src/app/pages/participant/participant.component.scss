@@ -30,10 +30,15 @@
 .count {
 	width: 20%;
 	text-align: left;
+
+	&.no-expenses {
+		color: rgba(255, 255, 255, 0.3);
+	}
 }
 
 .header-mobile {
 	display: flex;
+	justify-content: space-between;
 	align-items: center;
 	height: 40px;
 	padding-left: 16px;

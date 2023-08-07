@@ -114,14 +114,14 @@
 </div>
 
 <ng-template #mobileView>
-	<div class="title-mobile">ACTIVE EVENTS</div>
+	<div class="title-mobile">Active events</div>
 	<mat-nav-list *ngIf="pagedEventsActive().length > 0; else noActiveEvents" class="events-list-mobile">
 		<event-item *ngFor="let event of eventsActive()" [event]="event" (click)="clickEvent(event)"></event-item>
 	</mat-nav-list>
 	<ng-template #noActiveEvents>
 		<div class="no-events-mobile">There are currently no active events</div>
 	</ng-template>
-	<div class="title-mobile">ARCHIVED EVENTS</div>
+	<div class="title-mobile">Archived events</div>
 	<mat-nav-list *ngIf="pagedEventsArchived().length > 0; else noArchivedEvents" class="events-list-mobile">
 		<event-item *ngFor="let event of eventsArchived()" [event]="event" (click)="clickEvent(event)"></event-item>
 	</mat-nav-list>

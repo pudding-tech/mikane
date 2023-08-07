@@ -9,8 +9,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { BehaviorSubject, NEVER, Subscription, switchMap } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { EventItemComponent } from 'src/app/features/mobile/event-item/event-item.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -60,11 +59,8 @@ export class EventsComponent implements OnInit, OnDestroy {
 	});
 
 	selectedEvent!: PuddingEvent;
-
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
 	editSubscription: Subscription;
-	deleteSubscription: Subscription;
 
 	// Paginator
 	lengthActive = computed(() => {
@@ -142,38 +138,6 @@ export class EventsComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	deleteEvent(deleteEvent: PuddingEvent) {
-		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-			width: '350px',
-			data: {
-				title: 'Delete event',
-				content: 'Are you sure you want to delete this event? This can not be undone.',
-				confirm: 'Yes, I am sure',
-			},
-		});
-
-		this.deleteSubscription = dialogRef
-			.afterClosed()
-			.pipe(
-				switchMap((confirm) => {
-					if (confirm) {
-						return this.eventService.deleteEvent(deleteEvent.id);
-					} else {
-						return NEVER;
-					}
-				})
-			)
-			.subscribe({
-				next: () => {
-					this.messageService.showSuccess('Event deleted successfully');
-					const index = this.events().indexOf(this.events().find((event) => event.id === deleteEvent.id));
-					if (~index) {
-						this.events().splice(index, 1);
-					}
-				},
-			});
-	}
-
 	openDialog() {
 		const dialogRef = this.dialog.open(EventDialogComponent, {
 			width: '350px',
@@ -186,11 +150,6 @@ export class EventsComponent implements OnInit, OnDestroy {
 						this.events.mutate(events => events.unshift(event));
 						this.startIndexActive.set(0);
 						this.endIndexActive.set(this.pageSizeActive());
-
-						this.router.navigate([event.id, 'users'], {
-							relativeTo: this.route,
-							state: { event: event },
-						});
 					},
 					error: (err: ApiError) => {
 						this.messageService.showError('Failed to create event');
@@ -224,6 +183,5 @@ export class EventsComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy(): void {
 		this.editSubscription?.unsubscribe();
-		this.deleteSubscription?.unsubscribe();
 	}
 }

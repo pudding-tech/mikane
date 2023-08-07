@@ -10,7 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, forkJoin, map, of, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { ParticipantItemComponent } from 'src/app/features/mobile/participant-item/participant-item.component';
@@ -75,6 +75,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		private userService: UserService,
 		private eventService: EventService,
 		private route: ActivatedRoute,
+		private router: Router,
 		public dialog: MatDialog,
 		private messageService: MessageService,
 		private expenseService: ExpenseService,
@@ -344,6 +345,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			}),
 		];
 		this.usersWithBalance$.next(this.usersWithBalance);
+	}
+
+	gotoSettings() {
+		this.router.navigate(['events', this.eventId, 'settings']);
 	}
 
 	private compare(a: string | number, b: string | number, isAsc: boolean) {

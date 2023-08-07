@@ -46,12 +46,16 @@ export class EventService {
 		return this.httpClient.get<Payment[]>(this.apiUrl + `/${eventId}/payments`);
 	}
 
+	getEvent(eventId: string): Observable<PuddingEvent> {
+		return this.httpClient.get<PuddingEvent>(this.apiUrl + `/${eventId}`);
+	}
+
 	createEvent({ name, description }: { name: string; description: string }): Observable<PuddingEvent> {
 		return this.httpClient.post<PuddingEvent>(this.apiUrl, { name, description, private: false });
 	}
 
-	editEvent({ id, name, description }: { id: string; name: string; description: string }): Observable<PuddingEvent> {
-		return this.httpClient.put<PuddingEvent>(this.apiUrl + `/${id}`, { name, description, private: false });
+	editEvent({ id, name, description, active }: { id: string; name?: string; description?: string; active?: boolean }): Observable<PuddingEvent> {
+		return this.httpClient.put<PuddingEvent>(this.apiUrl + `/${id}`, { name, description, private: false, active });
 	}
 
 	deleteEvent(eventId: string): Observable<void> {
@@ -64,5 +68,13 @@ export class EventService {
 
 	removeUser(eventId: string, userId: string): Observable<PuddingEvent> {
 		return this.httpClient.delete<PuddingEvent>(this.apiUrl + `/${eventId}/user/${userId}`);
+	}
+
+	setUserAsAdmin(eventId: string, userId: string): Observable<PuddingEvent> {
+		return this.httpClient.post<PuddingEvent>(this.apiUrl + `/${eventId}/admin/${userId}`, {});
+	}
+
+	removeUserAsAdmin(eventId: string, userId: string): Observable<PuddingEvent> {
+		return this.httpClient.delete<PuddingEvent>(this.apiUrl + `/${eventId}/admin/${userId}`);
 	}
 }
