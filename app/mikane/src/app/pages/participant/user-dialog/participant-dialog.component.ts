@@ -1,12 +1,17 @@
-import { NgFor } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ENTER } from '@angular/cdk/keycodes';
+import { AsyncPipe, NgFor } from '@angular/common';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatOptionModule } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, map, startWith, switchMap } from 'rxjs';
 import { User } from 'src/app/services/user/user.service';
 
 @Component({
@@ -23,16 +28,26 @@ import { User } from 'src/app/services/user/user.service';
 		NgFor,
 		MatOptionModule,
 		MatButtonModule,
+		MatAutocompleteModule,
+		MatInputModule,
+		AsyncPipe,
+		MatChipsModule,
+		MatIconModule,
 	],
 })
-export class ParticipantDialogComponent implements OnInit, OnDestroy {
-	private subscription: Subscription;
+export class ParticipantDialogComponent implements OnInit {
+	private users: User[] = [];
 
-	users: User[];
-	newUser = { name: '' };
+	@ViewChild('userInput') userInput: ElementRef<HTMLInputElement>;
+	@ViewChild(MatAutocompleteTrigger) autoTrigger: MatAutocompleteTrigger;
+
+	readonly separatorKeysCodes = [ENTER] as const;
+
+	filteredUsers: Observable<User[]>;
+	selectedUsers: User[] = [];
 
 	addUserForm = new FormGroup({
-		users: new FormControl(''),
+		users: new FormControl<string | User>(''),
 	});
 
 	constructor(
@@ -41,16 +56,55 @@ export class ParticipantDialogComponent implements OnInit, OnDestroy {
 	) {}
 
 	ngOnInit(): void {
-		this.data.users.subscribe((users) => {
-			this.users = users;
+		this.filteredUsers = this.data.users.pipe(
+			switchMap((users) => {
+				this.users = users;
+				return this.addUserForm.get('users').valueChanges.pipe(
+					startWith(''),
+					map((user) => {
+						const name = typeof user === 'string' ? user : user?.name;
+						return name ? this._filter(name as string) : this.users.filter((user) => !this.selectedUsers.includes(user));
+					})
+				);
+			})
+		);
+	}
+
+	private _filter(name: string): User[] {
+		return this.users.filter((user) => {
+			return user.name.toLowerCase().includes(name);
 		});
+	}
+
+	add(event: MatChipInputEvent) {
+		if (event?.value) {
+			this.selectedUsers.push(event.value as unknown as User);
+		}
+
+		event.chipInput!.clear();
+		this.addUserForm.get('users').setValue(null);
+	}
+
+	remove(user: User): void {
+		const index = this.selectedUsers.indexOf(user);
+
+		if (index >= 0) {
+			this.selectedUsers.splice(index, 1);
+		}
+		this.addUserForm.get('users').setValue(null);
+	}
+
+	selected(event: MatAutocompleteSelectedEvent): void {
+		this.selectedUsers.push(event.option.value as User);
+		this.userInput.nativeElement.value = '';
+		this.addUserForm.get('users').setValue(null);
+	}
+
+	displayFn(user: User): string {
+		return user && user.name ? user.name : '';
 	}
 
 	onNoClick(): void {
 		this.dialogRef.close();
-	}
-
-	ngOnDestroy(): void {
-		this.subscription?.unsubscribe();
 	}
 }
