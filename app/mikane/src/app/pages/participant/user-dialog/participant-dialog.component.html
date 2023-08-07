@@ -3,18 +3,36 @@
 	<form [formGroup]="addUserForm">
 		<mat-form-field appearance="fill">
 			<mat-label>User</mat-label>
-			<mat-select formControlName="users" multiple>
-				<mat-option *ngFor="let user of users" [value]="user">
+			<mat-chip-grid #chipGrid>
+				<mat-chip-row *ngFor="let user of selectedUsers" (removed)="remove(user)">
+					{{ user.name }}
+					<button matChipRemove>
+						<mat-icon>cancel</mat-icon>
+					</button>
+				</mat-chip-row>
+			</mat-chip-grid>
+			<input
+				type="text"
+				matInput
+				#userInput
+				formControlName="users"
+				[matAutocomplete]="auto"
+				[matChipInputFor]="chipGrid"
+				[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+				(matChipInputTokenEnd)="add($event)"
+			/>
+			<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selected($event)">
+				<mat-option *ngFor="let user of filteredUsers | async" [value]="user">
 					<span class="user">
 						<img [src]="user.avatarURL" class="avatar" />
 						{{ user.name }}
 					</span>
 				</mat-option>
-			</mat-select>
+			</mat-autocomplete>
 		</mat-form-field>
 	</form>
 </div>
 <div mat-dialog-actions class="dialog-buttons">
 	<button mat-button (click)="onNoClick()">Cancel</button>
-	<button mat-button [mat-dialog-close]="addUserForm.value" [disabled]="addUserForm.invalid || !addUserForm.dirty">Add</button>
+	<button mat-button [mat-dialog-close]="selectedUsers" [disabled]="addUserForm.invalid || !addUserForm.dirty">Add</button>
 </div>

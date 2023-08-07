@@ -174,10 +174,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		dialogRef
 			.afterClosed()
 			.pipe(
-				switchMap((data: { users: User[] }): Observable<PuddingEvent[]> => {
-					if (data?.users) {
+				switchMap((users: User[]): Observable<PuddingEvent[]> => {
+					if (users?.length > 0) {
 						return forkJoin([
-							...data.users.map((user) => {
+							...users.map((user) => {
 								return this.eventService.addUser(this.eventId, user.id);
 							}),
 						]);
