@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,6 +15,7 @@ import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ExpendituresComponent } from '../../expenditures/expenditures.component';
+import { EventSettingsComponent } from '../../event-settings/event-settings.component';
 
 @Component({
 	selector: 'app-event',
@@ -41,28 +42,40 @@ export class EventComponent implements OnInit {
 
 	activeLink = '';
 	isMobile = toSignal(this.breakpointService.isMobile());
-	links = computed(() => [
-		{
-			name: 'Participants',
-			icon: 'person',
-			location: './participants',
-		},
-		{
-			name: 'Expenses',
-			icon: 'payment',
-			location: './expenses',
-		},
-		{
-			name: this.isMobile() ? 'Categories' : 'Expense Categories',
-			icon: 'category',
-			location: './categories',
-		},
-		{
-			name: this.isMobile() ? 'Payments' : 'Payment Structure',
-			icon: 'account_balance_wallet',
-			location: './payment',
-		},
-	]);
+	isEventAdmin = signal(false);
+	links = computed(() => {
+		const eventLinks = [
+			{
+				name: 'Participants',
+				icon: 'person',
+				location: './participants',
+			},
+			{
+				name: 'Expenses',
+				icon: 'payment',
+				location: './expenses',
+			},
+			{
+				name: this.isMobile() ? 'Categories' : 'Expense Categories',
+				icon: 'category',
+				location: './categories',
+			},
+			{
+				name: this.isMobile() ? 'Payments' : 'Payment Structure',
+				icon: 'account_balance_wallet',
+				location: './payment',
+			}
+		];
+
+		if (this.isEventAdmin() && !this.isMobile()) {
+			eventLinks.push({
+				name: 'Settings',
+				icon: 'settings',
+				location: './settings',
+			});
+		}
+		return eventLinks;
+	});
 
 	constructor(
 		private eventService: EventService,
@@ -76,12 +89,13 @@ export class EventComponent implements OnInit {
 		const event = this.router.getCurrentNavigation()?.extras.state?.['event'];
 		if (event) {
 			this.event = event;
+			this.isEventAdmin.set(event.userInfo.isAdmin);
 			this.titleService.setTitle(event.name);
 		}
 	}
 
-	onOutletLoaded(component: ExpendituresComponent) {
-		if (component instanceof ExpendituresComponent) {
+	onOutletLoaded(component: ExpendituresComponent | EventSettingsComponent) {
+		if (component instanceof ExpendituresComponent || component instanceof EventSettingsComponent) {
 			component.$event = this.$event;
 			this.$event.next(this.event);
 		}
@@ -109,6 +123,7 @@ export class EventComponent implements OnInit {
 				next: (event) => {
 					if (event) {
 						this.event = event;
+						this.isEventAdmin.set(event.userInfo.isAdmin);
 						this.titleService.setTitle(event.name);
 						this.$event.next(event);
 					} else {

@@ -39,9 +39,9 @@ import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dia
 	],
 })
 export class ExpendituresComponent implements OnInit, OnDestroy {
-	event!: PuddingEvent;
-
 	@Input() $event: BehaviorSubject<PuddingEvent>;
+	
+	event!: PuddingEvent;
 	private eventSubscription: Subscription;
 
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);

@@ -1,0 +1,159 @@
+<div *ngIf="(loading | async) === false; else loadingSpinner">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="settings">
+		<mat-card class="card">
+			<mat-card-header>
+				<div mat-card-avatar>
+					<mat-icon>settings</mat-icon>
+				</div>
+				<mat-card-title>Event settings</mat-card-title>
+			</mat-card-header>
+			<mat-card-content>
+				<div class="header">Edit event</div>
+				<div>
+					<ng-container *ngTemplateOutlet="formContent"></ng-container>
+				</div>
+				<div class="header">Archive event</div>
+				<div class="event-settings-content archive">
+					<ng-container *ngTemplateOutlet="archiveContent"></ng-container>
+				</div>
+				<div class="header">Manage admins</div>
+				<div class="event-settings-content admins">
+					<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
+				</div>
+				<div class="header">Delete event</div>
+				<div class="event-settings-content delete">
+					<div class="event-settings-text">
+						Warning: Deleting this event will remove the event in its entirety, along with all categories and expenses.
+						This action is irreversible.
+					</div>
+					<button mat-raised-button color="warn" (click)="deleteEvent()" [disabled]="!event.active">
+						{{ event.active ? 'Delete event' : 'Archived events cannot be deleted' }}
+					</button>
+				</div>
+			</mat-card-content>
+		</mat-card>
+	</div>
+</div>
+
+<ng-template #mobileView>
+	<div class="header-mobile">Edit event</div>
+	<ng-container *ngTemplateOutlet="formContent"></ng-container>
+	<div class="header-mobile">Archive event</div>
+	<div class="event-settings-content archive">
+		<ng-container *ngTemplateOutlet="archiveContent"></ng-container>
+	</div>
+	<div class="header-mobile admins">Manage admins</div>
+	<div class="admins">
+		<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
+	</div>
+	<div class="header-mobile">Delete event</div>
+	<div class="event-settings-content delete-mobile">
+		<ng-container *ngTemplateOutlet="deleteContent"></ng-container>
+	</div>
+</ng-template>
+
+<ng-template #formContent>
+	<form (ngSubmit)="editEvent()" class="event-settings-content form">
+		<mat-form-field appearance="fill">
+			<mat-label>Event Name</mat-label>
+			<input matInput name="name" [(ngModel)]="eventData.name" required [eventName]="eventData.id" #name="ngModel" />
+			<mat-error *ngIf="name.errors?.['required']">Event name is required</mat-error>
+			<mat-error *ngIf="name.errors?.['duplicate']">Event name already exists</mat-error>
+			<mat-error *ngIf="name.errors?.['invalid']">Invalid event name</mat-error>
+		</mat-form-field>
+		<mat-form-field appearance="fill">
+			<mat-label>Event Description</mat-label>
+			<input matInput name="description" [(ngModel)]="eventData.description" />
+		</mat-form-field>
+		<button mat-raised-button color="primary" type="submit" [disabled]="name.invalid || name.pending" [ngClass]="(breakpointService.isMobile() | async) ? 'save-button-mobile' : 'save-button-pc'">
+			Save
+		</button>
+	</form>
+</ng-template>
+
+<ng-template #archiveContent>
+	<div *ngIf="event?.active; else activate">
+		<div class="event-settings-text">
+			This event is currently active.
+			By archiving the event any further editing by any participants will not be possible.
+		</div>
+		<button mat-raised-button color="primary" (click)="archiveEvent(true)">
+			Archive event
+		</button>
+	</div>
+	<ng-template #activate>
+		<div class="event-settings-text">
+			This event is currently archived.
+			By setting this event as active participants can start editing the event again.
+		</div>
+		<button mat-raised-button color="accent" (click)="archiveEvent(false)">
+			Set event as active
+		</button>
+	</ng-template>
+</ng-template>
+
+<ng-template #adminsContent>
+	<div class="admins-content" [ngClass]="{ 'full-view': (breakpointService.isMobile() | async) }">
+		<mat-nav-list>
+			<mat-list-item *ngFor="let admin of adminsInEvent">
+				<div class="admin">
+					<div class="name">
+						<img [src]="admin.avatarURL" class="avatar" />
+						{{ admin.name }}
+					</div>
+					<button mat-icon-button (click)="removeAdmin(admin.id)">
+						<mat-icon>remove</mat-icon>
+					</button>
+				</div>
+			</mat-list-item>
+		</mat-nav-list>
+		<div class="add-admin" [ngClass]="{ 'mobile': breakpointService.isMobile() | async }">
+			<mat-form-field *ngIf="otherUsersInEvent.length !== 0; else allUsersAdded">
+				<mat-select
+					[formControl]="addAdminForm.get('userId') | formControl"
+					name="userId"
+					placeholder="Add admins"
+					required
+				>
+					<mat-option *ngFor="let user of otherUsersInEvent" [value]="user.id">
+						<span class="name">
+							<img [src]="user.avatarURL" class="avatar" />
+							{{ user.name }}
+						</span>
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<ng-template #allUsersAdded>
+				<div class="all-users-admins">
+					All users in this event are admins
+				</div>
+			</ng-template>
+			<button
+				mat-icon-button
+				type="button"
+				(click)="addAdmin()"
+				[disabled]="
+					addAdminForm.get('userId')?.invalid ||
+					!addAdminForm.get('userId')?.dirty
+				"
+				class="add-admin-button"
+			>
+				<mat-icon>add_circle</mat-icon>
+			</button>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #deleteContent>
+	<div class="event-settings-text">
+		Warning: Deleting this event will remove the event in its entirety, along with all categories and expenses.
+		This action is irreversible.
+	</div>
+	<button mat-raised-button color="warn" (click)="deleteEvent()" [disabled]="!event.active">
+		{{ event.active ? 'Delete event' : 'Archived events cannot be deleted' }}
+	</button>
+</ng-template>
+
+<ng-template #loadingSpinner>
+	<loading-spinner></loading-spinner>
+</ng-template>

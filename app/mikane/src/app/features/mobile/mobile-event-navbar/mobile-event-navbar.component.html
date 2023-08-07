@@ -4,10 +4,10 @@
 		*ngFor="let link of mobileLinks"
 		[routerLink]="link.location"
 		(click)="activeLink = link.location"
-		[ngClass]="{ 'active': activeLink === link.location, 'nav-back-button': link.location== './events' }"
+		[ngClass]="{ 'active': activeLink === link.location, 'nav-back-button': link.location== '/events' }"
 		matRipple
 	>
-		<mat-icon [ngClass]="{ 'back-icon': link.location === './events' }">{{ link.icon }}</mat-icon>
+		<mat-icon [ngClass]="{ 'back-icon': link.location === '/events' }">{{ link.icon }}</mat-icon>
 		<div>{{ link.name }}</div>
 	</a>
 </div>

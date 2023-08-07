@@ -2,6 +2,7 @@ import { Route } from '@angular/router';
 import { authGuard } from 'src/app/services/auth/auth.guard';
 import { EventComponent } from './event/event.component';
 import { EventsComponent } from './events.component';
+import { eventSettingsGuard } from '../event-settings/event-settings.guard';
 
 export default [
 	{ path: '', component: EventsComponent },
@@ -26,6 +27,12 @@ export default [
 				path: 'payment',
 				loadChildren: () => import('../payment-structure/payment-structure.routes'),
 			},
+			{
+				path: 'settings',
+				canActivate: [eventSettingsGuard],
+				loadChildren: () => import('../event-settings/event-settings.routes'),
+			},
+			{ path: '**', redirectTo: 'participants' },
 		],
 	},
 ] as Route[];

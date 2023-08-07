@@ -49,7 +49,7 @@
 							<img [src]="userWithBalance.user.avatarURL" class="avatar" />
 							{{ userWithBalance.user.name }}
 						</div>
-						<div class="count">{{ userWithBalance.expensesCount }}</div>
+						<div class="count" [ngClass]="{ 'no-expenses': userWithBalance.expensesCount === 0 }">{{ userWithBalance.expensesCount }}</div>
 						<div>{{ userWithBalance.spending | currency : "" : "" : "1.2-2" : "no" }} kr</div>
 						<div>{{ userWithBalance.expenses | currency : "" : "" : "1.2-2" : "no" }} kr</div>
 						<div class="amount-color">{{ userWithBalance.balance | currency : "" : "" : "1.2-2" : "no" }} kr</div>
@@ -148,6 +148,9 @@
 			{{ isAdmin ? "You are an admin in this event" : "You are in this event" }}
 			<mat-icon>{{ isAdmin ? "star" : "check" }}</mat-icon>
 		</span>
+		<button mat-icon-button *ngIf="isAdmin" (click)="gotoSettings()">
+			<mat-icon>settings</mat-icon>
+		</button>
 		<ng-template #notInEvent>
 			<span class="not-in-event">You are not in this event</span>
 		</ng-template>

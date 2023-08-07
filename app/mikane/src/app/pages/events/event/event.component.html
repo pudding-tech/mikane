@@ -10,6 +10,9 @@
 	</div>
 	<div class="name">
 		{{ event.name }}
+		<button *ngIf="event.active === false && (breakpointService.isMobile() | async) === false" mat-stroked-button disabled>
+			Archived
+		</button>
 	</div>
 	<span class="toolbar-spacer"></span>
 	<menu [ngClass]="{ 'mobile-menu': breakpointService.isMobile() | async }"></menu>
@@ -21,8 +24,13 @@
 		[routerLink]="link.location"
 		(click)="activeLink = link.location"
 		[active]="activeLink == link.location"
-		>{{ link.name }}</a
+		[ngClass]="{ 'settings-tab': link.name === 'Settings' }"
 	>
+		<mat-icon *ngIf="link.name === 'Settings'; else name">settings</mat-icon>
+		<ng-template #name>
+			{{ link.name }}
+		</ng-template>
+	</a>
 </nav>
 <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
 <ng-template #mobileNavbar>
