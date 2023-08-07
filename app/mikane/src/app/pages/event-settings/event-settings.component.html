@@ -101,7 +101,7 @@
 						<img [src]="admin.avatarURL" class="avatar" />
 						{{ admin.name }}
 					</div>
-					<button mat-icon-button (click)="removeAdmin(admin.id)">
+					<button mat-icon-button (click)="removeAdmin(admin.id)" [disabled]="adminsInEvent.length < 2">
 						<mat-icon>remove</mat-icon>
 					</button>
 				</div>
