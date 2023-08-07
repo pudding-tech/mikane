@@ -1,4 +1,4 @@
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +28,6 @@ import { ApiError } from 'src/app/types/apiError.type';
 		MatFormFieldModule,
 		MatInputModule,
 		MatProgressSpinnerModule,
-		NgIf,
 		MatButtonModule,
 	],
 })
@@ -93,12 +92,6 @@ export class LoginComponent {
 				this.usernameField.nativeElement.focus();
 			}
 		}
-	}
-
-	registerUser() {
-		this.router.navigate(['/register'], {
-			state: { username: this.loginForm.get('username')?.value },
-		});
 	}
 
 	toggleForgotPassword() {
