@@ -95,8 +95,8 @@ export class EventSettingsComponent {
 				},
 				error: (err: ApiError) => {
 					this.loading.next(false);
-					this.messageService.showError('Error loading data');
-					console.error('Something went wrong while data', err?.error?.message);
+					this.messageService.showError('Error loading event settings');
+					console.error('Something went wrong while loading event settings data', err?.error?.message);
 				},
 			});
 	};
@@ -152,6 +152,10 @@ export class EventSettingsComponent {
 				next: () => {
 					this.messageService.showSuccess('Event deleted successfully');
 					this.router.navigate(['/events']);
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to delete event');
+					console.error('Something went wrong while deleting event', err?.error?.message);
 				},
 			});
 	}
