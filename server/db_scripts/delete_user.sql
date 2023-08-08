@@ -5,6 +5,8 @@ create or replace function delete_user(
 )
 returns void as
 $$
+declare
+  tmp_event_id uuid;
 begin
 
   if not exists (select 1 from "user" u where u.id = ip_user_id and u.deleted = false) then
@@ -19,6 +21,12 @@ begin
   then
     raise exception 'This key is not valid for this user' using errcode = 'P0108';
   end if;
+
+  -- Delete user from active events
+  for tmp_event_id in select e.id from "event" e where e.active = true
+  loop
+    perform delete_user_from_event(ip_user_id, tmp_event_id);
+  end loop;
 
   update
     "user" u

@@ -246,6 +246,8 @@ export const deleteEvent = async (id: string, userId: string) => {
         throw new ErrorExt(ec.PUD006, err);
       else if (err.code === "P0085")
         throw new ErrorExt(ec.PUD085, err);
+      else if (err.code === "P0119")
+        throw new ErrorExt(ec.PUD119, err);
       else
         throw new ErrorExt(ec.PUD023, err);
     });

@@ -58,9 +58,10 @@ export const getUserID = async (email: string) => {
  * @returns List of users
  */
 export const getUsers = async (filter?: { eventId?: string, excludeUserId?: string }) => {
+  const withDeleted = filter?.eventId ? null : false;
   const query = {
-    text: "SELECT * FROM get_users($1, $2, false)",
-    values: [filter?.eventId, filter?.excludeUserId]
+    text: "SELECT * FROM get_users($1, $2, $3)",
+    values: [filter?.eventId, filter?.excludeUserId, withDeleted]
   };
   const users: User[] = await pool.query(query)
     .then(data => {
@@ -185,6 +186,8 @@ export const deleteUser = async (userId: string, key: string) => {
         throw new ErrorExt(ec.PUD008, err);
       else if (err.code === "P0108")
         throw new ErrorExt(ec.PUD108, err);
+      else if (err.code === "P0120")
+        throw new ErrorExt(ec.PUD120, err);
       else
         throw new ErrorExt(ec.PUD025, err);
     });

@@ -31,7 +31,7 @@ begin
     from
       "user" u
     where
-      u.username = ip_username and
+      u.username ilike ip_username and
       u.deleted = false;
   end if;
 end;

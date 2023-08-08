@@ -1122,3 +1122,22 @@ export const PUD118: ErrorCode = {
   message: "Archived events cannot be edited",
   status: 400
 };
+
+/**
+ * PUD-119: Archived events cannot be deleted
+ */
+export const PUD119: ErrorCode = {
+  code: "PUD-119",
+  message: "Archived events cannot be deleted",
+  status: 400
+};
+
+/**
+ * PUD-120: Cannot delete user from archived event (500)
+ */
+export const PUD120: ErrorCode = {
+  code: "PUD-120",
+  message: "Cannot delete user from archived event",
+  status: 500,
+  log: true
+};

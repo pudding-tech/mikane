@@ -22,13 +22,7 @@
 				</div>
 				<div class="header">Delete event</div>
 				<div class="event-settings-content delete">
-					<div class="event-settings-text">
-						Warning: Deleting this event will remove the event in its entirety, along with all categories and expenses.
-						This action is irreversible.
-					</div>
-					<button mat-raised-button color="warn" (click)="deleteEvent()" [disabled]="!event.active">
-						{{ event.active ? 'Delete event' : 'Archived events cannot be deleted' }}
-					</button>
+					<ng-container *ngTemplateOutlet="deleteContent"></ng-container>
 				</div>
 			</mat-card-content>
 		</mat-card>
