@@ -345,16 +345,12 @@ router.delete("/users/:id", authCheck, async (req, res, next) => {
 
     const success = await db.deleteUser(userId, key);
 
-    // Delete current session if deleted user is logged in
-    if (req.session.authenticated && req.session.userId === userId) {
-      const username = req.session.username;
-      req.session.destroy(err => {
-        if (err) {
-          throw new ErrorExt(ec.PUD060, err);
-        }
-        console.log(`User ${username} successfully signed out`);
-      });
-    }
+    // Destroy all sessions for this user
+    req.sessionStore.destroyAll(userId, err => {
+      if (err) {
+        throw new ErrorExt(ec.PUD083);
+      }
+    });
 
     res.status(200).send({ success: success });
   }

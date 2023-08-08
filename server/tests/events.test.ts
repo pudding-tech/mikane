@@ -622,5 +622,47 @@ describe("events", async () => {
       expect(res.status).toEqual(403);
       expect(res.body.code).toEqual(ec.PUD085.code);
     });
+
+    test("should set event as archived", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: false
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(false);
+    });
+
+    test("fail delete archived event", async () => {
+      const res = await request(app)
+        .delete("/api/events/" + event.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD119.code);
+    });
+
+    test("should set event as active", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: true
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(true);
+    });
+
+    test("should delete event", async () => {
+      const res = await request(app)
+        .delete("/api/events/" + event.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.success).toEqual(true);
+    });
   });
 });

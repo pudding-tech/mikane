@@ -59,7 +59,7 @@ router.get("/expenses/:id", authCheck, async (req, res, next) => {
 */
 router.post("/expenses", authCheck, async (req, res, next) => {
   try {
-    if (!req.body.name || !req.body.amount || !req.body.categoryId || !req.body.payerId) {
+    if (!req.body.name || [null, undefined].includes(req.body.amount) || !req.body.categoryId || !req.body.payerId) {
       throw new ErrorExt(ec.PUD057);
     }
 
