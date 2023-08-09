@@ -79,12 +79,10 @@ export class PaymentStructureComponent implements OnInit {
 		this.authService.getCurrentUser().subscribe({
 			next: (user) => {
 				this.currentUser = user;
-				this.loading.next(false);
 			},
 			error: (error: ApiError) => {
 				this.messageService.showError('Something went wrong');
 				console.error('something went wrong when getting current user on account page', error);
-				this.loading.next(false);
 			},
 		})
 	}

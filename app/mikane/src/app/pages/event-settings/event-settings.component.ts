@@ -88,8 +88,8 @@ export class EventSettingsComponent {
 			)
 			.subscribe({
 				next: ([users, currentUser]) => {
-					this.adminsInEvent = users.filter(user => user.eventInfo.isAdmin);
-					this.otherUsersInEvent = users.filter(user => !user.eventInfo.isAdmin);
+					this.adminsInEvent = users.filter(user => user.eventInfo?.isAdmin);
+					this.otherUsersInEvent = users.filter(user => !user.eventInfo?.isAdmin);
 					this.currentUser = currentUser;
 					this.loading.next(false);
 				},
