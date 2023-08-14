@@ -1,13 +1,27 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+	ChangeDetectorRef,
+	Component,
+	ElementRef,
+	Input,
+	OnDestroy,
+	OnInit,
+	ViewChild,
+	WritableSignal,
+	computed,
+	signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { BehaviorSubject, Subject, Subscription, filter, of, switchMap, takeUntil } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, filter, map, of, switchMap, takeUntil } from 'rxjs';
 import { ExpenseItemComponent } from 'src/app/features/mobile/expense-item/expense-item.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -36,19 +50,36 @@ import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dia
 		MatDialogModule,
 		MatListModule,
 		MatSortModule,
+		MatFormFieldModule,
+		MatInputModule,
 	],
 })
 export class ExpendituresComponent implements OnInit, OnDestroy {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
-	
 	event!: PuddingEvent;
-	private eventSubscription: Subscription;
 
-	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	private filterValue: WritableSignal<string> = signal('');
+	private sortValue: WritableSignal<Sort> = signal({} as Sort);
+	protected expenses: WritableSignal<Expense[]> = signal([]);
+	filteredExpenses = computed(() => {
+		return this.sortData(this.sortValue(), this.expenses()).filter((expense) => {
+			return this.expenseToString(expense).includes(this.filterValue().toLowerCase());
+		});
+	});
+
+	@ViewChild('input') set filterInput(input: ElementRef<HTMLInputElement>) {
+		if (input) {
+			this._filterInput = input;
+		}
+	}
+
+	private eventSubscription: Subscription;
+	private _filterInput: ElementRef<HTMLInputElement>;
+
+	loading: boolean = false;
 	cancel$: Subject<void> = new Subject();
 	destroy$: Subject<void> = new Subject();
 
-	expenses: Expense[] = [];
 	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description', 'edit', 'delete'];
 	currentUserId: string;
 
@@ -59,11 +90,18 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		public dialog: MatDialog,
 		private messageService: MessageService,
 		public breakpointService: BreakpointService,
-		public contextService: ContextService
+		public contextService: ContextService,
+		private route: ActivatedRoute,
+		private router: Router,
+		private changeDetector: ChangeDetectorRef
 	) {}
 
 	ngOnInit(): void {
-		this.loading.next(true);
+		this.loading = true;
+		this.breakpointService
+			.isMobile()
+			.pipe(takeUntil(this.destroy$))
+			.subscribe(() => this.clearInput());
 		this.authService.getCurrentUser().subscribe({
 			next: (user) => {
 				this.currentUserId = user.id;
@@ -76,22 +114,36 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		this.eventSubscription = this.$event
 			?.pipe(
 				filter((event) => event?.id !== undefined),
-				switchMap((event) => {
+				switchMap((event): Observable<[Expense[], string] | []> => {
 					if (event.id) {
 						this.event = event;
-						return this.expenseService.loadExpenses(this.event.id);
+						return combineLatest([
+							this.expenseService.loadExpenses(this.event.id),
+							this.route.queryParamMap.pipe(
+								map((params) => {
+									return params.get('filter');
+								})
+							),
+						]);
 					} else {
 						return of([]);
 					}
 				})
 			)
 			.subscribe({
-				next: (expenses) => {
-					this.expenses = expenses;
-					this.loading.next(false);
+				next: ([expenses, params]) => {
+					this.expenses.set(expenses);
+					this.loading = false;
+					this.changeDetector.detectChanges();
+					if (params) {
+						this.filterValue.set(params);
+						this._filterInput.nativeElement.value = params;
+					} else {
+						this.clearFilter();
+					}
 				},
 				error: (err: ApiError) => {
-					this.loading.next(false);
+					this.loading = false;
 					this.messageService.showError('Error loading expenses');
 					console.error('something went wrong while loading expenses', err?.error?.message);
 				},
@@ -134,7 +186,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: (expense) => {
-					this.expenses = [expense, ...this.expenses];
+					this.expenses.mutate((expenses) => expenses.unshift(expense));
 					this.messageService.showSuccess('New expense created');
 				},
 				error: (err: ApiError) => {
@@ -145,7 +197,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	}
 
 	editExpense(expenseId: string) {
-		const oldExpense = this.expenses.find((expense) => expense.id === expenseId);
+		const oldExpense = this.expenses().find((expense) => expense.id === expenseId);
 		let newExpense: Expense;
 
 		this.dialog
@@ -183,13 +235,10 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: (newExpense) => {
-					this.expenses = this.expenses.map((expense) => {
-						if (expense.id === newExpense.id) {
-							return newExpense;
-						} else {
-							return expense;
-						}
-					});
+					const index = this.expenses().indexOf(this.expenses().find((expense) => expense.id === newExpense.id));
+					if (~index) {
+						this.expenses.mutate((expenses) => (expenses[index] = newExpense));
+					}
 					this.messageService.showSuccess('Expense edited');
 				},
 				error: (err: ApiError) => {
@@ -202,12 +251,17 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	removeExpense(expenseId: string) {
 		this.expenseService.deleteExpense(expenseId).subscribe({
 			next: () => {
-				this.expenses = [
-					...this.expenses.filter((expense) => {
-						return expense.id !== expenseId;
-					}),
-				];
-				this.messageService.showSuccess('Expense deleted');
+				const index = this.expenses().indexOf(this.expenses().find((expense) => expense.id === expenseId));
+				console.log('index', index);
+				if (~index) {
+					this.expenses.mutate((expenses) => {
+						expenses.splice(index, 1);
+					});
+					this.messageService.showSuccess('Expense deleted');
+				} else {
+					this.messageService.showError('Failed to delete expense');
+					console.error('something went wrong while deleting expense');
+				}
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to delete expense');
@@ -216,18 +270,57 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	sortData(sort: Sort) {
+	applyFilter(event: Event) {
+		const filterValue = (event.target as HTMLInputElement).value;
+		this.filterValue.update(() => filterValue);
+
+		this.router.navigate([], {
+			relativeTo: this.route,
+			queryParams: {
+				...this.route.snapshot.queryParams,
+				filter: filterValue || null,
+			},
+			replaceUrl: true,
+			queryParamsHandling: 'merge',
+		});
+	}
+
+	clearFilter() {
+		this.filterValue.update(() => '');
+	}
+
+	clearInput() {
+		this.clearFilter();
+		if (this._filterInput) {
+			this._filterInput.nativeElement.value = '';
+		}
+
+		this.router.navigate([], {
+			relativeTo: this.route,
+			queryParams: {
+				...this.route.snapshot.queryParams,
+				filter: null,
+			},
+			replaceUrl: true,
+			queryParamsHandling: 'merge',
+		});
+	}
+
+	onSortData(sort: Sort) {
+		this.sortValue.set(sort);
+	}
+
+	sortData(sort: Sort, expenses: Expense[]): Expense[] {
 		if (!sort.active || sort.direction === '') {
-			this.expenses = [
-				...this.expenses.sort((a, b) => {
+			return [
+				...expenses.sort((a, b) => {
 					return this.compare(a.created, b.created, false);
 				}),
 			];
-			return;
 		}
 
-		this.expenses = [
-			...this.expenses.sort((a, b) => {
+		return [
+			...expenses.sort((a, b) => {
 				const isAsc = sort.direction === 'asc';
 				switch (sort.active) {
 					case 'name':
@@ -250,6 +343,10 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	private compare(a: string | number, b: string | number, isAsc: boolean) {
 		if (a === b) return 0;
 		return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+	}
+
+	private expenseToString(expense: Expense): string {
+		return (expense.name + expense.categoryInfo.name + expense.payer.name + expense.amount.toString()).toLowerCase();
 	}
 
 	ngOnDestroy(): void {
