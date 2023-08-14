@@ -252,7 +252,6 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		this.expenseService.deleteExpense(expenseId).subscribe({
 			next: () => {
 				const index = this.expenses().indexOf(this.expenses().find((expense) => expense.id === expenseId));
-				console.log('index', index);
 				if (~index) {
 					this.expenses.mutate((expenses) => {
 						expenses.splice(index, 1);
