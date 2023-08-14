@@ -46,10 +46,10 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 export class EventsComponent implements OnInit, OnDestroy {
 	events: WritableSignal<PuddingEvent[]> = signal([]);
 	eventsActive = computed(() => {
-		return this.events().filter(event => event.active);
+		return this.events().filter((event) => event.active);
 	});
 	eventsArchived = computed(() => {
-		return this.events().filter(event => !event.active);
+		return this.events().filter((event) => !event.active);
 	});
 	pagedEventsActive = computed(() => {
 		return this.eventsActive().slice(this.startIndexActive(), this.endIndexActive());
@@ -125,7 +125,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 						next: (result) => {
 							const index = this.events().indexOf(this.events().find((event) => event.id === result.id));
 							if (~index) {
-								this.events.mutate(events => events[index] = result);
+								this.events.mutate((events) => (events[index] = result));
 							}
 						},
 						error: (err: ApiError) => {
@@ -147,7 +147,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 			if (event) {
 				this.eventService.createEvent(event).subscribe({
 					next: (event) => {
-						this.events.mutate(events => events.unshift(event));
+						this.events.mutate((events) => events.unshift(event));
 						this.startIndexActive.set(0);
 						this.endIndexActive.set(this.pageSizeActive());
 					},
@@ -170,8 +170,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 			this.startIndexActive.set(startIndex);
 			this.endIndexActive.set(endIndex);
 			this.pageSizeActive.set(pageEvent.pageSize);
-		}
-		else if (type === 'archived') {
+		} else if (type === 'archived') {
 			if (endIndex > this.lengthArchived()) {
 				endIndex = this.lengthArchived();
 			}

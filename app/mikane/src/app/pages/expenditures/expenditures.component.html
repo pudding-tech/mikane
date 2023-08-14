@@ -5,15 +5,22 @@
 	</button>
 </div>
 
-<div *ngIf="(loading | async) === false; else loadingSpinner">
+<div *ngIf="loading === false; else loadingSpinner">
 	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView">
+		<mat-form-field>
+			<mat-label>Filter expenses</mat-label>
+			<input matInput (keyup)="applyFilter($event)" #input />
+			<button matSuffix *ngIf="input.value" mat-icon-button (click)="clearInput()">
+				<mat-icon>cancel</mat-icon>
+			</button>
+		</mat-form-field>
 		<table
-			*ngIf="expenses.length > 0; else noExpenses"
+			*ngIf="filteredExpenses().length > 0; else noExpenses"
 			class="expense-table"
 			mat-table
 			matSort
-			[dataSource]="expenses"
-			(matSortChange)="sortData($event)"
+			[dataSource]="filteredExpenses()"
+			(matSortChange)="onSortData($event)"
 		>
 			<!-- Icon Column -->
 			<ng-container matColumnDef="icon">
@@ -98,13 +105,18 @@
 
 			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 			<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+			<!-- Row shown when there is no matching data -->
+			<tr class="mat-row" *matNoDataRow>
+				<td class="mat-cell" colspan="8">No expenses matching the filter "{{ input.value }}"</td>
+			</tr>
 		</table>
 	</div>
 </div>
 
 <ng-template #mobileView>
 	<mat-nav-list #expensesList class="expenses-list-mobile">
-		<expense-item *ngFor="let expense of expenses" [expense]="expense"></expense-item>
+		<expense-item *ngFor="let expense of filteredExpenses()" [expense]="expense"></expense-item>
 	</mat-nav-list>
 	<button mat-fab color="primary" class="add-expense-button-mobile" (click)="openDialog()" [ngClass]="{ iOS: contextService.isIos }">
 		<mat-icon>add_shopping_cart</mat-icon>
