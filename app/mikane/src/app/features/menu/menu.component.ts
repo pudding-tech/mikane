@@ -6,6 +6,7 @@ import { SplitButtonComponent } from 'src/app/features/split-button/split-button
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { SplitButtonItemComponent } from '../split-button/split-button-item/split-button-item.component';
 import { SplitButtonItemDirective } from '../split-button/split-button-item/split-button-item.directive';
@@ -19,8 +20,7 @@ import { SplitButtonItemDirective } from '../split-button/split-button-item/spli
 })
 export class MenuComponent {
 	@ViewChild('splitButton') private splitButton: SplitButtonComponent;
-	username: string;
-	avatarURL: string;
+	user: User;
 
 	constructor(
 		private router: Router,
@@ -32,8 +32,7 @@ export class MenuComponent {
 	ngOnInit() {
 		this.authService.getCurrentUser().subscribe({
 			next: (user) => {
-				this.username = user.username;
-				this.avatarURL = user.avatarURL;
+				this.user = user;
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to get user');
@@ -48,6 +47,14 @@ export class MenuComponent {
 			return;
 		}
 		this.router.navigate(['/account']);
+	}
+
+	onProfileClick() {
+		if (this.router.url === '/u') {
+			this.splitButton.toggled = false;
+			return;
+		}
+		this.router.navigate(['/u', this.user.id]);
 	}
 
 	logout() {

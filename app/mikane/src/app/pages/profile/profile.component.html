@@ -1,0 +1,37 @@
+<div class="profile-page">
+	<mat-toolbar [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
+		<a mat-icon-button routerLink="/events" [ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
+			<mat-icon>arrow_back</mat-icon>
+		</a>
+		<span>Profile</span>
+		<span class="toolbar-spacer"></span>
+		<menu></menu>
+	</mat-toolbar>
+	<mat-card *ngIf="loading === false; else loadingSpinner" class="profile-content">
+		<mat-card-header>
+			<img mat-card-avatar *ngIf="user?.avatarURL" [src]="user?.avatarURL" class="avatar" />
+			<mat-card-title>{{ user?.name }}</mat-card-title>
+			<mat-card-subtitle>{{ user?.username }}</mat-card-subtitle>
+		</mat-card-header>
+		<mat-card-content>
+			<div class="user-row">
+				<span class="user-padding">
+					<mat-icon>email</mat-icon>
+					&nbsp;
+					<a [href]="'mailto:' + user?.email">{{ user?.email }} </a>
+				</span>
+			</div>
+			<div class="user-row">
+				<span class="user-padding">
+					<mat-icon>phone</mat-icon>
+					&nbsp;
+					{{ user?.phone }}
+				</span>
+			</div>
+		</mat-card-content>
+	</mat-card>
+</div>
+
+<ng-template #loadingSpinner>
+	<loading-spinner></loading-spinner>
+</ng-template>
