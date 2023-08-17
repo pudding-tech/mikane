@@ -363,12 +363,21 @@
             }
           },
           {
-            "name": "exclude",
+            "name": "excludeGuests",
             "in": "query",
-            "description": "Set this to 'self' to remove logged in user from response",
+            "description": "Set this to true to remove guest users from response",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "excludeSelf",
+            "in": "query",
+            "description": "Set this to true to remove logged in user from response",
+            "required": false,
+            "schema": {
+              "type": "boolean"
             }
           }
         ],

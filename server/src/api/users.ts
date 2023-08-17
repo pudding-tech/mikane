@@ -26,14 +26,14 @@ router.get("/users", authCheck, async (req, res, next) => {
   try {
     const filter: { eventId?: string, excludeGuests?: boolean, excludeUserId?: string } = {
       eventId: req.query.eventId as string,
-      excludeGuests: !!req.query.excludeGuests
+      excludeGuests: req.query.excludeGuests === "true"
     };
 
     if (filter.eventId && !isUUID(filter.eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
-    const excludeSelf = req.query.exclude === "self";
+    const excludeSelf = req.query.excludeSelf === "true";
     if (excludeSelf) {
       filter.excludeUserId = req.session.userId;
     }
