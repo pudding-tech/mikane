@@ -1,4 +1,4 @@
-<div *ngIf="(breakpointService.isMobile() | async) === false" class="add-button">
+<div *ngIf="(breakpointService.isMobile() | async) === false && event?.active" class="add-button">
 	<button mat-raised-button color="primary" (click)="openDialog()">
 		<mat-icon>add_shopping_cart</mat-icon>
 		Add expense
@@ -118,7 +118,14 @@
 	<mat-nav-list #expensesList class="expenses-list-mobile">
 		<expense-item *ngFor="let expense of filteredExpenses()" [expense]="expense"></expense-item>
 	</mat-nav-list>
-	<button mat-fab color="primary" class="add-expense-button-mobile" (click)="openDialog()" [ngClass]="{ iOS: contextService.isIos }">
+	<button
+		*ngIf="event?.active"
+		mat-fab
+		color="primary"
+		class="add-expense-button-mobile"
+		(click)="openDialog()"
+		[ngClass]="{ iOS: contextService.isIos }"
+	>
 		<mat-icon>add_shopping_cart</mat-icon>
 	</button>
 </ng-template>
