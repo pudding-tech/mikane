@@ -3,10 +3,11 @@ create table "user" (
   username varchar(255) not null unique,
   first_name varchar(255) not null,
   last_name varchar(255),
-  email varchar(255) not null unique,
-  phone_number varchar(255) not null unique,
+  email varchar(255) unique,
+  phone_number varchar(255) unique,
   "password" varchar(255) not null,
   created timestamp not null,
+  guest boolean not null,
   deleted boolean not null
 );
 

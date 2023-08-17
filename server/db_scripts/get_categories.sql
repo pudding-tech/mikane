@@ -51,6 +51,7 @@ begin
       select
         jsonb_agg(jsonb_build_object(
           'user_id', u.id,
+          'guest', u.guest,
           'username', u.username,
           'first_name', u.first_name,
           'last_name', u.last_name,

@@ -32,11 +32,11 @@ begin
     "user" u
   set
     username = digest(u.username, 'sha256'),
-    first_name = digest(u.first_name, 'sha256'),
+    first_name = 'deleted',
     last_name = null,
-    email = digest(u.email, 'sha256'),
-    phone_number = digest(u.phone_number, 'sha256'),
-    "password" = digest(u."password", 'sha256'),
+    email = null,
+    phone_number = null,
+    "password" = '22',
     deleted = true
   where
     u.id = ip_user_id;

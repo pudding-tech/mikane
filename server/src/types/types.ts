@@ -10,12 +10,22 @@ export type User = {
   phone?: string;
   created?: Date;
   avatarURL?: string;
+  guest: boolean;
   eventInfo?: {
     id: string;
     isAdmin: boolean;
     joinedTime: Date;
   };
 };
+
+export type Guest = {
+  id: string;
+  name: string;
+  guest: boolean;
+  avatarURL: string;
+  firstName?: string;
+  lastName?: string;
+}
 
 export type Event = {
   id: string;
@@ -42,6 +52,7 @@ export type Category = {
   users?: {
     id: string;
     name: string;
+    guest: boolean;
     username?: string;
     firstName?: string;
     lastName?: string;

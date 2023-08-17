@@ -7,7 +7,8 @@ returns table (
   id uuid,
   username varchar(255),
   first_name varchar(255),
-  last_name varchar(255)
+  last_name varchar(255),
+  guest boolean
 ) as
 $$
 begin
@@ -15,7 +16,7 @@ begin
   if (ip_category_id is null) then
     return query
     select
-      u.id, u.username, u.first_name, u.last_name
+      u.id, u.username, u.first_name, u.last_name, u.guest
     from
       "user" u
       inner join user_event ue on ue.user_id = u.id
@@ -24,7 +25,7 @@ begin
   else
     return query
     select
-      u.id, u.username, u.first_name, u.last_name
+      u.id, u.username, u.first_name, u.last_name, u.guest
     from
       "user" u
       inner join user_event ue on ue.user_id = u.id

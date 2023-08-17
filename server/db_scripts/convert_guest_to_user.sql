@@ -1,5 +1,6 @@
-drop function if exists new_user;
-create or replace function new_user(
+drop function if exists convert_guest_to_user;
+create or replace function convert_guest_to_user(
+  ip_guest_id uuid,
   ip_username varchar(255),
   ip_first_name varchar(255),
   ip_last_name varchar(255),
@@ -21,6 +22,10 @@ returns table (
 $$
 declare tmp_user_id uuid;
 begin
+  if not exists (select u.id from "user" u where u.id = ip_guest_id and u.guest = true) then
+    raise exception 'Guest user not found' using errcode = 'P0122';
+  end if;
+
   if exists (select u.id from "user" u where u.username ilike ip_username) then
     raise exception 'Username already taken' using errcode = 'P0017';
   end if;
@@ -33,9 +38,22 @@ begin
     raise exception 'Phone number already taken' using errcode = 'P0019';
   end if;
 
-  insert into "user"(username, first_name, last_name, email, phone_number, "password", created, guest, deleted)
-    values (ip_username, ip_first_name, nullif(ip_last_name, ''), nullif(ip_email, ''), nullif(ip_phone_number, ''), ip_password, CURRENT_TIMESTAMP, false, false)
-    returning "user".id into tmp_user_id;
+  update
+    "user" u
+  set
+    username = ip_username,
+    first_name = ip_first_name,
+    last_name = nullif(ip_last_name, ''),
+    email = nullif(ip_email, ''),
+    phone_number = nullif(ip_phone_number, ''),
+    "password" = ip_password,
+    created = CURRENT_TIMESTAMP,
+    guest = false
+  where
+    u.id = ip_guest_id and
+    u.guest = true and
+    u.deleted = false
+  returning u.id into tmp_user_id;
 
   return query
   select * from get_user(tmp_user_id, null, false);

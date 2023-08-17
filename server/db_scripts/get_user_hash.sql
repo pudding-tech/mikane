@@ -16,6 +16,7 @@ begin
     from
       "user" u
     where
+      u.guest = false and
       u.id = ip_user_id;
   else
     return query
@@ -24,8 +25,11 @@ begin
     from
       "user" u
     where
-      u.username ilike trim(ip_username_email) or
-      u.email ilike trim(ip_username_email);
+      u.guest = false and
+      (
+        u.username ilike trim(ip_username_email) or
+        u.email ilike trim(ip_username_email)
+      );
   end if;
 end;
 $$

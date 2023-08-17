@@ -46,15 +46,17 @@ export const parseCategories = (catInput: CategoryDB[], target: Target, usersInE
                 id: user.user_id,
                 name: "Deleted user",
                 avatarURL: getGravatarURL("", { size: 50, default: "mp" }),
-                weight: user.weight
+                weight: user.weight,
+                guest: user.guest
               } :
               {
                 id: user.user_id,
                 name: user.first_name,
+                guest: user.guest,
                 username: user.username,
                 firstName: user.first_name,
                 lastName: user.last_name,
-                avatarURL: getGravatarURL(user.email, { size: 50, default: "mp" }),
+                avatarURL: getGravatarURL(user.email ?? "", { size: 50, default: "mp" }),
                 weight: user.weight
               }
             );
@@ -81,7 +83,8 @@ export const parseCategories = (catInput: CategoryDB[], target: Target, usersInE
         username: userObj.username,
         name: userObj.first_name,
         firstName: userObj.first_name,
-        lastName: userObj.last_name
+        lastName: userObj.last_name,
+        guest: userObj.guest
       };
       usersInEvent?.push(user);
     });

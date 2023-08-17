@@ -12,6 +12,7 @@ returns table (
   email varchar(255),
   phone_number varchar(20),
   created timestamp,
+  guest boolean,
   deleted boolean,
   event_id uuid,
   is_event_admin boolean,
@@ -24,7 +25,7 @@ begin
   begin
     return query
     select
-      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, u.deleted,
+      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, u.guest, u.deleted,
       null::uuid as event_id,
       null::boolean as is_event_admin,
       null::timestamp as event_joined_time
@@ -48,7 +49,7 @@ begin
 
     return query
     select
-      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, u.deleted,
+      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, u.guest, u.deleted,
       e.id as event_id, ue.admin as is_event_admin, ue.joined_time as event_joined_time
     from
       "user" u
