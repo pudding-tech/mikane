@@ -21,7 +21,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, filter, map, of, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, filter, map, of, skip, switchMap, takeUntil } from 'rxjs';
 import { ExpenseItemComponent } from 'src/app/features/mobile/expense-item/expense-item.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -100,7 +100,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		this.loading = true;
 		this.breakpointService
 			.isMobile()
-			.pipe(takeUntil(this.destroy$))
+			.pipe(skip(1), takeUntil(this.destroy$))
 			.subscribe(() => this.clearInput());
 		this.authService.getCurrentUser().subscribe({
 			next: (user) => {
