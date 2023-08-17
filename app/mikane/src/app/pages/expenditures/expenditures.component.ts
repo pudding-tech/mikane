@@ -80,7 +80,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	cancel$: Subject<void> = new Subject();
 	destroy$: Subject<void> = new Subject();
 
-	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description', 'edit', 'delete'];
+	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description'];
 	currentUserId: string;
 
 	constructor(
@@ -116,6 +116,9 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 				filter((event) => event?.id !== undefined),
 				switchMap((event): Observable<[Expense[], string] | []> => {
 					if (event.id) {
+						if (event.active) {
+							this.displayedColumns.push(...['edit', 'delete']);
+						}
 						this.event = event;
 						return combineLatest([
 							this.expenseService.loadExpenses(this.event.id),

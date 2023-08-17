@@ -1,11 +1,13 @@
 <div *ngIf="(loading | async) === false; else loadingSpinner">
 	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView">
 		<div class="add-actions">
-			<button mat-raised-button color="primary" (click)="openDialog()">
+			<button mat-raised-button color="primary" (click)="openDialog()" *ngIf="event?.active">
 				<mat-icon>person_add</mat-icon>
 				Add users to event
 			</button>
-			<button mat-raised-button color="primary" *ngIf="!inEvent; else joinedEvent" (click)="joinEvent()">Join event</button>
+			<button mat-raised-button color="primary" *ngIf="!inEvent && event?.active; else joinedEvent" (click)="joinEvent()">
+				Join event
+			</button>
 			<ng-template #joinedEvent>
 				<button mat-stroked-button disabled>
 					{{ isAdmin ? "You are an admin in this event" : "You are in this event" }}
@@ -49,7 +51,9 @@
 							<img [src]="userWithBalance.user.avatarURL" class="avatar" />
 							{{ userWithBalance.user.name }}
 						</div>
-						<div class="count" [ngClass]="{ 'no-expenses': userWithBalance.expensesCount === 0 }">{{ userWithBalance.expensesCount }}</div>
+						<div class="count" [ngClass]="{ 'no-expenses': userWithBalance.expensesCount === 0 }">
+							{{ userWithBalance.expensesCount }}
+						</div>
 						<div>{{ userWithBalance.spending | currency : "" : "" : "1.2-2" : "no" }} kr</div>
 						<div>{{ userWithBalance.expenses | currency : "" : "" : "1.2-2" : "no" }} kr</div>
 						<div class="amount-color">{{ userWithBalance.balance | currency : "" : "" : "1.2-2" : "no" }} kr</div>
@@ -117,7 +121,7 @@
 							<td class="mat-cell no-expenses" [attr.colspan]="displayedColumns.length">No expenses found</td>
 						</tr>
 					</table>
-					<div class="user-actions">
+					<div class="user-actions" *ngIf="event?.active">
 						<button mat-raised-button color="accent" (click)="createExpenseDialog(userWithBalance.user.id, dataSources[i])">
 							Add expense
 						</button>
@@ -161,7 +165,14 @@
 			[userBalance]="userWithBalance"
 		></participant-item>
 	</mat-nav-list>
-	<button mat-fab color="primary" class="add-users-button-mobile" (click)="openDialog()" [ngClass]="{ iOS: contextService.isIos }">
+	<button
+		*ngIf="event?.active"
+		mat-fab
+		color="primary"
+		class="add-users-button-mobile"
+		(click)="openDialog()"
+		[ngClass]="{ iOS: contextService.isIos }"
+	>
 		<mat-icon>person_add</mat-icon>
 	</button>
 </ng-template>

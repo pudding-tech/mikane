@@ -14,8 +14,10 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
-import { ExpendituresComponent } from '../../expenditures/expenditures.component';
+import { CategoryComponent } from '../../category/category.component';
 import { EventSettingsComponent } from '../../event-settings/event-settings.component';
+import { ExpendituresComponent } from '../../expenditures/expenditures.component';
+import { ParticipantComponent } from '../../participant/participant.component';
 
 @Component({
 	selector: 'app-event',
@@ -64,7 +66,7 @@ export class EventComponent implements OnInit {
 				name: this.isMobile() ? 'Payments' : 'Payment Structure',
 				icon: 'account_balance_wallet',
 				location: './payment',
-			}
+			},
 		];
 
 		if (this.isEventAdmin() && !this.isMobile()) {
@@ -94,8 +96,13 @@ export class EventComponent implements OnInit {
 		}
 	}
 
-	onOutletLoaded(component: ExpendituresComponent | EventSettingsComponent) {
-		if (component instanceof ExpendituresComponent || component instanceof EventSettingsComponent) {
+	onOutletLoaded(component: ExpendituresComponent | EventSettingsComponent | ParticipantComponent | CategoryComponent) {
+		if (
+			component instanceof ExpendituresComponent ||
+			component instanceof EventSettingsComponent ||
+			component instanceof ParticipantComponent ||
+			component instanceof CategoryComponent
+		) {
 			component.$event = this.$event;
 			this.$event.next(this.event);
 		}

@@ -1,48 +1,48 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { BehaviorSubject, NEVER, Subscription, combineLatest, filter, switchMap } from 'rxjs';
+import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/message/message.service';
-import { ProgressSpinnerComponent } from "../../shared/progress-spinner/progress-spinner.component";
-import { ApiError } from 'src/app/types/apiError.type';
+import { User, UserService } from 'src/app/services/user/user.service';
 import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { FormControlPipe } from "../../shared/forms/form-control.pipe";
+import { ApiError } from 'src/app/types/apiError.type';
+import { FormControlPipe } from '../../shared/forms/form-control.pipe';
+import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 
 @Component({
-    selector: 'event-settings',
-    templateUrl: 'event-settings.component.html',
-    styleUrls: ['./event-settings.component.scss'],
-    standalone: true,
-    imports: [
-        CommonModule,
-        MatButtonModule,
-        MatCardModule,
-        MatDialogModule,
-        MatIconModule,
-        MatListModule,
-        MatInputModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ProgressSpinnerComponent,
-        EventNameValidatorDirective,
-        FormControlPipe
-    ]
+	selector: 'event-settings',
+	templateUrl: 'event-settings.component.html',
+	styleUrls: ['./event-settings.component.scss'],
+	standalone: true,
+	imports: [
+		CommonModule,
+		MatButtonModule,
+		MatCardModule,
+		MatDialogModule,
+		MatIconModule,
+		MatListModule,
+		MatInputModule,
+		MatSelectModule,
+		MatFormFieldModule,
+		FormsModule,
+		ReactiveFormsModule,
+		ProgressSpinnerComponent,
+		EventNameValidatorDirective,
+		FormControlPipe,
+	],
 })
 export class EventSettingsComponent {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
@@ -59,7 +59,7 @@ export class EventSettingsComponent {
 
 	private eventSubscription: Subscription;
 	private deleteSubscription: Subscription;
-	
+
 	constructor(
 		private router: Router,
 		private eventService: EventService,
@@ -67,7 +67,7 @@ export class EventSettingsComponent {
 		private authService: AuthService,
 		public breakpointService: BreakpointService,
 		private messageService: MessageService,
-		public dialog: MatDialog,
+		public dialog: MatDialog
 	) {}
 
 	ngOnInit(): void {
@@ -80,16 +80,13 @@ export class EventSettingsComponent {
 					this.eventData.id = event.id;
 					this.eventData.name = event.name;
 					this.eventData.description = event.description;
-					return combineLatest([
-						this.userService.loadUsersByEvent(event.id),
-						this.authService.getCurrentUser()
-					]);
+					return combineLatest([this.userService.loadUsersByEvent(event.id), this.authService.getCurrentUser()]);
 				})
 			)
 			.subscribe({
 				next: ([users, currentUser]) => {
-					this.adminsInEvent = users.filter(user => user.eventInfo?.isAdmin);
-					this.otherUsersInEvent = users.filter(user => !user.eventInfo?.isAdmin);
+					this.adminsInEvent = users.filter((user) => user.eventInfo?.isAdmin);
+					this.otherUsersInEvent = users.filter((user) => !user.eventInfo?.isAdmin);
 					this.currentUser = currentUser;
 					this.loading.next(false);
 				},
@@ -99,7 +96,7 @@ export class EventSettingsComponent {
 					console.error('Something went wrong while loading event settings data', err?.error?.message);
 				},
 			});
-	};
+	}
 
 	editEvent() {
 		this.eventService.editEvent({ id: this.event.id, name: this.eventData.name, description: this.eventData.description }).subscribe({
@@ -119,6 +116,9 @@ export class EventSettingsComponent {
 			next: (event) => {
 				this.event = event;
 				this.messageService.showSuccess(archive ? 'Event successfully archived' : 'Event successfully set as active');
+
+				// Reload to refresh now archived event. Should probably be done within app at some point
+				location.reload();
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to archive event');
@@ -178,8 +178,8 @@ export class EventSettingsComponent {
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to add admin');
 					console.error('Something went wrong while setting admin for event', err?.error?.message);
-				}
-			})
+				},
+			});
 		}
 	}
 
@@ -189,7 +189,8 @@ export class EventSettingsComponent {
 				width: '350px',
 				data: {
 					title: 'Remove yourself as admin?',
-					content: 'Are you sure you want to remove yourself as admin for this event? This means you will lose access to this page, and cannot edit this event anymore.',
+					content:
+						'Are you sure you want to remove yourself as admin for this event? This means you will lose access to this page, and cannot edit this event anymore.',
 					confirm: 'Yes, I am sure',
 				},
 			});
@@ -213,10 +214,9 @@ export class EventSettingsComponent {
 					error: (err: ApiError) => {
 						this.messageService.showError('Failed to remove admin');
 						console.error('Something went wrong while removing admin from event', err?.error?.message);
-					}
+					},
 				});
-		}
-		else {
+		} else {
 			this.eventService.removeUserAsAdmin(this.event.id, userId).subscribe({
 				next: (res) => {
 					this.event = res;
@@ -229,7 +229,7 @@ export class EventSettingsComponent {
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to remove admin');
 					console.error('Something went wrong while removing admin from event', err?.error?.message);
-				}
+				},
 			});
 		}
 	}

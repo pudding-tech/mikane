@@ -1,6 +1,6 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
-import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -12,14 +12,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
 import { map } from 'lodash-es';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, filter, of, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { CategoryItemComponent } from 'src/app/features/mobile/category-item/category-item.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
+import { PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
@@ -56,8 +56,8 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 		CategoryItemComponent,
 	],
 })
-export class CategoryComponent implements OnInit, AfterViewChecked {
-	private eventId!: string;
+export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
+	@Input() $event: BehaviorSubject<PuddingEvent>;
 
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -66,14 +66,16 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 		weight: new FormControl(1, [Validators.required, Validators.min(1)]),
 	}) as FormGroup;
 
+	event: PuddingEvent;
 	categories: Category[] = [];
 	users: User[] = [];
-	displayedColumns: string[] = ['name', 'weight', 'save'];
+	displayedColumns: string[] = ['name', 'weight'];
+
+	private destroy$ = new Subject<void>();
 
 	constructor(
 		private categoryService: CategoryService,
 		private userService: UserService,
-		private route: ActivatedRoute,
 		public dialog: MatDialog,
 		private cd: ChangeDetectorRef,
 		private messageService: MessageService,
@@ -82,10 +84,27 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 	) {}
 
 	ngOnInit(): void {
-		this.route.parent?.parent?.params.subscribe((params) => {
-			this.eventId = params['eventId'];
-			this.loadCategories();
-		});
+		this.$event
+			?.pipe(
+				filter((event) => event?.id !== undefined),
+				switchMap((event) => {
+					if (event.id) {
+						return of(event);
+					} else {
+						return of(undefined);
+					}
+				}),
+				takeUntil(this.destroy$)
+			)
+			.subscribe({
+				next: (event) => {
+					if (event.active) {
+						this.displayedColumns.push('save');
+					}
+					this.event = event;
+					this.loadCategories();
+				},
+			});
 	}
 
 	ngAfterViewChecked(): void {
@@ -94,30 +113,36 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 
 	loadCategories() {
 		this.loading.next(true);
-		this.categoryService.loadCategories(this.eventId).subscribe({
-			next: (categories) => {
-				this.categories = categories;
-				this.loadUsers();
-				this.loading.next(false);
-			},
-			error: (err: ApiError) => {
-				this.loading.next(false);
-				this.messageService.showError('Error loading categories');
-				console.error('something went wrong while loading categories', err?.error?.message);
-			},
-		});
+		this.categoryService
+			.loadCategories(this.event.id)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: (categories) => {
+					this.categories = categories;
+					this.loadUsers();
+					this.loading.next(false);
+				},
+				error: (err: ApiError) => {
+					this.loading.next(false);
+					this.messageService.showError('Error loading categories');
+					console.error('something went wrong while loading categories', err?.error?.message);
+				},
+			});
 	}
 
 	loadUsers() {
-		this.userService.loadUsersByEvent(this.eventId).subscribe({
-			next: (users) => {
-				this.users = users;
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Error loading users');
-				console.error('something went wrong while loading users', err?.error?.message);
-			},
-		});
+		this.userService
+			.loadUsersByEvent(this.event.id)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: (users) => {
+					this.users = users;
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Error loading users');
+					console.error('something went wrong while loading users', err?.error?.message);
+				},
+			});
 	}
 
 	filterUsers = (categoryId: string) => {
@@ -137,7 +162,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 	openDialog() {
 		const dialogRef = this.dialog.open(CategoryDialogComponent, {
 			width: '380px',
-			data: { weighted: false, eventId: this.eventId },
+			data: { weighted: false, eventId: this.event.id },
 		});
 
 		dialogRef.afterClosed().subscribe((result) => {
@@ -150,7 +175,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 	openEditCategoryDialog(categoryId: string, name: string, icon: CategoryIcon) {
 		const dialogRef = this.dialog.open(CategoryDialogComponent, {
 			width: '380px',
-			data: { categoryId, name, icon, eventId: this.eventId },
+			data: { categoryId, name, icon, eventId: this.event.id },
 		});
 
 		dialogRef.afterClosed().subscribe((result) => {
@@ -161,74 +186,86 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 	}
 
 	createCategory(name: string, weighted: boolean, icon: CategoryIcon) {
-		this.categoryService.createCategory(name, this.eventId, weighted, icon).subscribe({
-			next: (category) => {
-				this.categories.push(category);
-				this.messageService.showSuccess('Category created');
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Error creating category');
-				console.error('something went wrong while creating category', err?.error?.message);
-			},
-		});
+		this.categoryService
+			.createCategory(name, this.event.id, weighted, icon)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: (category) => {
+					this.categories.push(category);
+					this.messageService.showSuccess('Category created');
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Error creating category');
+					console.error('something went wrong while creating category', err?.error?.message);
+				},
+			});
 	}
 
 	editCategory(categoryId: string, name: string, icon: CategoryIcon) {
-		this.categoryService.editCategory(categoryId, name, icon).subscribe({
-			next: (newCategory) => {
-				Object.assign(
-					this.categories.find((category) => {
-						return category.id === categoryId;
-					}),
-					newCategory
-				);
-				this.messageService.showSuccess('Category edited');
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Error editing category');
-				console.error('something went wrong while editing category', err);
-			},
-		});
+		this.categoryService
+			.editCategory(categoryId, name, icon)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: (newCategory) => {
+					Object.assign(
+						this.categories.find((category) => {
+							return category.id === categoryId;
+						}),
+						newCategory
+					);
+					this.messageService.showSuccess('Category edited');
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Error editing category');
+					console.error('something went wrong while editing category', err);
+				},
+			});
 	}
 
 	addUser(categoryId: string) {
 		if (this.addUserForm.value.participantName) {
-			this.categoryService.addUser(categoryId, this.addUserForm.value.participantName, this.addUserForm.value.weight ?? 1).subscribe({
+			this.categoryService
+				.addUser(categoryId, this.addUserForm.value.participantName, this.addUserForm.value.weight ?? 1)
+				.pipe(takeUntil(this.destroy$))
+				.subscribe({
+					next: (res) => {
+						const index = this.categories.findIndex((category) => category.id === res.id);
+						if (index > -1) {
+							this.categories[index].users = res.users;
+							this.cd.detectChanges();
+						}
+						this.addUserForm.get('participantName')?.setValue('');
+						this.addUserForm.get('participantName')?.markAsUntouched();
+						this.addUserForm.get('weight')?.setValue(1);
+
+						this.messageService.showSuccess('User added to category "' + this.categories[index].name + '"');
+					},
+					error: (err: ApiError) => {
+						this.messageService.showError('Error adding user to category');
+						console.error('something went wrong while adding user to category', err?.error?.message);
+					},
+				});
+		}
+	}
+
+	removeUser(categoryId: string, userId: string) {
+		this.categoryService
+			.deleteUser(categoryId, userId)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
 				next: (res) => {
 					const index = this.categories.findIndex((category) => category.id === res.id);
 					if (index > -1) {
 						this.categories[index].users = res.users;
 						this.cd.detectChanges();
 					}
-					this.addUserForm.get('participantName')?.setValue('');
-					this.addUserForm.get('participantName')?.markAsUntouched();
-					this.addUserForm.get('weight')?.setValue(1);
-
-					this.messageService.showSuccess('User added to category "' + this.categories[index].name + '"');
+					this.messageService.showSuccess('User removed from category "' + this.categories[index].name + '"');
 				},
 				error: (err: ApiError) => {
-					this.messageService.showError('Error adding user to category');
-					console.error('something went wrong while adding user to category', err?.error?.message);
+					this.messageService.showError('Error removing user from category');
+					console.error('something went wrong while removing user from category', err?.error?.message);
 				},
 			});
-		}
-	}
-
-	removeUser(categoryId: string, userId: string) {
-		this.categoryService.deleteUser(categoryId, userId).subscribe({
-			next: (res) => {
-				const index = this.categories.findIndex((category) => category.id === res.id);
-				if (index > -1) {
-					this.categories[index].users = res.users;
-					this.cd.detectChanges();
-				}
-				this.messageService.showSuccess('User removed from category "' + this.categories[index].name + '"');
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Error removing user from category');
-				console.error('something went wrong while removing user from category', err?.error?.message);
-			},
-		});
 	}
 
 	openWeightEditDialog(categoryId: string, userId: string, weight: number) {
@@ -245,45 +282,51 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 	}
 
 	editCategoryWeight(categoryId: string, userId: string, weight: number) {
-		this.categoryService.editUser(categoryId, userId, weight).subscribe({
-			next: (res) => {
-				const catIndex = this.categories.findIndex((category) => {
-					return category.id === res.id;
-				});
-				if (catIndex > -1) {
-					const userIndex = this.categories[catIndex].users.findIndex((user) => {
-						return user.id === userId;
+		this.categoryService
+			.editUser(categoryId, userId, weight)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: (res) => {
+					const catIndex = this.categories.findIndex((category) => {
+						return category.id === res.id;
 					});
-					if (userIndex > -1) {
-						this.categories[catIndex].users[userIndex].weight = weight;
-						this.messageService.showSuccess('Category updated');
+					if (catIndex > -1) {
+						const userIndex = this.categories[catIndex].users.findIndex((user) => {
+							return user.id === userId;
+						});
+						if (userIndex > -1) {
+							this.categories[catIndex].users[userIndex].weight = weight;
+							this.messageService.showSuccess('Category updated');
+						}
 					}
-				}
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Error editing category');
-				console.error('something went wrong while editing category', err?.error?.message);
-			},
-		});
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Error editing category');
+					console.error('something went wrong while editing category', err?.error?.message);
+				},
+			});
 	}
 
 	toggleWeighted(categoryId: string, weighted: boolean) {
-		this.categoryService.setWeighted(categoryId, !weighted).subscribe({
-			next: (result) => {
-				const category = this.categories.indexOf(
-					this.categories.find((category) => {
-						return category.id === result.id;
-					})
-				);
-				if (~category) {
-					Object.assign(this.categories[category], result);
-				}
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Failed to toggle weighted status');
-				console.error('something went wrong while toggling category weight', err?.error?.message);
-			},
-		});
+		this.categoryService
+			.setWeighted(categoryId, !weighted)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: (result) => {
+					const category = this.categories.indexOf(
+						this.categories.find((category) => {
+							return category.id === result.id;
+						})
+					);
+					if (~category) {
+						Object.assign(this.categories[category], result);
+					}
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to toggle weighted status');
+					console.error('something went wrong while toggling category weight', err?.error?.message);
+				},
+			});
 	}
 
 	deleteCategoryDialog(categoryId: string) {
@@ -304,20 +347,28 @@ export class CategoryComponent implements OnInit, AfterViewChecked {
 	}
 
 	deleteCategory(categoryId: string) {
-		this.categoryService.deleteCategory(categoryId).subscribe({
-			next: () => {
-				const index = this.categories.findIndex((category) => category.id === categoryId);
-				this.categories.splice(index, 1);
-				this.messageService.showSuccess('Successfully deleted category');
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Error deleting category');
-				console.error('something went wrong while deleting category', err?.error?.message);
-			},
-		});
+		this.categoryService
+			.deleteCategory(categoryId)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: () => {
+					const index = this.categories.findIndex((category) => category.id === categoryId);
+					this.categories.splice(index, 1);
+					this.messageService.showSuccess('Successfully deleted category');
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Error deleting category');
+					console.error('something went wrong while deleting category', err?.error?.message);
+				},
+			});
 	}
 
 	drop(event: CdkDragDrop<Category[]>) {
 		moveItemInArray(this.categories, event.previousIndex, event.currentIndex);
+	}
+
+	ngOnDestroy(): void {
+		this.destroy$.next();
+		this.destroy$.complete();
 	}
 }
