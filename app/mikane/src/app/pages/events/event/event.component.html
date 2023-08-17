@@ -23,7 +23,7 @@
 		*ngFor="let link of links()"
 		[routerLink]="link.location"
 		(click)="activeLink = link.location"
-		[active]="activeLink == link.location"
+		[active]="activeLink.includes(link.location)"
 		[ngClass]="{ 'settings-tab': link.name === 'Settings' }"
 	>
 		<mat-icon *ngIf="link.name === 'Settings'; else name">settings</mat-icon>
@@ -36,6 +36,12 @@
 <ng-template #mobileNavbar>
 	<mobile-event-navbar [activeLink]="activeLink" [links]="links()"></mobile-event-navbar>
 </ng-template>
-<div [ngClass]="{ 'content': !(breakpointService.isMobile() | async), 'mobile-event': breakpointService.isMobile() | async, 'iOS': contextService.isIos }">
+<div
+	[ngClass]="{
+		content: !(breakpointService.isMobile() | async),
+		'mobile-event': breakpointService.isMobile() | async,
+		iOS: contextService.isIos
+	}"
+>
 	<router-outlet (activate)="onOutletLoaded($event)"></router-outlet>
 </div>
