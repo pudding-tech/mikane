@@ -1141,3 +1141,70 @@ export const PUD120: ErrorCode = {
   status: 500,
   log: true
 };
+
+/**
+ * PUD-121: 'firstName' not provided in body (400)
+ */
+export const PUD121: ErrorCode = {
+  code: "PUD-121",
+  message: "'firstName' not provided in body",
+  status: 400
+};
+
+/**
+ * PUD-122: Guest user not found (400)
+ */
+export const PUD122: ErrorCode = {
+  code: "PUD-122",
+  message: "Guest user not found",
+  status: 400
+};
+
+/**
+ * PUD-123: new_guest_user (500)
+ */
+export const PUD123: ErrorCode = {
+  code: "PUD-123",
+  message: "Something went wrong while creating new guest user",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-124: edit_guest_user (500)
+ */
+export const PUD124: ErrorCode = {
+  code: "PUD-124",
+  message: "Something went wrong while editing guest user",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-125: delete_guest_user (500)
+ */
+export const PUD125: ErrorCode = {
+  code: "PUD-125",
+  message: "Something went wrong while deleting guest user",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-126: Guest users cannot be event admins (400)
+ */
+export const PUD126: ErrorCode = {
+  code: "PUD-126",
+  message: "Guest users cannot be event admins",
+  status: 400
+};
+
+/**
+ * PUD-127: convert_guest_to_user (500)
+ */
+export const PUD127: ErrorCode = {
+  code: "PUD-127",
+  message: "Something went wrong while converting guest user to normal user",
+  status: 500,
+  log: true
+};

@@ -1,0 +1,101 @@
+import { pool } from "../db";
+import { parseGuestUser, parseGuestUsers } from "../parsers/parseUsers";
+import { Guest } from "../types/types";
+import { ErrorExt } from "../types/errorExt";
+import * as ec from "../types/errorCodes";
+
+/**
+ * DB interface: Get all guest users
+ * @returns List of guest users
+ */
+export const getGuestUsers = async () => {
+  const query = {
+    text: "SELECT * FROM get_users(null, null, false)"
+  };
+  const users: Guest[] = await pool.query(query)
+    .then(data => {
+      return parseGuestUsers(data.rows, 80);
+    })
+    .catch(err => {
+      if (err.code === "P0006")
+        throw new ErrorExt(ec.PUD006);
+      else
+        throw new ErrorExt(ec.PUD035, err);
+    });
+
+  return users;
+};
+
+/**
+ * DB interface: Add a new guest user to the database
+ * @param id 
+ * @param firstName 
+ * @param lastName 
+ * @returns Newly created guest user
+ */
+export const createGuestUser = async (id: string, firstName: string, lastName: string) => {
+  const query = {
+    text: "SELECT * FROM new_guest_user($1, $2, $3)",
+    values: [id, firstName, lastName]
+  };
+  const guestUser: Guest = await pool.query(query)
+    .then(data => {
+      return parseGuestUser(data.rows[0]);
+    })
+    .catch(err => {
+      throw new ErrorExt(ec.PUD123, err);
+    });
+
+  return guestUser;
+};
+
+/**
+ * DB interface: Edit a guest user
+ * @param guestId Guest ID to edit
+ * @param data Data object
+ * @returns Edited user
+ */
+export const editGuestUser = async (guestId: string, data: { firstName?: string, lastName?: string }) => {
+  const query = {
+    text: "SELECT * FROM edit_guest_user($1, $2, $3)",
+    values: [guestId, data.firstName, data.lastName]
+  };
+  const guestUser: Guest = await pool.query(query)
+    .then(data => {
+      return parseGuestUser(data.rows[0]);
+    })
+    .catch(err => {
+      if (err.code === "P0122")
+        throw new ErrorExt(ec.PUD122, err);
+      else
+        throw new ErrorExt(ec.PUD124, err);
+    });
+
+  return guestUser;
+};
+
+/**
+ * DB interface: Delete a guest user
+ * @param guestId 
+ * @returns True if successful
+ */
+export const deleteGuestUser = async (guestId: string) => {
+  const query = {
+    text: "SELECT * FROM delete_guest_user($1)",
+    values: [guestId]
+  };
+  const success = await pool.query(query)
+    .then(() => {
+      return true;
+    })
+    .catch(err => {
+      if (err.code === "P0122")
+        throw new ErrorExt(ec.PUD122, err);
+      else if (err.code === "P0120")
+        throw new ErrorExt(ec.PUD120, err);
+      else
+        throw new ErrorExt(ec.PUD125, err);
+    });
+
+  return success;
+};

@@ -3,6 +3,7 @@ import { User } from "../types/types";
 type CategoryUser = {
   id: string,
   name: string,
+  guest: boolean,
   username?: string,
   firstName?: string,
   lastName?: string
@@ -23,7 +24,7 @@ export const setDisplayNames = (users: User[] | CategoryUser[], usersInEvent?: U
       if (user.lastName) {
         user.name = user.firstName + " " + user.lastName;
       }
-      else {
+      else if (!user.guest) {
         user.name = user.firstName + " (" + user.username + ")";
       }
     }

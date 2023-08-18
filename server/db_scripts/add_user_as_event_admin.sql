@@ -34,6 +34,10 @@ begin
     raise exception 'Only event admins can edit event' using errcode = 'P0087';
   end if;
 
+  if exists (select 1 from "user" u where u.id = ip_user_id and u.guest = true) then
+    raise exception 'Guest users cannot be event admins' using errcode = 'P0126';
+  end if;
+
   if not exists (select 1 from user_event ue where ue.event_id = ip_event_id and ue.user_id = ip_user_id) then
     raise exception 'User not in event, thus cannot be added as event admin' using errcode = 'P0090';
   end if;

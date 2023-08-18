@@ -165,7 +165,7 @@ describe("users", async () => {
     test("should get users except self", async () => {
       const res = await request(app)
         .get("/api/users")
-        .query("exclude=self")
+        .query("excludeSelf=true")
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(200);

@@ -72,11 +72,22 @@ router.get("/eventbyname", authKeyCheck, async (req, res, next) => {
 router.get("/events/:id/balances", authCheck, async (req, res, next) => {
   try {
     const eventId = req.params.id;
+    const userId = req.session.userId;
     if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
     const usersWithBalance: UserBalance[] = await db.getEventBalances(eventId);
+
+    // Put logged in user first in list
+    if (userId) {
+      const index = usersWithBalance.findIndex(userBalance => userBalance.user.id === userId);
+      if (index !== -1) {
+        const userBalance = usersWithBalance.splice(index, 1)[0];
+        usersWithBalance.unshift(userBalance);
+      }
+    }
+
     res.status(200).send(usersWithBalance);
   }
   catch (err) {

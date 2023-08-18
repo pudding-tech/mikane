@@ -14,7 +14,7 @@ import * as ec from "../types/errorCodes";
  */
 export const getUser = async (userId: string | null, avatarSize?: number, username?: string | null) => {
   const query = {
-    text: "SELECT * FROM get_user($1, $2)",
+    text: "SELECT * FROM get_user($1, $2, false)",
     values: [userId, username]
   };
   const user: User | null = await pool.query(query)
@@ -57,7 +57,7 @@ export const getUserID = async (email: string) => {
  * @param filter Object containing filters (event ID, user ID to exclude)
  * @returns List of users
  */
-export const getUsers = async (filter?: { eventId?: string, excludeUserId?: string }) => {
+export const getUsers = async (filter?: { eventId?: string, excludeGuests?: boolean, excludeUserId?: string }) => {
   const withDeleted = filter?.eventId ? null : false;
   const query = {
     text: "SELECT * FROM get_users($1, $2, $3)",
@@ -65,10 +65,13 @@ export const getUsers = async (filter?: { eventId?: string, excludeUserId?: stri
   };
   const users: User[] = await pool.query(query)
     .then(data => {
-      return parseUsers(data.rows, true);
+      return parseUsers(data.rows, true, filter?.excludeGuests ?? false);
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD035, err);
+      if (err.code === "P0006")
+        throw new ErrorExt(ec.PUD006);
+      else
+        throw new ErrorExt(ec.PUD035, err);
     });
 
   return users;
@@ -110,6 +113,7 @@ export const getUserExpenses = async (userId: string, eventId: string) => {
  * @param lastName 
  * @param email 
  * @param hash 
+ * @param fromGuestId If user is to be created from a guest user, supply guest user's ID here
  * @returns Newly created user
  */
 export const createUser = async (username: string, firstName: string, lastName: string, email: string, phone: string, hash: string) => {
@@ -130,6 +134,41 @@ export const createUser = async (username: string, firstName: string, lastName: 
         throw new ErrorExt(ec.PUD019, err);
       else
         throw new ErrorExt(ec.PUD038, err);
+    });
+
+  return user;
+};
+
+/**
+ * DB interface: Convert an existing guest user into a normal user
+ * @param fromGuestId
+ * @param username 
+ * @param firstName 
+ * @param lastName 
+ * @param email 
+ * @param hash 
+ * @returns User
+ */
+export const convertGuestToUser = async (fromGuestId: string, username: string, firstName: string, lastName: string, email: string, phone: string, hash: string) => {
+  const query = {
+    text: "SELECT * FROM convert_guest_to_user($1, $2, $3, $4, $5, $6, $7)",
+    values: [fromGuestId, username, firstName, lastName, email, phone, hash]
+  };
+  const user: User = await pool.query(query)
+    .then(data => {
+      return parseUser(data.rows[0]);
+    })
+    .catch(err => {
+      if (err.code === "P0017")
+        throw new ErrorExt(ec.PUD017, err);
+      else if (err.code === "P0018")
+        throw new ErrorExt(ec.PUD018, err);
+      else if (err.code === "P0019")
+        throw new ErrorExt(ec.PUD019, err);
+      else if (err.code === "P0122")
+        throw new ErrorExt(ec.PUD122, err);
+      else
+        throw new ErrorExt(ec.PUD127, err);
     });
 
   return user;
@@ -221,16 +260,19 @@ export const changePassword = async (userId: string, hash: string) => {
  * DB interface: Add new register account key to database
  * @param email 
  * @param key 
+ * @param guestId - Optional - for converting guest user to normal user
  */
-export const newRegisterAccountKey = async (email: string, key: string) => {
+export const newRegisterAccountKey = async (email: string, key: string, guestId?: string) => {
   const query = {
-    text: "SELECT * FROM new_register_account_key($1, $2);",
-    values: [email, key]
+    text: "SELECT * FROM new_register_account_key($1, $2, $3);",
+    values: [email, key, guestId]
   };
   await pool.query(query)
     .catch(err => {
       if (err.code === "P0103")
         throw new ErrorExt(ec.PUD103, err);
+      if (err.code === "P0122")
+        throw new ErrorExt(ec.PUD122, err);
       else
         throw new ErrorExt(ec.PUD099, err);
     });
@@ -247,7 +289,13 @@ export const verifyRegisterAccountKey = async (key: string) => {
   };
   const email = await pool.query(query)
     .then(data => {
-      return data.rows[0]?.email as string || null;
+      return {
+        email: data.rows[0]?.email as string | null,
+        guestUser: data.rows[0]?.guest_user as boolean | null,
+        firstName: data.rows[0]?.first_name as string | null,
+        lastName: data.rows[0]?.last_name as string | null,
+        guestId: data.rows[0]?.guest_id as string | null
+      };
     })
     .catch(err => {
       throw new ErrorExt(ec.PUD100, err);

@@ -20,6 +20,7 @@ returns table (
   payer_last_name varchar(255),
   payer_username varchar(255),
   payer_email varchar(255),
+  payer_guest boolean,
   payer_deleted boolean
 ) as
 $$
