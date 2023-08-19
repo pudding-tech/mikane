@@ -1,5 +1,5 @@
 <div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView">
+	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView" [ngClass]="{ 'extra-margin': !inEvent && !event?.active }">
 		<div class="add-actions">
 			<button mat-raised-button color="primary" (click)="openDialog()" *ngIf="event?.active">
 				<mat-icon>person_add</mat-icon>
@@ -9,7 +9,7 @@
 				Join event
 			</button>
 			<ng-template #joinedEvent>
-				<button mat-stroked-button disabled>
+				<button mat-stroked-button disabled *ngIf="inEvent">
 					{{ isAdmin ? "You are an admin in this event" : "You are in this event" }}
 					<mat-icon>{{ isAdmin ? "star" : "check" }}</mat-icon>
 				</button>

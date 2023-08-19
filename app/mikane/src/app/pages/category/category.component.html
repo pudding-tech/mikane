@@ -6,7 +6,7 @@
 </div>
 
 <div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView">
+	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView" [ngClass]="{ 'extra-margin': !event?.active }">
 		<mat-accordion *ngIf="categories.length > 0; else noCategories">
 			<mat-expansion-panel *ngFor="let category of categories" class="categories">
 				<mat-expansion-panel-header>

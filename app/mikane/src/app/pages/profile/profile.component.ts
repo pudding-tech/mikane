@@ -48,7 +48,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		this.subscription = this.route.paramMap
 			.pipe(
 				map((params) => {
-					console.log(params.keys);
 					return params.get('id');
 				}),
 				switchMap((id) => {

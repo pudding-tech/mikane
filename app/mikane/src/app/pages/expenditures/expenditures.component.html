@@ -6,7 +6,7 @@
 </div>
 
 <div *ngIf="loading === false; else loadingSpinner">
-	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" [ngClass]="{ 'extra-margin': !event?.active }">
 		<mat-form-field>
 			<mat-label>Filter expenses</mat-label>
 			<input matInput (keyup)="applyFilter($event)" #input />
