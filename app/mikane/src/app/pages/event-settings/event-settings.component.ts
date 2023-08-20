@@ -80,7 +80,10 @@ export class EventSettingsComponent {
 					this.eventData.id = event.id;
 					this.eventData.name = event.name;
 					this.eventData.description = event.description;
-					return combineLatest([this.userService.loadUsersByEvent(event.id), this.authService.getCurrentUser()]);
+					return combineLatest([
+						this.userService.loadUsersByEvent(event.id),
+						this.authService.getCurrentUser()
+					]);
 				})
 			)
 			.subscribe({

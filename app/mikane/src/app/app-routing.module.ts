@@ -36,6 +36,11 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/reset-password/reset-password.routes'),
 	},
 	{
+		path: 'guests',
+		canActivate: [authGuard],
+		loadChildren: () => import('./pages/guests/guests.routes'),
+	},
+	{
 		path: 'invite',
 		canActivate: [authGuard],
 		loadChildren: () => import('./pages/invite/invite.routes'),
