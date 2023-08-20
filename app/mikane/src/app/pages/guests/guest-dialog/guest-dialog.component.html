@@ -4,9 +4,7 @@
 		<mat-form-field appearance="fill">
 			<mat-label>First name</mat-label>
 			<input matInput name="firstName" [(ngModel)]="guest.firstName" required [eventName]="guest.id" #firstName="ngModel" />
-			<mat-error *ngIf="firstName.errors?.['required']">Event name is required</mat-error>
-			<mat-error *ngIf="firstName.errors?.['duplicate']">Event name already exists</mat-error>
-			<mat-error *ngIf="firstName.errors?.['invalid']">Invalid event name</mat-error>
+			<mat-error *ngIf="firstName.errors?.['required']">First name is required</mat-error>
 		</mat-form-field>
 		<mat-form-field appearance="fill">
 			<mat-label>Last Name</mat-label>

@@ -11,6 +11,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
+import { EMPTY, Subscription, switchMap } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -18,7 +19,6 @@ import { User, UserService } from 'src/app/services/user/user.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
 import { GuestDialogComponent } from './guest-dialog/guest-dialog.component';
 import { ApiError } from 'src/app/types/apiError.type';
-import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'guest-users',
@@ -48,7 +48,8 @@ export class GuestsComponent {
 	guests: User[] = [];
 	pagedGuests: User[] = [];
 
-	editSubscription: Subscription;
+	private guestsSubscription: Subscription;
+	private editSubscription: Subscription;
 
 	// Paginator
 	length: number = 0;
@@ -63,7 +64,7 @@ export class GuestsComponent {
 
 	loadUsers() {
 		this.loading = true;
-		this.userService.loadGuestUsers().subscribe({
+		this.guestsSubscription = this.userService.loadGuestUsers().subscribe({
 			next: (guests) => {
 				this.guests = guests;
 				this.pagedGuests = guests.slice(0, this.pageSize);
@@ -83,18 +84,22 @@ export class GuestsComponent {
 			width: '350px',
 		});
 
-		dialogRef.afterClosed().subscribe((res: { guest: { firstName: string; lastName: string } }) => {
-			if (res?.guest) {
-				this.userService.createGuestUser(res.guest.firstName, res.guest.lastName).subscribe({
-					next: () => {
-						this.loadUsers();
-					},
-					error: (err: ApiError) => {
-						this.messageService.showError('Failed to create guest');
-						console.error('Something went wrong while creating guest', err?.error?.message);
-					},
-				});
-			}
+		dialogRef.afterClosed().pipe(
+			switchMap((res: { guest: { firstName: string; lastName: string } }) => {
+				if (res?.guest) {
+					return this.userService.createGuestUser(res.guest.firstName, res.guest.lastName);
+				}
+				return EMPTY;
+			})
+		)
+		.subscribe({
+			next: () => {
+				this.loadUsers();
+			},
+			error: (err: ApiError) => {
+				this.messageService.showError('Failed to create guest');
+				console.error('Something went wrong while creating guest', err?.error?.message);
+			},
 		});
 	}
 
@@ -108,35 +113,26 @@ export class GuestsComponent {
 			autoFocus: false,
 		});
 
-		this.editSubscription = dialogRef.afterClosed().subscribe((res: { guest: { id: string, firstName: string; lastName: string }, delete: boolean }) => {
-			if (res?.guest) {
-				if (res?.delete) {
-					this.deleteGuest(res.guest.id);
-					return;
+		this.editSubscription = dialogRef.afterClosed().pipe(
+			switchMap((res: { guest: { id: string, firstName: string; lastName: string }, delete: boolean }) => {
+				if (res?.guest) {
+					if (res?.delete) {
+						return this.userService.deleteGuestUser(guest.id);
+					}
+					return this.userService.editGuestUser(res.guest.id, res.guest.firstName, res.guest.lastName);
 				}
-				this.userService.editGuestUser(res.guest.id, res.guest.firstName, res.guest.lastName).subscribe({
-					next: () => {
-						this.loadUsers();
-					},
-					error: (err: ApiError) => {
-						this.messageService.showError('Failed to edit guest');
-						console.error('Something went wrong while editing guest', err?.error?.message);
-					},
-				});
-			}
-		});
-	}
-
-	deleteGuest(guestId: string) {
-		this.userService.deleteGuestUser(guestId).subscribe({
+				return EMPTY;
+			})
+		)
+		.subscribe({
 			next: () => {
 				this.loadUsers();
 			},
 			error: (err: ApiError) => {
-				this.messageService.showError('Failed to delete guest');
-				console.error('Something went wrong while deleting guest', err?.error?.message);
-			}
-		})
+				this.messageService.showError('Failed to edit guest');
+				console.error('Something went wrong while editing guest', err?.error?.message);
+			},
+		});
 	}
 
 	onPageChange(pageEvent: PageEvent) {
@@ -150,6 +146,7 @@ export class GuestsComponent {
 	}
 
 	ngOnDestroy(): void {
+		this.guestsSubscription?.unsubscribe();
 		this.editSubscription?.unsubscribe();
 	}
 }

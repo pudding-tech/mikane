@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -49,12 +50,14 @@ export class InviteComponent {
 	});
 
 	protected loading = false;
+	private guestsSubscription: Subscription;
+	private inviteSubscription: Subscription;
 	guests: User[] = [];
 
 	constructor(private userService: UserService, private messageService: MessageService, protected breakpointService: BreakpointService) {}
 
 	ngOnInit() {
-		this.userService.loadGuestUsers().subscribe({
+		this.guestsSubscription = this.userService.loadGuestUsers().subscribe({
 			next: (guests) => {
 				this.guests = guests;
 			},
@@ -68,7 +71,7 @@ export class InviteComponent {
 	inviteUser(formDirective: FormGroupDirective) {
 		if (this.inviteForm.valid) {
 			this.loading = true;
-			this.userService.inviteUser(this.inviteForm.get('email').value).subscribe({
+			this.inviteSubscription = this.userService.inviteUser(this.inviteForm.get('email').value).subscribe({
 				next: () => {
 					this.messageService.showSuccess('User invite sent');
 					formDirective.resetForm();
@@ -99,7 +102,7 @@ export class InviteComponent {
 	inviteUserFromGuest(formDirective: FormGroupDirective) {
 		if (this.inviteFromGuestForm.valid) {
 			this.loading = true;
-			this.userService.inviteUser(this.inviteFromGuestForm.get('email').value, this.inviteFromGuestForm.get('guestId').value).subscribe({
+			this.inviteSubscription = this.userService.inviteUser(this.inviteFromGuestForm.get('email').value, this.inviteFromGuestForm.get('guestId').value).subscribe({
 				next: () => {
 					this.messageService.showSuccess('User invite sent');
 					formDirective.resetForm();
@@ -128,5 +131,10 @@ export class InviteComponent {
 				},
 			});
 		}
+	}
+
+	ngOnDestroy(): void {
+		this.guestsSubscription?.unsubscribe();
+		this.inviteSubscription?.unsubscribe();
 	}
 }
