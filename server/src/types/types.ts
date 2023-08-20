@@ -23,8 +23,8 @@ export type Guest = {
   name: string;
   guest: boolean;
   avatarURL: string;
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
 }
 
 export type Event = {

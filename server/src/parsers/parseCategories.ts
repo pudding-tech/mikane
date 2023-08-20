@@ -56,7 +56,7 @@ export const parseCategories = (catInput: CategoryDB[], target: Target, usersInE
                 username: user.username,
                 firstName: user.first_name,
                 lastName: user.last_name,
-                avatarURL: getGravatarURL(user.email ?? "", { size: 50, default: "mp" }),
+                avatarURL: getGravatarURL(user.email ?? "", { size: 50, default: user.guest ? "mp" : "identicon" }),
                 weight: user.weight
               }
             );
