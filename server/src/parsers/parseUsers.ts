@@ -39,7 +39,7 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean, exclude
       lastName: userObj.last_name,
       email: userObj.email,
       created: userObj.created,
-      avatarURL: getGravatarURL(userObj.email ?? "", { size: avatarSize ?? 200, default: "mp" }),
+      avatarURL: getGravatarURL(userObj.email ?? "", { size: avatarSize ?? 200, default: userObj.guest ? "mp" : "identicon" }),
       guest: userObj.guest,
       eventInfo: withEventData && userObj.event_id && userObj.event_joined_time ? {
         id: userObj.event_id,
@@ -80,6 +80,8 @@ export const parseGuestUsers = (usersInput: UserDB[], avatarSize?: number): Gues
       const user: Guest = {
         id: userObj.id,
         name: "Deleted user",
+        firstName: "Deleted user",
+        lastName: "",
         avatarURL: getGravatarURL("", { size: avatarSize ?? 200, default: "mp" }),
         guest: userObj.guest
       };
@@ -101,8 +103,6 @@ export const parseGuestUsers = (usersInput: UserDB[], avatarSize?: number): Gues
   for (const guest of guests) {
     if (guest.lastName) {
       guest.name = guest.firstName + " " + guest.lastName;
-      delete guest.firstName;
-      delete guest.lastName;
     }
   }
 
@@ -125,7 +125,7 @@ export const parseUser = (userObj: UserDB, avatarSize?: number): User => {
     email: userObj.email,
     phone: userObj.phone_number,
     created: userObj.created,
-    avatarURL: getGravatarURL(userObj.email ?? "", { size: avatarSize ?? 200, default: "mp" }),
+    avatarURL: getGravatarURL(userObj.email ?? "", { size: avatarSize ?? 200, default: userObj.guest ? "mp" : "identicon" }),
     guest: userObj.guest
   };
 };
