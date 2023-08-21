@@ -66,7 +66,7 @@
 </ng-template>
 
 <ng-template #archiveContent>
-	<div *ngIf="event?.active; else activate">
+	<div *ngIf="event?.active; else setActive">
 		<div class="event-settings-text">
 			This event is currently active.
 			By archiving the event any further editing by any participants will not be possible.
@@ -75,7 +75,7 @@
 			Archive event
 		</button>
 	</div>
-	<ng-template #activate>
+	<ng-template #setActive>
 		<div class="event-settings-text">
 			This event is currently archived.
 			By setting this event as active participants can start editing the event again.

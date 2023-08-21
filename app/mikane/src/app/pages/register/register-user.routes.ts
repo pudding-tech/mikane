@@ -15,7 +15,7 @@ const registerResolver: ResolveFn<{ key: string; email: string }> = (route: Acti
 	const key = route.paramMap.get('key');
 
 	if (environment === 'dev') {
-		return of({ key: '', email: '' });
+		return of({ key: key, email: '' });
 	} else if (!key) {
 		router.navigate(['/login']);
 		return EMPTY;

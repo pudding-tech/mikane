@@ -69,6 +69,14 @@ export class MenuComponent {
 		});
 	}
 
+	onGuestsClick() {
+		if (this.router.url === '/guests') {
+			this.splitButton.toggled = false;
+			return;
+		}
+		this.router.navigate(['/guests']);
+	}
+
 	inviteUser() {
 		if (this.router.url === '/invite') {
 			this.splitButton.toggled = false;
