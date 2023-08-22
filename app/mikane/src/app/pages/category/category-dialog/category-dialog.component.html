@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{ data.icon ? "Edit Expense Category" : "Add Expense Category" }}</h1>
+<h1 mat-dialog-title>{{ data.name ? "Edit Expense Category" : "Add Expense Category" }}</h1>
 <div mat-dialog-content>
 	<form [formGroup]="addCategoryForm">
 		<mat-form-field appearance="fill">
@@ -18,7 +18,7 @@
 			<mat-error *ngIf="addCategoryForm?.get('categoryName')?.errors?.['duplicate']">Category already exists</mat-error>
 			<mat-error *ngIf="addCategoryForm?.get('categoryName')?.errors?.['invalid']">Invalid category name</mat-error>
 		</mat-form-field>
-		<div *ngIf="!data.icon">
+		<div *ngIf="!data.name">
 			<mat-checkbox name="weighted" formControlName="weighted">Weighted</mat-checkbox>
 		</div>
 	</form>

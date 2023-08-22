@@ -57,10 +57,12 @@ export class CategoryDialogComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		if (this.data.icon) {
+		if (this.data.name) {
 			// Category is being edited
 			this.addCategoryForm.get('categoryName').patchValue(this.data.name);
-			this.addCategoryForm.get('selectedIcon').patchValue(this.data.icon);
+			if (this.data.icon) {
+				this.addCategoryForm.get('selectedIcon').patchValue(this.data.icon);
+			}
 			this.addCategoryForm.markAsDirty();
 		}
 	}
