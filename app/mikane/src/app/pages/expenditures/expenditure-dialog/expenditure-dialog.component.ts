@@ -40,6 +40,7 @@ import { CategoryIcon } from 'src/app/types/enums';
 })
 export class ExpenditureDialogComponent implements OnInit {
 	isOpen: boolean = false;
+	edit: boolean = false;
 	categoryIcons = CategoryIcon;
 
 	categories: Category[] = [];
@@ -79,6 +80,7 @@ export class ExpenditureDialogComponent implements OnInit {
 
 		if (this.data.expense) {
 			// Expense is being edited
+			this.edit = true;
 			this.addExpenseForm.get('name').patchValue(this.data.expense.name);
 			this.addExpenseForm.get('description').patchValue(this.data.expense.description);
 			this.addExpenseForm.get('category').patchValue(this.data.expense.categoryInfo.name);
