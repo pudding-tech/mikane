@@ -1,0 +1,54 @@
+<div *ngIf="loading === false; else loadingSpinner" class="expense-content">
+	<div>
+		<div class="title">
+			<div class="header expense-title">Expense</div>
+			<div class="name">
+				{{ expense.name }}
+			</div>
+		</div>
+		<div class="title">
+			<div class="header">Category</div>
+			<div class="category">
+				<mat-icon class="icon">{{ expense.categoryInfo.icon ?? "shopping_cart" }}</mat-icon>
+				<span>{{ expense.categoryInfo.name }}</span>
+			</div>
+		</div>
+		<div class="title">
+			<div class="header">Amount</div>
+			<div class="amount">
+				<span class="amount-color-darker">{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr</span>
+			</div>
+		</div>
+		<div class="title">
+			<div class="header">Paid by</div>
+			<div class="payer">
+				<img [src]="expense.payer.avatarURL" class="payer-avatar" />
+				<div id="payer-name">{{ expense.payer.name }}</div>
+			</div>
+		</div>
+		<div *ngIf="expense.description" class="title">
+			<div class="header">Description</div>
+			<div>{{ expense.description }}</div>
+		</div>
+	</div>
+	<div class="buttons">
+		<div>
+			<button mat-button (click)="goBack()">
+				<mat-icon class="back">arrow_back</mat-icon>
+				<span class="back">Back</span>
+			</button>
+		</div>
+		<div>
+			<button mat-icon-button *ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin" (click)="editExpense()">
+				<mat-icon>edit</mat-icon>
+			</button>
+			<button mat-icon-button *ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin" color="warn" (click)="removeExpense()">
+				<mat-icon>delete</mat-icon>
+			</button>
+		</div>
+	</div>
+</div>
+
+<ng-template #loadingSpinner>
+	<loading-spinner></loading-spinner>
+</ng-template>
