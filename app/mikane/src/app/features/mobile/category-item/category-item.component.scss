@@ -46,6 +46,10 @@
 			background-color: #1c1c1c;
 		}
 
+		&.data {
+			min-height: 40px;
+		}
+
 		.name {
 			width: 50%;
 			display: flex;
