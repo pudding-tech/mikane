@@ -1,6 +1,20 @@
 .toolbar-spacer {
 	flex: 1 1 auto;
 }
+
+.user-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.user-padding {
+	display: flex;
+	height: 38px;
+	align-items: center;
+	color: rgba(255, 255, 255, 0.58);
+}
+
 .profile-page {
 	display: flex;
 	flex-direction: column;
@@ -14,17 +28,8 @@
 		margin-bottom: 2em;
 	}
 
-	.user-row {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	.user-padding {
-		display: flex;
-		height: 38px;
-		align-items: center;
-		color: rgba(255, 255, 255, 0.58);
+	.icon {
+		margin-right: 10px;
 	}
 
 	.mat-mdc-card-content {
@@ -33,5 +38,44 @@
 
 	.mat-mdc-card-header {
 		padding: 16px 16px 0;
+	}
+}
+
+.mobile-view {
+	margin-top: 30px;
+	margin-left: 6vw;
+	margin-right: 6vw;
+
+	.header {
+		display: flex;
+		align-items: center;
+
+		.avatar {
+			position: relative;
+			width: 68px;
+			height: 68px;
+			border-radius: 50%;
+			object-fit: cover;
+			margin-right: 14px;
+		}
+
+		#name {
+			font-size: 24px;
+			font-weight: 500;
+			margin-bottom: 6px;
+		}
+
+		#username {
+			font-size: 13px;
+			color: rgba(255, 255, 255, 0.58);
+		}
+	}
+
+	.details {
+		margin-top: 20px;
+
+		.icon {
+			margin-right: 10px;
+		}
 	}
 }
