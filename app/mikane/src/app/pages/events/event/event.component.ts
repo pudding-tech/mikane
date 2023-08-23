@@ -110,7 +110,7 @@ export class EventComponent implements OnInit {
 
 	ngOnInit() {
 		// Set active link based on current URL
-		this.activeLink = './' + window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+		this.activeLink = this.getActiveLinkFromUrl(window.location.href);
 
 		this.router.events.subscribe((event) => {
 			if (event instanceof NavigationEnd) {
@@ -142,5 +142,19 @@ export class EventComponent implements OnInit {
 					this.messageService.showError('Error loading events');
 				},
 			});
+	}
+
+	getActiveLinkFromUrl(url: string) {
+		const lastSegment = url.substring(url.lastIndexOf('/') + 1);
+		if (this.isUUID(lastSegment)) {
+			return `.${url.substring(url.lastIndexOf('/'), url.lastIndexOf('/', url.lastIndexOf('/') - 1))}`;
+		}
+
+		return `./${lastSegment}`;
+	}
+
+	isUUID(text: string) {
+		const regex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
+		return regex.test(text);
 	}
 }
