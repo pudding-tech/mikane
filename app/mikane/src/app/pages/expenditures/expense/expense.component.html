@@ -38,11 +38,11 @@
 				<span class="back">Back</span>
 			</button>
 		</div>
-		<div>
-			<button mat-icon-button *ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin" (click)="editExpense()">
+		<div *ngIf="event.active && (expense.payer.id === currentUserId || event.userInfo?.isAdmin)">
+			<button mat-icon-button (click)="editExpense()">
 				<mat-icon>edit</mat-icon>
 			</button>
-			<button mat-icon-button *ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin" color="warn" (click)="removeExpense()">
+			<button mat-icon-button color="warn" (click)="removeExpense()">
 				<mat-icon>delete</mat-icon>
 			</button>
 		</div>
