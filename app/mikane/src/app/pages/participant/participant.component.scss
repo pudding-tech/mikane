@@ -81,3 +81,32 @@
 .extra-margin {
 	padding-top: 2em;
 }
+
+.participants-header {
+	.header-icon {
+		display: none;
+	}
+	
+	.header-name {
+		width: 21%;
+		padding-left: 64px;
+	}
+	
+	.header-count {
+		width: 22%;
+	}
+	
+	.header-costs {
+		width: 15%;
+	}
+	
+	.header-expenses {
+		width: 20%;
+		padding-right: 0px;
+	}
+	
+	.header-balance {
+		width: 30%;
+		padding-right: 28px;
+	}
+}

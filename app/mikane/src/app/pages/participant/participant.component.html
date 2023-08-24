@@ -18,24 +18,24 @@
 
 		<mat-accordion class="user-list" *ngIf="usersWithBalance.length > 0; else noUsers" #accordion>
 			<!-- HEADER ROW -->
-			<table mat-table matSort (matSortChange)="sortData($event)">
+			<table mat-table matSort (matSortChange)="sortData($event)" class="participants-header">
 				<ng-container matColumnDef="icon">
-					<th mat-header-cell *matHeaderCellDef></th>
+					<th mat-header-cell *matHeaderCellDef class="header-icon"></th>
 				</ng-container>
 				<ng-container matColumnDef="name">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-name">Name</th>
 				</ng-container>
 				<ng-container matColumnDef="expensesCount">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header>Number of expenses</th>
+					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-count">Number of expenses</th>
 				</ng-container>
 				<ng-container matColumnDef="costs">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header>Costs</th>
+					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-costs align-right">Costs</th>
 				</ng-container>
 				<ng-container matColumnDef="expenses">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header>Expenses</th>
+					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-expenses align-right">Expenses</th>
 				</ng-container>
 				<ng-container matColumnDef="balance">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header>Balance</th>
+					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-balance align-right">Balance</th>
 				</ng-container>
 				<tr mat-header-row *matHeaderRowDef="displayedParticipantColumns"></tr>
 			</table>
