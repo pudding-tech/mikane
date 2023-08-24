@@ -41,8 +41,6 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	event: PuddingEvent;
 	currentUserId: string;
 
-	private expenseSubscription: Subscription;
-	private authSubscription: Subscription;
 	cancel$: Subject<void> = new Subject();
 	destroy$: Subject<void> = new Subject();
 
@@ -63,11 +61,12 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 		const eventId = this.route.parent.parent.snapshot.paramMap.get('eventId');
 		const expenseId = this.route.snapshot.paramMap.get('id');
 
-		this.expenseSubscription = this.eventService.getEvent(eventId).pipe(
+		this.eventService.getEvent(eventId).pipe(
 			switchMap((event) => {
 				this.event = event;
 				return this.expenseService.getExpense(expenseId)
-			})
+			}),
+			takeUntil(this.destroy$)
 		)
 		.subscribe({
 			next: (expense) => {
@@ -81,7 +80,9 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 			},
 		});
 
-		this.authService.getCurrentUser().subscribe({
+		this.authService.getCurrentUser().pipe(
+			takeUntil(this.destroy$)
+		).subscribe({
 			next: (user) => {
 				this.currentUserId = user.id;
 			},
@@ -152,7 +153,8 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 
 		dialogRef.afterClosed().pipe(
 			filter(confirm => confirm),
-			switchMap(() => this.expenseService.deleteExpense(this.expense.id))
+			switchMap(() => this.expenseService.deleteExpense(this.expense.id)),
+			takeUntil(this.destroy$)
 		)
 		.subscribe({
 			next: () => {
@@ -171,8 +173,6 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		this.expenseSubscription?.unsubscribe();
-		this.authSubscription?.unsubscribe();
 		this.destroy$.next();
 		this.destroy$.complete();
 	}
