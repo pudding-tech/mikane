@@ -34,18 +34,18 @@
 	color: rgba(255, 255, 255, 0.7);
 	font-size: 0.9em;
 	margin-top: 4px;
-}
 
-.payer-avatar {
-	position: relative;
-	width: 16px;
-	height: 16px;
-	margin-right: 6px;
-	border-radius: 50%;
-	object-fit: cover;
-}
-
-.payer-name {
-	position: relative;
-	top: 1px;
+	.payer-avatar {
+		position: relative;
+		width: 16px;
+		height: 16px;
+		margin-right: 6px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+	
+	.payer-name {
+		position: relative;
+		top: 1px;
+	}
 }

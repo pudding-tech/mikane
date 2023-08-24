@@ -31,6 +31,10 @@ export class ExpenseService {
 		return this.httpClient.get<Expense[]>(this.apiUrl + `?eventId=${eventId}`);
 	}
 
+	getExpense(id: string): Observable<Expense> {
+		return this.httpClient.get<Expense>(`${this.apiUrl}/${id}`)
+	}
+
 	createExpense(
 		expenseName: string,
 		expenseDescription: string,

@@ -1,4 +1,4 @@
-<mat-list-item class="wrapper">
+<mat-list-item class="wrapper" (click)="gotoExpense()">
 	<mat-icon matListItemIcon class="expense-icon">{{ expense.categoryInfo.icon ?? 'shopping_cart' }}</mat-icon>
 	<div class="price-category">
 		<span class="amount-color-darker">{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr</span>
