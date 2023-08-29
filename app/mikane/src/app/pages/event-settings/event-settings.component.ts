@@ -106,6 +106,9 @@ export class EventSettingsComponent {
 			next: (event) => {
 				this.event = event;
 				this.messageService.showSuccess('Event successfully edited');
+
+				// Reload to refresh edited event. Should probably be done within app at some point
+				location.reload();
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to edit event');
