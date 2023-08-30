@@ -34,14 +34,16 @@ export const parseExpenses = (expInput: ExpenseDB[], usersInEventInput?: UserNam
         id: expObj.payer_id,
         username: "Deleted user",
         name: "Deleted user",
-        avatarURL: getGravatarURL("", { size: 50, default: "mp" })
+        avatarURL: getGravatarURL("", { size: 50, default: "mp" }),
+        guest: expObj.payer_guest
       } : {
         id: expObj.payer_id,
         username: expObj.payer_username,
         name: expObj.payer_first_name,
         firstName: expObj.payer_first_name,
         lastName: expObj.payer_last_name,
-        avatarURL: getGravatarURL(expObj.payer_email, { size: 50, default: "mp" })
+        avatarURL: getGravatarURL(expObj.payer_email ?? "", { size: 50, default: expObj.payer_guest ? "mp" : "identicon" }),
+        guest: expObj.payer_guest
       },
     };
     expenses.push(expense);
@@ -56,7 +58,8 @@ export const parseExpenses = (expInput: ExpenseDB[], usersInEventInput?: UserNam
         username: userObj.username,
         name: userObj.first_name,
         firstName: userObj.first_name,
-        lastName: userObj.last_name
+        lastName: userObj.last_name,
+        guest: userObj.guest
       };
       usersInEvent?.push(user);
     });

@@ -11,6 +11,10 @@ begin
     raise exception 'Expense not found' using errcode = 'P0084';
   end if;
 
+  if exists (select 1 from "event" e inner join category c on c.event_id = e.id inner join expense ex on ex.category_id = c.id where ex.id = ip_expense_id and e.active = false) then
+    raise exception 'Archived events cannot be edited' using errcode = 'P0118';
+  end if;
+
   if not exists (select 1 from expense ex
                   inner join category c on c.id = ex.category_id
                   inner join user_event ue on ue.event_id = c.event_id

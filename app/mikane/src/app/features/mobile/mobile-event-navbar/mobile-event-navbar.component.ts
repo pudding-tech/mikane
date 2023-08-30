@@ -31,7 +31,7 @@ export class MobileEventNavbarComponent {
 			{
 				name: '',
 				icon: 'arrow_back_ios',
-				location: './events',
+				location: '/events',
 			},
 			...this.links
 		];

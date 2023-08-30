@@ -1,0 +1,47 @@
+<div *ngIf="(loading | async) === false; else loadingSpinner">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="event-info">
+		<mat-card class="card">
+			<mat-card-header>
+				<div mat-card-avatar>
+					<mat-icon>info</mat-icon>
+				</div>
+				<mat-card-title>Event information</mat-card-title>
+			</mat-card-header>
+			<mat-card-content>
+				<div class="header">Event admins</div>
+				<div class="event-info-content">
+					<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
+				</div>
+			</mat-card-content>
+		</mat-card>
+	</div>
+</div>
+
+<ng-template #mobileView>
+	<div class="header-mobile admins">Event admins</div>
+	<div class="admins">
+		<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
+	</div>
+</ng-template>
+
+<ng-template #adminsContent>
+	<div [ngClass]="{ 'info-full-view': breakpointService.isMobile() | async }">
+		If there is anything concerning this event you need to change, contact one of the admins listed below:
+	</div>
+	<div class="admins-content" [ngClass]="{ 'full-view': (breakpointService.isMobile() | async) === false }">
+		<mat-nav-list>
+			<mat-list-item *ngFor="let admin of adminsInEvent" class="list-item">
+				<div class="admin">
+					<div class="name">
+						<img [src]="admin.avatarURL" class="avatar" />
+						{{ admin.name }}
+					</div>
+				</div>
+			</mat-list-item>
+		</mat-nav-list>
+	</div>
+</ng-template>
+
+<ng-template #loadingSpinner>
+	<loading-spinner></loading-spinner>
+</ng-template>

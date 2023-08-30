@@ -1,0 +1,77 @@
+.toolbar-spacer {
+	flex: 1 1 auto;
+}
+
+.guests-section {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	margin-top: 2em;
+
+	.guests-content {
+		width: 600px;
+	}
+}
+
+.card-header,
+.card-content {
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
+.guest-list {
+	margin-bottom: 26px;
+
+	.list-item {
+		cursor: default;
+	}
+}
+
+.user {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	.name {
+		display: flex;
+		align-items: center;
+
+		.avatar {
+			position: relative;
+			width: 24px;
+			height: 24px;
+			margin-right: 16px;
+			border-radius: 50%;
+			object-fit: cover;
+		}
+	}
+}
+
+.mobile-view {
+	display: flex;
+	flex-direction: column;
+	padding-bottom: 40px;
+
+	.title-mobile {
+		display: flex;
+		align-items: center;
+		height: 50px;
+		padding-left: 16px;
+		background-color: rgba(24, 24, 24, 1);
+		border-top: 1px solid #333333;
+		stroke: #333333;
+	}
+	
+	.paginator-mobile {
+		background-color: inherit !important;
+	}
+
+	.new-guest-button-mobile {
+		margin-left: 10vw;
+		margin-right: 10vw;
+	}
+}
+
+mat-form-field {
+	width: 100%;
+}

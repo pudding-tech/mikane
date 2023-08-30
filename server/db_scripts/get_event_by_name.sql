@@ -9,6 +9,7 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
+  active boolean,
   admin_ids jsonb,
   user_id uuid,
   user_in_event boolean,
@@ -26,7 +27,7 @@ begin
   end if;
 
   return query
-  select * from get_events(tmp_event_id, ip_user_id);
+  select * from get_events(tmp_event_id, ip_user_id, false);
   
 end;
 $$

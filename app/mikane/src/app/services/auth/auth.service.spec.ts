@@ -38,6 +38,7 @@ describe('AuthService', () => {
 				lastName: 'McTesty',
 				email: 'test@user.com',
 				created: new Date('2023-01-20T18:00:00'),
+				guest: false,
 				avatarURL: 'https://gravatar.com/avatar/aaaa',
 			};
 		});
@@ -92,6 +93,7 @@ describe('AuthService', () => {
 				lastName: 'McTesty',
 				email: 'test@user.com',
 				created: new Date('2023-01-20T18:00:00'),
+				guest: false,
 				avatarURL: 'https://gravatar.com/avatar/aaaa',
 			};
 		});

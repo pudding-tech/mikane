@@ -1,20 +1,24 @@
 <div>
 	<span class="name" *ngIf="(breakpointService.isMobile() | async) === false">
-		{{ username }}
+		{{ user?.username }}
 	</span>
-	<split-button #splitButton (onClick)="onAccountClick()">
+	<split-button #splitButton (onClick)="onProfileClick()">
 		<div button>
-			<img *ngIf="avatarURL" [src]="avatarURL" class="avatar" />
+			<img *ngIf="user?.avatarURL" [src]="user?.avatarURL" class="avatar" />
 		</div>
 		<div dropdown-button>
 			<div *ngIf="breakpointService.isMobile() | async; else dropdownArrow">
-				<img *ngIf="avatarURL" [src]="avatarURL" class="avatar" />
+				<img *ngIf="user?.avatarURL" [src]="user?.avatarURL" class="avatar" />
 			</div>
 			<ng-template #dropdownArrow>
 				<mat-icon dropdown-button class="dropdown-button">arrow_drop_down</mat-icon>
 			</ng-template>
 		</div>
-		<split-button-item *splitButtonItem (onClick)="onAccountClick()" icon="person" text="Account"></split-button-item>
+		<ng-container *ngIf="breakpointService.isMobile() | async">
+			<split-button-item *splitButtonItem (onClick)="onProfileClick()" icon="person" text="Profile"></split-button-item>
+		</ng-container>
+		<split-button-item *splitButtonItem (onClick)="onAccountClick()" icon="manage_accounts" text="Account"></split-button-item>
+		<split-button-item *splitButtonItem (onClick)="onGuestsClick()" icon="supervisor_account" text="Guests"></split-button-item>
 		<split-button-item *splitButtonItem (onClick)="inviteUser()" icon="person_add" text="Invite"></split-button-item>
 		<split-button-item *splitButtonItem (onClick)="logout()" icon="logout" text="Log out"></split-button-item>
 	</split-button>

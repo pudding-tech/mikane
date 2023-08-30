@@ -184,6 +184,17 @@ a.nostyle:visited {
 	padding: 0 6px !important;
 }
 
+.participants-header {
+	.mat-sort-header-content {
+		color: rgba(255, 255, 255, 0.7);
+	}
+
+	.align-right
+	.mat-sort-header-container.mat-focus-indicator {
+		justify-content: end !important;
+	}
+}
+
 // Hide background of autocompleted inputs
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -221,11 +232,6 @@ mat-tooltip-component {
 // Set width of material card header
 .mat-mdc-card-header-text {
 	width: 100%;
-}
-
-// Set padding of material card title
-.mat-mdc-card-title {
-	padding-left: 0 !important;
 }
 
 // Form submit button loading spinner

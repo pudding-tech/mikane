@@ -10,9 +10,14 @@ mat-toolbar button {
 	margin-left: 1em;
 }
 
-#header {
-	padding: 16px;
-	margin-bottom: 10px;
+.archived-events {
+	margin-top: 30px;
+}
+
+.header {
+	padding: 20px 16px 20px;
+	margin-bottom: 18px;
+	font-size: 20px;
 	background-color: rgba(33, 33, 33, 0.8);
 }
 
@@ -24,14 +29,23 @@ mat-toolbar button {
 	margin-top: 2em;
 
 	.event-card {
+		margin-bottom: 28px;
 		min-width: 34em;
 		max-width: 54em;
 		width: 70vw;
 		background-color: #3d3d3d;
 	}
+
+	.no-events {
+		margin-top: 28px;
+		margin-left: 16px;
+		color: rgba(255, 255, 255, 0.6);
+	}
 }
 
 .event-item {
+	margin-left: 16px;
+	margin-right: 16px;
 	margin-bottom: 0.4em;
 
 	.event-header {
@@ -84,15 +98,26 @@ mat-toolbar button {
 .title-mobile {
 	display: flex;
 	align-items: center;
-	height: 50px;
+	height: 40px;
 	padding-left: 16px;
 	background-color: rgba(24, 24, 24, 1);
 	border-top: 1px solid #333333;
 	stroke: #333333;
 }
 
+.no-events-mobile {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: 16px;
+	color: rgba(255, 255, 255, 0.6);
+}
+
 .mat-mdc-card-header-text::ng-deep {
 	color: red !important;
+}
+
+mat-card-content {
+	padding: 0 !important;
 }
 
 .add-event-button-mobile {

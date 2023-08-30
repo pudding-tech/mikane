@@ -21,7 +21,7 @@
 			</span>
 		</div>
 		<mat-list-item *ngFor="let user of category.users">
-			<div class="user">
+			<div class="user data">
 				<span class="name">
 					<img [src]="user.avatarURL" class="avatar" />
 					{{ user.name }}
@@ -31,54 +31,70 @@
 				</span>
 				<button
 					mat-icon-button
-					*ngIf="category.weighted"
+					*ngIf="category.weighted && active"
 					(click)="openEditWeight(category.id, user.id, user.weight)"
 					class="button"
 				>
 					<mat-icon>edit</mat-icon>
 				</button>
-				<button mat-icon-button (click)="removeUserFromCategory(category.id, user.id)" [ngClass]="{ button: !category.weighted }">
+				<button
+					*ngIf="active"
+					mat-icon-button
+					(click)="removeUserFromCategory(category.id, user.id)"
+					[ngClass]="{ button: !category.weighted }"
+				>
 					<mat-icon>delete</mat-icon>
 				</button>
 			</div>
 		</mat-list-item>
-		<form [formGroup]="addUserForm" *ngIf="filterUsers(category.id).length !== 0; else allUsersAdded" class="new-user">
-			<div class="inputs">
-				<mat-form-field subscriptSizing="dynamic" [ngClass]="{ 'user-input-weighted': !category.weighted }">
-					<select
-						matNativeControl
-						[formControl]="addUserForm.get('participantName') | formControl"
-						name="participantName"
-						required
-					>
-						<option value="" disabled selected>Add participant</option>
-						<option *ngFor="let user of filterUsers(category.id)" [value]="user.id">
-							{{ user.name }}
-						</option>
-					</select>
-				</mat-form-field>
-				<mat-form-field *ngIf="category.weighted" subscriptSizing="dynamic" class="weight-input">
-					<input matInput type="number" min="1" formControlName="weight" name="weight" placeholder="Weight" readonly="false" />
-				</mat-form-field>
-			</div>
-			<button
-				mat-icon-button
-				type="button"
-				(click)="addUserToCategory(category.id)"
-				[disabled]="
-					addUserForm.get('participantName')?.invalid ||
-					!addUserForm.get('participantName')?.dirty ||
-					(category.weighted && addUserForm.get('weight')?.invalid)
-				"
-				class="add-user"
-			>
-				<mat-icon>add_circle</mat-icon>
-			</button>
-		</form>
+		<ng-container *ngIf="active">
+			<form [formGroup]="addUserForm" *ngIf="filterUsers(category.id).length !== 0; else allUsersAdded" class="new-user">
+				<div class="inputs">
+					<mat-form-field subscriptSizing="dynamic" [ngClass]="{ 'user-input-weighted': !category.weighted }">
+						<select
+							matNativeControl
+							[formControl]="addUserForm.get('participantName') | formControl"
+							name="participantName"
+							required
+						>
+							<option value="" disabled selected>Add participant</option>
+							<option *ngFor="let user of filterUsers(category.id)" [value]="user.id">
+								{{ user.name }}
+							</option>
+						</select>
+					</mat-form-field>
+					<mat-form-field *ngIf="category.weighted" subscriptSizing="dynamic" class="weight-input">
+						<input
+							matInput
+							type="number"
+							min="1"
+							formControlName="weight"
+							name="weight"
+							placeholder="Weight"
+							readonly="false"
+						/>
+					</mat-form-field>
+				</div>
+				<button
+					mat-icon-button
+					*ngIf="active"
+					type="button"
+					(click)="addUserToCategory(category.id)"
+					[disabled]="
+						addUserForm.get('participantName')?.invalid ||
+						!addUserForm.get('participantName')?.dirty ||
+						(category.weighted && addUserForm.get('weight')?.invalid)
+					"
+					class="add-user"
+				>
+					<mat-icon>add_circle</mat-icon>
+				</button>
+			</form>
+		</ng-container>
 		<ng-template #allUsersAdded>
 			<div class="all-users-in-category">No more participants to add</div>
 		</ng-template>
-		<div class="sub-buttons">
+		<div class="sub-buttons" *ngIf="active">
 			<button mat-stroked-button color="accent" (click)="toggleWeightedCategory(category.id, category.weighted)">
 				Toggle weighted
 			</button>

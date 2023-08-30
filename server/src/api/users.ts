@@ -24,15 +24,16 @@ const router = express.Router();
 */
 router.get("/users", authCheck, async (req, res, next) => {
   try {
-    const filter: { eventId?: string, excludeUserId?: string } = {
-      eventId: req.query.eventId as string
+    const filter: { eventId?: string, excludeGuests?: boolean, excludeUserId?: string } = {
+      eventId: req.query.eventId as string,
+      excludeGuests: req.query.excludeGuests === "true"
     };
 
     if (filter.eventId && !isUUID(filter.eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
-    const excludeSelf = req.query.exclude === "self";
+    const excludeSelf = req.query.excludeSelf === "true";
     if (excludeSelf) {
       filter.excludeUserId = req.session.userId;
     }
@@ -91,11 +92,11 @@ router.get("/users/:id/expenses/:eventId", authCheck, async (req, res, next) => 
 router.get("/verifykey/register/:key", async (req, res, next) => {
   try {
     const key = req.params.key;
-    const email = await db.verifyRegisterAccountKey(key);
+    const { email, guestUser, firstName, lastName } = await db.verifyRegisterAccountKey(key);
     if (!email) {
       throw new ErrorExt(ec.PUD101);
     }
-    res.status(200).json({ email: email });
+    res.status(200).json({ email, guestUser, firstName, lastName });
   }
   catch (err) {
     next(err);
@@ -128,13 +129,20 @@ router.get("/verifykey/deleteaccount/:key", authCheck, async (req, res, next) =>
 */
 router.post("/users", async (req, res, next) => {
   try {
+    const key: string = req.body.key;
+    const keyInfo = await db.verifyRegisterAccountKey(key);
+
     if (env.IN_PROD) {
-      const key: string = req.body.key;
-      const valid = await db.verifyRegisterAccountKey(key);
-      if (!valid) {
+      if (!keyInfo.email) {
         throw new ErrorExt(ec.PUD101);
       }
     }
+
+    let guestId: string | null = null;
+    if (keyInfo.guestUser) {
+      guestId = keyInfo.guestId;
+    }
+
     const username: string = req.body.username;
     const firstName: string = req.body.firstName;
     const lastName: string = req.body.lastName;
@@ -158,10 +166,16 @@ router.post("/users", async (req, res, next) => {
     }
 
     const hash = createHash(password);
-    const user: User = await db.createUser(username.trim(), firstName.trim(), lastName.trim(), email.trim(), phoneNumber.trim(), hash);
-    if (env.IN_PROD) {
-      await db.invalidateRegisterAccountKey(req.body.key as string);
+
+    let user: User;
+    if (guestId) {
+      user = await db.convertGuestToUser(guestId, username.trim(), firstName.trim(), lastName.trim(), email.trim(), phoneNumber.trim(), hash);
     }
+    else {
+      user = await db.createUser(username.trim(), firstName.trim(), lastName.trim(), email.trim(), phoneNumber.trim(), hash);
+    }
+
+    await db.invalidateRegisterAccountKey(key);
     res.status(200).send(user);
   }
   catch (err) {
@@ -230,13 +244,19 @@ router.post("/users/invite", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD004);
     }
 
+    // Optionally link invite to guest user
+    const guestId = req.body.guestId as string | undefined;
+    if (guestId && !isUUID(guestId)) {
+      throw new ErrorExt(ec.PUD016);
+    }
+
     const user: User | null = await db.getUser(req.session.userId ?? "");
     if (!user) {
       throw new ErrorExt(ec.PUD054);
     }
 
     const key = generateKey();
-    await db.newRegisterAccountKey(email, key);
+    await db.newRegisterAccountKey(email, key, guestId);
     await sendRegisterAccountEmail(email, key, user);
     res.status(200).json({ message: "Email successfully sent" });
   }
@@ -345,16 +365,12 @@ router.delete("/users/:id", authCheck, async (req, res, next) => {
 
     const success = await db.deleteUser(userId, key);
 
-    // Delete current session if deleted user is logged in
-    if (req.session.authenticated && req.session.userId === userId) {
-      const username = req.session.username;
-      req.session.destroy(err => {
-        if (err) {
-          throw new ErrorExt(ec.PUD060, err);
-        }
-        console.log(`User ${username} successfully signed out`);
-      });
-    }
+    // Destroy all sessions for this user
+    req.sessionStore.destroyAll(userId, err => {
+      if (err) {
+        throw new ErrorExt(ec.PUD083);
+      }
+    });
 
     res.status(200).send({ success: success });
   }

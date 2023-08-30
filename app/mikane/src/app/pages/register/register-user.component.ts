@@ -39,6 +39,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 	hide = true;
 
 	private userSub: Subscription;
+	protected guestRegistration: boolean = false;
 
 	private phone!: Phonenumber;
 	private phoneCtrl$: Subscription | undefined;
@@ -70,7 +71,17 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 	ngOnInit() {
 		this.route.data.subscribe(({ res }) => {
 			this.key = res.key;
-			this.registerUserForm.get('email').patchValue(res.email);
+			this.registerUserForm.get('email').patchValue(res.user.email);
+
+			// Prefill guest user info
+			if (res.user?.firstName) {
+				this.guestRegistration = true;
+				this.registerUserForm.get('firstName').patchValue(res.user.firstName);
+			}
+			if (res.user?.lastName) {
+				this.guestRegistration = true;
+				this.registerUserForm.get('lastName').patchValue(res.user.lastName);
+			}
 		});
 
 		if (window.history.state?.username) {

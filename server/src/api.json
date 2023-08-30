@@ -363,12 +363,21 @@
             }
           },
           {
-            "name": "exclude",
+            "name": "excludeGuests",
             "in": "query",
-            "description": "Set this to 'self' to remove logged in user from response",
+            "description": "Set this to true to remove guest users from response",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "excludeSelf",
+            "in": "query",
+            "description": "Set this to true to remove logged in user from response",
+            "required": false,
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
@@ -839,13 +848,13 @@
           "Users"
         ],
         "summary": "Invite a new user",
-        "description": "Invite a new user to Mikane",
+        "description": "Invite a new user to Mikane (optionally link to an existing guest user)",
         "operationId": "postInvite",
         "security": [
           { "cookieAuth": [] }
         ],
         "requestBody": {
-          "description": "Email to send invitation to",
+          "description": "Email to send invitation to, and optionally a guest ID if wanting to convert a guest to a normal user",
           "content": {
             "application/json": {
               "schema": {
@@ -854,6 +863,10 @@
                   "email": {
                     "type": "string",
                     "example": "a@b.com"
+                  },
+                  "guestId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                   }
                 }
               }
@@ -914,6 +927,239 @@
                       "example": "Email successfully sent"
                     }
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/guests": {
+      "get": {
+        "tags": [
+          "Guest users" 
+        ],
+        "summary": "Get guest users",
+        "description": "Get a list of all guest users",
+        "operationId": "getGuests",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "responses": {
+          "200": {
+            "description": "Guest users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Guest users"
+        ],
+        "summary": "Create new guest user",
+        "description": "Create a new guest user.",
+        "operationId": "postGuests",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Guest details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuestUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/guests/{id}": {
+      "put": {
+        "tags": [
+          "Guest users"
+        ],
+        "summary": "Edit guest user",
+        "description": "Edit a guest user",
+        "operationId": "putGuest",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Guest ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "User details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuestUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Guest user not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Guest users"
+        ],
+        "summary": "Delete guest user",
+        "description": "Delete a guest user.",
+        "operationId": "deleteGuest",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Guest ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSuccess"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Guest user not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1150,8 +1396,12 @@
                     "example": "New event description"
                   },
                   "private": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "active": {
+                    "type": "boolean",
+                    "example": true
                   }
                 }
               }
@@ -2983,7 +3233,7 @@
           "Validation"
         ],
         "summary": "Verify a register account key",
-        "description": "Verify that a register account key exists and is valid. Returns email the invite was sent to.",
+        "description": "Verify that a register account key exists and is valid. Returns email the invite was sent to, as well as guest details if invite is linked to a guest user.",
         "operationId": "getVerifyRegisterAccount",
         "parameters": [
           {
@@ -2999,12 +3249,29 @@
         ],
         "responses": {
           "200": {
-            "description": "Email invite was sent to",
+            "description": "Email associated with invite. If invite is linked to a specific guest user, guest details will be supplied.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string",
-                  "example": "a@b.com"
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "example": "a@b.com"
+                    },
+                    "guestUser": {
+                      "type": "boolean",
+                      "example": "true"
+                    },
+                    "firstName": {
+                      "type": "string",
+                      "example": "Mr Guest"
+                    },
+                    "lastName": {
+                      "type": "string",
+                      "example": "McGuesterson"
+                    }
+                  }
                 }
               }
             }
@@ -3624,6 +3891,10 @@
           "private": {
             "type": "boolean",
             "example": false
+          },
+          "active": {
+            "type": "boolean",
+            "example": true
           }
         }
       },
@@ -3657,6 +3928,10 @@
             "type": "boolean",
             "example": false
           },
+          "active": {
+            "type": "boolean",
+            "example": true
+          },
           "userInfo": {
             "type": "object",
             "properties": {
@@ -3681,7 +3956,8 @@
           "description",
           "created",
           "adminIds",
-          "private"
+          "private",
+          "active"
         ]
       },
       "Expense": {
@@ -3895,6 +4171,19 @@
           "success": {
             "type": "boolean",
             "example": true
+          }
+        }
+      },
+      "GuestUser": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "Albert"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "A"
           }
         }
       },

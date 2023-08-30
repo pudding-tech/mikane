@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,7 +14,11 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { CategoryComponent } from '../../category/category.component';
+import { EventInfoComponent } from '../../event-info/event-info.component';
+import { EventSettingsComponent } from '../../event-settings/event-settings.component';
 import { ExpendituresComponent } from '../../expenditures/expenditures.component';
+import { ParticipantComponent } from '../../participant/participant.component';
 
 @Component({
 	selector: 'app-event',
@@ -41,28 +45,47 @@ export class EventComponent implements OnInit {
 
 	activeLink = '';
 	isMobile = toSignal(this.breakpointService.isMobile());
-	links = computed(() => [
-		{
-			name: 'Participants',
-			icon: 'person',
-			location: './participants',
-		},
-		{
-			name: 'Expenses',
-			icon: 'payment',
-			location: './expenses',
-		},
-		{
-			name: this.isMobile() ? 'Categories' : 'Expense Categories',
-			icon: 'category',
-			location: './categories',
-		},
-		{
-			name: this.isMobile() ? 'Payments' : 'Payment Structure',
-			icon: 'account_balance_wallet',
-			location: './payment',
-		},
-	]);
+	isEventAdmin = signal(false);
+	links = computed(() => {
+		const eventLinks = [
+			{
+				name: 'Participants',
+				icon: 'person',
+				location: './participants',
+			},
+			{
+				name: 'Expenses',
+				icon: 'payment',
+				location: './expenses',
+			},
+			{
+				name: this.isMobile() ? 'Categories' : 'Expense Categories',
+				icon: 'category',
+				location: './categories',
+			},
+			{
+				name: this.isMobile() ? 'Payments' : 'Payment Structure',
+				icon: 'account_balance_wallet',
+				location: './payment',
+			},
+		];
+
+		if (this.isEventAdmin() && !this.isMobile()) {
+			eventLinks.push({
+				name: 'Settings',
+				icon: 'settings',
+				location: './settings',
+			});
+		}
+		else if (!this.isEventAdmin() && !this.isMobile()) {
+			eventLinks.push({
+				name: 'Info',
+				icon: 'info',
+				location: './info',
+			});
+		}
+		return eventLinks;
+	});
 
 	constructor(
 		private eventService: EventService,
@@ -76,12 +99,19 @@ export class EventComponent implements OnInit {
 		const event = this.router.getCurrentNavigation()?.extras.state?.['event'];
 		if (event) {
 			this.event = event;
+			this.isEventAdmin.set(event.userInfo.isAdmin);
 			this.titleService.setTitle(event.name);
 		}
 	}
 
-	onOutletLoaded(component: ExpendituresComponent) {
-		if (component instanceof ExpendituresComponent) {
+	onOutletLoaded(component: ExpendituresComponent | EventInfoComponent | EventSettingsComponent | ParticipantComponent | CategoryComponent) {
+		if (
+			component instanceof ExpendituresComponent ||
+			component instanceof EventInfoComponent ||
+			component instanceof EventSettingsComponent ||
+			component instanceof ParticipantComponent ||
+			component instanceof CategoryComponent
+		) {
 			component.$event = this.$event;
 			this.$event.next(this.event);
 		}
@@ -89,7 +119,7 @@ export class EventComponent implements OnInit {
 
 	ngOnInit() {
 		// Set active link based on current URL
-		this.activeLink = './' + window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+		this.activeLink = this.getActiveLinkFromUrl(window.location.href);
 
 		this.router.events.subscribe((event) => {
 			if (event instanceof NavigationEnd) {
@@ -109,6 +139,7 @@ export class EventComponent implements OnInit {
 				next: (event) => {
 					if (event) {
 						this.event = event;
+						this.isEventAdmin.set(event.userInfo.isAdmin);
 						this.titleService.setTitle(event.name);
 						this.$event.next(event);
 					} else {
@@ -120,5 +151,19 @@ export class EventComponent implements OnInit {
 					this.messageService.showError('Error loading events');
 				},
 			});
+	}
+
+	getActiveLinkFromUrl(url: string) {
+		const lastSegment = url.substring(url.lastIndexOf('/') + 1);
+		if (this.isUUID(lastSegment)) {
+			return `.${url.substring(url.lastIndexOf('/'), url.lastIndexOf('/', url.lastIndexOf('/') - 1))}`;
+		}
+
+		return `./${lastSegment}`;
+	}
+
+	isUUID(text: string) {
+		const regex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
+		return regex.test(text);
 	}
 }

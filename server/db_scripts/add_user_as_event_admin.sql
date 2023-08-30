@@ -10,6 +10,7 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
+  active boolean,
   admin_ids jsonb,
   user_id uuid,
   user_in_event boolean,
@@ -33,6 +34,10 @@ begin
     raise exception 'Only event admins can edit event' using errcode = 'P0087';
   end if;
 
+  if exists (select 1 from "user" u where u.id = ip_user_id and u.guest = true) then
+    raise exception 'Guest users cannot be event admins' using errcode = 'P0126';
+  end if;
+
   if not exists (select 1 from user_event ue where ue.event_id = ip_event_id and ue.user_id = ip_user_id) then
     raise exception 'User not in event, thus cannot be added as event admin' using errcode = 'P0090';
   end if;
@@ -44,7 +49,7 @@ begin
   update user_event ue set "admin" = true where ue.event_id = ip_event_id and ue.user_id = ip_user_id;
 
   return query
-  select * from get_events(ip_event_id, null);
+  select * from get_events(ip_event_id, null, false);
 
 end;
 $$

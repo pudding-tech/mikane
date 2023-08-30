@@ -3,7 +3,7 @@ import request from "supertest";
 import nodemailerMock from "nodemailer-mock";
 import app from "./setup";
 import * as ec from "../src/types/errorCodes";
-import { User } from "../src/types/types";
+import { Category, Event, User } from "../src/types/types";
 
 // Mock nodemailer
 vi.mock("nodemailer", () => nodemailerMock);
@@ -165,7 +165,7 @@ describe("users", async () => {
     test("should get users except self", async () => {
       const res = await request(app)
         .get("/api/users")
-        .query("exclude=self")
+        .query("excludeSelf=true")
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(200);
@@ -288,6 +288,108 @@ describe("users", async () => {
   /* DELETE /users/:id */
   /* ----------------- */
   describe("DELETE /users/:id", async () => {
+
+    let event1: Event;
+    let event2: Event;
+
+    test("create 2 events, add users to both, create category/expense, then archive one event", async () => {
+      event1 = (await request(app)
+        .post("/api/events")
+        .set("Cookie", authToken)
+        .send({
+          name: "Event1",
+          private: false
+        })).body;
+
+      event2 = (await request(app)
+        .post("/api/events")
+        .set("Cookie", authToken)
+        .send({
+          name: "Event2",
+          private: false
+        })).body;
+
+      await request(app)
+        .post(`/api/events/${event1.id}/user/${user2.id}`)
+        .set("Cookie", authToken);
+      await request(app)
+        .post(`/api/events/${event2.id}/user/${user2.id}`)
+        .set("Cookie", authToken);
+
+      const category1: Category = (await request(app)
+        .post("/api/categories")
+        .set("Cookie", authToken)
+        .send({
+          name: "Category1",
+          icon: "shopping_cart",
+          weighted: false,
+          eventId: event1.id
+        })).body;
+
+      const category2: Category = (await request(app)
+        .post("/api/categories")
+        .set("Cookie", authToken)
+        .send({
+          name: "Category2",
+          icon: "shopping_cart",
+          weighted: false,
+          eventId: event2.id
+        })).body;
+
+      await request(app)
+        .post(`/api/categories/${category1.id}/user/${user.id}`)
+        .set("Cookie", authToken);
+      await request(app)
+        .post(`/api/categories/${category1.id}/user/${user2.id}`)
+        .set("Cookie", authToken);
+      await request(app)
+        .post(`/api/categories/${category2.id}/user/${user.id}`)
+        .set("Cookie", authToken);
+      await request(app)
+        .post(`/api/categories/${category2.id}/user/${user2.id}`)
+        .set("Cookie", authToken);
+
+      await request(app)
+        .post("/api/expenses")
+        .set("Cookie", authToken)
+        .send({
+          name: "Expense1",
+          amount: "100",
+          categoryId: category1.id,
+          payerId: user2.id
+        });
+
+      await request(app)
+        .post("/api/expenses")
+        .set("Cookie", authToken)
+        .send({
+          name: "Expense2",
+          amount: "200",
+          categoryId: category2.id,
+          payerId: user2.id
+        });
+
+      await request(app)
+        .put("/api/events/" + event1.id)
+        .set("Cookie", authToken)
+        .send({
+          active: false
+        });
+
+      const finalEvent1: Event = (await request(app)
+        .get("/api/events/" + event1.id)
+        .set("Cookie", authToken2)).body;
+      const finalEvent2: Event = (await request(app)
+        .get("/api/events/" + event2.id)
+        .set("Cookie", authToken2)).body;
+
+      expect(finalEvent1.active).toEqual(false);
+      expect(finalEvent1.userInfo?.inEvent).toEqual(true);
+
+      expect(finalEvent2.active).toEqual(true);
+      expect(finalEvent2.userInfo?.inEvent).toEqual(true);
+    });
+
     test("fail delete user without delete account key", async () => {
       const res = await request(app)
         .delete("/api/users/" + user2.id)
@@ -328,6 +430,26 @@ describe("users", async () => {
 
       expect(res.status).toEqual(404);
       expect(res.body.code).toEqual(ec.PUD008.code);
+    });
+
+    test("confirm user2 is deleted from active event", async () => {
+      const res = await request(app)
+        .get("/api/users")
+        .set("Cookie", authToken)
+        .query("eventId=" + event2.id);
+
+      expect(res.body.length).toEqual(1);
+      expect(res.body).not.toContainEqual(expect.objectContaining({ id: user2.id }));
+    });
+
+    test("confirm user2 (as deleted user) is still in archived event", async () => {
+      const res = await request(app)
+        .get("/api/users")
+        .set("Cookie", authToken)
+        .query("eventId=" + event1.id);
+
+      expect(res.body.length).toEqual(2);
+      expect(res.body).toContainEqual(expect.objectContaining({ id: user2.id, name: "Deleted user" }));
     });
   });
 

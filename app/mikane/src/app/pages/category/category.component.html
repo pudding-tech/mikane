@@ -1,4 +1,4 @@
-<div *ngIf="(breakpointService.isMobile() | async) === false" class="add-button">
+<div *ngIf="(breakpointService.isMobile() | async) === false && event?.active" class="add-button">
 	<button mat-raised-button color="primary" (click)="openDialog()">
 		<mat-icon>post_add</mat-icon>
 		Add category
@@ -6,7 +6,7 @@
 </div>
 
 <div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView">
+	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView" [ngClass]="{ 'extra-margin': !event?.active }">
 		<mat-accordion *ngIf="categories.length > 0; else noCategories">
 			<mat-expansion-panel *ngFor="let category of categories" class="categories">
 				<mat-expansion-panel-header>
@@ -130,10 +130,12 @@
 							<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 							<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
-							<tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+							<ng-container *ngIf="event?.active">
+								<tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+							</ng-container>
 						</form>
 					</table>
-					<div id="category-actions">
+					<div id="category-actions" *ngIf="event?.active">
 						<button
 							mat-raised-button
 							type="button"
@@ -161,6 +163,7 @@
 	<mat-nav-list class="categories-list-mobile">
 		<category-item
 			*ngFor="let category of categories"
+			[active]="event?.active"
 			[category]="category"
 			[addUserForm]="addUserForm"
 			[filterUsers]="filterUsers"
@@ -173,7 +176,14 @@
 		>
 		</category-item>
 	</mat-nav-list>
-	<button mat-fab color="primary" class="add-category-button-mobile" (click)="openDialog()" [ngClass]="{ iOS: contextService.isIos }">
+	<button
+		*ngIf="event?.active"
+		mat-fab
+		color="primary"
+		class="add-category-button-mobile"
+		(click)="openDialog()"
+		[ngClass]="{ iOS: contextService.isIos }"
+	>
 		<mat-icon>post_add</mat-icon>
 	</button>
 </ng-template>

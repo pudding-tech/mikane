@@ -31,6 +31,7 @@ import { CategoryIcon } from 'src/app/types/enums';
 })
 export class CategoryItemComponent {
 	@ViewChild('lower') lower: ElementRef;
+	@Input() active: boolean;
 	@Input('category') category: Category;
 	@Input() addUserForm: FormGroup;
 	@Input() filterUsers: (categoryId: string) => User[];

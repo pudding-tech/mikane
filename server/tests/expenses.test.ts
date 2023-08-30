@@ -188,6 +188,46 @@ describe("expenses", async () => {
       expect(res.status).toEqual(400);
       expect(res.body.code).toEqual(ec.PUD062.code);
     });
+
+    test("should set event as archived", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: false
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(false);
+    });
+
+    test("fail create expense in archived event", async () => {
+      const res = await request(app)
+        .post("/api/expenses")
+        .set("Cookie", authToken)
+        .send({
+          name: "Test expense 2",
+          description: "This is test",
+          amount: 200,
+          categoryId: category.id,
+          payerId: user.id
+        });
+
+        expect(res.status).toEqual(400);
+        expect(res.body.code).toEqual(ec.PUD118.code);
+    });
+
+    test("should set event as active", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          active: true
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.active).toEqual(true);
+    });
   });
 
   /* ------------- */

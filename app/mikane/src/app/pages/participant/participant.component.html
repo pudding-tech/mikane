@@ -1,33 +1,47 @@
 <div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView">
+	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView" [ngClass]="{ 'extra-margin': !inEvent && !event?.active }">
 		<div class="add-actions">
-			<button mat-raised-button color="primary" (click)="openDialog()">
+			<button mat-raised-button color="primary" (click)="openDialog()" *ngIf="event?.active">
 				<mat-icon>person_add</mat-icon>
 				Add users to event
 			</button>
-			<button mat-raised-button color="primary" *ngIf="!inEvent; else joinedEvent" (click)="joinEvent()">Join event</button>
+			<button mat-raised-button color="primary" *ngIf="!inEvent && event?.active; else joinedEvent" (click)="joinEvent()">
+				Join event
+			</button>
 			<ng-template #joinedEvent>
-				<button mat-stroked-button disabled>
+				<button mat-stroked-button disabled *ngIf="inEvent">
 					{{ isAdmin ? "You are an admin in this event" : "You are in this event" }}
 					<mat-icon>{{ isAdmin ? "star" : "check" }}</mat-icon>
 				</button>
 			</ng-template>
 		</div>
 
-		<mat-accordion class="user-list" *ngIf="usersWithBalance.length > 0; else noUsers">
-			<mat-expansion-panel disabled>
-				<mat-expansion-panel-header>
-					<mat-panel-title class="user-panel-title">
-						<div class="first">Name</div>
-						<div class="count">Number of expenses</div>
-						<div>Costs</div>
-						<div>Expenses</div>
-						<div>Balance</div>
-					</mat-panel-title>
-				</mat-expansion-panel-header>
-			</mat-expansion-panel>
+		<mat-accordion class="user-list" *ngIf="usersWithBalance.length > 0; else noUsers" #accordion>
+			<!-- HEADER ROW -->
+			<table mat-table matSort (matSortChange)="sortData($event)" class="participants-header">
+				<ng-container matColumnDef="icon">
+					<th mat-header-cell *matHeaderCellDef class="header-icon"></th>
+				</ng-container>
+				<ng-container matColumnDef="name">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-name">Name</th>
+				</ng-container>
+				<ng-container matColumnDef="expensesCount">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-count">Number of expenses</th>
+				</ng-container>
+				<ng-container matColumnDef="costs">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-costs align-right">Costs</th>
+				</ng-container>
+				<ng-container matColumnDef="expenses">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-expenses align-right">Expenses</th>
+				</ng-container>
+				<ng-container matColumnDef="balance">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-balance align-right">Balance</th>
+				</ng-container>
+				<tr mat-header-row *matHeaderRowDef="displayedParticipantColumns"></tr>
+			</table>
+			<!-- PARTICIPANT EXPANSION PANELS -->
 			<mat-expansion-panel
-				*ngFor="let userWithBalance of usersWithBalance; let i = index"
+				*ngFor="let userWithBalance of usersWithBalance$ | async; let i = index"
 				(opened)="getExpenses(userWithBalance.user, i)"
 				hideToggle
 			>
@@ -37,7 +51,9 @@
 							<img [src]="userWithBalance.user.avatarURL" class="avatar" />
 							{{ userWithBalance.user.name }}
 						</div>
-						<div class="count">{{ userWithBalance.expensesCount }}</div>
+						<div class="count" [ngClass]="{ 'no-expenses': userWithBalance.expensesCount === 0 }">
+							{{ userWithBalance.expensesCount }}
+						</div>
 						<div>{{ userWithBalance.spending | currency : "" : "" : "1.2-2" : "no" }} kr</div>
 						<div>{{ userWithBalance.expenses | currency : "" : "" : "1.2-2" : "no" }} kr</div>
 						<div class="amount-color">{{ userWithBalance.balance | currency : "" : "" : "1.2-2" : "no" }} kr</div>
@@ -105,18 +121,22 @@
 							<td class="mat-cell no-expenses" [attr.colspan]="displayedColumns.length">No expenses found</td>
 						</tr>
 					</table>
-					<div class="user-actions">
+					<div class="user-actions" *ngIf="event?.active">
 						<button mat-raised-button color="accent" (click)="createExpenseDialog(userWithBalance.user.id, dataSources[i])">
 							Add expense
 						</button>
-						<button *ngIf="userWithBalance.expensesCount === 0; else noRemoveButton" mat-raised-button type="button" color="warn" (click)="deleteUserDialog(userWithBalance.user.id)">
+						<button
+							*ngIf="userWithBalance.expensesCount === 0; else noRemoveButton"
+							mat-raised-button
+							type="button"
+							color="warn"
+							(click)="deleteUserDialog(userWithBalance.user.id)"
+						>
 							Remove User
 						</button>
 						<ng-template #noRemoveButton>
-							<span matTooltip="Cannot remove users with expenses in event" style="padding: 8px 0">
-								<button mat-stroked-button disabled>
-									Remove User
-								</button>
+							<span matTooltip="Cannot remove a user with expenses" style="padding: 8px 0">
+								<button mat-stroked-button disabled>Remove User</button>
 							</span>
 						</ng-template>
 					</div>
@@ -132,8 +152,16 @@
 			{{ isAdmin ? "You are an admin in this event" : "You are in this event" }}
 			<mat-icon>{{ isAdmin ? "star" : "check" }}</mat-icon>
 		</span>
+		<button mat-icon-button *ngIf="isAdmin; else eventInfoButton" (click)="gotoSettings()">
+			<mat-icon>settings</mat-icon>
+		</button>
 		<ng-template #notInEvent>
 			<span class="not-in-event">You are not in this event</span>
+		</ng-template>
+		<ng-template #eventInfoButton>
+			<button mat-icon-button (click)="gotoInfo()">
+				<mat-icon>info</mat-icon>
+			</button>
 		</ng-template>
 	</div>
 	<mat-nav-list class="userbalances-list-mobile">
@@ -142,7 +170,14 @@
 			[userBalance]="userWithBalance"
 		></participant-item>
 	</mat-nav-list>
-	<button mat-fab color="primary" class="add-users-button-mobile" (click)="openDialog()" [ngClass]="{ iOS: contextService.isIos }">
+	<button
+		*ngIf="event?.active"
+		mat-fab
+		color="primary"
+		class="add-users-button-mobile"
+		(click)="openDialog()"
+		[ngClass]="{ iOS: contextService.isIos }"
+	>
 		<mat-icon>person_add</mat-icon>
 	</button>
 </ng-template>

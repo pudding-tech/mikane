@@ -11,6 +11,7 @@
 
 .invite-content {
 	width: 500px;
+	margin-bottom: 2em;
 }
 
 mat-form-field {
@@ -33,17 +34,49 @@ mat-form-field {
 	margin-bottom: 10px;
 }
 
+.from-guest-text {
+	margin-bottom: 20px;
+	position: relative;
+	bottom: 10px;
+}
+
+.name {
+	display: flex;
+	align-items: center;
+
+	.avatar {
+		position: relative;
+		width: 24px;
+		height: 24px;
+		margin-right: 16px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+}
+
 .mobile-view {
-	margin-left: 10vw;
-	margin-right: 10vw;
 	display: flex;
 	flex-direction: column;
 	padding-bottom: 40px;
 
-	.mobile-text {
+	.title-mobile {
 		display: flex;
-		justify-content: center;
-		margin-top: 20px;
-		margin-bottom: 20px;
+		align-items: center;
+		height: 50px;
+		margin-bottom: 40px;
+		padding-left: 16px;
+		background-color: rgba(24, 24, 24, 1);
+		border-top: 1px solid #333333;
+		stroke: #333333;
 	}
+
+	.content-mobile {
+		margin-left: 10vw;
+		margin-right: 10vw;
+		margin-bottom: 40px;
+	}
+}
+
+mat-card-title {
+	padding-left: 0 !important;
 }

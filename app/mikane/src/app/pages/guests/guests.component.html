@@ -1,0 +1,74 @@
+<mat-toolbar [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
+	<a mat-icon-button routerLink="/events" [ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
+		<mat-icon>arrow_back</mat-icon>
+	</a>
+	<span>Guest users</span>
+	<span class="toolbar-spacer"></span>
+	<menu></menu>
+</mat-toolbar>
+
+<div *ngIf="loading === false; else loadingSpinner">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="guests-section">
+		<mat-card class="guests-content">
+			<mat-card-header class="card-header">
+				<div mat-card-avatar>
+					<mat-icon>supervisor_account</mat-icon>
+				</div>
+				<mat-card-title>Manage guests</mat-card-title>
+			</mat-card-header>
+			<mat-card-content class="card-content">
+				<ng-container *ngTemplateOutlet="guestsContent"></ng-container>
+			</mat-card-content>
+		</mat-card>
+	</div>
+</div>
+
+<ng-template #mobileView>
+	<div class="mobile-view">
+		<div class="title-mobile">Manage guest users</div>
+		<ng-container *ngTemplateOutlet="guestsContent"></ng-container>
+	</div>
+</ng-template>
+
+<ng-template #guestsContent>
+	<div class="guest-list">
+		<mat-nav-list>
+			<mat-list-item *ngFor="let guest of pagedGuests" class="list-item">
+				<div class="user">
+					<div class="name">
+						<img [src]="guest.avatarURL" class="avatar" />
+						{{ guest.name }}
+					</div>
+					<button mat-icon-button (click)="editGuest(guest)">
+						<mat-icon>edit</mat-icon>
+					</button>
+				</div>
+			</mat-list-item>
+		</mat-nav-list>
+		<mat-paginator
+			*ngIf="(breakpointService.isMobile() | async) ? (length > pageSize) : true"
+			[length]="length"
+			[pageSize]="pageSize"
+			[pageSizeOptions]="pageSizeOptions"
+			(page)="onPageChange($event)"
+			[ngClass]="{ 'paginator-mobile': breakpointService.isMobile() | async }"
+		>
+		</mat-paginator>
+	</div>
+	<ng-container *ngIf="(breakpointService.isMobile() | async) === false; else mobileButton">
+		<mat-card-actions>
+			<button mat-raised-button color="primary" (click)="newGuest()">
+				New guest user
+			</button>
+		</mat-card-actions>
+	</ng-container>
+	<ng-template #mobileButton>
+		<button mat-raised-button color="primary" (click)="newGuest()" class="new-guest-button-mobile">
+			New guest user
+		</button>
+	</ng-template>
+</ng-template>
+
+<ng-template #loadingSpinner>
+	<loading-spinner></loading-spinner>
+</ng-template>

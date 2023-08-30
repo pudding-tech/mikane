@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, WritableSignal, computed, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -9,8 +9,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { BehaviorSubject, NEVER, Subscription, switchMap } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { EventItemComponent } from 'src/app/features/mobile/event-item/event-item.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -45,18 +44,37 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 	],
 })
 export class EventsComponent implements OnInit, OnDestroy {
-	events: PuddingEvent[] = [];
-	pagedEvents: PuddingEvent[] = [];
+	events: WritableSignal<PuddingEvent[]> = signal([]);
+	eventsActive = computed(() => {
+		return this.events().filter((event) => event.active);
+	});
+	eventsArchived = computed(() => {
+		return this.events().filter((event) => !event.active);
+	});
+	pagedEventsActive = computed(() => {
+		return this.eventsActive().slice(this.startIndexActive(), this.endIndexActive());
+	});
+	pagedEventsArchived = computed(() => {
+		return this.eventsArchived().slice(this.startIndexArchived(), this.endIndexArchived());
+	});
+
 	selectedEvent!: PuddingEvent;
-
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
 	editSubscription: Subscription;
-	deleteSubscription: Subscription;
 
 	// Paginator
-	length: number = 0;
-	pageSize: number = 10;
+	lengthActive = computed(() => {
+		return this.eventsActive().length;
+	});
+	lengthArchived = computed(() => {
+		return this.eventsArchived().length;
+	});
+	pageSizeActive = signal(10);
+	pageSizeArchived = signal(10);
+	startIndexActive = signal(0);
+	startIndexArchived = signal(0);
+	endIndexActive = signal(this.pageSizeActive());
+	endIndexArchived = signal(this.pageSizeArchived());
 	pageSizeOptions: number[] = [5, 10, 20];
 
 	constructor(
@@ -72,9 +90,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 		this.loading.next(true);
 		this.eventService.loadEvents().subscribe({
 			next: (events) => {
-				this.events = events;
-				this.pagedEvents = events.slice(0, this.pageSize);
-				this.length = events.length;
+				this.events.set(events);
 				this.loading.next(false);
 			},
 			error: () => {
@@ -107,51 +123,19 @@ export class EventsComponent implements OnInit, OnDestroy {
 				if (event) {
 					this.eventService.editEvent(event).subscribe({
 						next: (result) => {
-							const index = this.pagedEvents.indexOf(this.pagedEvents.find((event) => event.id === result.id));
+							const index = this.events().indexOf(this.events().find((event) => event.id === result.id));
 							if (~index) {
-								this.pagedEvents[index] = result;
+								this.events.mutate((events) => (events[index] = result));
 							}
 						},
 						error: (err: ApiError) => {
-							this.messageService.showError('Faild to edit event');
+							this.messageService.showError('Failed to edit event');
 							console.error('something went wrong while editing event', err?.error?.message);
 						},
 					});
 				}
 			},
 		});
-	}
-
-	deleteEvent(deleteEvent: PuddingEvent) {
-		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-			width: '350px',
-			data: {
-				title: 'Delete event',
-				content: 'Are you sure you want to delete this event? This can not be undone.',
-				confirm: 'Yes, I am sure',
-			},
-		});
-
-		this.deleteSubscription = dialogRef
-			.afterClosed()
-			.pipe(
-				switchMap((confirm) => {
-					if (confirm) {
-						return this.eventService.deleteEvent(deleteEvent.id);
-					} else {
-						return NEVER;
-					}
-				})
-			)
-			.subscribe({
-				next: () => {
-					this.messageService.showSuccess('Event deleted successfully');
-					const index = this.events.indexOf(this.events.find((event) => event.id === deleteEvent.id));
-					if (~index) {
-						this.events.splice(index, 1);
-					}
-				},
-			});
 	}
 
 	openDialog() {
@@ -163,12 +147,9 @@ export class EventsComponent implements OnInit, OnDestroy {
 			if (event) {
 				this.eventService.createEvent(event).subscribe({
 					next: (event) => {
-						this.events.unshift(event);
-						this.pagedEvents = this.events.slice(0, this.pageSize);
-						this.router.navigate([event.id, 'users'], {
-							relativeTo: this.route,
-							state: { event: event },
-						});
+						this.events.mutate((events) => events.unshift(event));
+						this.startIndexActive.set(0);
+						this.endIndexActive.set(this.pageSizeActive());
 					},
 					error: (err: ApiError) => {
 						this.messageService.showError('Failed to create event');
@@ -179,18 +160,27 @@ export class EventsComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	onPageChange(event: PageEvent) {
-		const startIndex = event.pageIndex * event.pageSize;
-		let endIndex = startIndex + event.pageSize;
-		if (endIndex > this.length) {
-			endIndex = this.length;
+	onPageChange(pageEvent: PageEvent, type: 'active' | 'archived') {
+		const startIndex = pageEvent.pageIndex * pageEvent.pageSize;
+		let endIndex = startIndex + pageEvent.pageSize;
+		if (type === 'active') {
+			if (endIndex > this.lengthActive()) {
+				endIndex = this.lengthActive();
+			}
+			this.startIndexActive.set(startIndex);
+			this.endIndexActive.set(endIndex);
+			this.pageSizeActive.set(pageEvent.pageSize);
+		} else if (type === 'archived') {
+			if (endIndex > this.lengthArchived()) {
+				endIndex = this.lengthArchived();
+			}
+			this.startIndexArchived.set(startIndex);
+			this.endIndexArchived.set(endIndex);
+			this.pageSizeArchived.set(pageEvent.pageSize);
 		}
-		this.pagedEvents = this.events.slice(startIndex, endIndex);
-		this.pageSize = event.pageSize;
 	}
 
 	ngOnDestroy(): void {
 		this.editSubscription?.unsubscribe();
-		this.deleteSubscription?.unsubscribe();
 	}
 }

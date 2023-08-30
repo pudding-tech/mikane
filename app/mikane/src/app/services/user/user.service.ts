@@ -15,6 +15,7 @@ export interface User {
 	email?: string;
 	phone?: string;
 	created?: Date;
+	guest: boolean,
 	avatarURL?: string;
 	eventInfo?: {
 		id: string;
@@ -61,11 +62,11 @@ export class UserService {
 	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
 
 	loadUsers(excludeSelf: boolean = false) {
-		return this.httpClient.get<User[]>(this.apiUrl + (excludeSelf ? '?exclude=self' : ''));
+		return this.httpClient.get<User[]>(this.apiUrl + (excludeSelf ? '?excludeSelf=true' : ''));
 	}
 
-	loadUsersByEvent(eventId: string) {
-		return this.httpClient.get<User[]>(this.apiUrl + `?eventId=${eventId}`);
+	loadUsersByEvent(eventId: string, excludeGuests?: boolean) {
+		return this.httpClient.get<User[]>(this.apiUrl + `?eventId=${eventId}` + (excludeGuests ? '&excludeGuests=true' : ''));
 	}
 
 	loadUserById(userId: string) {
@@ -125,13 +126,36 @@ export class UserService {
 		});
 	}
 
-	inviteUser(email: string): Observable<void> {
+	inviteUser(email: string, guestId?: string): Observable<void> {
 		return this.httpClient.post<void>(this.apiUrl + '/invite', {
 			email,
+			guestId
 		});
 	}
 
 	requestDeleteAccount(): Observable<void> {
 		return this.httpClient.post<void>(this.apiUrl + '/requestdeleteaccount', {});
+	}
+
+	loadGuestUsers() {
+		return this.httpClient.get<User[]>(this.env.apiUrl + '/guests');
+	}
+
+	createGuestUser(firstName: string, lastName: string): Observable<User> {
+		return this.httpClient.post<User>(this.env.apiUrl + '/guests', {
+			firstName,
+			lastName
+		});
+	}
+
+	editGuestUser(id: string, firstName: string, lastName: string): Observable<User> {
+		return this.httpClient.put<User>(this.env.apiUrl + `/guests/${id}`, {
+			firstName,
+			lastName
+		});
+	}
+
+	deleteGuestUser(id: string) {
+		return this.httpClient.delete<User>(this.env.apiUrl + `/guests/${id}`);
 	}
 }

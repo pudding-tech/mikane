@@ -38,6 +38,7 @@ export class PaymentItemComponent {
 		}[];
 	};
 	@Input() self: boolean;
+	@Input() currentUser: User;
 
 	dropdownOpen: boolean;
 	lowerHeight: number | string;

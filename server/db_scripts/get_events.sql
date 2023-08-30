@@ -1,7 +1,8 @@
 drop function if exists get_events;
 create or replace function get_events(
   ip_event_id uuid,
-  ip_user_id uuid
+  ip_user_id uuid,
+  ip_active_only boolean
 )
 returns table (
   id uuid,
@@ -9,6 +10,7 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
+  active boolean,
   admin_ids jsonb,
   user_id uuid,
   user_in_event boolean,
@@ -16,12 +18,12 @@ returns table (
 ) as
 $$
 begin
-  
+
   if (ip_user_id is null) then
     begin
       return query
       select
-        e.id, e.name, e.description, e.created, e.private,
+        e.id, e.name, e.description, e.created, e.private, e.active,
         (
           select
             JSONB_AGG(jsonb_build_object('user_id', u.id))
@@ -37,7 +39,8 @@ begin
       from
         "event" e
       where
-        e.id = coalesce(ip_event_id, e.id)
+        e.id = coalesce(ip_event_id, e.id) and
+        e.active = case when ip_active_only = true then true else e.active end
       order by
         e.created desc;
     end;
@@ -50,7 +53,7 @@ begin
 
       return query
       select
-        e.id, e.name, e.description, e.created, e.private,
+        e.id, e.name, e.description, e.created, e.private, e.active,
         (
           select
             JSONB_AGG(jsonb_build_object('user_id', u.id))
@@ -75,7 +78,8 @@ begin
         "event" e
         left join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
       where
-        e.id = coalesce(ip_event_id, e.id)
+        e.id = coalesce(ip_event_id, e.id) and
+        e.active = case when ip_active_only = true then true else e.active end
       order by
         e.created desc;
     end;

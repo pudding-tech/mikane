@@ -15,7 +15,8 @@ returns table (
   email varchar(255),
   phone_number varchar(20),
   "password" varchar(255),
-  created timestamp
+  created timestamp,
+  guest boolean
 ) as
 $$
 begin
@@ -45,10 +46,11 @@ begin
     email = coalesce(ip_email, u.email),
     phone_number = coalesce(ip_phone_number, u.phone_number)
   where
-    u.id = ip_user_id;
+    u.id = ip_user_id and
+    u.deleted = false;
   
   return query
-  select * from get_user(ip_user_id, null);
+  select * from get_user(ip_user_id, null, false);
 
 end;
 $$

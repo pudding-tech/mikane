@@ -1,0 +1,64 @@
+<mat-toolbar [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
+	<a mat-icon-button routerLink="/events" [ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
+		<mat-icon>arrow_back</mat-icon>
+	</a>
+	<span>Profile</span>
+	<span class="toolbar-spacer"></span>
+	<menu></menu>
+</mat-toolbar>
+
+<div *ngIf="loading === false; else loadingSpinner">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="profile-page">
+		<mat-card class="profile-content">
+			<mat-card-header>
+				<img mat-card-avatar *ngIf="user?.avatarURL" [src]="user?.avatarURL" class="avatar" />
+				<mat-card-title>{{ user?.firstName + " " + user?.lastName }}</mat-card-title>
+				<mat-card-subtitle>{{ user?.username }}</mat-card-subtitle>
+			</mat-card-header>
+			<mat-card-content>
+				<div class="user-row">
+					<span class="user-padding">
+						<mat-icon class="icon">email</mat-icon>
+						<a [href]="'mailto:' + user?.email">{{ user?.email }} </a>
+					</span>
+				</div>
+				<div class="user-row">
+					<span class="user-padding">
+						<mat-icon class="icon">phone</mat-icon>
+						{{ user?.phone }}
+					</span>
+				</div>
+			</mat-card-content>
+		</mat-card>
+	</div>
+</div>
+
+<ng-template #mobileView>
+	<div class="mobile-view">
+		<div class="header">
+			<img *ngIf="user?.avatarURL" [src]="user?.avatarURL" class="avatar" />
+			<div>
+				<div id="name">{{ user?.firstName + " " + user?.lastName }}</div>
+				<div id="username">{{ user?.username }}</div>
+			</div>
+		</div>
+		<div class="details">
+			<div class="user-row">
+				<span class="user-padding">
+					<mat-icon class="icon">email</mat-icon>
+					<a [href]="'mailto:' + user?.email">{{ user?.email }} </a>
+				</span>
+			</div>
+			<div class="user-row">
+				<span class="user-padding">
+					<mat-icon class="icon">phone</mat-icon>
+					{{ user?.phone }}
+				</span>
+			</div>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #loadingSpinner>
+	<loading-spinner></loading-spinner>
+</ng-template>
