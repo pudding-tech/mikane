@@ -13,6 +13,9 @@
 			<mat-card-title>Register</mat-card-title>
 		</mat-card-header>
 		<mat-card-content class="card-content">
+			<p *ngIf="guestRegistration">
+				This is the information currently registered on you. <br />Please make sure it is accurate and change it if not.
+			</p>
 			<ng-container *ngTemplateOutlet="registerContent"></ng-container>
 		</mat-card-content>
 	</mat-card>
