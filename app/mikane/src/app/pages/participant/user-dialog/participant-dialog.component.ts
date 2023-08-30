@@ -72,7 +72,7 @@ export class ParticipantDialogComponent implements OnInit {
 
 	private _filter(name: string): User[] {
 		return this.users.filter((user) => {
-			return user.name.toLowerCase().includes(name);
+			return user.name.toLowerCase().includes(name.toLowerCase());
 		});
 	}
 
