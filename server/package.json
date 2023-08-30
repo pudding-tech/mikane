@@ -3,7 +3,8 @@
   "version": "2.1.0",
   "description": "API server for Mikane",
   "scripts": {
-    "build": "rimraf ./build && tsc --project ./",
+    "build": "rimraf ./build && tsc && npm run copy && cd build && npm ci --omit=dev",
+    "copy": "copyfiles package.json package-lock.json \"./public/**/*\" ./build",
     "start": "node build/index.js",
     "startts": "npx ts-node src/index.ts",
     "dev": "npx nodemon src/index.ts",
@@ -32,6 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
     "@vitest/coverage-v8": "^0.34.3",
+    "copyfiles": "^2.4.1",
     "eslint": "^8.48.0",
     "nodemailer-mock": "^2.0.1",
     "nodemon": "^3.0.1",
