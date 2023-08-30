@@ -24,9 +24,9 @@
 		[routerLink]="link.location"
 		(click)="activeLink = link.location"
 		[active]="activeLink.includes(link.location)"
-		[ngClass]="{ 'settings-tab': link.name === 'Settings' }"
+		[ngClass]="{ 'settings-tab': link.name === 'Settings' || link.name === 'Info' }"
 	>
-		<mat-icon *ngIf="link.name === 'Settings'; else name">settings</mat-icon>
+		<mat-icon *ngIf="link.name === 'Settings' || link.name === 'Info'; else name">{{ link.icon }}</mat-icon>
 		<ng-template #name>
 			{{ link.name }}
 		</ng-template>

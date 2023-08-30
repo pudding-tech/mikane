@@ -2,6 +2,7 @@ import { Route } from '@angular/router';
 import { authGuard } from 'src/app/services/auth/auth.guard';
 import { EventComponent } from './event/event.component';
 import { EventsComponent } from './events.component';
+import { eventInfoGuard } from '../event-info/event-info.guard';
 import { eventSettingsGuard } from '../event-settings/event-settings.guard';
 
 export default [
@@ -26,6 +27,11 @@ export default [
 			{
 				path: 'payment',
 				loadChildren: () => import('../payment-structure/payment-structure.routes'),
+			},
+			{
+				path: 'info',
+				canActivate: [eventInfoGuard],
+				loadChildren: () => import('../event-info/event-info.routes'),
 			},
 			{
 				path: 'settings',

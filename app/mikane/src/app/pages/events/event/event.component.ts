@@ -15,6 +15,7 @@ import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { CategoryComponent } from '../../category/category.component';
+import { EventInfoComponent } from '../../event-info/event-info.component';
 import { EventSettingsComponent } from '../../event-settings/event-settings.component';
 import { ExpendituresComponent } from '../../expenditures/expenditures.component';
 import { ParticipantComponent } from '../../participant/participant.component';
@@ -76,6 +77,13 @@ export class EventComponent implements OnInit {
 				location: './settings',
 			});
 		}
+		else if (!this.isEventAdmin() && !this.isMobile()) {
+			eventLinks.push({
+				name: 'Info',
+				icon: 'info',
+				location: './info',
+			});
+		}
 		return eventLinks;
 	});
 
@@ -96,9 +104,10 @@ export class EventComponent implements OnInit {
 		}
 	}
 
-	onOutletLoaded(component: ExpendituresComponent | EventSettingsComponent | ParticipantComponent | CategoryComponent) {
+	onOutletLoaded(component: ExpendituresComponent | EventInfoComponent | EventSettingsComponent | ParticipantComponent | CategoryComponent) {
 		if (
 			component instanceof ExpendituresComponent ||
+			component instanceof EventInfoComponent ||
 			component instanceof EventSettingsComponent ||
 			component instanceof ParticipantComponent ||
 			component instanceof CategoryComponent

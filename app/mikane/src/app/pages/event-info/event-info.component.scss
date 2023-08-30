@@ -1,11 +1,11 @@
-.settings {
+.event-info {
 	display: flex;
 	align-items: center;
 	flex-direction: column;
 	margin-top: 2em;
 
 	.card {
-		width: 40vw;
+		width: 30vw;
 		min-width: 40em;
 
 		.header {
@@ -18,39 +18,13 @@
 	}
 }
 
-.event-settings-content {
+.event-info-content {
 	padding-left: 16px;
 	padding-right: 16px;
-
-	&.archive {
-		margin-bottom: 40px;
-	}
-
-	&.admins {
-		margin-bottom: 20px;
-	}
-
-	&.delete {
-		margin-bottom: 30px !important;
-	}
-
-	&.delete-mobile {
-		margin-bottom: 90px !important;
-	}
 }
 
-.form {
-	display: flex;
-	flex-direction: column;
-	margin-bottom: 40px;
-
-	.save-button-pc {
-		max-width: 140px;
-	}
-
-	.save-button-mobile {
-		max-width: 100%;
-	}
+.info-full-view {
+	margin: 20px 14px 10px;
 }
 
 .admins-content {
@@ -62,32 +36,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-	}
-
-	.add-admin {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-top: 10px;
-
-		&.mobile {
-			margin-left: 16px;
-		}
-
-		mat-form-field {
-			width: 280px;
-		}
-
-		.all-users-admins {
-			color: rgba(255, 255, 255, 0.7);
-			margin-bottom: 18px;
-		}
-
-		.add-admin-button {
-			margin-bottom: 22px;
-			margin-left: 20px;
-			margin-right: 16px;
-		}
 	}
 }
 
