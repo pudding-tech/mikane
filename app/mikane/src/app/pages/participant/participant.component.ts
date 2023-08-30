@@ -360,6 +360,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		this.usersWithBalance$.next(this.usersWithBalance);
 	}
 
+	gotoInfo() {
+		this.router.navigate(['events', this.event.id, 'info']);
+	}
+
 	gotoSettings() {
 		this.router.navigate(['events', this.event.id, 'settings']);
 	}

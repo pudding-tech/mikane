@@ -152,11 +152,16 @@
 			{{ isAdmin ? "You are an admin in this event" : "You are in this event" }}
 			<mat-icon>{{ isAdmin ? "star" : "check" }}</mat-icon>
 		</span>
-		<button mat-icon-button *ngIf="isAdmin" (click)="gotoSettings()">
+		<button mat-icon-button *ngIf="isAdmin; else eventInfoButton" (click)="gotoSettings()">
 			<mat-icon>settings</mat-icon>
 		</button>
 		<ng-template #notInEvent>
 			<span class="not-in-event">You are not in this event</span>
+		</ng-template>
+		<ng-template #eventInfoButton>
+			<button mat-icon-button (click)="gotoInfo()">
+				<mat-icon>info</mat-icon>
+			</button>
 		</ng-template>
 	</div>
 	<mat-nav-list class="userbalances-list-mobile">
