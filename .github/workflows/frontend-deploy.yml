@@ -36,7 +36,7 @@ jobs:
               id: download
               uses: actions/download-artifact@v2
               with:
-                  name: frontend
+                  name: ${{ inputs.artifact }}
             - name: Deploy to production with rsync (dry-run)
               if: inputs.dry-run && inputs.environment == 'production'
               run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane/ --delete
