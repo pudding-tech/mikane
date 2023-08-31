@@ -58,7 +58,7 @@ jobs:
             upload-artifact: true
     deploy:
         needs: [build, test]
-        uses: ./.github/workflows/deploy.yml
+        uses: ./.github/workflows/frontend-deploy.yml
         with:
             dry-run: ${{ inputs.dry-run }}
             artifact: ${{ needs.build.outputs.artifact }}
