@@ -1,0 +1,36 @@
+name: "* Run frontend tests"
+on:
+  workflow_call:
+    inputs:
+      upload-coverage:
+        required: false
+        default: true
+        description: Upload code coverage
+        type: boolean
+      node-version:
+        required: true
+        default: 16.x
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app/mikane/
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ inputs.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: "npm"
+          cache-dependency-path: ./app/mikane/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v3
+        if: inputs.upload-coverage
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./app/mikane/coverage/mikane/cobertura-coverage.xml

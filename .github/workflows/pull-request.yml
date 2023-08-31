@@ -1,0 +1,17 @@
+name: Pull Request
+
+on:
+  push:
+    branches: ["develop"]
+  pull_request:
+    branches: ["develop"]
+
+jobs:
+  build-frontend:
+    uses: ./.github/workflows/frontend-build.yml
+    with:
+      node-version: 16.x
+  test-frontend:
+    uses: ./.github/workflows/frontend-test.yml
+    with:
+      node-version: 16.x
