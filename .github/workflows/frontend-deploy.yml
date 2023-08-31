@@ -34,7 +34,7 @@ jobs:
               run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
             - name: Download artifacts
               id: download
-              uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v3
               with:
                   name: ${{ inputs.artifact }}
             - name: Deploy to production with rsync (dry-run)
