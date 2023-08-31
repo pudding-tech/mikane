@@ -47,13 +47,13 @@ jobs:
               env:
                   VERSION: ${{ inputs.version }}
             - name: Commit package.json changes and create tag
-              if: !inputs.dry-run
+              if: ${{ !inputs.dry-run }}
               run: |
                   git add "package.json"
                   git commit -m "chore: release ${{ env.NEW_VERSION }}"
                   git tag ${{ env.NEW_VERSION }}
             - name: Push changes to repository
-              if: !inputs.dry-run
+              if: ${{ !inputs.dry-run }}
               env:
                   GITHUB_TOKEN: ${{ secrets.github-token }}
               run: |
