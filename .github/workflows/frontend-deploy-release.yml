@@ -63,3 +63,7 @@ jobs:
             dry-run: ${{ inputs.dry-run }}
             artifact: ${{ needs.build.outputs.artifact }}
             environment: ${{ inputs.environment }}
+        secrets:
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            SSH_HOST: ${{ secrets.SSH_HOST }}
+            SSH_USER: ${{ secrets.SSH_USER }}
