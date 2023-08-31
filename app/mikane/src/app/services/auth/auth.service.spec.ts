@@ -142,4 +142,51 @@ describe('AuthService', () => {
 			req.flush({});
 		});
 	});
+
+	describe('#clearCurrentUser', () => {
+		let expectedLoginResponse: User;
+
+		beforeEach(() => {
+			expectedLoginResponse = {
+				authenticated: true,
+				id: '24b96dad-e95a-4794-9dea-25fd2bbd21a1',
+				username: 'testuser',
+				name: 'Test',
+				firstName: 'Test',
+				lastName: 'McTesty',
+				email: 'test@user.com',
+				created: new Date('2023-01-20T18:00:00'),
+				guest: false,
+				avatarURL: 'https://gravatar.com/avatar/aaaa',
+			};
+		});
+
+		it('should clear current user', () => {
+			service.getCurrentUser().subscribe({
+				next: (user) => {
+					expect(user).withContext('should return user').not.toBeNull();
+				},
+				error: fail,
+			});
+
+			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
+			expect(req.request.method).toEqual('GET');
+
+			req.flush(expectedLoginResponse);
+
+			service.clearCurrentUser();
+
+			service.getCurrentUser().subscribe({
+				next: (user) => {
+					expect(user).withContext('should return user').not.toBeNull();
+				},
+				error: fail,
+			});
+
+			const req2 = httpTestingController.expectOne('http://localhost:3002/api/login');
+			expect(req2.request.method).toEqual('GET');
+
+			req2.flush({});
+		});
+	});
 });

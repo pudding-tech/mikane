@@ -42,7 +42,6 @@ export class CategoryService {
 
 	editCategory(categoryId: string, name: string, icon: CategoryIcon): Observable<Category> {
 		return this.httpClient.put<Category>(this.apiUrl + `/${categoryId}`, {
-			categoryId,
 			name,
 			icon,
 		});
