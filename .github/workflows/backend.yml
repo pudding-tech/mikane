@@ -1,0 +1,17 @@
+name: backend
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  build-backend:
+    uses: ./.github/workflows/backend-build.yml
+    with:
+      node-version: 18.x
+  test-backend:
+    uses: ./.github/workflows/backend-test.yml
+    with:
+      node-version: 18.x

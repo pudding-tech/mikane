@@ -1,0 +1,92 @@
+name: "* Build backend"
+on:
+    workflow_call:
+        inputs:
+            node-version:
+                required: true
+                type: string
+            upload-artifact:
+                description: Upload artifact to Github artifact repository
+                type: boolean
+                default: false
+            tag:
+                required: false
+                type: string
+        outputs:
+            version:
+                description: "The version built"
+                value: ${{ jobs.configure.outputs.version }}
+            artifact:
+                description: "The name of the artifact in Github repo"
+                value: ${{ jobs.configure.outputs.artifact }}
+            outcome:
+                description: "Outcome from upload"
+                value: ${{ jobs.build.outputs.outcome }}
+
+jobs:
+
+    configure:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./server/
+        outputs:
+            version: ${{ steps.vars.outputs.version }}
+            artifact: ${{ steps.vars.outputs.artifact }}
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Fetch tag ${{ inputs.tag }}
+              if: inputs.tag != ''
+              run: |
+                  git fetch --tags
+                  git checkout ${{ inputs.tag }}
+
+            - name: Configure variables
+              id: vars
+              run: |
+                  version=$(cat package.json | jq -r '.version')
+                  echo "version=$version" >> $GITHUB_OUTPUT
+                  echo "artifact=mikane-dist-$version" >> $GITHUB_OUTPUT
+
+            - name: Build setup
+              run: |
+                  echo Version ${{ steps.vars.outputs.version }} >> $GITHUB_STEP_SUMMARY
+                  echo Artifact ${{ steps.vars.outputs.artifact }} >> $GITHUB_STEP_SUMMARY
+
+    build:
+        needs: configure
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./server/
+        outputs:
+            outcome: ${{ steps.upload.outcome }}
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Setup Node.js ${{ inputs.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ inputs.node-version }}
+                  cache: "npm"
+                  cache-dependency-path: ./server/package-lock.json
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Create build
+              run: npm run build
+
+            - name: Upload artifacts
+              if: inputs.upload-artifact
+              id: upload
+              uses: actions/upload-artifact@v3
+              with:
+                  if-no-files-found: error
+                  name: ${{ needs.configure.outputs.artifact }}
+                  path: ./server/build/
