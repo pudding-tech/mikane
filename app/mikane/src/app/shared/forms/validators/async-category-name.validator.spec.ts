@@ -5,7 +5,7 @@ import { FormValidationService } from 'src/app/services/form-validation/form-val
 import { ApiError } from 'src/app/types/apiError.type';
 import { categoryNameValidator } from './async-category-name.validator';
 
-fdescribe('categoryNameValidator', () => {
+describe('categoryNameValidator', () => {
 	let formValidationService: FormValidationService;
 	let eventId: string;
 	let categoryId: string;

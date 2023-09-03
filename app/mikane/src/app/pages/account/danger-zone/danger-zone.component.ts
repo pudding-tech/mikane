@@ -57,7 +57,7 @@ export class DangerZoneComponent implements OnDestroy {
 		});
 
 		this.deleteSubscription = dialogRef
-			.afterClosed()
+			?.afterClosed()
 			.pipe(
 				switchMap((confirm) => {
 					if (confirm) {

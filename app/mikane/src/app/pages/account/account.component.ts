@@ -6,7 +6,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
-import { BehaviorSubject, Subscription, catchError, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Subscription, switchMap } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -57,10 +57,6 @@ export class AccountComponent implements OnInit, OnDestroy {
 			.pipe(
 				switchMap((user) => {
 					return this.userService.loadUserById(user?.id);
-				}),
-				catchError((error: ApiError) => {
-					console.error('something went wrong while getting user on account page', error);
-					return of(undefined);
 				})
 			)
 			.subscribe({
@@ -77,6 +73,6 @@ export class AccountComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		this.subscription.unsubscribe();
+		this.subscription?.unsubscribe();
 	}
 }

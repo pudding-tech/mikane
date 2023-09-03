@@ -5,7 +5,7 @@ import { FormValidationService } from 'src/app/services/form-validation/form-val
 import { ApiError } from 'src/app/types/apiError.type';
 import { usernameValidator } from './async-username.validator';
 
-fdescribe('usernameValidator', () => {
+describe('usernameValidator', () => {
 	let formValidationService: FormValidationService;
 
 	beforeEach(() => {

@@ -5,7 +5,7 @@ import { FormValidationService } from 'src/app/services/form-validation/form-val
 import { ApiError } from 'src/app/types/apiError.type';
 import { phoneValidator } from './async-phone.validator';
 
-fdescribe('phoneValidator', () => {
+describe('phoneValidator', () => {
 	let formValidationService: FormValidationService;
 
 	beforeEach(() => {

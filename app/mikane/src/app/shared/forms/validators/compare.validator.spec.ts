@@ -1,7 +1,7 @@
 import { AbstractControl, FormControl } from '@angular/forms';
 import { createCompareValidator } from './compare.validator';
 
-fdescribe('createCompareValidator', () => {
+describe('createCompareValidator', () => {
 	let controlOne: AbstractControl;
 	let controlTwo: AbstractControl;
 

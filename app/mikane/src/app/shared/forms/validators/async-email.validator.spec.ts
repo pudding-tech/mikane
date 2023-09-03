@@ -5,7 +5,7 @@ import { FormValidationService } from 'src/app/services/form-validation/form-val
 import { ApiError } from 'src/app/types/apiError.type';
 import { emailValidator } from './async-email.validator';
 
-fdescribe('asyncEmailValidator', () => {
+describe('asyncEmailValidator', () => {
 	let formValidationService: FormValidationService;
 
 	beforeEach(() => {

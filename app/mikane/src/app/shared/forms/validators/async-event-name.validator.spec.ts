@@ -5,7 +5,7 @@ import { FormValidationService } from 'src/app/services/form-validation/form-val
 import { ApiError } from 'src/app/types/apiError.type';
 import { eventNameValidator } from './async-event-name.validator';
 
-fdescribe('eventNameValidator', () => {
+describe('eventNameValidator', () => {
 	let formValidationService: FormValidationService;
 
 	beforeEach(() => {
