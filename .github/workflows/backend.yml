@@ -21,7 +21,7 @@ jobs:
     needs: [build-backend, test-backend]
     uses: ./.github/workflows/backend-deploy.yml
     with:
-      dry-run: true
+      dry-run: false
       environment: test
       artifact: ${{ needs.build.outputs.artifact }}
     secrets:
