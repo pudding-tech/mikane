@@ -106,7 +106,7 @@
 											<mat-icon>edit</mat-icon>
 										</button>
 										<button mat-icon-button type="button" (click)="removeUser(category.id, user.id)">
-											<mat-icon>delete</mat-icon>
+											<mat-icon>remove</mat-icon>
 										</button>
 									</div>
 								</td>
@@ -160,7 +160,7 @@
 </div>
 
 <ng-template #mobileView>
-	<mat-nav-list class="categories-list-mobile">
+	<mat-nav-list *ngIf="categories.length > 0; else noCategoriesMobile" class="categories-list-mobile">
 		<category-item
 			*ngFor="let category of categories"
 			[active]="event?.active"
@@ -193,5 +193,9 @@
 </ng-template>
 
 <ng-template #noCategories>
-	<mat-card appearance="outlined"> No expense categories </mat-card>
+	<mat-card appearance="outlined" class="no-categories"> No expense categories </mat-card>
+</ng-template>
+
+<ng-template #noCategoriesMobile>
+	<div class="no-categories-mobile"> No expense categories </div>
 </ng-template>

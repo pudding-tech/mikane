@@ -7,115 +7,116 @@
 
 <div *ngIf="loading === false; else loadingSpinner">
 	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" [ngClass]="{ 'extra-margin': !event?.active }">
-		<mat-form-field>
-			<mat-label>Filter expenses</mat-label>
-			<input matInput (keyup)="applyFilter($event)" #input />
-			<button matSuffix *ngIf="input.value" mat-icon-button (click)="clearInput()">
-				<mat-icon>cancel</mat-icon>
-			</button>
-		</mat-form-field>
-		<table
-			*ngIf="filteredExpenses().length > 0; else noExpenses"
-			class="expense-table"
-			mat-table
-			matSort
-			[dataSource]="filteredExpenses()"
-			(matSortChange)="onSortData($event)"
-		>
-			<!-- Icon Column -->
-			<ng-container matColumnDef="icon">
-				<th mat-header-cell *matHeaderCellDef></th>
-				<td mat-cell class="expense-icon" *matCellDef="let expense">
-					<mat-icon>{{ expense.categoryInfo.icon ?? "shopping_cart" }}</mat-icon>
-				</td>
-			</ng-container>
+		<div *ngIf="filteredExpenses().length > 0; else noExpenses">
+			<mat-form-field>
+				<mat-label>Filter expenses</mat-label>
+				<input matInput (keyup)="applyFilter($event)" #input />
+				<button matSuffix *ngIf="input.value" mat-icon-button (click)="clearInput()">
+					<mat-icon>cancel</mat-icon>
+				</button>
+			</mat-form-field>
+			<table
+				class="expense-table"
+				mat-table
+				matSort
+				[dataSource]="filteredExpenses()"
+				(matSortChange)="onSortData($event)"
+			>
+				<!-- Icon Column -->
+				<ng-container matColumnDef="icon">
+					<th mat-header-cell *matHeaderCellDef></th>
+					<td mat-cell class="expense-icon" *matCellDef="let expense">
+						<mat-icon>{{ expense.categoryInfo.icon ?? "shopping_cart" }}</mat-icon>
+					</td>
+				</ng-container>
 
-			<!-- Name Column -->
-			<ng-container matColumnDef="name">
-				<th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-				<td mat-cell class="expense-name" *matCellDef="let expense">
-					{{ expense.name }}
-				</td>
-			</ng-container>
+				<!-- Name Column -->
+				<ng-container matColumnDef="name">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+					<td mat-cell class="expense-name" *matCellDef="let expense">
+						{{ expense.name }}
+					</td>
+				</ng-container>
 
-			<!-- Payer Column -->
-			<ng-container matColumnDef="payer">
-				<th mat-header-cell *matHeaderCellDef mat-sort-header>Paid by</th>
-				<td mat-cell *matCellDef="let expense">
-					<div class="payer">
-						<img [src]="expense.payer.avatarURL" class="payer-avatar" />
-						{{ expense.payer.name }}
-					</div>
-				</td>
-			</ng-container>
+				<!-- Payer Column -->
+				<ng-container matColumnDef="payer">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>Paid by</th>
+					<td mat-cell *matCellDef="let expense">
+						<div class="payer">
+							<img [src]="expense.payer.avatarURL" class="payer-avatar" />
+							{{ expense.payer.name }}
+						</div>
+					</td>
+				</ng-container>
 
-			<!-- Expense Category -->
-			<ng-container matColumnDef="categoryName">
-				<th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
-				<td mat-cell *matCellDef="let expense">
-					{{ expense.categoryInfo.name }}
-				</td>
-			</ng-container>
+				<!-- Expense Category -->
+				<ng-container matColumnDef="categoryName">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+					<td mat-cell *matCellDef="let expense">
+						{{ expense.categoryInfo.name }}
+					</td>
+				</ng-container>
 
-			<!-- Amount Column -->
-			<ng-container matColumnDef="amount">
-				<th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
-				<td mat-cell class="amount-color" *matCellDef="let expense">
-					<div>{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr</div>
-				</td>
-			</ng-container>
+				<!-- Amount Column -->
+				<ng-container matColumnDef="amount">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
+					<td mat-cell class="amount-color" *matCellDef="let expense">
+						<div>{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr</div>
+					</td>
+				</ng-container>
 
-			<!-- Description Column -->
-			<ng-container matColumnDef="description">
-				<th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
-				<td mat-cell *matCellDef="let expense">
-					{{ expense.description }}
-				</td>
-			</ng-container>
+				<!-- Description Column -->
+				<ng-container matColumnDef="description">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+					<td mat-cell *matCellDef="let expense">
+						{{ expense.description }}
+					</td>
+				</ng-container>
 
-			<!-- Edit Column -->
-			<ng-container matColumnDef="edit">
-				<th mat-header-cell *matHeaderCellDef></th>
-				<td mat-cell *matCellDef="let expense">
-					<button
-						*ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin"
-						mat-icon-button
-						type="button"
-						(click)="editExpense(expense.id)"
-					>
-						<mat-icon>edit</mat-icon>
-					</button>
-				</td>
-			</ng-container>
+				<!-- Edit Column -->
+				<ng-container matColumnDef="edit">
+					<th mat-header-cell *matHeaderCellDef></th>
+					<td mat-cell *matCellDef="let expense">
+						<button
+							*ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin"
+							mat-icon-button
+							type="button"
+							(click)="editExpense(expense.id)"
+						>
+							<mat-icon>edit</mat-icon>
+						</button>
+					</td>
+				</ng-container>
 
-			<!-- Delete Column -->
-			<ng-container matColumnDef="delete">
-				<th mat-header-cell *matHeaderCellDef></th>
-				<td mat-cell *matCellDef="let expense">
-					<button
-						*ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin"
-						mat-icon-button
-						type="button"
-						(click)="removeExpense(expense.id)"
-					>
-						<mat-icon>delete</mat-icon>
-					</button>
-				</td>
-			</ng-container>
+				<!-- Delete Column -->
+				<ng-container matColumnDef="delete">
+					<th mat-header-cell *matHeaderCellDef></th>
+					<td mat-cell *matCellDef="let expense">
+						<button
+							*ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin"
+							mat-icon-button
+							type="button"
+							(click)="removeExpense(expense.id)"
+						>
+							<mat-icon>delete</mat-icon>
+						</button>
+					</td>
+				</ng-container>
 
-			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-			<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+				<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+				<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
-			<!-- Row shown when there is no matching data -->
-			<tr class="mat-row" *matNoDataRow>
-				<td class="mat-cell" colspan="8">No expenses matching the filter "{{ input.value }}"</td>
-			</tr>
-		</table>
+				<!-- Row shown when there is no matching data -->
+				<tr class="mat-row" *matNoDataRow>
+					<td class="mat-cell" colspan="8">No expenses matching the filter "{{ input?.value }}"</td>
+				</tr>
+			</table>
+		</div>
 	</div>
 </div>
 
 <ng-template #mobileView>
-	<mat-nav-list #expensesList class="expenses-list-mobile">
+	<mat-nav-list #expensesList *ngIf="filteredExpenses().length > 0; else noExpensesMobile" class="expenses-list-mobile">
 		<expense-item *ngFor="let expense of filteredExpenses()" [expense]="expense"></expense-item>
 	</mat-nav-list>
 	<button
@@ -135,5 +136,9 @@
 </ng-template>
 
 <ng-template #noExpenses>
-	<mat-card appearance="outlined"> No expenses </mat-card>
+	<mat-card appearance="outlined" class="no-expenses"> No expenses </mat-card>
+</ng-template>
+
+<ng-template #noExpensesMobile>
+	<div class="no-expenses-mobile"> No expenses </div>
 </ng-template>

@@ -44,29 +44,31 @@
 </div>
 
 <ng-template #mobileView>
-	<div *ngIf="paymentsSelf.length > 0">
-		<div *ngIf="paymentsOthers.length > 0" class="title-mobile">Your payments</div>
-		<mat-nav-list class="payments-list-mobile">
-			<payment-item
-				*ngFor="let sender of paymentsSelf"
-				[sender]="sender"
-				[self]="true"
-				[currentUser]="currentUser"
-				>
-			</payment-item>
-		</mat-nav-list>
-	</div>
-	<div *ngIf="paymentsOthers.length > 0">
-		<div *ngIf="paymentsSelf.length > 0" class="title-mobile">Other payments</div>
-		<mat-nav-list class="payments-list-mobile">
-			<payment-item
-				*ngFor="let sender of paymentsOthers"
-				[sender]="sender"
-				[self]="false"
-				[currentUser]="currentUser"
-				>
-			</payment-item>
-		</mat-nav-list>
+	<div *ngIf="senders.length > 0; else noPaymentsMobile">
+		<div *ngIf="paymentsSelf.length > 0">
+			<div *ngIf="paymentsOthers.length > 0" class="title-mobile">Your payments</div>
+			<mat-nav-list class="payments-list-mobile">
+				<payment-item
+					*ngFor="let sender of paymentsSelf"
+					[sender]="sender"
+					[self]="true"
+					[currentUser]="currentUser"
+					>
+				</payment-item>
+			</mat-nav-list>
+		</div>
+		<div *ngIf="paymentsOthers.length > 0">
+			<div *ngIf="paymentsSelf.length > 0" class="title-mobile">Other payments</div>
+			<mat-nav-list class="payments-list-mobile">
+				<payment-item
+					*ngFor="let sender of paymentsOthers"
+					[sender]="sender"
+					[self]="false"
+					[currentUser]="currentUser"
+					>
+				</payment-item>
+			</mat-nav-list>
+		</div>
 	</div>
 </ng-template>
 
@@ -75,9 +77,13 @@
 </ng-template>
 
 <ng-template #noPayments>
-	<div class="payments-empty">
+	<div class="no-payments">
 		<mat-card appearance="outlined">
 			<mat-card-content><h1>No payments</h1></mat-card-content>
 		</mat-card>
 	</div>
+</ng-template>
+
+<ng-template #noPaymentsMobile>
+	<div class="no-payments-mobile">No payments</div>
 </ng-template>
