@@ -11,7 +11,20 @@ jobs:
     uses: ./.github/workflows/backend-build.yml
     with:
       node-version: 18.x
+      upload-artifact: true
   test-backend:
     uses: ./.github/workflows/backend-test.yml
     with:
       node-version: 18.x
+  deploy-backend:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop' 
+    needs: [build-backend, test-backend]
+    uses: ./.github/workflows/backend-deploy.yml
+    with:
+      dry-run: true
+      environment: test
+      artifact: ${{ needs.build.outputs.artifact }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}

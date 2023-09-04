@@ -55,3 +55,11 @@ jobs:
             - name: Deploy to staging with rsync
               if: ${{!inputs.dry-run && inputs.environment == 'staging'}}
               run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-staging/
+
+            - name: Deploy to test with rsync (dry-run)
+              if: inputs.dry-run && inputs.environment == 'test'
+              run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/
+
+            - name: Deploy to test with rsync
+              if: ${{!inputs.dry-run && inputs.environment == 'test'}}
+              run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/
