@@ -25,14 +25,16 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-            - name: Install SSH Key
-              uses: shimataro/ssh-key-action@v2.5.1
-              with:
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  known_hosts: "just-a-placeholder-so-we-dont-get-errors"
-
-            - name: Adding Known Hosts
-              run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+            - name: Set up SSH
+              run: |
+                mkdir -p ~/.ssh/
+                echo "$SSH_PRIVATE_KEY" > ./deploy.key
+                sudo chmod 600 ./deploy.key
+                echo "$SSH_HOST" > ~/.ssh/known_hosts
+              shell: bash
+              env:
+                SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+                SSH_HOST: ${{secrets.SSH_HOST}}
 
             - name: Download artifacts
               id: download
@@ -56,10 +58,21 @@ jobs:
               if: ${{!inputs.dry-run && inputs.environment == 'staging'}}
               run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-staging/
 
-            - name: Deploy to test with rsync (dry-run)
-              if: inputs.dry-run && inputs.environment == 'test'
-              run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/
+            # - name: Deploy to test with rsync (dry-run)
+            #   if: inputs.dry-run && inputs.environment == 'test'
+            #   run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/
 
-            - name: Deploy to test with rsync
+            # - name: Deploy to test with rsync
+            #   if: ${{!inputs.dry-run && inputs.environment == 'test'}}
+            #   run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/
+
+            - name: Install PM2
               if: ${{!inputs.dry-run && inputs.environment == 'test'}}
-              run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/
+              run: npm install pm2
+
+            - name: Deploy with PM2
+              if: ${{!inputs.dry-run && inputs.environment == 'test'}}
+              run: pm2 deploy ecosystem.config.js test
+              env:
+                SSH_USER: ${{ secrets.SSH_USER }}
+                SSH_HOST: ${{ secrets.SSH_HOST }}
