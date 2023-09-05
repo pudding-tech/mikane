@@ -1,4 +1,4 @@
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -9,15 +9,12 @@ import packageJson from '../../../../package.json';
 	templateUrl: 'footer.component.html',
 	styleUrls: ['./footer.component.scss'],
 	standalone: true,
-	imports: [CommonModule, NgIf]
+	imports: [CommonModule],
 })
 export class FooterComponent {
 	public version: string = packageJson.version;
 
-	constructor(
-		private router: Router,
-		public breakpointService: BreakpointService
-	) { }
+	constructor(private router: Router, public breakpointService: BreakpointService) {}
 
 	showFooter() {
 		const includedPages = ['events'];

@@ -30,7 +30,7 @@ export class MenuComponent {
 	) {}
 
 	ngOnInit() {
-		this.authService.getCurrentUser().subscribe({
+		this.authService.getCurrentUser()?.subscribe({
 			next: (user) => {
 				this.user = user;
 			},
@@ -50,7 +50,7 @@ export class MenuComponent {
 	}
 
 	onProfileClick() {
-		if (this.router.url === '/u') {
+		if (this.router.url === '/u/' + this.user.id) {
 			this.splitButton.toggled = false;
 			return;
 		}

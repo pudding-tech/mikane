@@ -40,7 +40,7 @@ export class SplitButtonComponent {
 		this.toggled = !this.toggled;
 	};
 
-	onOutsideClick(event: any) {
+	onOutsideClick(event: MouseEvent) {
 		if (!this.toggled) {
 			return;
 		}
