@@ -25,16 +25,14 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-            - name: Set up SSH
-              run: |
-                mkdir -p ~/.ssh/
-                echo "$SSH_PRIVATE_KEY" > ./deploy.key
-                sudo chmod 600 ./deploy.key
-                echo "$SSH_HOST" > ~/.ssh/known_hosts
-              shell: bash
-              env:
-                SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
-                SSH_HOST: ${{secrets.SSH_HOST}}
+            - name: Install SSH Key
+              uses: shimataro/ssh-key-action@v2.5.1
+              with:
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  known_hosts: "just-a-placeholder-so-we-dont-get-errors"
+
+            - name: Adding Known Hosts
+              run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
             - name: Download artifacts
               id: download
@@ -44,11 +42,13 @@ jobs:
 
             - name: Deploy to production with rsync (dry-run)
               if: inputs.dry-run && inputs.environment == 'production'
-              run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane/
+              run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane/server/
 
             - name: Deploy to production with rsync
               if: ${{!inputs.dry-run && inputs.environment == 'production'}}
-              run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane/
+              run: |
+                rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane/server/
+                ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} pm2 reload mikane
 
             - name: Deploy to staging with rsync (dry-run)
               if: inputs.dry-run && inputs.environment == 'staging'
@@ -56,23 +56,16 @@ jobs:
 
             - name: Deploy to staging with rsync
               if: ${{!inputs.dry-run && inputs.environment == 'staging'}}
-              run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-staging/
+              run: |
+                rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-staging/
+                ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} pm2 reload mikane-staging
 
-            # - name: Deploy to test with rsync (dry-run)
-            #   if: inputs.dry-run && inputs.environment == 'test'
-            #   run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/
+            - name: Deploy to test with rsync (dry-run)
+              if: inputs.dry-run && inputs.environment == 'test'
+              run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/
 
-            # - name: Deploy to test with rsync
-            #   if: ${{!inputs.dry-run && inputs.environment == 'test'}}
-            #   run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/
-
-            - name: Install PM2
+            - name: Deploy to test with rsync
               if: ${{!inputs.dry-run && inputs.environment == 'test'}}
-              run: npm install pm2
-
-            - name: Deploy with PM2
-              if: ${{!inputs.dry-run && inputs.environment == 'test'}}
-              run: pm2 deploy ecosystem.config.js test
-              env:
-                SSH_USER: ${{ secrets.SSH_USER }}
-                SSH_HOST: ${{ secrets.SSH_HOST }}
+              run: |
+                rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/
+                ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} pm2 reload mikane-test
