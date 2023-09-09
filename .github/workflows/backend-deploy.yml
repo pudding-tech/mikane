@@ -48,7 +48,6 @@ jobs:
               if: ${{!inputs.dry-run && inputs.environment == 'production'}}
               run: |
                 rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane/server/
-                ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} pm2 reload mikane
 
             - name: Deploy to staging with rsync (dry-run)
               if: inputs.dry-run && inputs.environment == 'staging'
@@ -58,7 +57,6 @@ jobs:
               if: ${{!inputs.dry-run && inputs.environment == 'staging'}}
               run: |
                 rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-staging/
-                ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} pm2 reload mikane-staging
 
             - name: Deploy to test with rsync (dry-run)
               if: inputs.dry-run && inputs.environment == 'test'
@@ -68,4 +66,3 @@ jobs:
               if: ${{!inputs.dry-run && inputs.environment == 'test'}}
               run: |
                 rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/
-                ssh -t ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash -i -c "pm2 reload mikane-test"'
