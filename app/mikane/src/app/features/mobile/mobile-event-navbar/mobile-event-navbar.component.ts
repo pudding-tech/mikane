@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { ContextService } from 'src/app/services/context/context.service';
 
 interface Route {
@@ -12,17 +12,17 @@ interface Route {
 }
 
 @Component({
-	selector: 'mobile-event-navbar',
+	selector: 'app-mobile-event-navbar',
 	templateUrl: 'mobile-event-navbar.component.html',
 	styleUrls: ['./mobile-event-navbar.component.scss'],
 	standalone: true,
 	imports: [CommonModule, RouterLink, RouterOutlet, MatIconModule, MatRippleModule],
 })
-export class MobileEventNavbarComponent {
-	@Input('activeLink') activeLink: string;
-	@Input('links') links: Route[];
+export class MobileEventNavbarComponent implements OnInit {
+	@Input() activeLink: string;
+	@Input() links: Route[];
 
-	constructor (public contextService: ContextService) { }
+	constructor(public contextService: ContextService) {}
 
 	mobileLinks: Route[];
 
@@ -33,7 +33,7 @@ export class MobileEventNavbarComponent {
 				icon: 'arrow_back_ios',
 				location: '/events',
 			},
-			...this.links
+			...this.links,
 		];
-  }
+	}
 }

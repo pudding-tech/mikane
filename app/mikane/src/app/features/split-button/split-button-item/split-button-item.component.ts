@@ -3,18 +3,24 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-	selector: 'split-button-item',
+	selector: 'app-split-button-item',
 	templateUrl: './split-button-item.component.html',
 	styleUrls: ['./split-button-item.component.scss'],
 	standalone: true,
 	imports: [MatIconModule, MatRippleModule],
 })
 export class SplitButtonItemComponent {
-	@Output() onClick = new EventEmitter();
-	@Input('icon') icon: string = '';
-	@Input('text') text: string = '';
+	@Output() splitButtonClick = new EventEmitter();
+	@Input() icon = '';
+	@Input() text = '';
 
-	click() {
-		this.onClick.emit();
+	onEnter($event?: KeyboardEvent) {
+		if ($event.key === 'Enter' || $event.key === ' ') {
+			this.splitButtonClick.emit();
+		}
+	}
+
+	onClick() {
+		this.splitButtonClick.emit();
 	}
 }

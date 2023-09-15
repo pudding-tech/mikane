@@ -18,6 +18,7 @@ describe('ResetPasswordComponent', () => {
 	let spy: jasmine.Spy;
 
 	beforeAll(MockInstance.remember);
+
 	afterAll(MockInstance.restore);
 
 	beforeEach(() => {
@@ -99,6 +100,7 @@ describe('ResetPasswordComponent', () => {
 
 	it('should have a submit button', () => {
 		const submitButton = fixture.debugElement.query(By.css('button[type="submit"]'));
+
 		expect(submitButton).withContext('should have a submit button').toBeTruthy();
 	});
 
@@ -108,7 +110,8 @@ describe('ResetPasswordComponent', () => {
 			newPasswordRetype: 'password',
 		});
 		component.submit();
-		expect(spy).toHaveBeenCalled();
+
+		expect(spy).toHaveBeenCalledWith('key', 'password');
 	});
 
 	it('should not reset password if passwords do not match', () => {
@@ -117,6 +120,7 @@ describe('ResetPasswordComponent', () => {
 			newPasswordRetype: 'password2',
 		});
 		component.submit();
+
 		expect(spy).not.toHaveBeenCalled();
 	});
 
@@ -126,6 +130,7 @@ describe('ResetPasswordComponent', () => {
 			newPasswordRetype: '',
 		});
 		component.submit();
+
 		expect(spy).not.toHaveBeenCalled();
 	});
 
@@ -137,7 +142,8 @@ describe('ResetPasswordComponent', () => {
 		fixture.detectChanges();
 
 		page.submitButton.nativeElement.click();
-		expect(spy).toHaveBeenCalled();
+
+		expect(spy).toHaveBeenCalledWith('key', 'password');
 	});
 
 	it('should show success message after submitting', () => {
@@ -151,7 +157,7 @@ describe('ResetPasswordComponent', () => {
 		page.submitButton.nativeElement.click();
 		fixture.detectChanges();
 
-		expect(messageService.showSuccess).toHaveBeenCalled();
+		expect(messageService.showSuccess).toHaveBeenCalledWith('Password changed successfully');
 	});
 
 	it('should redirect to login after submitting', () => {
@@ -188,7 +194,7 @@ describe('ResetPasswordComponent', () => {
 		page.submitButton.nativeElement.click();
 		fixture.detectChanges();
 
-		expect(messageService.showError).toHaveBeenCalled();
+		expect(messageService.showError).toHaveBeenCalledWith('Failed to change password');
 	});
 
 	it('should show error if key is invalid', () => {

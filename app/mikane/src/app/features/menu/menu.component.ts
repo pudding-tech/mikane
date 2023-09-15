@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { SplitButtonComponent } from 'src/app/features/split-button/split-button.component';
@@ -12,13 +12,13 @@ import { SplitButtonItemComponent } from '../split-button/split-button-item/spli
 import { SplitButtonItemDirective } from '../split-button/split-button-item/split-button-item.directive';
 
 @Component({
-	selector: 'menu',
+	selector: 'app-menu',
 	templateUrl: './menu.component.html',
 	styleUrls: ['./menu.component.scss'],
 	standalone: true,
 	imports: [CommonModule, MatIconModule, SplitButtonComponent, SplitButtonItemComponent, SplitButtonItemDirective],
 })
-export class MenuComponent {
+export class MenuComponent implements OnInit {
 	@ViewChild('splitButton') private splitButton: SplitButtonComponent;
 	user: User;
 

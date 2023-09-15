@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
-	selector: 'category-edit-dialog',
 	templateUrl: 'category-edit-dialog.component.html',
 	styleUrls: ['category-edit-dialog.component.scss'],
 	standalone: true,

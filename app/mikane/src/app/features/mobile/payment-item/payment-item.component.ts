@@ -1,17 +1,16 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { CurrencyPipe } from '@angular/common';
-import { MatListModule } from '@angular/material/list';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { User } from 'src/app/services/user/user.service';
+import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 
 @Component({
-	selector: 'payment-item',
+	selector: 'app-payment-item',
 	templateUrl: 'payment-item.component.html',
 	styleUrls: ['./payment-item.component.scss'],
 	standalone: true,
@@ -28,14 +27,14 @@ import { User } from 'src/app/services/user/user.service';
 		ReactiveFormsModule,
 	],
 })
-export class PaymentItemComponent {
+export class PaymentItemComponent implements OnInit {
 	@ViewChild('lower') lower: ElementRef;
-	@Input('sender') sender: {
+	@Input() sender: {
 		sender: User;
-		receivers: {
+		receivers: Array<{
 			receiver: User;
 			amount: number;
-		}[];
+		}>;
 	};
 	@Input() self: boolean;
 	@Input() currentUser: User;
@@ -50,7 +49,7 @@ export class PaymentItemComponent {
 			setTimeout(() => {
 				this.lowerHeight = this.lower.nativeElement.scrollHeight;
 			});
-    }
+		}
 	}
 
 	toggleDropdown = () => {
@@ -58,8 +57,7 @@ export class PaymentItemComponent {
 
 		if (this.lowerHeight === 0) {
 			this.lowerHeight = this.lower.nativeElement.scrollHeight;
-		}
-		else {
+		} else {
 			this.lowerHeight = 0;
 		}
 	};

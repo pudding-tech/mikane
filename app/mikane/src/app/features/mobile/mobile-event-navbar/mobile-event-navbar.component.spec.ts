@@ -41,6 +41,7 @@ describe('MobileEventNavbarComponent', () => {
 
 	it('should display the back button', () => {
 		const backButtonEl = fixture.debugElement.query(By.css('.nav-back-button')).nativeElement;
+
 		expect(backButtonEl).toBeTruthy();
 	});
 
@@ -52,6 +53,7 @@ describe('MobileEventNavbarComponent', () => {
 
 	it('should set the active class on the active link', () => {
 		const activeLinkEl = fixture.debugElement.query(By.css('.active')).nativeElement;
+
 		expect(activeLinkEl.getAttribute('href')).toEqual(component.activeLink);
 	});
 });

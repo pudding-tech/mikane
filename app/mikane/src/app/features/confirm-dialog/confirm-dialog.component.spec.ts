@@ -49,6 +49,7 @@ describe('ConfirmDialogComponent', () => {
 				},
 			],
 		});
+
 		expect(() => {
 			fixture = TestBed.createComponent(ConfirmDialogComponent);
 			component = fixture.componentInstance;
@@ -71,6 +72,7 @@ describe('ConfirmDialogComponent', () => {
 				},
 			],
 		});
+
 		expect(() => {
 			fixture = TestBed.createComponent(ConfirmDialogComponent);
 			component = fixture.componentInstance;
@@ -93,6 +95,7 @@ describe('ConfirmDialogComponent', () => {
 				},
 			],
 		});
+
 		expect(() => {
 			fixture = TestBed.createComponent(ConfirmDialogComponent);
 			component = fixture.componentInstance;
@@ -115,6 +118,7 @@ describe('ConfirmDialogComponent', () => {
 				},
 			],
 		});
+
 		expect(() => {
 			fixture = TestBed.createComponent(ConfirmDialogComponent);
 			component = fixture.componentInstance;
@@ -124,6 +128,7 @@ describe('ConfirmDialogComponent', () => {
 
 	it('should close the dialog when onNoClick is called', () => {
 		component.onNoClick();
-		expect(component.dialogRef.close).toHaveBeenCalled();
+
+		expect(component.dialogRef.close).toHaveBeenCalledWith();
 	});
 });

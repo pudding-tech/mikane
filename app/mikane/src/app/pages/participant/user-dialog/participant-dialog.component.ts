@@ -15,7 +15,6 @@ import { Observable, map, startWith, switchMap } from 'rxjs';
 import { User } from 'src/app/services/user/user.service';
 
 @Component({
-	selector: 'participant-dialog',
 	templateUrl: './participant-dialog.component.html',
 	styleUrls: ['./participant-dialog.component.scss'],
 	standalone: true,
@@ -52,7 +51,7 @@ export class ParticipantDialogComponent implements OnInit {
 
 	constructor(
 		public dialogRef: MatDialogRef<ParticipantDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: { users: Observable<User[]> }
+		@Inject(MAT_DIALOG_DATA) public data: { users: Observable<User[]> },
 	) {}
 
 	ngOnInit(): void {
@@ -61,12 +60,12 @@ export class ParticipantDialogComponent implements OnInit {
 				this.users = users;
 				return this.addUserForm.get('users').valueChanges.pipe(
 					startWith(''),
-					map((user) => {
-						const name = typeof user === 'string' ? user : user?.name;
+					map((addUser) => {
+						const name = typeof addUser === 'string' ? addUser : addUser?.name;
 						return name ? this._filter(name as string) : this.users.filter((user) => !this.selectedUsers.includes(user));
-					})
+					}),
 				);
-			})
+			}),
 		);
 	}
 
@@ -81,7 +80,7 @@ export class ParticipantDialogComponent implements OnInit {
 			this.selectedUsers.push(event.value as unknown as User);
 		}
 
-		event.chipInput!.clear();
+		event.chipInput.clear();
 		this.addUserForm.get('users').setValue(null);
 	}
 

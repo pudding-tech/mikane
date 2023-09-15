@@ -1,9 +1,11 @@
-<h1 mat-dialog-title>{{ data?.edit ? (delete ? "Delete " + guest.firstName + " " + guest.lastName + "?" : "Edit guest") : "Create guest" }}</h1>
+<h1 mat-dialog-title>
+	{{ data?.edit ? (delete ? "Delete " + guest.firstName + " " + guest.lastName + "?" : "Edit guest") : "Create guest" }}
+</h1>
 <div *ngIf="!delete; else deleteContent">
 	<div mat-dialog-content>
 		<mat-form-field appearance="fill">
 			<mat-label>First name</mat-label>
-			<input matInput name="firstName" [(ngModel)]="guest.firstName" required [eventName]="guest.id" #firstName="ngModel" />
+			<input matInput name="firstName" [(ngModel)]="guest.firstName" required [appEventName]="guest.id" #firstName="ngModel" />
 			<mat-error *ngIf="firstName.errors?.['required']">First name is required</mat-error>
 		</mat-form-field>
 		<mat-form-field appearance="fill">
@@ -25,17 +27,14 @@
 <ng-template #deleteContent>
 	<div mat-dialog-content>
 		Are you sure you want to delete this guest user? This cannot be undone.
-		<br/><br/>
-		The guest user will be removed from all active events, and for events that have been archived,
-		to maintain the event's integrity, the guest user's contributions will instead be anonymized.
+		<br /><br />
+		The guest user will be removed from all active events, and for events that have been archived, to maintain the event's integrity,
+		the guest user's contributions will instead be anonymized.
 	</div>
 	<div mat-dialog-actions class="dialog-buttons">
 		<div>
 			<button mat-button (click)="goBack()">Go back</button>
-			<button mat-button color="warn" (click)="deleteGuest()">
-				Yes, I am sure
-			</button>
+			<button mat-button color="warn" (click)="deleteGuest()">Yes, I am sure</button>
 		</div>
 	</div>
 </ng-template>
-

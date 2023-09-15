@@ -66,7 +66,7 @@ export class UserService {
 	 * @param excludeSelf Exclude the current user from the list
 	 * @returns Observable of User[]
 	 */
-	loadUsers(excludeSelf: boolean = false) {
+	loadUsers(excludeSelf = false) {
 		return this.httpClient.get<User[]>(this.apiUrl + (excludeSelf ? '?excludeSelf=true' : ''));
 	}
 

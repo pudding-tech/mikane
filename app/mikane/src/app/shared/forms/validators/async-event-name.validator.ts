@@ -26,16 +26,16 @@ export function eventNameValidator(formValidationService: FormValidationService,
 }
 
 @Directive({
-	selector: '[eventName][formControlName], [eventName][formControl], [eventName][ngModel]',
+	selector: '[appEventName][formControlName], [appEventName][formControl], [appEventName][ngModel]',
 	providers: [{ provide: NG_ASYNC_VALIDATORS, useExisting: EventNameValidatorDirective, multi: true }],
 	standalone: true,
 })
 export class EventNameValidatorDirective implements AsyncValidator {
-	@Input() eventName: string;
+	@Input() appEventName: string;
 	constructor(private validationService: FormValidationService) {}
 
-	validate(control: AbstractControl<any, any>): Promise<ValidationErrors> | Observable<ValidationErrors> {
-		const validationFn = eventNameValidator(this.validationService, this.eventName);
+	validate(control: AbstractControl<unknown, unknown>): Promise<ValidationErrors> | Observable<ValidationErrors> {
+		const validationFn = eventNameValidator(this.validationService, this.appEventName);
 		return validationFn(control);
 	}
 }

@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { MockComponent, MockDirective, MockModule } from 'ng-mocks';
 import { of, throwError } from 'rxjs';
+import { spyPropertyGetter } from 'src/app/helpers/test.helpers';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -22,7 +23,7 @@ describe('MenuComponent', () => {
 	let messageServiceSpy: jasmine.SpyObj<MessageService>;
 
 	beforeEach(() => {
-		routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+		routerSpy = jasmine.createSpyObj('Router', ['navigate'], ['url']);
 		authServiceSpy = jasmine.createSpyObj('AuthService', ['getCurrentUser', 'logout']);
 		messageServiceSpy = jasmine.createSpyObj('MessageService', ['showError']);
 
@@ -56,6 +57,7 @@ describe('MenuComponent', () => {
 		const user: User = { id: '1', name: 'Test User' } as User;
 		authServiceSpy.getCurrentUser.and.returnValue(of(user));
 		component.ngOnInit();
+
 		expect(component.user).toEqual(user);
 	});
 
@@ -63,18 +65,20 @@ describe('MenuComponent', () => {
 		const error: ApiError = { error: { message: 'Test Error' } } as ApiError;
 		authServiceSpy.getCurrentUser.and.returnValue(throwError(() => error));
 		component.ngOnInit();
+
 		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to get user');
 	});
 
 	it('should navigate to account page when onAccountClick is called', () => {
 		component.onAccountClick();
+
 		expect(routerSpy.navigate).toHaveBeenCalledWith(['/account']);
 	});
 
 	it('should not navigate to account page when onAccountClick is called and already on account page', () => {
-		// @ts-ignore
-		routerSpy.url = '/account';
+		spyPropertyGetter(routerSpy, 'url').and.returnValue('/account');
 		component.onAccountClick();
+
 		expect(routerSpy.navigate).not.toHaveBeenCalled();
 	});
 
@@ -82,22 +86,24 @@ describe('MenuComponent', () => {
 		const user: User = { id: '1', name: 'Test User' } as User;
 		component.user = user;
 		component.onProfileClick();
+
 		expect(routerSpy.navigate).toHaveBeenCalledWith(['/u', user.id]);
 	});
 
 	it('should not navigate to profile page when onProfileClick is called and already on profile page', () => {
 		const user: User = { id: '1', name: 'Test User' } as User;
 		component.user = user;
-		// @ts-ignore
-		routerSpy.url = `/u/${user.id}`;
+		spyPropertyGetter(routerSpy, 'url').and.returnValue(`/u/${user.id}`);
 		component.onProfileClick();
+
 		expect(routerSpy.navigate).not.toHaveBeenCalled();
 	});
 
 	it('should log out and navigate to login page when logout is called', () => {
 		authServiceSpy.logout.and.returnValue(of(null));
 		component.logout();
-		expect(authServiceSpy.logout).toHaveBeenCalled();
+
+		expect(authServiceSpy.logout).toHaveBeenCalledWith();
 		expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
 	});
 
@@ -105,30 +111,33 @@ describe('MenuComponent', () => {
 		const error: ApiError = { error: { message: 'Test Error' } } as ApiError;
 		authServiceSpy.logout.and.returnValue(throwError(() => error));
 		component.logout();
+
 		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to log out');
 	});
 
 	it('should navigate to guests page when onGuestsClick is called', () => {
 		component.onGuestsClick();
+
 		expect(routerSpy.navigate).toHaveBeenCalledWith(['/guests']);
 	});
 
 	it('should not navigate to guests page when onGuestsClick is called and already on guests page', () => {
-		// @ts-ignore
-		routerSpy.url = '/guests';
+		spyPropertyGetter(routerSpy, 'url').and.returnValue('/guests');
 		component.onGuestsClick();
+
 		expect(routerSpy.navigate).not.toHaveBeenCalled();
 	});
 
 	it('should navigate to invite page when inviteUser is called', () => {
 		component.inviteUser();
+
 		expect(routerSpy.navigate).toHaveBeenCalledWith(['/invite']);
 	});
 
 	it('should not navigate to invite page when inviteUser is called and already on invite page', () => {
-		// @ts-ignore
-		routerSpy.url = '/invite';
+		spyPropertyGetter(routerSpy, 'url').and.returnValue('/invite');
 		component.inviteUser();
+
 		expect(routerSpy.navigate).not.toHaveBeenCalled();
 	});
 });

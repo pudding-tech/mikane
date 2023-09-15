@@ -55,7 +55,8 @@ describe('ChangePasswordComponent', () => {
 	it('should add compare validator to form', () => {
 		const formSpy = spyOn(component.changePasswordForm, 'addValidators');
 		component.ngOnInit();
-		expect(formSpy).toHaveBeenCalled();
+
+		expect(formSpy).toHaveBeenCalledWith([jasmine.any(Function)]);
 	});
 
 	it('should call changeUserPassword when form is submitted', () => {

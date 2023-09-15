@@ -12,7 +12,7 @@ import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 import { CategoryIcon } from 'src/app/types/enums';
 
 @Component({
-	selector: 'category-item',
+	selector: 'app-category-item',
 	templateUrl: 'category-item.component.html',
 	styleUrls: ['./category-item.component.scss'],
 	standalone: true,
@@ -32,7 +32,7 @@ import { CategoryIcon } from 'src/app/types/enums';
 export class CategoryItemComponent {
 	@ViewChild('lower') lower: ElementRef;
 	@Input() active: boolean;
-	@Input('category') category: Category;
+	@Input() category: Category;
 	@Input() addUserForm: FormGroup;
 	@Input() filterUsers: (categoryId: string) => User[];
 	@Output() addUser = new EventEmitter<{ categoryId: string }>();
@@ -42,8 +42,8 @@ export class CategoryItemComponent {
 	@Output() toggleWeighted = new EventEmitter<{ categoryId: string; weighted: boolean }>();
 	@Output() deleteCategoryDialog = new EventEmitter<{ categoryId: string }>();
 
-	dropdownOpen: boolean = false;
-	lowerHeight: number = 0;
+	dropdownOpen = false;
+	lowerHeight = 0;
 
 	constructor(private renderer: Renderer2) {}
 

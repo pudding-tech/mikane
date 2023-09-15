@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{ edit ? 'Edit Expense' : 'Add Expense' }}</h1>
+<h1 mat-dialog-title>{{ edit ? "Edit Expense" : "Add Expense" }}</h1>
 <div mat-dialog-content>
 	<form [formGroup]="addExpenseForm" autocomplete="off">
 		<mat-form-field appearance="fill">
@@ -41,7 +41,7 @@
 			<mat-select formControlName="payer" required>
 				<mat-option *ngFor="let user of users" [value]="user.id">
 					<span class="user">
-						<img [src]="user.avatarURL" class="avatar" />
+						<img [src]="user.avatarURL" alt="User avatar" class="avatar" />
 						{{ user.name }}
 					</span>
 				</mat-option>

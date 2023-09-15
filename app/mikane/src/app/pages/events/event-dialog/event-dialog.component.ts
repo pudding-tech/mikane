@@ -10,7 +10,6 @@ import { PuddingEvent } from 'src/app/services/event/event.service';
 import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
 
 @Component({
-	selector: 'event-dialog',
 	templateUrl: 'event-dialog.component.html',
 	styleUrls: ['event-dialog.component.scss'],
 	standalone: true,

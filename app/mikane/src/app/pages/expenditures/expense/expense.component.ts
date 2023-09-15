@@ -7,17 +7,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subject, filter, switchMap, takeUntil } from 'rxjs';
-import { MenuComponent } from 'src/app/features/menu/menu.component';
-import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { ExpenditureDialogComponent } from '../expenditure-dialog/expenditure-dialog.component';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
+import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
 import { ApiError } from 'src/app/types/apiError.type';
+import { ExpenditureDialogComponent } from '../expenditure-dialog/expenditure-dialog.component';
 
 @Component({
 	templateUrl: 'expense.component.html',
@@ -36,7 +36,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 	],
 })
 export class ExpenseComponent implements OnInit, OnDestroy {
-	protected loading: boolean = true;
+	protected loading = true;
 	expense: Expense;
 	event: PuddingEvent;
 	currentUserId: string;
@@ -61,36 +61,39 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 		const eventId = this.route.parent.parent.snapshot.paramMap.get('eventId');
 		const expenseId = this.route.snapshot.paramMap.get('id');
 
-		this.eventService.getEvent(eventId).pipe(
-			switchMap((event) => {
-				this.event = event;
-				return this.expenseService.getExpense(expenseId)
-			}),
-			takeUntil(this.destroy$)
-		)
-		.subscribe({
-			next: (expense) => {
-				this.expense = expense;
-				this.loading = false;
-			},
-			error: (err: ApiError) => {
-				this.loading = false;
-				this.messageService.showError('Error loading expense');
-				console.error('Something went wrong while loading expense', err?.error?.message);
-			},
-		});
+		this.eventService
+			.getEvent(eventId)
+			.pipe(
+				switchMap((event) => {
+					this.event = event;
+					return this.expenseService.getExpense(expenseId);
+				}),
+				takeUntil(this.destroy$),
+			)
+			.subscribe({
+				next: (expense) => {
+					this.expense = expense;
+					this.loading = false;
+				},
+				error: (err: ApiError) => {
+					this.loading = false;
+					this.messageService.showError('Error loading expense');
+					console.error('Something went wrong while loading expense', err?.error?.message);
+				},
+			});
 
-		this.authService.getCurrentUser().pipe(
-			takeUntil(this.destroy$)
-		).subscribe({
-			next: (user) => {
-				this.currentUserId = user.id;
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Failed to get user');
-				console.error('Something went wrong getting signed in user', err?.error?.message);
-			},
-		});
+		this.authService
+			.getCurrentUser()
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: (user) => {
+					this.currentUserId = user.id;
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to get user');
+					console.error('Something went wrong getting signed in user', err?.error?.message);
+				},
+			});
 	}
 
 	editExpense() {
@@ -114,7 +117,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 					newExpense = expense;
 					return this.categoryService.findOrCreate(this.event.id, expense?.category);
 				}),
-				takeUntil(this.cancel$)
+				takeUntil(this.cancel$),
 			)
 			.pipe(
 				switchMap((category: Category) => {
@@ -124,14 +127,14 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 						newExpense.description ?? undefined,
 						newExpense.amount,
 						category.id,
-						newExpense.payer as unknown as string
+						newExpense.payer as unknown as string,
 					);
 				}),
-				takeUntil(this.destroy$)
+				takeUntil(this.destroy$),
 			)
 			.subscribe({
-				next: (newExpense) => {
-					this.expense = newExpense;
+				next: (returnedExpense) => {
+					this.expense = returnedExpense;
 					this.messageService.showSuccess('Expense edited');
 				},
 				error: (err: ApiError) => {
@@ -151,21 +154,23 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 			},
 		});
 
-		dialogRef.afterClosed().pipe(
-			filter(confirm => confirm),
-			switchMap(() => this.expenseService.deleteExpense(this.expense.id)),
-			takeUntil(this.destroy$)
-		)
-		.subscribe({
-			next: () => {
-				this.router.navigate(['events', this.event.id, 'expenses']);
-				this.messageService.showSuccess('Expense successfully deleted');
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Failed to delete expense');
-				console.error('Something went wrong while deleting expense', err?.error?.message);
-			},
-		});
+		dialogRef
+			.afterClosed()
+			.pipe(
+				filter((confirm) => confirm),
+				switchMap(() => this.expenseService.deleteExpense(this.expense.id)),
+				takeUntil(this.destroy$),
+			)
+			.subscribe({
+				next: () => {
+					this.router.navigate(['events', this.event.id, 'expenses']);
+					this.messageService.showSuccess('Expense successfully deleted');
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to delete expense');
+					console.error('Something went wrong while deleting expense', err?.error?.message);
+				},
+			});
 	}
 
 	goBack() {

@@ -16,10 +16,11 @@ describe('usernameValidator', () => {
 		const control = new FormControl('test');
 		(formValidationService.validateUsername as jasmine.Spy).and.returnValue(of(null));
 
-		const validator = usernameValidator(formValidationService)!(control) as Observable<ValidationErrors | null>;
+		const validator = usernameValidator(formValidationService)(control) as Observable<ValidationErrors | null>;
 		let result: ValidationErrors | null = null;
 		validator.subscribe((res) => (result = res));
 		tick(1000);
+
 		expect(result).toBeNull();
 	}));
 
@@ -28,10 +29,11 @@ describe('usernameValidator', () => {
 		const error: ApiError = { status: 409 } as ApiError;
 		(formValidationService.validateUsername as jasmine.Spy).and.returnValue(throwError(() => error));
 
-		const validator = usernameValidator(formValidationService)!(control) as Observable<ValidationErrors | null>;
+		const validator = usernameValidator(formValidationService)(control) as Observable<ValidationErrors | null>;
 		let result: ValidationErrors | null = null;
 		validator.subscribe((res) => (result = res));
 		tick(1000);
+
 		expect(result).toEqual({ duplicate: true });
 	}));
 
@@ -40,10 +42,11 @@ describe('usernameValidator', () => {
 		const error: ApiError = { status: 400 } as ApiError;
 		(formValidationService.validateUsername as jasmine.Spy).and.returnValue(throwError(() => error));
 
-		const validator = usernameValidator(formValidationService)!(control) as Observable<ValidationErrors | null>;
+		const validator = usernameValidator(formValidationService)(control) as Observable<ValidationErrors | null>;
 		let result: ValidationErrors | null = null;
 		validator.subscribe((res) => (result = res));
 		tick(1000);
+
 		expect(result).toEqual({ invalid: true });
 	}));
 
@@ -51,17 +54,20 @@ describe('usernameValidator', () => {
 		const control = jasmine.createSpyObj<AbstractControl>('AbstractControl', ['value'], { value: 'test' });
 		(formValidationService.validateUsername as jasmine.Spy).and.returnValue(of(null));
 
-		const validator = usernameValidator(formValidationService)!(control);
+		const validator = usernameValidator(formValidationService)(control);
 		const startTime = Date.now();
 		(validator as Observable<ValidationErrors | null>).subscribe(() => {
 			const endTime = Date.now();
+
 			expect(endTime - startTime).toBeGreaterThanOrEqual(1000);
 		});
 
 		tick(500);
+
 		expect(formValidationService.validateUsername).not.toHaveBeenCalled();
 		tick(500);
-		expect(formValidationService.validateUsername).toHaveBeenCalled();
+
+		expect(formValidationService.validateUsername).toHaveBeenCalledWith(control.value, undefined);
 	}));
 
 	it('should pass userId to formValidationService if provided', fakeAsync(() => {
@@ -69,7 +75,7 @@ describe('usernameValidator', () => {
 		const userId = '123';
 		(formValidationService.validateUsername as jasmine.Spy).and.returnValue(of(null));
 
-		const validator = usernameValidator(formValidationService, userId)!(control);
+		const validator = usernameValidator(formValidationService, userId)(control);
 		(validator as Observable<ValidationErrors | null>).subscribe(() => {
 			expect(formValidationService.validateUsername).toHaveBeenCalledWith(control.value, userId);
 		});

@@ -40,15 +40,17 @@ describe('SplitButtonComponent', () => {
 	});
 
 	it('should emit the onClick event when the button is clicked', () => {
-		spyOn(component.onClick, 'emit');
+		spyOn(component.splitButtonClick, 'emit');
 		const buttonEl = fixture.debugElement.query(By.css('.split-button.main-button')).nativeElement;
 		buttonEl.click();
-		expect(component.onClick.emit).toHaveBeenCalled();
+
+		expect(component.splitButtonClick.emit).toHaveBeenCalledWith();
 	});
 
 	it('should toggle the dropdown when the toggleDropdown method is called', () => {
 		const initialDropdownOpen = component.toggled;
 		component.toggleDropdown();
+
 		expect(component.toggled).toEqual(!initialDropdownOpen);
 	});
 
@@ -57,6 +59,7 @@ describe('SplitButtonComponent', () => {
 		const outsideEl = document.createElement('div');
 		document.body.appendChild(outsideEl);
 		outsideEl.click();
+
 		expect(component.toggled).toBeFalse();
 	});
 
@@ -65,6 +68,7 @@ describe('SplitButtonComponent', () => {
 		const outsideEl = document.createElement('div');
 		document.body.appendChild(outsideEl);
 		outsideEl.click();
+
 		expect(component.toggled).toBeFalse();
 	});
 
@@ -72,6 +76,7 @@ describe('SplitButtonComponent', () => {
 		component.toggled = true;
 		const insideEl = fixture.debugElement.query(By.css('.split-button.main-button')).nativeElement;
 		insideEl.click();
+
 		expect(component.toggled).toBeTrue();
 	});
 
@@ -86,6 +91,7 @@ describe('SplitButtonComponent', () => {
 
 		fixture.detectChanges();
 		const items = fixture.debugElement.queryAll(By.directive(SplitButtonItemDirective));
+
 		expect(items.length).toEqual(component.items.length);
 	});
 });

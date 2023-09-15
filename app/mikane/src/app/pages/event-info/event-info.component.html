@@ -33,7 +33,7 @@
 			<mat-list-item *ngFor="let admin of adminsInEvent" class="list-item">
 				<div class="admin">
 					<div class="name">
-						<img [src]="admin.avatarURL" class="avatar" />
+						<img [src]="admin.avatarURL" alt="User avatar" class="avatar" />
 						{{ admin.name }}
 					</div>
 				</div>
@@ -43,5 +43,5 @@
 </ng-template>
 
 <ng-template #loadingSpinner>
-	<loading-spinner></loading-spinner>
+	<app-loading-spinner></app-loading-spinner>
 </ng-template>

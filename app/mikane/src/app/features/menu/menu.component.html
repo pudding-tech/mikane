@@ -2,24 +2,44 @@
 	<span class="name" *ngIf="(breakpointService.isMobile() | async) === false">
 		{{ user?.username }}
 	</span>
-	<split-button #splitButton (onClick)="onProfileClick()">
+	<app-split-button #splitButton (splitButtonClick)="onProfileClick()">
 		<div button>
-			<img *ngIf="user?.avatarURL" [src]="user?.avatarURL" class="avatar" />
+			<img *ngIf="user?.avatarURL" alt="User avatar" [src]="user?.avatarURL" class="avatar" />
 		</div>
 		<div dropdown-button>
 			<div *ngIf="breakpointService.isMobile() | async; else dropdownArrow">
-				<img *ngIf="user?.avatarURL" [src]="user?.avatarURL" class="avatar" />
+				<img *ngIf="user?.avatarURL" alt="User avatar" [src]="user?.avatarURL" class="avatar" />
 			</div>
 			<ng-template #dropdownArrow>
 				<mat-icon dropdown-button class="dropdown-button">arrow_drop_down</mat-icon>
 			</ng-template>
 		</div>
 		<ng-container *ngIf="breakpointService.isMobile() | async">
-			<split-button-item *splitButtonItem (onClick)="onProfileClick()" icon="person" text="Profile"></split-button-item>
+			<app-split-button-item
+				*appSplitButtonItem
+				(splitButtonClick)="onProfileClick()"
+				icon="person"
+				text="Profile"
+			></app-split-button-item>
 		</ng-container>
-		<split-button-item *splitButtonItem (onClick)="onAccountClick()" icon="manage_accounts" text="Account"></split-button-item>
-		<split-button-item *splitButtonItem (onClick)="onGuestsClick()" icon="supervisor_account" text="Guests"></split-button-item>
-		<split-button-item *splitButtonItem (onClick)="inviteUser()" icon="person_add" text="Invite"></split-button-item>
-		<split-button-item *splitButtonItem (onClick)="logout()" icon="logout" text="Log out"></split-button-item>
-	</split-button>
+		<app-split-button-item
+			*appSplitButtonItem
+			(splitButtonClick)="onAccountClick()"
+			icon="manage_accounts"
+			text="Account"
+		></app-split-button-item>
+		<app-split-button-item
+			*appSplitButtonItem
+			(splitButtonClick)="onGuestsClick()"
+			icon="supervisor_account"
+			text="Guests"
+		></app-split-button-item>
+		<app-split-button-item
+			*appSplitButtonItem
+			(splitButtonClick)="inviteUser()"
+			icon="person_add"
+			text="Invite"
+		></app-split-button-item>
+		<app-split-button-item *appSplitButtonItem (splitButtonClick)="logout()" icon="logout" text="Log out"></app-split-button-item>
+	</app-split-button>
 </div>

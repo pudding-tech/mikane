@@ -10,7 +10,6 @@ import { User } from 'src/app/services/user/user.service';
 import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
 
 @Component({
-	selector: 'guest-dialog',
 	templateUrl: 'guest-dialog.component.html',
 	styleUrls: ['guest-dialog.component.scss'],
 	standalone: true,
@@ -30,7 +29,7 @@ export class GuestDialogComponent {
 	edit: boolean;
 	currentFirstName: string;
 	currentLastName: string;
-	delete: boolean = false;
+	delete = false;
 
 	constructor(
 		public dialogRef: MatDialogRef<GuestDialogComponent>,

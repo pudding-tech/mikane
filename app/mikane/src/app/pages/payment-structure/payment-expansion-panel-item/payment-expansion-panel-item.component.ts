@@ -1,16 +1,16 @@
+import { AsyncPipe, CurrencyPipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
-import { User } from 'src/app/services/user/user.service';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { NgIf, NgFor, AsyncPipe, CurrencyPipe } from '@angular/common';
 import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payment-item.component';
+import { User } from 'src/app/services/user/user.service';
 
 @Component({
-	selector: 'payment-expansion-panel-item',
+	selector: 'app-payment-expansion-panel-item',
 	templateUrl: './payment-expansion-panel-item.component.html',
 	styleUrls: ['./payment-expansion-panel-item.component.scss'],
 	standalone: true,
@@ -30,13 +30,13 @@ import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payme
 })
 export class PaymentExpansionPanelItemComponent {
 	@ViewChild(MatAccordion) accordion!: MatAccordion;
-	@Input('senders') senders: {
+	@Input() senders: Array<{
 		sender: User;
-		receivers: {
+		receivers: Array<{
 			receiver: User;
 			amount: number;
-		}[];
-	}[];
+		}>;
+	}>;
 	@Input() self: boolean;
 	@Input() currentUser: User;
 	@Output() allPanelsExpanded = new EventEmitter();

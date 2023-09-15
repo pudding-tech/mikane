@@ -1,25 +1,33 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { UserService } from 'src/app/services/user/user.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { User } from 'src/app/services/user/user.service';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { MessageService } from 'src/app/services/message/message.service';
+import { User, UserService } from 'src/app/services/user/user.service';
 import { createCompareValidator } from 'src/app/shared/forms/validators/compare.validator';
 
 @Component({
-	selector: 'change-password',
+	selector: 'app-change-password',
 	templateUrl: './change-password.component.html',
 	styleUrls: ['./change-password.component.scss'],
 	standalone: true,
-	imports: [CommonModule, MatCardModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+	imports: [
+		CommonModule,
+		MatCardModule,
+		MatIconModule,
+		FormsModule,
+		ReactiveFormsModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatButtonModule,
+	],
 })
 export class ChangePasswordComponent implements OnInit, OnDestroy {
 	hide = true;
@@ -32,7 +40,12 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 		newPasswordRetype: new FormControl<string>('', [Validators.required]),
 	});
 
-	constructor(private userService: UserService, private messageService: MessageService, private router: Router, public breakpointService: BreakpointService) {}
+	constructor(
+		private userService: UserService,
+		private messageService: MessageService,
+		private router: Router,
+		public breakpointService: BreakpointService
+	) {}
 
 	ngOnInit(): void {
 		this.changePasswordForm?.addValidators([

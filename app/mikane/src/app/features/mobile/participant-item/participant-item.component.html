@@ -1,10 +1,8 @@
 <mat-list-item class="wrapper">
 	<div class="upper">
-		<img [src]="userBalance.user.avatarURL" class="avatar" />
+		<img [src]="userBalance.user.avatarURL" alt="User avatar" class="avatar" />
 		<div>
-			<div class="number-of-expenses">
-				Number of expenses: {{ userBalance.expensesCount }}
-			</div>
+			<div class="number-of-expenses">Number of expenses: {{ userBalance.expensesCount }}</div>
 			<div class="name">
 				{{ userBalance.user.name }}
 			</div>
@@ -14,21 +12,15 @@
 		<div class="balances">
 			<div>
 				<span class="text">Spending:</span>
-				<span>
-					{{ userBalance.spending | currency : "" : "" : "1.2-2" : "no" }} kr
-				</span>
+				<span> {{ userBalance.spending | currency : "" : "" : "1.2-2" : "no" }} kr </span>
 			</div>
 			<div>
 				<span class="text">Expenses:</span>
-				<span>
-					{{ userBalance.expenses | currency : "" : "" : "1.2-2" : "no" }} kr
-				</span>
+				<span> {{ userBalance.expenses | currency : "" : "" : "1.2-2" : "no" }} kr </span>
 			</div>
 			<div>
 				<span class="text">Balance:</span>
-				<span class="amount-color">
-					{{ userBalance.balance | currency : "" : "" : "1.2-2" : "no" }} kr
-				</span>
+				<span class="amount-color"> {{ userBalance.balance | currency : "" : "" : "1.2-2" : "no" }} kr </span>
 			</div>
 		</div>
 	</div>

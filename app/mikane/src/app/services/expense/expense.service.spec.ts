@@ -8,7 +8,7 @@ import { Expense, ExpenseService } from './expense.service';
 describe('ExpenseService', () => {
 	let service: ExpenseService;
 	let httpTestingController: HttpTestingController;
-	let mockExpense = {
+	const mockExpense = {
 		id: 'id',
 		name: 'name',
 		description: 'description',
@@ -46,11 +46,14 @@ describe('ExpenseService', () => {
 	describe('#loadExpenses', () => {
 		it('should load expenses', () => {
 			service.loadExpenses('eventId').subscribe({
-				next: (result) => expect(result).withContext('should return result').toEqual([mockExpense]),
+				next: (result) =>
+
+    expect(result).withContext('should return result').toEqual([mockExpense]),
 				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/expenses?eventId=eventId');
+
 			expect(req.request.method).toEqual('GET');
 
 			req.flush([mockExpense]);
@@ -60,11 +63,14 @@ describe('ExpenseService', () => {
 	describe('#getExpense', () => {
 		it('should get expense', () => {
 			service.getExpense('id').subscribe({
-				next: (result) => expect(result).withContext('should return result').toEqual(mockExpense),
+				next: (result) => {
+					expect(result).withContext('should return result').toEqual(mockExpense);
+				},
 				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/expenses/id');
+
 			expect(req.request.method).toEqual('GET');
 
 			req.flush(mockExpense);
@@ -74,11 +80,14 @@ describe('ExpenseService', () => {
 	describe('#createExpense', () => {
 		it('should create expense', () => {
 			service.createExpense('expenseName', 'expenseDescription', 1, 'categoryId', 'payerId').subscribe({
-				next: (result) => expect(result).withContext('should return result').toEqual(mockExpense),
+				next: (result) => {
+					expect(result).withContext('should return result').toEqual(mockExpense);
+				},
 				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/expenses');
+
 			expect(req.request.method).toEqual('POST');
 			expect(req.request.body).toEqual({
 				name: 'expenseName',
@@ -95,11 +104,14 @@ describe('ExpenseService', () => {
 	describe('#editExpense', () => {
 		it('should edit expense', () => {
 			service.editExpense('expenseId', 'name', 'description', 1, 'categoryId', 'payerId').subscribe({
-				next: (result) => expect(result).withContext('should return result').toEqual(mockExpense),
+				next: (result) => {
+					expect(result).withContext('should return result').toEqual(mockExpense);
+				},
 				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/expenses/expenseId');
+
 			expect(req.request.method).toEqual('PUT');
 			expect(req.request.body).toEqual({
 				name: 'name',
@@ -116,11 +128,11 @@ describe('ExpenseService', () => {
 	describe('#deleteExpense', () => {
 		it('should delete expense', () => {
 			service.deleteExpense('expenseId').subscribe({
-				next: () => {},
 				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/expenses/expenseId');
+
 			expect(req.request.method).toEqual('DELETE');
 
 			req.flush(null);

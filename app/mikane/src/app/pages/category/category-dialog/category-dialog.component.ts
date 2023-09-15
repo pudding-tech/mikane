@@ -14,7 +14,6 @@ import { categoryNameValidator } from 'src/app/shared/forms/validators/async-cat
 import { CategoryIcon } from 'src/app/types/enums';
 
 @Component({
-	selector: 'category-dialog',
 	templateUrl: 'category-dialog.component.html',
 	styleUrls: ['category-dialog.component.scss'],
 	standalone: true,

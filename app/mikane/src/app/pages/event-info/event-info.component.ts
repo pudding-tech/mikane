@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -20,7 +20,6 @@ import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 
 @Component({
-	selector: 'event-info',
 	templateUrl: 'event-info.component.html',
 	styleUrls: ['./event-info.component.scss'],
 	standalone: true,
@@ -40,7 +39,7 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 		FormControlPipe,
 	],
 })
-export class EventInfoComponent {
+export class EventInfoComponent implements OnInit, OnDestroy {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -63,10 +62,7 @@ export class EventInfoComponent {
 				filter((event) => event?.id !== undefined),
 				switchMap((event) => {
 					this.event = event;
-					return combineLatest([
-						this.userService.loadUsersByEvent(event.id, true),
-						this.authService.getCurrentUser(),
-					]);
+					return combineLatest([this.userService.loadUsersByEvent(event.id, true), this.authService.getCurrentUser()]);
 				})
 			)
 			.subscribe({

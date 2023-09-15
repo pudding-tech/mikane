@@ -35,6 +35,7 @@ describe('categoryNameValidator', () => {
 		});
 
 		tick(500);
+
 		expect(result).toBeNull();
 	}));
 
@@ -55,6 +56,7 @@ describe('categoryNameValidator', () => {
 		});
 
 		tick(500);
+
 		expect(result).toEqual({ duplicate: true });
 	}));
 
@@ -75,6 +77,7 @@ describe('categoryNameValidator', () => {
 		});
 
 		tick(500);
+
 		expect(result).toEqual({ invalid: true });
 	}));
 });

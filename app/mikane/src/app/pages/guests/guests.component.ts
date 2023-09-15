@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -17,11 +17,10 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
-import { GuestDialogComponent } from './guest-dialog/guest-dialog.component';
 import { ApiError } from 'src/app/types/apiError.type';
+import { GuestDialogComponent } from './guest-dialog/guest-dialog.component';
 
 @Component({
-	selector: 'guest-users',
 	templateUrl: './guests.component.html',
 	styleUrls: ['./guests.component.scss'],
 	standalone: true,
@@ -43,7 +42,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 		ProgressSpinnerComponent,
 	],
 })
-export class GuestsComponent {
+export class GuestsComponent implements OnInit, OnDestroy {
 	loading = false;
 	guests: User[] = [];
 	pagedGuests: User[] = [];
@@ -52,11 +51,16 @@ export class GuestsComponent {
 	private editSubscription: Subscription;
 
 	// Paginator
-	length: number = 0;
-	pageSize: number = 20;
-	pageSizeOptions: number[]= [10, 20, 30];
+	length = 0;
+	pageSize = 20;
+	pageSizeOptions: number[] = [10, 20, 30];
 
-	constructor(private userService: UserService, private messageService: MessageService, protected breakpointService: BreakpointService, public dialog: MatDialog) {}
+	constructor(
+		private userService: UserService,
+		private messageService: MessageService,
+		protected breakpointService: BreakpointService,
+		public dialog: MatDialog
+	) {}
 
 	ngOnInit() {
 		this.loadUsers();
@@ -75,8 +79,8 @@ export class GuestsComponent {
 				this.loading = false;
 				this.messageService.showError('Failed to load guest users');
 				console.error('Something went wrong while loading guest users', err);
-			}
-		})
+			},
+		});
 	}
 
 	newGuest() {
@@ -84,23 +88,25 @@ export class GuestsComponent {
 			width: '350px',
 		});
 
-		dialogRef.afterClosed().pipe(
-			switchMap((res: { guest: { firstName: string; lastName: string } }) => {
-				if (res?.guest) {
-					return this.userService.createGuestUser(res.guest.firstName, res.guest.lastName);
-				}
-				return EMPTY;
-			})
-		)
-		.subscribe({
-			next: () => {
-				this.loadUsers();
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Failed to create guest');
-				console.error('Something went wrong while creating guest', err?.error?.message);
-			},
-		});
+		dialogRef
+			.afterClosed()
+			.pipe(
+				switchMap((res: { guest: { firstName: string; lastName: string } }) => {
+					if (res?.guest) {
+						return this.userService.createGuestUser(res.guest.firstName, res.guest.lastName);
+					}
+					return EMPTY;
+				})
+			)
+			.subscribe({
+				next: () => {
+					this.loadUsers();
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to create guest');
+					console.error('Something went wrong while creating guest', err?.error?.message);
+				},
+			});
 	}
 
 	editGuest(guest: User) {
@@ -113,26 +119,28 @@ export class GuestsComponent {
 			autoFocus: false,
 		});
 
-		this.editSubscription = dialogRef.afterClosed().pipe(
-			switchMap((res: { guest: { id: string, firstName: string; lastName: string }, delete: boolean }) => {
-				if (res?.guest) {
-					if (res?.delete) {
-						return this.userService.deleteGuestUser(guest.id);
+		this.editSubscription = dialogRef
+			.afterClosed()
+			.pipe(
+				switchMap((res: { guest: { id: string; firstName: string; lastName: string }; delete: boolean }) => {
+					if (res?.guest) {
+						if (res?.delete) {
+							return this.userService.deleteGuestUser(guest.id);
+						}
+						return this.userService.editGuestUser(res.guest.id, res.guest.firstName, res.guest.lastName);
 					}
-					return this.userService.editGuestUser(res.guest.id, res.guest.firstName, res.guest.lastName);
-				}
-				return EMPTY;
-			})
-		)
-		.subscribe({
-			next: () => {
-				this.loadUsers();
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Failed to edit guest');
-				console.error('Something went wrong while editing guest', err?.error?.message);
-			},
-		});
+					return EMPTY;
+				})
+			)
+			.subscribe({
+				next: () => {
+					this.loadUsers();
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to edit guest');
+					console.error('Something went wrong while editing guest', err?.error?.message);
+				},
+			});
 	}
 
 	onPageChange(pageEvent: PageEvent) {

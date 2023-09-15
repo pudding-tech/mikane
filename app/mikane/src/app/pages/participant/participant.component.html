@@ -1,5 +1,8 @@
 <div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView" [ngClass]="{ 'extra-margin': !inEvent && !event?.active }">
+	<div
+		*ngIf="(breakpointService.isMobile() | async) === false; else mobileView"
+		[ngClass]="{ 'extra-margin': !inEvent && !event?.active }"
+	>
 		<div class="add-actions">
 			<button mat-raised-button color="primary" (click)="openDialog()" *ngIf="event?.active">
 				<mat-icon>person_add</mat-icon>
@@ -48,7 +51,7 @@
 				<mat-expansion-panel-header>
 					<mat-panel-title>
 						<div class="user first">
-							<img [src]="userWithBalance.user.avatarURL" class="avatar" />
+							<img [src]="userWithBalance.user.avatarURL" alt="User avatar" class="avatar" />
 							{{ userWithBalance.user.name }}
 						</div>
 						<div class="count" [ngClass]="{ 'no-expenses': userWithBalance.expensesCount === 0 }">
@@ -165,10 +168,10 @@
 		</ng-template>
 	</div>
 	<mat-nav-list class="userbalances-list-mobile">
-		<participant-item
+		<app-participant-item
 			*ngFor="let userWithBalance of usersWithBalance; let i = index"
 			[userBalance]="userWithBalance"
-		></participant-item>
+		></app-participant-item>
 	</mat-nav-list>
 	<button
 		*ngIf="event?.active"
@@ -183,7 +186,7 @@
 </ng-template>
 
 <ng-template #loadingSpinner>
-	<loading-spinner></loading-spinner>
+	<app-loading-spinner></app-loading-spinner>
 </ng-template>
 
 <ng-template #emptyMessage><p>Participant has no expenses</p></ng-template>

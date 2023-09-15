@@ -111,7 +111,7 @@ a.nostyle:visited {
 	display: flex;
 }
 
-.loading-spinner-container {
+.app-loading-spinner-container {
 	margin: {
 		top: 60px;
 		bottom: 60px;
@@ -189,8 +189,7 @@ a.nostyle:visited {
 		color: rgba(255, 255, 255, 0.7);
 	}
 
-	.align-right
-	.mat-sort-header-container.mat-focus-indicator {
+	.align-right .mat-sort-header-container.mat-focus-indicator {
 		justify-content: end !important;
 	}
 }

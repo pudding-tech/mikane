@@ -4,7 +4,7 @@
 	</a>
 	<span>Invite user</span>
 	<span class="toolbar-spacer"></span>
-	<menu></menu>
+	<app-menu></app-menu>
 </mat-toolbar>
 <div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="invite-user-section">
 	<mat-card class="invite-content">
@@ -71,7 +71,7 @@
 				<mat-select formControlName="guestId" name="guestId" placeholder="Select guest" required>
 					<mat-option *ngFor="let guest of guests" [value]="guest.id">
 						<span class="name">
-							<img [src]="guest.avatarURL" class="avatar" />
+							<img [src]="guest.avatarURL" alt="Guest user avatar" class="avatar" />
 							{{ guest.name }}
 						</span>
 					</mat-option>

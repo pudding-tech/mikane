@@ -18,7 +18,7 @@ import { usernameValidator } from 'src/app/shared/forms/validators/async-usernam
 import { ApiError } from 'src/app/types/apiError.type';
 
 @Component({
-	selector: 'user-settings',
+	selector: 'app-user-settings',
 	templateUrl: './user-settings.component.html',
 	styleUrls: ['./user-settings.component.scss'],
 	standalone: true,
@@ -37,8 +37,8 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	private subscription: Subscription;
 	private editSubscription: Subscription;
 
-	@Input('user') currentUser: User;
-	editMode: boolean = false;
+	@Input() user: User;
+	editMode = false;
 
 	editUserForm = new FormGroup({
 		username: new FormControl<string>('', [Validators.required]),
@@ -57,17 +57,17 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	) {}
 
 	ngOnInit(): void {
-		this.editUserForm.patchValue(this.currentUser);
+		this.editUserForm.patchValue(this.user);
 
-		this.editUserForm.get('username').addAsyncValidators(usernameValidator(this.formValidationService, this.currentUser.id));
-		this.editUserForm.get('email').addAsyncValidators(emailValidator(this.formValidationService, this.currentUser.id));
-		this.editUserForm.get('phone').addAsyncValidators(phoneValidator(this.formValidationService, this.currentUser.id));
+		this.editUserForm.get('username').addAsyncValidators(usernameValidator(this.formValidationService, this.user.id));
+		this.editUserForm.get('email').addAsyncValidators(emailValidator(this.formValidationService, this.user.id));
+		this.editUserForm.get('phone').addAsyncValidators(phoneValidator(this.formValidationService, this.user.id));
 	}
 
 	editUser() {
 		this.editSubscription = this.userService
 			.editUser(
-				this.currentUser.id,
+				this.user.id,
 				this.editUserForm.get('username').value,
 				this.editUserForm.get('firstName').value,
 				this.editUserForm.get('lastName').value,
@@ -77,7 +77,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 			.subscribe({
 				next: (user) => {
 					this.messageService.showSuccess('User edited');
-					this.currentUser = user;
+					this.user = user;
 					this.toggleEditMode();
 				},
 				error: (err: ApiError) => {

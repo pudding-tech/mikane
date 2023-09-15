@@ -28,6 +28,7 @@ describe('AuthService', () => {
 	it('should set and get redirectUrl', () => {
 		const redirectUrl = 'http://example.com';
 		service.redirectUrl = redirectUrl;
+
 		expect(service.redirectUrl).toEqual(redirectUrl);
 		expect(service.redirectUrl).toBe('undefined');
 	});
@@ -52,11 +53,14 @@ describe('AuthService', () => {
 
 		it('should return user after login', () => {
 			service.login('testuser', 'secret').subscribe({
-				next: (user) => expect(user).withContext('should return user').toEqual(expectedLoginResponse),
+				next: (user) => {
+					expect(user).withContext('should return user').toEqual(expectedLoginResponse);
+				},
 				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
+
 			expect(req.request.method).toEqual('POST');
 			expect(req.request.body).toEqual({ usernameEmail: 'testuser', password: 'secret' });
 
@@ -69,6 +73,7 @@ describe('AuthService', () => {
 			service.logout().subscribe({ error: fail });
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/logout');
+
 			expect(req.request.method).toEqual('POST');
 
 			req.flush({});
@@ -80,6 +85,7 @@ describe('AuthService', () => {
 			service.sendResetPasswordEmail('test@test.test').subscribe({ error: fail });
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/requestpasswordreset');
+
 			expect(req.request.method).toEqual('POST');
 			expect(req.request.body).toEqual({ email: 'test@test.test' });
 
@@ -114,6 +120,7 @@ describe('AuthService', () => {
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
+
 			expect(req.request.method).toEqual('GET');
 
 			req.flush(expectedLoginResponse);
@@ -124,6 +131,7 @@ describe('AuthService', () => {
 
 			// Should only make one request
 			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
+
 			expect(req.request.method).toEqual('GET');
 
 			req.flush(expectedLoginResponse);
@@ -143,6 +151,7 @@ describe('AuthService', () => {
 			service.resetPassword('key', 'newsecret').subscribe({ error: fail });
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/resetpassword');
+
 			expect(req.request.method).toEqual('POST');
 			expect(req.request.body).toEqual({ key: 'key', password: 'newsecret' });
 
@@ -177,6 +186,7 @@ describe('AuthService', () => {
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
+
 			expect(req.request.method).toEqual('GET');
 
 			req.flush(expectedLoginResponse);
@@ -191,6 +201,7 @@ describe('AuthService', () => {
 			});
 
 			const req2 = httpTestingController.expectOne('http://localhost:3002/api/login');
+
 			expect(req2.request.method).toEqual('GET');
 
 			req2.flush({});

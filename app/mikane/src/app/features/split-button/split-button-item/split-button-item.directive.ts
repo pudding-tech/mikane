@@ -1,9 +1,10 @@
 import { Directive, TemplateRef } from '@angular/core';
+import { SplitButtonItemComponent } from './split-button-item.component';
 
 @Directive({
-	selector: '[splitButtonItem]',
+	selector: '[appSplitButtonItem]',
 	standalone: true,
 })
 export class SplitButtonItemDirective {
-	constructor(public templateRef: TemplateRef<any>) {}
+	constructor(public templateRef: TemplateRef<SplitButtonItemComponent>) {}
 }

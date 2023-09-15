@@ -4,14 +4,14 @@
 	</a>
 	<span>Profile</span>
 	<span class="toolbar-spacer"></span>
-	<menu></menu>
+	<app-menu></app-menu>
 </mat-toolbar>
 
 <div *ngIf="loading === false; else loadingSpinner">
 	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="profile-page">
 		<mat-card class="profile-content">
 			<mat-card-header>
-				<img mat-card-avatar *ngIf="user?.avatarURL" [src]="user?.avatarURL" class="avatar" />
+				<img mat-card-avatar *ngIf="user?.avatarURL" [src]="user?.avatarURL" alt="User avatar" class="avatar" />
 				<mat-card-title>{{ user?.firstName + " " + user?.lastName }}</mat-card-title>
 				<mat-card-subtitle>{{ user?.username }}</mat-card-subtitle>
 			</mat-card-header>
@@ -36,7 +36,7 @@
 <ng-template #mobileView>
 	<div class="mobile-view">
 		<div class="header">
-			<img *ngIf="user?.avatarURL" [src]="user?.avatarURL" class="avatar" />
+			<img *ngIf="user?.avatarURL" [src]="user?.avatarURL" alt="User avatar" class="avatar" />
 			<div>
 				<div id="name">{{ user?.firstName + " " + user?.lastName }}</div>
 				<div id="username">{{ user?.username }}</div>
@@ -60,5 +60,5 @@
 </ng-template>
 
 <ng-template #loadingSpinner>
-	<loading-spinner></loading-spinner>
+	<app-loading-spinner></app-loading-spinner>
 </ng-template>

@@ -163,7 +163,7 @@ export class EventComponent implements OnInit {
 	}
 
 	isUUID(text: string) {
-		const regex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
+		const regex = /^[\dA-Fa-f]{8}(?:\b-[\dA-Fa-f]{4}){3}\b-[\dA-Fa-f]{12}$/;
 		return regex.test(text);
 	}
 }

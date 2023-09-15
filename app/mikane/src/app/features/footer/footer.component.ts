@@ -5,7 +5,7 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import packageJson from '../../../../package.json';
 
 @Component({
-	selector: 'custom-footer',
+	selector: 'app-custom-footer',
 	templateUrl: 'footer.component.html',
 	styleUrls: ['./footer.component.scss'],
 	standalone: true,

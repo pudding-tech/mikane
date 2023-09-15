@@ -24,7 +24,7 @@
 			<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selected($event)">
 				<mat-option *ngFor="let user of filteredUsers | async" [value]="user">
 					<span class="user">
-						<img [src]="user.avatarURL" class="avatar" />
+						<img [src]="user.avatarURL" alt="Avatar URL" class="avatar" />
 						{{ user.name }}
 					</span>
 				</mat-option>

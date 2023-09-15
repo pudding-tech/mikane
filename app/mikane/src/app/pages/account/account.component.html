@@ -4,16 +4,16 @@
 	</a>
 	<span>Account</span>
 	<span class="toolbar-spacer"></span>
-	<menu></menu>
+	<app-menu></app-menu>
 </mat-toolbar>
 <div *ngIf="(loading | async) === false; else loadingSpinner">
 	<div class="account-settings" *ngIf="user; else noUser">
-		<user-settings
+		<app-user-settings
 			[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc first'"
 			[user]="user"
-		></user-settings>
-		<change-password [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"></change-password>
-		<danger-zone [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc last'" [user]="user"></danger-zone>
+		></app-user-settings>
+		<app-change-password [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"></app-change-password>
+		<app-danger-zone [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc last'"></app-danger-zone>
 	</div>
 </div>
 
@@ -26,5 +26,5 @@
 </ng-template>
 
 <ng-template #loadingSpinner>
-	<loading-spinner></loading-spinner>
+	<app-loading-spinner></app-loading-spinner>
 </ng-template>

@@ -80,7 +80,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 		private cd: ChangeDetectorRef,
 		private messageService: MessageService,
 		public breakpointService: BreakpointService,
-		public contextService: ContextService
+		public contextService: ContextService,
 	) {}
 
 	ngOnInit(): void {
@@ -94,7 +94,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 						return of(undefined);
 					}
 				}),
-				takeUntil(this.destroy$)
+				takeUntil(this.destroy$),
 			)
 			.subscribe({
 				next: (event) => {
@@ -146,14 +146,14 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 	}
 
 	filterUsers = (categoryId: string) => {
-		const category = this.categories.find((category) => {
+		const filterCategory = this.categories.find((category) => {
 			return category.id === categoryId;
 		});
 
 		return this.users.filter((user) => {
 			return (
-				map(category?.users, (user) => {
-					return user.id;
+				map(filterCategory?.users, (filterUser) => {
+					return filterUser.id;
 				}).indexOf(user.id) < 0
 			);
 		});
@@ -211,7 +211,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 						this.categories.find((category) => {
 							return category.id === categoryId;
 						}),
-						newCategory
+						newCategory,
 					);
 					this.messageService.showSuccess('Category edited');
 				},
@@ -313,13 +313,13 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			.pipe(takeUntil(this.destroy$))
 			.subscribe({
 				next: (result) => {
-					const category = this.categories.indexOf(
+					const newCategory = this.categories.indexOf(
 						this.categories.find((category) => {
 							return category.id === result.id;
-						})
+						}),
 					);
-					if (~category) {
-						Object.assign(this.categories[category], result);
+					if (~newCategory) {
+						Object.assign(this.categories[newCategory], result);
 					}
 				},
 				error: (err: ApiError) => {

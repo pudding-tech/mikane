@@ -37,11 +37,14 @@ describe('CategoryService', () => {
 	describe('#loadCategories', () => {
 		it('should get categories', () => {
 			service.loadCategories('eventId').subscribe({
-				next: (result) => expect(result).withContext('should return result').toEqual([mockCategory]),
+				next: (result) => {
+					expect(result).withContext('should return result').toEqual([mockCategory]);
+				},
 				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories?eventId=eventId');
+
 			expect(req.request.method).toEqual('GET');
 
 			req.flush([mockCategory]);
@@ -51,11 +54,14 @@ describe('CategoryService', () => {
 	describe('#createCategory', () => {
 		it('should create category', () => {
 			service.createCategory('name', 'eventId', false, CategoryIcon.CAR).subscribe({
-				next: (result) => expect(result).withContext('should return result').toEqual(mockCategory),
+				next: (result) => {
+					expect(result).withContext('should return result').toEqual(mockCategory);
+				},
 				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories');
+
 			expect(req.request.method).toEqual('POST');
 			expect(req.request.body).toEqual({
 				name: 'name',
@@ -71,11 +77,14 @@ describe('CategoryService', () => {
 	describe('#editCategory', () => {
 		it('should edit category', () => {
 			service.editCategory('categoryId', 'name', CategoryIcon.CAR).subscribe({
-				next: (result) => expect(result).withContext('should return result').toEqual(mockCategory),
+				next: (result) => {
+					expect(result).withContext('should return result').toEqual(mockCategory);
+				},
 				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId');
+
 			expect(req.request.method).toEqual('PUT');
 			expect(req.request.body).toEqual({
 				name: 'name',
@@ -91,6 +100,7 @@ describe('CategoryService', () => {
 			service.deleteCategory('categoryId').subscribe({ error: fail });
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId');
+
 			expect(req.request.method).toEqual('DELETE');
 
 			req.flush({});
@@ -102,6 +112,7 @@ describe('CategoryService', () => {
 			service.addUser('categoryId', 'userId', 0).subscribe({ error: fail });
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId/user/userId');
+
 			expect(req.request.method).toEqual('POST');
 			expect(req.request.body).toEqual({ weight: 0 });
 
@@ -114,6 +125,7 @@ describe('CategoryService', () => {
 			service.deleteUser('categoryId', 'userId').subscribe({ error: fail });
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId/user/userId');
+
 			expect(req.request.method).toEqual('DELETE');
 
 			req.flush({});
@@ -125,6 +137,7 @@ describe('CategoryService', () => {
 			service.editUser('categoryId', 'userId', 0).subscribe({ error: fail });
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId/user/userId');
+
 			expect(req.request.method).toEqual('PUT');
 			expect(req.request.body).toEqual({ weight: 0 });
 
@@ -137,19 +150,9 @@ describe('CategoryService', () => {
 			service.setWeighted('categoryId', true).subscribe({ error: fail });
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId/weighted');
+
 			expect(req.request.method).toEqual('PUT');
 			expect(req.request.body).toEqual({ weighted: true });
-
-			req.flush({});
-		});
-	});
-
-	describe('#deleteCategory', () => {
-		it('should delete category', () => {
-			service.deleteCategory('categoryId').subscribe({ error: fail });
-
-			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId');
-			expect(req.request.method).toEqual('DELETE');
 
 			req.flush({});
 		});
@@ -158,11 +161,14 @@ describe('CategoryService', () => {
 	describe('#findOrCreate', () => {
 		it('should not create category if it exists', () => {
 			service.findOrCreate('eventId', 'name').subscribe({
-				next: (result) => expect(result).withContext('should return result').toEqual(mockCategory),
+				next: (result) => {
+					expect(result).withContext('should return result').toEqual(mockCategory);
+				},
 				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories?eventId=eventId');
+
 			expect(req.request.method).toEqual('GET');
 
 			httpTestingController.expectNone('http://localhost:3002/api/categories');
@@ -172,15 +178,19 @@ describe('CategoryService', () => {
 
 		it('should create category if it does not exist', () => {
 			service.findOrCreate('eventId', 'name').subscribe({
-				next: (result) => expect(result).withContext('should return result').toEqual(mockCategory),
+				next: (result) => {
+					expect(result).withContext('should return result').toEqual(mockCategory);
+				},
 				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories?eventId=eventId');
+
 			expect(req.request.method).toEqual('GET');
 			req.flush([]);
 
 			const req2 = httpTestingController.expectOne('http://localhost:3002/api/categories');
+
 			expect(req2.request.method).toEqual('POST');
 			expect(req2.request.body).toEqual({
 				name: 'name',
