@@ -25,6 +25,13 @@ describe('AuthService', () => {
 		httpTestingController.verify();
 	});
 
+	it('should set and get redirectUrl', () => {
+		const redirectUrl = 'http://example.com';
+		service.redirectUrl = redirectUrl;
+		expect(service.redirectUrl).toEqual(redirectUrl);
+		expect(service.redirectUrl).toBe('undefined');
+	});
+
 	describe('#login', () => {
 		let expectedLoginResponse: User;
 

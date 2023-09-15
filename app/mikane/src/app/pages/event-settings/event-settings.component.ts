@@ -73,17 +73,14 @@ export class EventSettingsComponent {
 	ngOnInit(): void {
 		this.loading.next(true);
 		this.eventSubscription = this.$event
-			.pipe(
+			?.pipe(
 				filter((event) => event?.id !== undefined),
 				switchMap((event) => {
 					this.event = event;
 					this.eventData.id = event.id;
 					this.eventData.name = event.name;
 					this.eventData.description = event.description;
-					return combineLatest([
-						this.userService.loadUsersByEvent(event.id, true),
-						this.authService.getCurrentUser(),
-					]);
+					return combineLatest([this.userService.loadUsersByEvent(event.id, true), this.authService.getCurrentUser()]);
 				})
 			)
 			.subscribe({
@@ -107,8 +104,10 @@ export class EventSettingsComponent {
 				this.event = event;
 				this.messageService.showSuccess('Event successfully edited');
 
-				// Reload to refresh edited event. Should probably be done within app at some point
-				location.reload();
+				// Reload to refresh edited event
+				this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+					this.router.navigate(['events', this.event.id, 'settings']);
+				});
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to edit event');
@@ -123,8 +122,10 @@ export class EventSettingsComponent {
 				this.event = event;
 				this.messageService.showSuccess(archive ? 'Event successfully archived' : 'Event successfully set as active');
 
-				// Reload to refresh now archived event. Should probably be done within app at some point
-				location.reload();
+				// Reload to refresh now archived event
+				this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+					this.router.navigate(['events', this.event.id, 'settings']);
+				});
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to archive event');
@@ -218,7 +219,7 @@ export class EventSettingsComponent {
 						this.router.navigate(['/events']);
 					},
 					error: (err: ApiError) => {
-						this.messageService.showError('Failed to remove admin');
+						this.messageService.showError('Failed to remove current user as admin');
 						console.error('Something went wrong while removing admin from event', err?.error?.message);
 					},
 				});
