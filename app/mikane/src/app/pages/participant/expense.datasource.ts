@@ -1,4 +1,4 @@
-import { CollectionViewer, DataSource } from '@angular/cdk/collections';
+import { DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, catchError, finalize, of } from 'rxjs';
 import { Expense } from 'src/app/services/expense/expense.service';
 import { UserService } from 'src/app/services/user/user.service';
@@ -12,11 +12,11 @@ export class ExpenseDataSource implements DataSource<Expense> {
 
 	constructor(private userService: UserService) {}
 
-	connect(collectionViewer: CollectionViewer): Observable<readonly Expense[]> {
+	connect(): Observable<readonly Expense[]> {
 		return this.expenseSubject.asObservable();
 	}
 
-	disconnect(collectionViewer: CollectionViewer): void {
+	disconnect(): void {
 		this.loadingSubject.complete();
 	}
 

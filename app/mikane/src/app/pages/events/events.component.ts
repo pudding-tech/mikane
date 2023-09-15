@@ -83,7 +83,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
 		private messageService: MessageService,
-		public breakpointService: BreakpointService
+		public breakpointService: BreakpointService,
 	) {}
 
 	ngOnInit() {
@@ -108,20 +108,20 @@ export class EventsComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	editEvent(event: PuddingEvent) {
+	editEvent(editEvent: PuddingEvent) {
 		const dialogRef = this.dialog.open(EventDialogComponent, {
 			width: '400px',
 			data: {
 				edit: true,
-				event,
+				event: editEvent,
 			},
 			autoFocus: false,
 		});
 
 		this.editSubscription = dialogRef.afterClosed().subscribe({
-			next: (event: PuddingEvent) => {
-				if (event) {
-					this.eventService.editEvent(event).subscribe({
+			next: (editedEvent: PuddingEvent) => {
+				if (editedEvent) {
+					this.eventService.editEvent(editedEvent).subscribe({
 						next: (result) => {
 							const index = this.events().indexOf(this.events().find((event) => event.id === result.id));
 							if (~index) {
@@ -146,8 +146,8 @@ export class EventsComponent implements OnInit, OnDestroy {
 		dialogRef.afterClosed().subscribe((event: { name: string; description: string }) => {
 			if (event) {
 				this.eventService.createEvent(event).subscribe({
-					next: (event) => {
-						this.events.mutate((events) => events.unshift(event));
+					next: (newEvent) => {
+						this.events.mutate((events) => events.unshift(newEvent));
 						this.startIndexActive.set(0);
 						this.endIndexActive.set(this.pageSizeActive());
 					},

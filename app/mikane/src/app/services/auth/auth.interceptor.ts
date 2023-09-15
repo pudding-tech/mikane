@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 export class AuthInterceptor implements HttpInterceptor {
 	constructor(private router: Router, private authService: AuthService) {}
 
-	intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+	intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 		req = req.clone({
 			withCredentials: true,
 		});

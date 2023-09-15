@@ -89,7 +89,7 @@ describe('AccountComponent', () => {
 
 			component.ngOnInit();
 
-			expect(authServiceSpy.getCurrentUser).toHaveBeenCalled();
+			expect(authServiceSpy.getCurrentUser).toHaveBeenCalledWith();
 			expect(userServiceSpy.loadUserById).toHaveBeenCalledWith(user.id);
 			expect(page.loading).toBeFalsy();
 			expect(page.user).toBeDefined();
@@ -106,7 +106,7 @@ describe('AccountComponent', () => {
 			component.ngOnInit();
 			tick();
 
-			expect(authServiceSpy.getCurrentUser).toHaveBeenCalled();
+			expect(authServiceSpy.getCurrentUser).toHaveBeenCalledWith();
 			expect(userServiceSpy.loadUserById).toHaveBeenCalledWith(user.id);
 			expect(page.loading).toBeFalsy();
 			expect(page.user).toBeFalsy();
@@ -120,7 +120,7 @@ describe('AccountComponent', () => {
 
 			component.ngOnInit();
 
-			expect(authServiceSpy.getCurrentUser).toHaveBeenCalled();
+			expect(authServiceSpy.getCurrentUser).toHaveBeenCalledWith();
 			expect(userServiceSpy.loadUserById).not.toHaveBeenCalled();
 			expect(page.loading).toBeFalsy();
 			expect(page.user).toBeFalsy();
@@ -132,10 +132,10 @@ describe('AccountComponent', () => {
 });
 
 export class AccountComponentPage {
-	constructor(private fixture: ComponentFixture<any>) {}
+	constructor(private fixture: ComponentFixture<AccountComponent>) {}
 
 	get loading(): DebugElement {
-		return this.fixture.debugElement.query(By.css('loading-spinner'));
+		return this.fixture.debugElement.query(By.css('app-loading-spinner'));
 	}
 
 	get user(): DebugElement {

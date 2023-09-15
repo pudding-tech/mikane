@@ -6,7 +6,7 @@
 </div>
 
 <div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div *ngIf="!(breakpointService.isMobile() | async); else mobileView" [ngClass]="{ 'extra-margin': !event?.active }">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" [ngClass]="{ 'extra-margin': !event?.active }">
 		<mat-accordion *ngIf="categories.length > 0; else noCategories">
 			<mat-expansion-panel *ngFor="let category of categories" class="categories">
 				<mat-expansion-panel-header>
@@ -34,7 +34,7 @@
 							<ng-container matColumnDef="name">
 								<th mat-header-cell *matHeaderCellDef>Participant</th>
 								<td mat-cell *matCellDef="let user" class="user">
-									<img [src]="user.avatarURL" class="avatar" />
+									<img [src]="user.avatarURL" alt="User avatar" class="avatar" />
 									{{ user.name }}
 								</td>
 								<td mat-footer-cell *matFooterCellDef>
@@ -51,7 +51,7 @@
 										>
 											<mat-option *ngFor="let user of filterUsers(category.id)" [value]="user.id">
 												<span class="user">
-													<img [src]="user.avatarURL" class="avatar option" />
+													<img [src]="user.avatarURL" alt="User avatar" class="avatar option" />
 													{{ user.name }}
 												</span>
 											</mat-option>
@@ -161,7 +161,7 @@
 
 <ng-template #mobileView>
 	<mat-nav-list *ngIf="categories.length > 0; else noCategoriesMobile" class="categories-list-mobile">
-		<category-item
+		<app-category-item
 			*ngFor="let category of categories"
 			[active]="event?.active"
 			[category]="category"
@@ -174,7 +174,7 @@
 			(toggleWeighted)="toggleWeighted($event.categoryId, $event.weighted)"
 			(deleteCategoryDialog)="deleteCategoryDialog($event.categoryId)"
 		>
-		</category-item>
+		</app-category-item>
 	</mat-nav-list>
 	<button
 		*ngIf="event?.active"
@@ -189,7 +189,7 @@
 </ng-template>
 
 <ng-template #loadingSpinner>
-	<loading-spinner></loading-spinner>
+	<app-loading-spinner></app-loading-spinner>
 </ng-template>
 
 <ng-template #noCategories>
@@ -197,5 +197,5 @@
 </ng-template>
 
 <ng-template #noCategoriesMobile>
-	<div class="no-categories-mobile"> No expense categories </div>
+	<div class="no-categories-mobile">No expense categories</div>
 </ng-template>

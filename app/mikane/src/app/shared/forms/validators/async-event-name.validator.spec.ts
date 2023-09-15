@@ -1,6 +1,6 @@
 import { fakeAsync, tick } from '@angular/core/testing';
 import { FormControl, ValidationErrors } from '@angular/forms';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { eventNameValidator } from './async-event-name.validator';
@@ -16,13 +16,14 @@ describe('eventNameValidator', () => {
 		const control = new FormControl('test event');
 		(formValidationService.validateEventName as jasmine.Spy).and.returnValue(of(null));
 
-		const validator = eventNameValidator(formValidationService) as (control: FormControl) => any;
+		const validator = eventNameValidator(formValidationService) as (control: FormControl) => Observable<ValidationErrors | null>;
 		let result: ValidationErrors | null = null;
 		validator(control).subscribe((res: ValidationErrors | null) => {
 			result = res;
 		});
 
 		tick(500);
+
 		expect(result).toBeNull();
 	}));
 
@@ -31,13 +32,14 @@ describe('eventNameValidator', () => {
 		const error: ApiError = { status: 409 } as ApiError;
 		(formValidationService.validateEventName as jasmine.Spy).and.returnValue(throwError(() => error));
 
-		const validator = eventNameValidator(formValidationService) as (control: FormControl) => any;
+		const validator = eventNameValidator(formValidationService) as (control: FormControl) => Observable<ValidationErrors | null>;
 		let result: ValidationErrors | null = null;
 		validator(control).subscribe((res: ValidationErrors | null) => {
 			result = res;
 		});
 
 		tick(500);
+
 		expect(result).toEqual({ duplicate: true });
 	}));
 
@@ -46,13 +48,14 @@ describe('eventNameValidator', () => {
 		const error: ApiError = { status: 400 } as ApiError;
 		(formValidationService.validateEventName as jasmine.Spy).and.returnValue(throwError(() => error));
 
-		const validator = eventNameValidator(formValidationService) as (control: FormControl) => any;
+		const validator = eventNameValidator(formValidationService) as (control: FormControl) => Observable<ValidationErrors | null>;
 		let result: ValidationErrors | null = null;
 		validator(control).subscribe((res: ValidationErrors | null) => {
 			result = res;
 		});
 
 		tick(500);
+
 		expect(result).toEqual({ invalid: true });
 	}));
 
@@ -60,10 +63,11 @@ describe('eventNameValidator', () => {
 		const control = new FormControl('test event');
 		(formValidationService.validateEventName as jasmine.Spy).and.returnValue(of(null));
 
-		const validator = eventNameValidator(formValidationService) as (control: FormControl) => any;
+		const validator = eventNameValidator(formValidationService) as (control: FormControl) => Observable<ValidationErrors | null>;
 		const startTime = Date.now();
 		validator(control).subscribe(() => {
 			const endTime = Date.now();
+
 			expect(endTime - startTime).toBeGreaterThanOrEqual(500);
 		});
 
@@ -75,7 +79,9 @@ describe('eventNameValidator', () => {
 		const eventId = '123';
 		(formValidationService.validateEventName as jasmine.Spy).and.returnValue(of(null));
 
-		const validator = eventNameValidator(formValidationService, eventId) as (control: FormControl) => any;
+		const validator = eventNameValidator(formValidationService, eventId) as (
+			control: FormControl
+		) => Observable<ValidationErrors | null>;
 		validator(control).subscribe(() => {
 			expect(formValidationService.validateEventName).toHaveBeenCalledWith(control.value, eventId);
 		});

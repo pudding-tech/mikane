@@ -1,14 +1,14 @@
 <div *ngIf="(loading | async) === false; else loadingSpinner">
 	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView">
 		<div *ngIf="senders.length > 0; else noPayments">
-			<div  class="payments-header" [ngClass]="{ 'no-payments': paymentsSelf.length === 0}">
+			<div class="payments-header" [ngClass]="{ 'no-payments': paymentsSelf.length === 0 }">
 				<h3 class="payments-title">Your payments</h3>
 				<button *ngIf="paymentsSelf.length > 0" mat-button color="accent" (click)="toggleExpand(1)" class="collapse-button">
 					<mat-icon>{{ allExpandedSelf ? "visibility_off" : "visibility" }}</mat-icon>
 					{{ allExpandedSelf ? "Collapse all payments" : "Show all payments" }}
 				</button>
 			</div>
-			<payment-expansion-panel-item
+			<app-payment-expansion-panel-item
 				#paymentsSelfRef
 				*ngIf="paymentsSelf.length > 0; else noPaymentsSelf"
 				[senders]="paymentsSelf"
@@ -16,18 +16,18 @@
 				[currentUser]="currentUser"
 				(allPanelsExpanded)="panelToggled(1, $event)"
 			>
-			</payment-expansion-panel-item>
+			</app-payment-expansion-panel-item>
 			<ng-template #noPaymentsSelf>
 				<span class="no-payments-text">You have no payments in this event</span>
 			</ng-template>
-			<div class="payments-header" [ngClass]="{ 'no-payments': paymentsOthers.length === 0}">
+			<div class="payments-header" [ngClass]="{ 'no-payments': paymentsOthers.length === 0 }">
 				<h3 class="payments-title">Other payments</h3>
 				<button *ngIf="paymentsOthers.length > 0" mat-button color="accent" (click)="toggleExpand(2)" class="collapse-button">
 					<mat-icon>{{ allExpandedOthers ? "visibility_off" : "visibility" }}</mat-icon>
 					{{ allExpandedOthers ? "Collapse all payments" : "Show all payments" }}
 				</button>
 			</div>
-			<payment-expansion-panel-item
+			<app-payment-expansion-panel-item
 				#paymentsOthersRef
 				*ngIf="paymentsOthers.length > 0; else noPaymentsOthers"
 				[senders]="paymentsOthers"
@@ -35,7 +35,7 @@
 				[currentUser]="currentUser"
 				(allPanelsExpanded)="panelToggled(2, $event)"
 			>
-			</payment-expansion-panel-item>
+			</app-payment-expansion-panel-item>
 			<ng-template #noPaymentsOthers>
 				<span class="no-payments-text">There are no other payments in this event</span>
 			</ng-template>
@@ -48,32 +48,22 @@
 		<div *ngIf="paymentsSelf.length > 0">
 			<div *ngIf="paymentsOthers.length > 0" class="title-mobile">Your payments</div>
 			<mat-nav-list class="payments-list-mobile">
-				<payment-item
-					*ngFor="let sender of paymentsSelf"
-					[sender]="sender"
-					[self]="true"
-					[currentUser]="currentUser"
-					>
-				</payment-item>
+				<app-payment-item *ngFor="let sender of paymentsSelf" [sender]="sender" [self]="true" [currentUser]="currentUser">
+				</app-payment-item>
 			</mat-nav-list>
 		</div>
 		<div *ngIf="paymentsOthers.length > 0">
 			<div *ngIf="paymentsSelf.length > 0" class="title-mobile">Other payments</div>
 			<mat-nav-list class="payments-list-mobile">
-				<payment-item
-					*ngFor="let sender of paymentsOthers"
-					[sender]="sender"
-					[self]="false"
-					[currentUser]="currentUser"
-					>
-				</payment-item>
+				<app-payment-item *ngFor="let sender of paymentsOthers" [sender]="sender" [self]="false" [currentUser]="currentUser">
+				</app-payment-item>
 			</mat-nav-list>
 		</div>
 	</div>
 </ng-template>
 
 <ng-template #loadingSpinner>
-	<loading-spinner></loading-spinner>
+	<app-loading-spinner></app-loading-spinner>
 </ng-template>
 
 <ng-template #noPayments>

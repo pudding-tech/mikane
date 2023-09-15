@@ -22,13 +22,15 @@ describe('MessageService', () => {
 		const snackbar = TestBed.inject(MatSnackBar);
 		const spy = spyOn(snackbar, 'open');
 		service.openSnackBar('message', 'action');
-		expect(spy).toHaveBeenCalled();
+
+		expect(spy).toHaveBeenCalledWith('message', 'action', { panelClass: 'snackbar' });
 	});
 
 	it('should show error message', () => {
 		const snackbar = TestBed.inject(MatSnackBar);
 		const spy = spyOn(snackbar, 'openFromComponent');
 		service.showError('message');
+
 		expect(spy).toHaveBeenCalledWith(ErrorMessageComponent, { data: 'message', panelClass: 'snackbar' });
 	});
 
@@ -36,6 +38,7 @@ describe('MessageService', () => {
 		const snackbar = TestBed.inject(MatSnackBar);
 		const spy = spyOn(snackbar, 'openFromComponent');
 		service.showSuccess('message');
+
 		expect(spy).toHaveBeenCalledWith(SuccessMessageComponent, { data: 'message', panelClass: 'snackbar' });
 	});
 });

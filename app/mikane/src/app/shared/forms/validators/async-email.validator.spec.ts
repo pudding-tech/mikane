@@ -23,6 +23,7 @@ describe('asyncEmailValidator', () => {
 		});
 
 		tick(1000);
+
 		expect(result).toBeNull();
 	}));
 
@@ -38,6 +39,7 @@ describe('asyncEmailValidator', () => {
 		});
 
 		tick(1000);
+
 		expect(result).toEqual({ duplicate: true });
 	}));
 
@@ -53,6 +55,7 @@ describe('asyncEmailValidator', () => {
 		});
 
 		tick(1000);
+
 		expect(result).toEqual({ invalid: true });
 	}));
 
@@ -64,6 +67,7 @@ describe('asyncEmailValidator', () => {
 		const startTime = Date.now();
 		validator(control).subscribe(() => {
 			const endTime = Date.now();
+
 			expect(endTime - startTime).toBeGreaterThanOrEqual(1000);
 		});
 

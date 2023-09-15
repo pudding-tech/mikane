@@ -30,7 +30,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 	],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
-	protected loading: boolean = true;
+	protected loading = true;
 	protected user: User;
 
 	private subscription: Subscription;

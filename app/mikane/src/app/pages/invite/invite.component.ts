@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormGroupDirective, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -39,7 +39,7 @@ import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 		FormControlPipe,
 	],
 })
-export class InviteComponent {
+export class InviteComponent implements OnInit, OnDestroy {
 	protected inviteForm = new FormGroup({
 		email: new FormControl('', [Validators.required, Validators.email]),
 	});

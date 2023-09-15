@@ -26,16 +26,26 @@ describe('SplitButtonItemComponent', () => {
 	});
 
 	it('should emit the onClick event when the button is clicked', () => {
-		spyOn(component.onClick, 'emit');
-		const buttonEl = fixture.debugElement.query(By.css('a')).nativeElement;
+		spyOn(component.splitButtonClick, 'emit');
+		const buttonEl = fixture.debugElement.query(By.css('a')).nativeElement as HTMLButtonElement;
 		buttonEl.click();
-		expect(component.onClick.emit).toHaveBeenCalled();
+
+		expect(component.splitButtonClick.emit).toHaveBeenCalledWith();
+	});
+
+	it('should emit the onClick event when the button is pressed', () => {
+		spyOn(component.splitButtonClick, 'emit');
+		const buttonEl = fixture.debugElement.query(By.css('a')).nativeElement as HTMLButtonElement;
+		buttonEl.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter' }));
+
+		expect(component.splitButtonClick.emit).toHaveBeenCalledWith();
 	});
 
 	it('should display the correct icon', () => {
 		component.icon = 'test-icon';
 		fixture.detectChanges();
 		const iconEl = fixture.debugElement.query(By.css('.icon')).nativeElement;
+
 		expect(iconEl.textContent).toContain('test-icon');
 	});
 
@@ -43,6 +53,7 @@ describe('SplitButtonItemComponent', () => {
 		component.text = 'test-text';
 		fixture.detectChanges();
 		const textEl = fixture.debugElement.query(By.css('.text')).nativeElement;
+
 		expect(textEl.textContent).toContain('test-text');
 	});
 });

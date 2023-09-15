@@ -1,4 +1,5 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
+import { ElementRef } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -61,11 +62,13 @@ describe('PaymentItemComponent', () => {
 
 	it('should display the sender name', () => {
 		const senderNameEl = fixture.debugElement.query(By.css('.upper .name')).nativeElement;
+
 		expect(senderNameEl.textContent).toContain(component.sender.sender.name);
 	});
 
 	it('should display the correct number of receivers', () => {
 		const receiverEls = fixture.debugElement.queryAll(By.css('.lower .name'));
+
 		expect(receiverEls.length).toEqual(component.sender.receivers.length);
 	});
 
@@ -74,6 +77,7 @@ describe('PaymentItemComponent', () => {
 		component.sender.receivers.forEach((receiver, index) => {
 			const nameEl = receiverEls[index].query(By.css('.name')).nativeElement;
 			const amountEl = receiverEls[index].query(By.css('.amount-color')).nativeElement;
+
 			expect(nameEl.textContent).toContain(receiver.receiver.name);
 			expect(amountEl.textContent).toContain(receiver.amount);
 		});
@@ -82,18 +86,21 @@ describe('PaymentItemComponent', () => {
 	it('should toggle the dropdown when the toggleDropdown method is called', () => {
 		const initialDropdownOpen = component.dropdownOpen;
 		component.toggleDropdown();
+
 		expect(component.dropdownOpen).toEqual(!initialDropdownOpen);
 	});
 
 	it('should set lowerHeight to 0 when dropdown is closed', () => {
 		component.toggleDropdown();
 		component.toggleDropdown();
+
 		expect(component.lowerHeight).toEqual(0);
 	});
 
 	it('should set lowerHeight to scrollHeight when dropdown is opened', () => {
-		component.lower = { nativeElement: { scrollHeight: 100 } } as any;
+		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
 		component.toggleDropdown();
+
 		expect(component.lowerHeight).toEqual(100);
 	});
 
@@ -103,10 +110,11 @@ describe('PaymentItemComponent', () => {
 
 	it('should set lowerHeight to scrollHeight when self is true', fakeAsync(() => {
 		component.self = true;
-		component.lower = { nativeElement: { scrollHeight: 100 } } as any;
+		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
 		component.ngOnInit();
 		fixture.detectChanges();
 		tick();
+
 		expect(component.lowerHeight).toEqual(100);
 	}));
 });

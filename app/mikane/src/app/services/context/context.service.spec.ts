@@ -39,7 +39,7 @@ describe('ContextService', () => {
 	});
 
 	describe('#isIos', () => {
-		it('should return false if there is no user agent', () => {
+		it('should return false when there is no user agent', () => {
 			spyOnProperty(window.navigator, 'userAgent').and.returnValue(undefined);
 			service = TestBed.inject(ContextService);
 
@@ -61,12 +61,14 @@ describe('ContextService', () => {
 	describe('#environment', () => {
 		it('should return correct environment if dev', () => {
 			service = TestBed.inject(ContextService);
+
 			expect(service.environment).toBe('dev');
 		});
 
 		it('should return correct environment if prod', () => {
 			env.production = true;
 			service = TestBed.inject(ContextService);
+
 			expect(service.environment).toBe('prod');
 		});
 	});

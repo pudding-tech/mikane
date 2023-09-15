@@ -87,6 +87,7 @@ describe('Login Component', () => {
 		component.breakpointService.isMobile().subscribe((isMobile) => {
 			expect(isMobile).toBe(false);
 		});
+
 		expect(page.loginForm.nativeElement).toBeDefined();
 		expect(page.mobileContent).toBeFalsy();
 		expect(page.resetForm).toBeFalsy();
@@ -103,6 +104,7 @@ describe('Login Component', () => {
 
 		page.loginButton.nativeElement.click();
 		fixture.detectChanges();
+
 		expect(fixture.debugElement.injector.get(AuthService).login).toHaveBeenCalledOnceWith('username', 'password');
 		expect(fixture.debugElement.injector.get(MessageService).showSuccess).toHaveBeenCalledOnceWith('Login successful');
 		expect(fixture.debugElement.injector.get(MessageService).showError).not.toHaveBeenCalled();
@@ -207,6 +209,7 @@ describe('Login Component', () => {
 		authService.sendResetPasswordEmail.and.returnValue(of(undefined));
 		page.forgotPasswordButton.click();
 		fixture.detectChanges();
+
 		expect(page.infoText).toBeFalsy();
 
 		page.emailInput.value = 'email@email.com';
@@ -214,6 +217,7 @@ describe('Login Component', () => {
 
 		page.passwordButton.click();
 		fixture.detectChanges();
+
 		expect(authService.sendResetPasswordEmail).toHaveBeenCalledOnceWith('email@email.com');
 		expect(page.infoText).toBeDefined();
 	});
@@ -229,6 +233,7 @@ describe('Login Component', () => {
 
 		page.forgotPasswordButton.click();
 		fixture.detectChanges();
+
 		expect(page.errorText).toBeFalsy();
 
 		page.emailInput.value = 'email@email.com';
@@ -236,6 +241,7 @@ describe('Login Component', () => {
 
 		page.passwordButton.click();
 		fixture.detectChanges();
+
 		expect(page.errorText).toBeDefined();
 		expect(page.errorText.nativeElement.innerHTML).toContain('Server not configured for sending email');
 
@@ -252,6 +258,7 @@ describe('Login Component', () => {
 
 		page.passwordButton.click();
 		fixture.detectChanges();
+
 		expect(page.errorText).toBeDefined();
 		expect(page.errorText.nativeElement.innerText).toBe('Something went wrong while sending email :(');
 	});
@@ -267,6 +274,7 @@ describe('Login Component', () => {
 
 		page.forgotPasswordButton.click();
 		fixture.detectChanges();
+
 		expect(page.errorText).toBeFalsy();
 
 		page.emailInput.value = 'email@email.com';
@@ -274,10 +282,12 @@ describe('Login Component', () => {
 
 		page.passwordButton.click();
 		fixture.detectChanges();
+
 		expect(page.errorText).toBeDefined();
 
 		page.forgotPasswordButton.click();
 		fixture.detectChanges();
+
 		expect(page.errorText).toBeFalsy();
 	});
 

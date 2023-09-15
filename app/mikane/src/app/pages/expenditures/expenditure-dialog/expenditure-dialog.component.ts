@@ -17,7 +17,6 @@ import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 import { CategoryIcon } from 'src/app/types/enums';
 
 @Component({
-	selector: 'expenditure-dialog',
 	templateUrl: 'expenditure-dialog.component.html',
 	styleUrls: ['expenditure-dialog.component.scss'],
 	standalone: true,
@@ -39,13 +38,12 @@ import { CategoryIcon } from 'src/app/types/enums';
 	],
 })
 export class ExpenditureDialogComponent implements OnInit {
-	isOpen: boolean = false;
-	edit: boolean = false;
+	isOpen = false;
+	edit = false;
 	categoryIcons = CategoryIcon;
 
 	categories: Category[] = [];
 	users: User[] = [];
-	expense: any = {};
 
 	addExpenseForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),

@@ -15,9 +15,9 @@
 		</button>
 	</div>
 	<span class="toolbar-spacer"></span>
-	<menu [ngClass]="{ 'mobile-menu': breakpointService.isMobile() | async }"></menu>
+	<app-menu [ngClass]="{ 'mobile-menu': breakpointService.isMobile() | async }"></app-menu>
 </mat-toolbar>
-<nav *ngIf="!(breakpointService.isMobile() | async); else mobileNavbar" class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
+<nav *ngIf="(breakpointService.isMobile() | async) === false; else mobileNavbar" class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
 	<a
 		mat-tab-link
 		*ngFor="let link of links()"
@@ -34,11 +34,11 @@
 </nav>
 <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
 <ng-template #mobileNavbar>
-	<mobile-event-navbar [activeLink]="activeLink" [links]="links()"></mobile-event-navbar>
+	<app-mobile-event-navbar [activeLink]="activeLink" [links]="links()"></app-mobile-event-navbar>
 </ng-template>
 <div
 	[ngClass]="{
-		content: !(breakpointService.isMobile() | async),
+		content: (breakpointService.isMobile() | async) === false,
 		'mobile-event': breakpointService.isMobile() | async,
 		iOS: contextService.isIos
 	}"

@@ -76,7 +76,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	private eventSubscription: Subscription;
 	private _filterInput: ElementRef<HTMLInputElement>;
 
-	loading: boolean = false;
+	loading = false;
 	cancel$: Subject<void> = new Subject();
 	destroy$: Subject<void> = new Subject();
 
@@ -93,7 +93,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		public contextService: ContextService,
 		private route: ActivatedRoute,
 		private router: Router,
-		private changeDetector: ChangeDetectorRef
+		private changeDetector: ChangeDetectorRef,
 	) {}
 
 	ngOnInit(): void {
@@ -125,13 +125,13 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 							this.route.queryParamMap.pipe(
 								map((params) => {
 									return params.get('filter');
-								})
+								}),
 							),
 						]);
 					} else {
 						return of([]);
 					}
-				})
+				}),
 			)
 			.subscribe({
 				next: ([expenses, params]) => {
@@ -162,7 +162,12 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			},
 		});
 
-		let newExpense: any;
+		let newExpense: {
+			name: string;
+			description?: string;
+			amount: number;
+			payer: string;
+		};
 		dialogRef
 			.afterClosed()
 			.pipe(
@@ -173,7 +178,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 					newExpense = expense;
 					return this.categoryService.findOrCreate(this.event.id, expense?.category);
 				}),
-				takeUntil(this.cancel$)
+				takeUntil(this.cancel$),
 			)
 			.pipe(
 				switchMap((category: Category) => {
@@ -182,10 +187,10 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 						newExpense.description,
 						newExpense.amount,
 						category.id,
-						newExpense.payer
+						newExpense.payer,
 					);
 				}),
-				takeUntil(this.destroy$)
+				takeUntil(this.destroy$),
 			)
 			.subscribe({
 				next: (expense) => {
@@ -201,7 +206,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 
 	editExpense(expenseId: string) {
 		const oldExpense = this.expenses().find((expense) => expense.id === expenseId);
-		let newExpense: Expense;
+		let editExpense: Expense;
 
 		this.dialog
 			.open(ExpenditureDialogComponent, {
@@ -218,23 +223,23 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 					if (!expense) {
 						this.cancel$.next();
 					}
-					newExpense = expense;
+					editExpense = expense;
 					return this.categoryService.findOrCreate(this.event.id, expense?.category);
 				}),
-				takeUntil(this.cancel$)
+				takeUntil(this.cancel$),
 			)
 			.pipe(
 				switchMap((category: Category) => {
 					return this.expenseService.editExpense(
 						oldExpense.id,
-						newExpense.name,
-						newExpense.description ?? undefined,
-						newExpense.amount,
+						editExpense.name,
+						editExpense.description ?? undefined,
+						editExpense.amount,
 						category.id,
-						newExpense.payer as unknown as string
+						editExpense.payer as unknown as string,
 					);
 				}),
-				takeUntil(this.destroy$)
+				takeUntil(this.destroy$),
 			)
 			.subscribe({
 				next: (newExpense) => {

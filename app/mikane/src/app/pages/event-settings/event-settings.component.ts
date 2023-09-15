@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -23,7 +23,6 @@ import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 
 @Component({
-	selector: 'event-settings',
 	templateUrl: 'event-settings.component.html',
 	styleUrls: ['./event-settings.component.scss'],
 	standalone: true,
@@ -44,7 +43,7 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 		FormControlPipe,
 	],
 })
-export class EventSettingsComponent {
+export class EventSettingsComponent implements OnInit, OnDestroy {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -67,7 +66,7 @@ export class EventSettingsComponent {
 		private authService: AuthService,
 		public breakpointService: BreakpointService,
 		private messageService: MessageService,
-		public dialog: MatDialog
+		public dialog: MatDialog,
 	) {}
 
 	ngOnInit(): void {
@@ -81,7 +80,7 @@ export class EventSettingsComponent {
 					this.eventData.name = event.name;
 					this.eventData.description = event.description;
 					return combineLatest([this.userService.loadUsersByEvent(event.id, true), this.authService.getCurrentUser()]);
-				})
+				}),
 			)
 			.subscribe({
 				next: ([users, currentUser]) => {
@@ -153,7 +152,7 @@ export class EventSettingsComponent {
 					} else {
 						return NEVER;
 					}
-				})
+				}),
 			)
 			.subscribe({
 				next: () => {
@@ -211,7 +210,7 @@ export class EventSettingsComponent {
 						} else {
 							return NEVER;
 						}
-					})
+					}),
 				)
 				.subscribe({
 					next: () => {
@@ -228,7 +227,7 @@ export class EventSettingsComponent {
 				next: (res) => {
 					this.event = res;
 					const index = this.adminsInEvent.findIndex((user) => user.id === userId && !res.adminIds.includes(userId));
-					const user = this.adminsInEvent.find((user) => user.id === userId && !res.adminIds.includes(userId));
+					const user = this.adminsInEvent.find((admin) => admin.id === userId && !res.adminIds.includes(userId));
 					this.adminsInEvent.splice(index, 1);
 					this.otherUsersInEvent.push(user);
 					this.messageService.showSuccess('Admin removed successfully');

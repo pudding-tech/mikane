@@ -11,12 +11,12 @@ export interface Category {
 	icon: CategoryIcon;
 	weighted: boolean;
 	created: Date;
-	users: {
+	users: Array<{
 		id: string;
 		name: string;
 		avatarURL: string;
 		weight?: number;
-	}[];
+	}>;
 }
 
 @Injectable({

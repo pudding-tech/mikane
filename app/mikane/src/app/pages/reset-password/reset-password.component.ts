@@ -82,7 +82,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 				.resetPassword(this.resetKey, this.resetPasswordForm.get<string>('newPassword')?.value)
 				.subscribe({
 					next: () => {
-						this.messageService.showSuccess('Password changes successfully');
+						this.messageService.showSuccess('Password changed successfully');
 						this.router.navigate(['/login']);
 					},
 					error: (err: ApiError) => {

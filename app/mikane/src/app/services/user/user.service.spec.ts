@@ -38,6 +38,7 @@ describe('UserService', () => {
 				expect(users).toEqual(mockUsers);
 			});
 			const req = httpMock.expectOne(apiUrl + 'users');
+
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUsers);
 		});
@@ -51,13 +52,14 @@ describe('UserService', () => {
 				expect(users).toEqual(mockUsers);
 			});
 			const req = httpMock.expectOne(apiUrl + 'users?excludeSelf=true');
+
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUsers);
 		});
 	});
 
 	describe('loadUsersByEvent', () => {
-		it('should return an array of users', () => {
+		it('should return an array of users in provided event', () => {
 			const mockUsers: User[] = [
 				{ id: '1', name: 'User 1' },
 				{ id: '2', name: 'User 2' },
@@ -67,6 +69,7 @@ describe('UserService', () => {
 				expect(users).toEqual(mockUsers);
 			});
 			const req = httpMock.expectOne(apiUrl + `users?eventId=${eventId}`);
+
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUsers);
 		});
@@ -81,6 +84,7 @@ describe('UserService', () => {
 				expect(users).toEqual(mockUsers);
 			});
 			const req = httpMock.expectOne(apiUrl + `users?eventId=${eventId}&excludeGuests=true`);
+
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUsers);
 		});
@@ -94,6 +98,7 @@ describe('UserService', () => {
 				expect(user).toEqual(mockUser);
 			});
 			const req = httpMock.expectOne(apiUrl + `users/${userId}`);
+
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUser);
 		});
@@ -117,6 +122,7 @@ describe('UserService', () => {
 				expect(user).toEqual(mockUser);
 			});
 			const req = httpMock.expectOne(apiUrl + 'users');
+
 			expect(req.request.method).toBe('POST');
 			expect(req.request.body).toEqual({ name: name, eventId: eventId, email: 'email', password: 'password' });
 			req.flush(mockUser);
@@ -135,6 +141,7 @@ describe('UserService', () => {
 				expect(expenses).toEqual(mockExpenses);
 			});
 			const req = httpMock.expectOne(apiUrl + `users/${userId}/expenses/${eventId}`);
+
 			expect(req.request.method).toBe('GET');
 			req.flush(mockExpenses);
 		});
@@ -163,6 +170,7 @@ describe('UserService', () => {
 				expect(balances).toEqual(mockBalances);
 			});
 			const req = httpMock.expectOne(apiUrl + `users/balances?eventId=${eventId}`);
+
 			expect(req.request.method).toBe('GET');
 			req.flush(mockBalances);
 		});
@@ -189,6 +197,7 @@ describe('UserService', () => {
 				expect(user).toEqual(mockUser);
 			});
 			const req = httpMock.expectOne(apiUrl + `users/${userId}`);
+
 			expect(req.request.method).toBe('PUT');
 			expect(req.request.body).toEqual({ username, firstName, lastName, email, phone });
 			req.flush(mockUser);
@@ -204,6 +213,7 @@ describe('UserService', () => {
 				expect(users).toEqual(mockUsers);
 			});
 			const req = httpMock.expectOne(apiUrl + `users/${userId}`);
+
 			expect(req.request.method).toBe('DELETE');
 			expect(req.request.body).toEqual({ key });
 			req.flush(mockUsers);
@@ -232,6 +242,7 @@ describe('UserService', () => {
 				expect(user).toEqual(mockUser);
 			});
 			const req = httpMock.expectOne(apiUrl + 'users');
+
 			expect(req.request.method).toBe('POST');
 			expect(req.request.body).toEqual({ username, firstName, lastName, email, phone: phone.number, password, key });
 			req.flush(mockUser);
@@ -255,6 +266,7 @@ describe('UserService', () => {
 				expect(user).toEqual(mockUser);
 			});
 			const req = httpMock.expectOne(apiUrl + 'users/changepassword');
+
 			expect(req.request.method).toBe('POST');
 			expect(req.request.body).toEqual({ currentPassword: currentPassword, newPassword: newPassword });
 			req.flush(mockUser);
@@ -269,6 +281,7 @@ describe('UserService', () => {
 				expect(res).toBeDefined();
 			});
 			const req = httpMock.expectOne(apiUrl + 'users/invite');
+
 			expect(req.request.method).toBe('POST');
 			expect(req.request.body).toEqual({ email, guestId });
 			req.flush({});
@@ -281,6 +294,7 @@ describe('UserService', () => {
 				expect(res).toBeDefined();
 			});
 			const req = httpMock.expectOne(apiUrl + 'users/requestdeleteaccount');
+
 			expect(req.request.method).toBe('POST');
 			req.flush({});
 		});
@@ -296,6 +310,7 @@ describe('UserService', () => {
 				expect(users).toEqual(mockUsers);
 			});
 			const req = httpMock.expectOne(env.apiUrl + '/guests');
+
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUsers);
 		});
@@ -310,6 +325,7 @@ describe('UserService', () => {
 				expect(user).toEqual(mockUser);
 			});
 			const req = httpMock.expectOne(env.apiUrl + '/guests');
+
 			expect(req.request.method).toBe('POST');
 			expect(req.request.body).toEqual({ firstName, lastName });
 			req.flush(mockUser);
@@ -326,6 +342,7 @@ describe('UserService', () => {
 				expect(user).toEqual(mockUser);
 			});
 			const req = httpMock.expectOne(env.apiUrl + `/guests/${id}`);
+
 			expect(req.request.method).toBe('PUT');
 			expect(req.request.body).toEqual({ firstName, lastName });
 			req.flush(mockUser);
@@ -339,6 +356,7 @@ describe('UserService', () => {
 				expect(res).toBeDefined();
 			});
 			const req = httpMock.expectOne(env.apiUrl + `/guests/${id}`);
+
 			expect(req.request.method).toBe('DELETE');
 			req.flush({});
 		});

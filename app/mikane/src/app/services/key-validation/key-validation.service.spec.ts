@@ -27,11 +27,14 @@ describe('KeyValidationService', () => {
 	describe('#verifyRegisterKey', () => {
 		it('should send verification key', () => {
 			service.verifyRegisterKey('key').subscribe({
-				next: (email) => expect(email).withContext('should return email').toEqual({ email: 'test@test.test' }),
+				next: (email) => {
+					expect(email).withContext('should return email').toEqual({ email: 'test@test.test' });
+				},
 				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/verifykey/register/key');
+
 			expect(req.request.method).toEqual('GET');
 
 			req.flush({ email: 'test@test.test' });
@@ -39,10 +42,11 @@ describe('KeyValidationService', () => {
 	});
 
 	describe('#verifyDeleteAccountKey', () => {
-		it('should send verification key', () => {
+		it('should send delete account verification key', () => {
 			service.verifyDeleteAccountKey('key').subscribe({ error: fail });
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/verifykey/deleteaccount/key');
+
 			expect(req.request.method).toEqual('GET');
 
 			req.flush({});
@@ -50,10 +54,11 @@ describe('KeyValidationService', () => {
 	});
 
 	describe('#verifyPasswordReset', () => {
-		it('should send verification key', () => {
+		it('should send password reset verification key', () => {
 			service.verifyPasswordReset('key').subscribe({ error: fail });
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/verifykey/passwordreset/key');
+
 			expect(req.request.method).toEqual('GET');
 
 			req.flush({});

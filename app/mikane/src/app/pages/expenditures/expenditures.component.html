@@ -7,7 +7,7 @@
 
 <div *ngIf="loading === false; else loadingSpinner">
 	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" [ngClass]="{ 'extra-margin': !event?.active }">
-		<div *ngIf="filteredExpenses().length > 0; else noExpenses">
+		<div *ngIf="expenses().length > 0; else noExpenses">
 			<mat-form-field>
 				<mat-label>Filter expenses</mat-label>
 				<input matInput (keyup)="applyFilter($event)" #input />
@@ -15,13 +15,7 @@
 					<mat-icon>cancel</mat-icon>
 				</button>
 			</mat-form-field>
-			<table
-				class="expense-table"
-				mat-table
-				matSort
-				[dataSource]="filteredExpenses()"
-				(matSortChange)="onSortData($event)"
-			>
+			<table class="expense-table" mat-table matSort [dataSource]="filteredExpenses()" (matSortChange)="onSortData($event)">
 				<!-- Icon Column -->
 				<ng-container matColumnDef="icon">
 					<th mat-header-cell *matHeaderCellDef></th>
@@ -43,7 +37,7 @@
 					<th mat-header-cell *matHeaderCellDef mat-sort-header>Paid by</th>
 					<td mat-cell *matCellDef="let expense">
 						<div class="payer">
-							<img [src]="expense.payer.avatarURL" class="payer-avatar" />
+							<img [src]="expense.payer.avatarURL" alt="User avatar" class="payer-avatar" />
 							{{ expense.payer.name }}
 						</div>
 					</td>
@@ -117,7 +111,7 @@
 
 <ng-template #mobileView>
 	<mat-nav-list #expensesList *ngIf="filteredExpenses().length > 0; else noExpensesMobile" class="expenses-list-mobile">
-		<expense-item *ngFor="let expense of filteredExpenses()" [expense]="expense"></expense-item>
+		<app-expense-item *ngFor="let expense of filteredExpenses()" [expense]="expense"></app-expense-item>
 	</mat-nav-list>
 	<button
 		*ngIf="event?.active"
@@ -132,7 +126,7 @@
 </ng-template>
 
 <ng-template #loadingSpinner>
-	<loading-spinner></loading-spinner>
+	<app-loading-spinner></app-loading-spinner>
 </ng-template>
 
 <ng-template #noExpenses>
@@ -140,5 +134,5 @@
 </ng-template>
 
 <ng-template #noExpensesMobile>
-	<div class="no-expenses-mobile"> No expenses </div>
+	<div class="no-expenses-mobile">No expenses</div>
 </ng-template>

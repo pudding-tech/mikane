@@ -2,8 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
+import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
+import { UserService } from 'src/app/services/user/user.service';
 import { DangerZoneComponent } from './danger-zone.component';
 
 describe('DangerZoneComponent', () => {
@@ -29,7 +30,6 @@ describe('DangerZoneComponent', () => {
 
 		fixture = TestBed.createComponent(DangerZoneComponent);
 		component = fixture.componentInstance;
-		component.currentUser = { id: '1', name: 'John Doe' } as User;
 		fixture.detectChanges();
 	});
 
@@ -44,8 +44,17 @@ describe('DangerZoneComponent', () => {
 
 		component.deleteUser();
 
-		expect(dialogSpy.open).toHaveBeenCalled();
-		expect(userServiceSpy.requestDeleteAccount).toHaveBeenCalled();
+		expect(dialogSpy.open).toHaveBeenCalledWith(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Send delete account email',
+				content: 'Are you sure you want to send the delete account email?',
+				confirm: 'Yes, I am sure',
+			},
+			autoFocus: false,
+		});
+
+		expect(userServiceSpy.requestDeleteAccount).toHaveBeenCalledWith();
 	});
 
 	it('should not send delete account email when confirm dialog is closed', () => {
@@ -55,7 +64,16 @@ describe('DangerZoneComponent', () => {
 
 		component.deleteUser();
 
-		expect(dialogSpy.open).toHaveBeenCalled();
+		expect(dialogSpy.open).toHaveBeenCalledWith(ConfirmDialogComponent, {
+			width: '400px',
+			data: {
+				title: 'Send delete account email',
+				content: 'Are you sure you want to send the delete account email?',
+				confirm: 'Yes, I am sure',
+			},
+			autoFocus: false,
+		});
+
 		expect(userServiceSpy.requestDeleteAccount).not.toHaveBeenCalled();
 	});
 

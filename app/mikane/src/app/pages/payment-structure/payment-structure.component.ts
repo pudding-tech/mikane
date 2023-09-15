@@ -21,10 +21,10 @@ import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payme
 
 interface Sender {
 	sender: User;
-	receivers: {
+	receivers: Array<{
 		receiver: User;
 		amount: number;
-	}[];
+	}>;
 }
 
 @Component({

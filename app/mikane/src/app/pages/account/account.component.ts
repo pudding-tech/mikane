@@ -19,7 +19,6 @@ import { DangerZoneComponent } from './danger-zone/danger-zone.component';
 import { UserSettingsComponent } from './user/user-settings.component';
 
 @Component({
-	selector: 'account',
 	templateUrl: './account.component.html',
 	styleUrls: ['./account.component.scss'],
 	standalone: true,

@@ -39,7 +39,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 	hide = true;
 
 	private userSub: Subscription;
-	protected guestRegistration: boolean = false;
+	protected guestRegistration = false;
 
 	private phone!: Phonenumber;
 	private phoneCtrl$: Subscription | undefined;
@@ -88,7 +88,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 			this.registerUserForm.get('username')?.setValue(window.history.state?.email);
 		}
 
-		let passwordGroup = this.registerUserForm.get('passwordGroup');
+		const passwordGroup = this.registerUserForm.get('passwordGroup');
 		this.registerUserForm
 			.get('passwordGroup')
 			?.addValidators([this.createCompareValidator(passwordGroup.get('password'), passwordGroup.get('passwordRetype'))]);

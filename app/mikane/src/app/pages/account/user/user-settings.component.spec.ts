@@ -28,7 +28,7 @@ describe('UserSettingsComponent', () => {
 	beforeEach(() => {
 		userServiceSpy = jasmine.createSpyObj('UserService', ['editUser']);
 		messageServiceSpy = jasmine.createSpyObj('MessageService', ['showSuccess', 'showError']);
-		formValidationServiceSpy = jasmine.createSpyObj('FormValidationService', [], { usernameRegex: /^[a-zA-Z0-9]+$/ });
+		formValidationServiceSpy = jasmine.createSpyObj('FormValidationService', [], { usernameRegex: /^[\dA-Za-z]+$/ });
 		breakpointServiceSpy = jasmine.createSpyObj('BreakpointService', ['isMobile']);
 		matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
@@ -54,7 +54,7 @@ describe('UserSettingsComponent', () => {
 
 		fixture = TestBed.createComponent(UserSettingsComponent);
 		component = fixture.componentInstance;
-		component.currentUser = {
+		component.user = {
 			id: '1',
 			username: 'johndoe',
 			firstName: 'John',
@@ -91,15 +91,15 @@ describe('UserSettingsComponent', () => {
 
 			component.ngOnInit();
 
-			expect(component.editUserForm.get('username').addAsyncValidators).toHaveBeenCalled();
-			expect(component.editUserForm.get('email').addAsyncValidators).toHaveBeenCalled();
-			expect(component.editUserForm.get('phone').addAsyncValidators).toHaveBeenCalled();
+			expect(component.editUserForm.get('username').addAsyncValidators).toHaveBeenCalledWith(jasmine.any(Function));
+			expect(component.editUserForm.get('email').addAsyncValidators).toHaveBeenCalledWith(jasmine.any(Function));
+			expect(component.editUserForm.get('phone').addAsyncValidators).toHaveBeenCalledWith(jasmine.any(Function));
 		});
 	});
 
 	describe('editUser', () => {
 		it('should call the UserService.editUser method with the correct parameters', () => {
-			userServiceSpy.editUser.and.returnValue(of(component.currentUser));
+			userServiceSpy.editUser.and.returnValue(of(component.user));
 
 			component.editUserForm.patchValue({
 				username: 'newusername',
@@ -111,7 +111,7 @@ describe('UserSettingsComponent', () => {
 			component.editUser();
 
 			expect(userServiceSpy.editUser).toHaveBeenCalledWith(
-				component.currentUser.id,
+				component.user.id,
 				'newusername',
 				'New',
 				'Name',
@@ -122,7 +122,7 @@ describe('UserSettingsComponent', () => {
 
 		it('should show a success message and toggle edit mode on success', () => {
 			component.editMode = true;
-			userServiceSpy.editUser.and.returnValue(of(component.currentUser));
+			userServiceSpy.editUser.and.returnValue(of(component.user));
 
 			component.editUserForm.patchValue({
 				username: 'newusername',
@@ -158,10 +158,12 @@ describe('UserSettingsComponent', () => {
 		it('should toggle the editMode property', () => {
 			component.editMode = false;
 			component.toggleEditMode();
+
 			expect(component.editMode).toBeTruthy();
 
 			component.editMode = true;
 			component.toggleEditMode();
+
 			expect(component.editMode).toBeFalsy();
 		});
 	});

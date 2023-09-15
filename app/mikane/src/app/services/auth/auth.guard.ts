@@ -17,7 +17,7 @@ export const authGuard: CanActivateFn = (route, state) => {
 				return router.parseUrl('/login');
 			}
 		}),
-		catchError((err) => {
+		catchError(() => {
 			// User is not logged in, save URL and redirect to login page
 			authService.redirectUrl = state.url;
 			return of(router.parseUrl('/login'));

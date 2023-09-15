@@ -17,10 +17,11 @@ describe('phoneValidator', () => {
 		control.setValue('1234567890');
 		(formValidationService.validatePhone as jasmine.Spy).and.returnValue(of(null));
 
-		const validator = phoneValidator(formValidationService)!(control) as Observable<ValidationErrors | null>;
+		const validator = phoneValidator(formValidationService)(control) as Observable<ValidationErrors | null>;
 		let result: ValidationErrors | null = null;
 		validator.subscribe((res) => (result = res));
 		tick(500);
+
 		expect(result).toBeNull();
 	}));
 
@@ -29,10 +30,11 @@ describe('phoneValidator', () => {
 		const error: ApiError = { status: 409 } as ApiError;
 		(formValidationService.validatePhone as jasmine.Spy).and.returnValue(throwError(() => error));
 
-		const validator = phoneValidator(formValidationService)!(control) as Observable<ValidationErrors | null>;
+		const validator = phoneValidator(formValidationService)(control) as Observable<ValidationErrors | null>;
 		let result: ValidationErrors | null = null;
 		validator.subscribe((res) => (result = res));
 		tick(500);
+
 		expect(result).toEqual({ duplicate: true });
 	}));
 
@@ -41,10 +43,11 @@ describe('phoneValidator', () => {
 		const error: ApiError = { status: 400 } as ApiError;
 		(formValidationService.validatePhone as jasmine.Spy).and.returnValue(throwError(() => error));
 
-		const validator = phoneValidator(formValidationService)!(control) as Observable<ValidationErrors | null>;
+		const validator = phoneValidator(formValidationService)(control) as Observable<ValidationErrors | null>;
 		let result: ValidationErrors | null = null;
 		validator.subscribe((res) => (result = res));
 		tick(500);
+
 		expect(result).toEqual({ invalid: true });
 	}));
 
@@ -52,17 +55,20 @@ describe('phoneValidator', () => {
 		const control = jasmine.createSpyObj<AbstractControl>('AbstractControl', ['value'], { value: '1234567890' });
 		(formValidationService.validatePhone as jasmine.Spy).and.returnValue(of(null));
 
-		const validator = phoneValidator(formValidationService)!(control);
+		const validator = phoneValidator(formValidationService)(control);
 		const startTime = Date.now();
 		(validator as Observable<ValidationErrors>).subscribe(() => {
 			const endTime = Date.now();
+
 			expect(endTime - startTime).toBeGreaterThanOrEqual(500);
 		});
 
 		tick(250);
+
 		expect(formValidationService.validatePhone).not.toHaveBeenCalled();
 		tick(250);
-		expect(formValidationService.validatePhone).toHaveBeenCalled();
+
+		expect(formValidationService.validatePhone).toHaveBeenCalledWith(control.value, undefined);
 	}));
 
 	it('should pass userId to formValidationService if provided', fakeAsync(() => {
@@ -70,10 +76,11 @@ describe('phoneValidator', () => {
 		const userId = '123';
 		(formValidationService.validatePhone as jasmine.Spy).and.returnValue(of(null));
 
-		const validator = phoneValidator(formValidationService, userId)!(control);
+		const validator = phoneValidator(formValidationService, userId)(control);
 		const startTime = Date.now();
 		(validator as Observable<ValidationErrors>).subscribe(() => {
 			const endTime = Date.now();
+
 			expect(endTime - startTime).toBeGreaterThanOrEqual(500);
 			expect(formValidationService.validatePhone).toHaveBeenCalledWith(control.value, userId);
 		});

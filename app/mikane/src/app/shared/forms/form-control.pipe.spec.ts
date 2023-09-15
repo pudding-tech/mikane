@@ -10,6 +10,7 @@ describe('FormControlPipe', () => {
 
 	it('should transform AbstractControl to FormControl', () => {
 		const transformedControl = pipe.transform(new FormControl() as AbstractControl);
+
 		expect(transformedControl instanceof FormControl).toBeTruthy();
 	});
 });

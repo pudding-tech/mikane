@@ -32,7 +32,7 @@ export class ExpenseService {
 	}
 
 	getExpense(id: string): Observable<Expense> {
-		return this.httpClient.get<Expense>(`${this.apiUrl}/${id}`)
+		return this.httpClient.get<Expense>(`${this.apiUrl}/${id}`);
 	}
 
 	createExpense(

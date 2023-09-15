@@ -1,10 +1,10 @@
 <mat-toolbar class="events-toolbar" [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
 	<span class="logo-container">
-		<img src="assets/mikane.svg" class="logo" />
+		<img src="assets/mikane.svg" alt="Mikane logo" class="logo" />
 	</span>
 	<span>MIKANE</span>
 	<span class="toolbar-spacer"></span>
-	<menu></menu>
+	<app-menu></app-menu>
 </mat-toolbar>
 <div *ngIf="(loading | async) === false; else loadingSpinner">
 	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="events-container">
@@ -116,14 +116,14 @@
 <ng-template #mobileView>
 	<div class="title-mobile">Active events</div>
 	<mat-nav-list *ngIf="pagedEventsActive().length > 0; else noActiveEvents" class="events-list-mobile">
-		<event-item *ngFor="let event of eventsActive()" [event]="event" (click)="clickEvent(event)"></event-item>
+		<app-event-item *ngFor="let event of eventsActive()" [event]="event" (click)="clickEvent(event)"></app-event-item>
 	</mat-nav-list>
 	<ng-template #noActiveEvents>
 		<div class="no-events-mobile">There are currently no active events</div>
 	</ng-template>
 	<div class="title-mobile">Archived events</div>
 	<mat-nav-list *ngIf="pagedEventsArchived().length > 0; else noArchivedEvents" class="events-list-mobile">
-		<event-item *ngFor="let event of eventsArchived()" [event]="event" (click)="clickEvent(event)"></event-item>
+		<app-event-item *ngFor="let event of eventsArchived()" [event]="event" (click)="clickEvent(event)"></app-event-item>
 	</mat-nav-list>
 	<ng-template #noArchivedEvents>
 		<div class="no-events-mobile">There are currently no archived events</div>
@@ -134,5 +134,5 @@
 </ng-template>
 
 <ng-template #loadingSpinner>
-	<loading-spinner></loading-spinner>
+	<app-loading-spinner></app-loading-spinner>
 </ng-template>

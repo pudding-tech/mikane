@@ -275,7 +275,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			},
 		});
 
-		let newExpense: any;
+		let newExpense: {
+			name: string;
+			description: string;
+			amount: number;
+			payerId: string;
+		};
 		dialogRef
 			.afterClosed()
 			.pipe(
@@ -295,7 +300,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 						newExpense.description,
 						newExpense.amount,
 						category.id,
-						newExpense.payer
+						newExpense.payerId
 					);
 				})
 			)

@@ -4,7 +4,7 @@
 	</a>
 	<span>Guest users</span>
 	<span class="toolbar-spacer"></span>
-	<menu></menu>
+	<app-menu></app-menu>
 </mat-toolbar>
 
 <div *ngIf="loading === false; else loadingSpinner">
@@ -36,7 +36,7 @@
 			<mat-list-item *ngFor="let guest of pagedGuests" class="list-item">
 				<div class="user">
 					<div class="name">
-						<img [src]="guest.avatarURL" class="avatar" />
+						<img [src]="guest.avatarURL" alt="Guest user avatar" class="avatar" />
 						{{ guest.name }}
 					</div>
 					<button mat-icon-button (click)="editGuest(guest)">
@@ -46,7 +46,7 @@
 			</mat-list-item>
 		</mat-nav-list>
 		<mat-paginator
-			*ngIf="(breakpointService.isMobile() | async) ? (length > pageSize) : true"
+			*ngIf="(breakpointService.isMobile() | async) ? length > pageSize : true"
 			[length]="length"
 			[pageSize]="pageSize"
 			[pageSizeOptions]="pageSizeOptions"
@@ -57,18 +57,14 @@
 	</div>
 	<ng-container *ngIf="(breakpointService.isMobile() | async) === false; else mobileButton">
 		<mat-card-actions>
-			<button mat-raised-button color="primary" (click)="newGuest()">
-				New guest user
-			</button>
+			<button mat-raised-button color="primary" (click)="newGuest()">New guest user</button>
 		</mat-card-actions>
 	</ng-container>
 	<ng-template #mobileButton>
-		<button mat-raised-button color="primary" (click)="newGuest()" class="new-guest-button-mobile">
-			New guest user
-		</button>
+		<button mat-raised-button color="primary" (click)="newGuest()" class="new-guest-button-mobile">New guest user</button>
 	</ng-template>
 </ng-template>
 
 <ng-template #loadingSpinner>
-	<loading-spinner></loading-spinner>
+	<app-loading-spinner></app-loading-spinner>
 </ng-template>

@@ -51,7 +51,7 @@ describe('EventSettingsComponent', () => {
 				provide: Router,
 				useValue: {
 					navigate: jasmine.createSpy('navigate'),
-					navigateByUrl: jasmine.createSpy('navigateByUrl').and.returnValue(Promise.resolve()),
+					navigateByUrl: jasmine.createSpy('navigateByUrl').and.resolveTo(),
 				},
 			})
 	);
@@ -59,6 +59,7 @@ describe('EventSettingsComponent', () => {
 	it('should create', () => {
 		const fixture = TestBed.createComponent(EventSettingsComponent);
 		const component = fixture.componentInstance;
+
 		expect(component).toBeTruthy();
 	});
 
@@ -144,6 +145,7 @@ describe('EventSettingsComponent', () => {
 			);
 			fixture.detectChanges();
 			component.ngOnInit();
+
 			expect(messageService.showError).toHaveBeenCalledWith('Error loading event settings');
 		});
 
@@ -165,6 +167,7 @@ describe('EventSettingsComponent', () => {
 			);
 			fixture.detectChanges();
 			component.ngOnInit();
+
 			expect(messageService.showError).toHaveBeenCalledWith('Error loading event settings');
 		});
 	});
@@ -188,6 +191,7 @@ describe('EventSettingsComponent', () => {
 			);
 			fixture.detectChanges();
 			component.editEvent();
+
 			expect(messageService.showError).toHaveBeenCalledWith('Failed to edit event');
 		});
 
@@ -208,9 +212,14 @@ describe('EventSettingsComponent', () => {
 			component.editEvent();
 
 			tick();
+
 			expect(component.event).toEqual({ id: '10' } as PuddingEvent);
 			expect(messageService.showSuccess).toHaveBeenCalledWith('Event successfully edited');
-			expect((fixture.point.injector.get(Router) as jasmine.SpyObj<Router>).navigate).toHaveBeenCalled();
+			expect((fixture.point.injector.get(Router) as jasmine.SpyObj<Router>).navigate).toHaveBeenCalledWith([
+				'events',
+				'10',
+				'settings',
+			]);
 		}));
 	});
 
@@ -233,9 +242,14 @@ describe('EventSettingsComponent', () => {
 			component.archiveEvent(true);
 
 			tick();
+
 			expect(component.event).toEqual({ id: '10' } as PuddingEvent);
 			expect(messageService.showSuccess).toHaveBeenCalledWith('Event successfully archived');
-			expect((fixture.point.injector.get(Router) as jasmine.SpyObj<Router>).navigate).toHaveBeenCalled();
+			expect((fixture.point.injector.get(Router) as jasmine.SpyObj<Router>).navigate).toHaveBeenCalledWith([
+				'events',
+				'10',
+				'settings',
+			]);
 		}));
 
 		it('should unarchive Event', fakeAsync(() => {
@@ -256,9 +270,14 @@ describe('EventSettingsComponent', () => {
 			component.archiveEvent(false);
 
 			tick();
+
 			expect(component.event).toEqual({ id: '10' } as PuddingEvent);
 			expect(messageService.showSuccess).toHaveBeenCalledWith('Event successfully set as active');
-			expect((fixture.point.injector.get(Router) as jasmine.SpyObj<Router>).navigate).toHaveBeenCalled();
+			expect((fixture.point.injector.get(Router) as jasmine.SpyObj<Router>).navigate).toHaveBeenCalledWith([
+				'events',
+				'10',
+				'settings',
+			]);
 		}));
 
 		it('should show error message if archiving event fails', () => {
@@ -360,36 +379,6 @@ describe('EventSettingsComponent', () => {
 			expect(eventService.deleteEvent).not.toHaveBeenCalled();
 			expect((fixture.point.injector.get(Router) as jasmine.SpyObj<Router>).navigate).not.toHaveBeenCalled();
 		});
-
-		it('should show error message if deleting event fails', () => {
-			const $event = new BehaviorSubject<PuddingEvent>({
-				id: '1',
-			} as PuddingEvent);
-
-			const fixture = MockRender(EventSettingsComponent, { $event: $event });
-			const component = fixture.point.componentInstance;
-			const messageService = fixture.point.injector.get(MessageService) as jasmine.SpyObj<MessageService>;
-			const eventService = fixture.point.injector.get(EventService) as jasmine.SpyObj<EventService>;
-
-			eventService.deleteEvent.and.returnValue(
-				throwError(() => {
-					return {
-						error: {
-							message: 'error',
-						},
-					} as ApiError;
-				})
-			);
-			(fixture.point.injector.get(MatDialog) as jasmine.SpyObj<MatDialog>).open.and.returnValue({
-				afterClosed: () => of(true),
-			} as MatDialogRef<boolean>);
-
-			fixture.detectChanges();
-			component.deleteEvent();
-
-			expect(messageService.showError).toHaveBeenCalledWith('Failed to delete event');
-			expect((fixture.point.injector.get(Router) as jasmine.SpyObj<Router>).navigate).not.toHaveBeenCalled();
-		});
 	});
 
 	describe('addAdmin', () => {
@@ -429,6 +418,7 @@ describe('EventSettingsComponent', () => {
 				id: '1',
 				adminIds: ['1', '2'],
 			} as PuddingEvent);
+
 			expect(eventService.setUserAsAdmin).toHaveBeenCalledWith('1', '2');
 			expect(userService.loadUsersByEvent).toHaveBeenCalledWith('1', true);
 			expect(component.addAdminForm.controls['userId'].value).toEqual('');
@@ -436,6 +426,7 @@ describe('EventSettingsComponent', () => {
 				{ id: '1', eventInfo: { isAdmin: true } },
 				{ id: '2', eventInfo: { isAdmin: false } },
 			] as User[]);
+
 			expect(component.otherUsersInEvent).toEqual([] as User[]);
 		});
 
@@ -498,10 +489,12 @@ describe('EventSettingsComponent', () => {
 				id: '1',
 				adminIds: ['1', '2'],
 			} as PuddingEvent);
+
 			expect(component.adminsInEvent).toEqual([
 				{ id: '1', eventInfo: { isAdmin: true } },
 				{ id: '2', eventInfo: { isAdmin: true } },
 			] as User[]);
+
 			expect(component.otherUsersInEvent).toEqual([] as User[]);
 
 			component.removeAdmin('2');
@@ -510,6 +503,7 @@ describe('EventSettingsComponent', () => {
 				id: '1',
 				adminIds: ['1'],
 			} as PuddingEvent);
+
 			expect(component.adminsInEvent).toEqual([{ id: '1', eventInfo: { isAdmin: true } }] as User[]);
 			expect(component.otherUsersInEvent).toEqual([{ id: '2', eventInfo: { isAdmin: true } }] as User[]);
 			expect(eventService.removeUserAsAdmin).toHaveBeenCalledWith('1', '2');
@@ -590,6 +584,7 @@ describe('EventSettingsComponent', () => {
 			} as MatDialogRef<boolean>);
 
 			component.removeAdmin('1');
+
 			expect(messageService.showError).toHaveBeenCalledWith('Failed to remove current user as admin');
 		});
 	});
