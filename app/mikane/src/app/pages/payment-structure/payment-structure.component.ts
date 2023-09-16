@@ -1,23 +1,23 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'lodash-es';
 import { BehaviorSubject } from 'rxjs';
+import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payment-item.component';
+import { PaymentExpansionPanelItemComponent } from 'src/app/pages/payment-structure/payment-expansion-panel-item/payment-expansion-panel-item.component';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { EventService, Payment } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
-import { MatCardModule } from '@angular/material/card';
-import { MatListModule } from '@angular/material/list';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { PaymentExpansionPanelItemComponent } from 'src/app/pages/payment-structure/payment-expansion-panel-item/payment-expansion-panel-item.component';
-import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payment-item.component';
 
 interface Sender {
 	sender: User;
@@ -28,7 +28,6 @@ interface Sender {
 }
 
 @Component({
-	selector: 'app-payment-structure',
 	templateUrl: './payment-structure.component.html',
 	styleUrls: ['./payment-structure.component.scss'],
 	standalone: true,
@@ -68,7 +67,7 @@ export class PaymentStructureComponent implements OnInit {
 		private eventService: EventService,
 		private route: ActivatedRoute,
 		private messageService: MessageService,
-		public breakpointService: BreakpointService
+		public breakpointService: BreakpointService,
 	) {}
 
 	ngOnInit(): void {
@@ -84,14 +83,15 @@ export class PaymentStructureComponent implements OnInit {
 				this.messageService.showError('Something went wrong');
 				console.error('something went wrong when getting current user on account page', error);
 			},
-		})
+		});
 	}
 
-	loadPayments() {
+	private loadPayments() {
 		this.loading.next(true);
 		this.eventService.loadPayments(this.eventId).subscribe({
 			next: (payments) => {
 				this.payments = payments;
+
 				map(payments, (payment) => {
 					if (
 						this.senders.find((sender) => {
@@ -115,20 +115,20 @@ export class PaymentStructureComponent implements OnInit {
 								receiver: payment.receiver,
 								amount: payment.amount,
 							});
-						}
+						},
 					);
 				});
 
 				this.senders.map((sender) => {
-					if (sender.sender.id === this.currentUser.id ||
-						sender.receivers.find(receiver => receiver.receiver.id === this.currentUser.id)
+					if (
+						sender.sender.id === this.currentUser?.id ||
+						sender.receivers.find((receiver) => receiver.receiver.id === this.currentUser?.id)
 					) {
 						this.paymentsSelf.push(sender);
-					}
-					else {
+					} else {
 						this.paymentsOthers.push(sender);
 					}
-				})
+				});
 
 				this.loading.next(false);
 			},
@@ -145,18 +145,15 @@ export class PaymentStructureComponent implements OnInit {
 			if (this.allExpandedSelf) {
 				this.paymentsSelfRef.openExpand(false);
 				this.allExpandedSelf = false;
-			}
-			else {
+			} else {
 				this.paymentsSelfRef.openExpand(true);
 				this.allExpandedSelf = true;
 			}
-		}
-		else if (index === 2) {
+		} else if (index === 2) {
 			if (this.allExpandedOthers) {
 				this.paymentsOthersRef.openExpand(false);
 				this.allExpandedOthers = false;
-			}
-			else {
+			} else {
 				this.paymentsOthersRef.openExpand(true);
 				this.allExpandedOthers = true;
 			}
@@ -166,8 +163,7 @@ export class PaymentStructureComponent implements OnInit {
 	panelToggled = (index: number, allPanelsExpanded: boolean) => {
 		if (index === 1) {
 			this.allExpandedSelf = allPanelsExpanded;
-		}
-		else if (index === 2) {
+		} else if (index === 2) {
 			this.allExpandedOthers = allPanelsExpanded;
 		}
 	};
