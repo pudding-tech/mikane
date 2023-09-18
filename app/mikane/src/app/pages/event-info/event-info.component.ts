@@ -52,18 +52,18 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 		private userService: UserService,
 		private authService: AuthService,
 		public breakpointService: BreakpointService,
-		private messageService: MessageService
+		private messageService: MessageService,
 	) {}
 
 	ngOnInit(): void {
 		this.loading.next(true);
 		this.eventSubscription = this.$event
-			.pipe(
+			?.pipe(
 				filter((event) => event?.id !== undefined),
 				switchMap((event) => {
 					this.event = event;
 					return combineLatest([this.userService.loadUsersByEvent(event.id, true), this.authService.getCurrentUser()]);
-				})
+				}),
 			)
 			.subscribe({
 				next: ([users, currentUser]) => {
