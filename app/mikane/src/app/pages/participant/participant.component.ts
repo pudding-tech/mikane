@@ -60,7 +60,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 	cancel$: Subject<void> = new Subject();
 
 	event: PuddingEvent;
-	users: User[] = [];
 	usersWithBalance: UserBalance[] = [];
 	usersWithBalance$ = new BehaviorSubject<UserBalance[]>([]);
 
@@ -83,7 +82,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		private categoryService: CategoryService,
 		protected authService: AuthService,
 		public breakpointService: BreakpointService,
-		public contextService: ContextService
+		public contextService: ContextService,
 	) {}
 
 	ngOnInit() {
@@ -96,7 +95,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 					} else {
 						return of(undefined);
 					}
-				})
+				}),
 			)
 			.subscribe({
 				next: (event) => {
@@ -122,7 +121,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 						return userWithBalance?.user?.id === currentUser?.id;
 					})?.user.eventInfo?.isAdmin;
 					return usersWithBalance;
-				})
+				}),
 			)
 			.subscribe({
 				next: (usersWithBalance) => {
@@ -147,7 +146,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 				.pipe(
 					switchMap((currentUser) => {
 						return this.eventService.addUser(this.event.id, currentUser.id);
-					})
+					}),
 				)
 				.subscribe({
 					next: (event) => {
@@ -179,7 +178,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 						return users.filter((user) => {
 							return !participants.includes(user.id);
 						});
-					})
+					}),
 				),
 			},
 			autoFocus: false,
@@ -198,7 +197,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 					} else {
 						return of([]);
 					}
-				})
+				}),
 			)
 			.subscribe({
 				next: (events: PuddingEvent[]) => {
@@ -256,7 +255,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to remove user');
-				console.error(err.error.message);
+				console.error(err?.error?.message);
 			},
 		});
 	}
@@ -289,24 +288,24 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 						this.cancel$.next();
 					}
 					newExpense = expense;
-					return this.categoryService.findOrCreate(this.event.id, expense?.category);
+					return this.categoryService.findOrCreate(this.event?.id, expense?.category);
 				}),
-				takeUntil(this.cancel$)
+				takeUntil(this.cancel$),
 			)
 			.pipe(
 				switchMap((category: Category) => {
 					return this.expenseService.createExpense(
-						newExpense.name,
-						newExpense.description,
-						newExpense.amount,
-						category.id,
-						newExpense.payerId
+						newExpense?.name,
+						newExpense?.description,
+						newExpense?.amount,
+						category?.id,
+						newExpense?.payerId,
 					);
-				})
+				}),
 			)
 			.subscribe({
 				next: (expense) => {
-					if (expense.payer.id === expandedUserId) {
+					if (expense?.payer?.id === expandedUserId) {
 						dataSource.addExpense(expense);
 					}
 					this.messageService.showSuccess('New expense created');
