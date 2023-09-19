@@ -82,6 +82,15 @@ describe('ParticipantComponent', () => {
 		expect(component.displayedColumns).toContain('actions');
 	});
 
+	it('should not load event if not present', () => {
+		fixture = MockRender(ParticipantComponent);
+		component = fixture.point.componentInstance;
+		fixture.detectChanges();
+
+		expect(component.event).toBeUndefined();
+		expect(component.displayedColumns).not.toContain('actions');
+	});
+
 	describe('#loadUsers', () => {
 		describe('', () => {
 			beforeEach(() => {
@@ -576,6 +585,21 @@ describe('ParticipantComponent', () => {
 			expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('New expense created');
 		});
 
+		it('should cancel if no expense is returned from dialog', () => {
+			createComponent();
+
+			(dialogStub.open as jasmine.Spy).and.returnValue({
+				afterClosed: () => of(undefined),
+			});
+
+			const dataSource = jasmine.createSpyObj('ExpenseDataSource', ['addExpense']);
+			component.createExpenseDialog('1', dataSource);
+
+			expect(categoryServiceStub.findOrCreate).not.toHaveBeenCalled();
+			expect(expenseServiceStub.createExpense).not.toHaveBeenCalled();
+			expect(dataSource.addExpense).not.toHaveBeenCalled();
+		});
+
 		it('should show error is creating expense fails', () => {
 			createComponent();
 
@@ -704,6 +728,26 @@ describe('ParticipantComponent', () => {
 
 		it('should sort by expenses count descending', () => {
 			component.sortData({ active: 'expensesCount', direction: 'desc' });
+
+			expect(component.usersWithBalance).toEqual([
+				{ user: { id: '3', name: 'c' }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
+				{ user: { id: '2', name: 'b' }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
+				{ user: { id: '1', name: 'a' }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
+			] as UserBalance[]);
+		});
+
+		it('should sort by spending ascending', () => {
+			component.sortData({ active: 'costs', direction: 'asc' });
+
+			expect(component.usersWithBalance).toEqual([
+				{ user: { id: '1', name: 'a' }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
+				{ user: { id: '2', name: 'b' }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
+				{ user: { id: '3', name: 'c' }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
+			] as UserBalance[]);
+		});
+
+		it('should sort by spending descending', () => {
+			component.sortData({ active: 'costs', direction: 'desc' });
 
 			expect(component.usersWithBalance).toEqual([
 				{ user: { id: '3', name: 'c' }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },

@@ -11,7 +11,20 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, filter, forkJoin, map, of, switchMap, takeUntil } from 'rxjs';
+import {
+	BehaviorSubject,
+	NEVER,
+	Observable,
+	Subject,
+	Subscription,
+	combineLatest,
+	filter,
+	forkJoin,
+	map,
+	of,
+	switchMap,
+	takeUntil,
+} from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { ParticipantItemComponent } from 'src/app/features/mobile/participant-item/participant-item.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -286,6 +299,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 				switchMap((expense) => {
 					if (!expense) {
 						this.cancel$.next();
+						return NEVER;
 					}
 					newExpense = expense;
 					return this.categoryService.findOrCreate(this.event?.id, expense?.category);
