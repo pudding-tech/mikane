@@ -11,7 +11,20 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, filter, forkJoin, map, of, switchMap, takeUntil } from 'rxjs';
+import {
+	BehaviorSubject,
+	NEVER,
+	Observable,
+	Subject,
+	Subscription,
+	combineLatest,
+	filter,
+	forkJoin,
+	map,
+	of,
+	switchMap,
+	takeUntil,
+} from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { ParticipantItemComponent } from 'src/app/features/mobile/participant-item/participant-item.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -60,7 +73,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 	cancel$: Subject<void> = new Subject();
 
 	event: PuddingEvent;
-	users: User[] = [];
 	usersWithBalance: UserBalance[] = [];
 	usersWithBalance$ = new BehaviorSubject<UserBalance[]>([]);
 
@@ -83,7 +95,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		private categoryService: CategoryService,
 		protected authService: AuthService,
 		public breakpointService: BreakpointService,
-		public contextService: ContextService
+		public contextService: ContextService,
 	) {}
 
 	ngOnInit() {
@@ -96,7 +108,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 					} else {
 						return of(undefined);
 					}
-				})
+				}),
 			)
 			.subscribe({
 				next: (event) => {
@@ -122,7 +134,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 						return userWithBalance?.user?.id === currentUser?.id;
 					})?.user.eventInfo?.isAdmin;
 					return usersWithBalance;
-				})
+				}),
 			)
 			.subscribe({
 				next: (usersWithBalance) => {
@@ -147,7 +159,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 				.pipe(
 					switchMap((currentUser) => {
 						return this.eventService.addUser(this.event.id, currentUser.id);
-					})
+					}),
 				)
 				.subscribe({
 					next: (event) => {
@@ -179,7 +191,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 						return users.filter((user) => {
 							return !participants.includes(user.id);
 						});
-					})
+					}),
 				),
 			},
 			autoFocus: false,
@@ -198,7 +210,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 					} else {
 						return of([]);
 					}
-				})
+				}),
 			)
 			.subscribe({
 				next: (events: PuddingEvent[]) => {
@@ -256,7 +268,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to remove user');
-				console.error(err.error.message);
+				console.error(err?.error?.message);
 			},
 		});
 	}
@@ -287,26 +299,27 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 				switchMap((expense) => {
 					if (!expense) {
 						this.cancel$.next();
+						return NEVER;
 					}
 					newExpense = expense;
-					return this.categoryService.findOrCreate(this.event.id, expense?.category);
+					return this.categoryService.findOrCreate(this.event?.id, expense?.category);
 				}),
-				takeUntil(this.cancel$)
+				takeUntil(this.cancel$),
 			)
 			.pipe(
 				switchMap((category: Category) => {
 					return this.expenseService.createExpense(
-						newExpense.name,
-						newExpense.description,
-						newExpense.amount,
-						category.id,
-						newExpense.payerId
+						newExpense?.name,
+						newExpense?.description,
+						newExpense?.amount,
+						category?.id,
+						newExpense?.payerId,
 					);
-				})
+				}),
 			)
 			.subscribe({
 				next: (expense) => {
-					if (expense.payer.id === expandedUserId) {
+					if (expense?.payer?.id === expandedUserId) {
 						dataSource.addExpense(expense);
 					}
 					this.messageService.showSuccess('New expense created');

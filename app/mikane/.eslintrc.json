@@ -46,6 +46,7 @@
 	},
 	"extends": ["plugin:jasmine/recommended", "plugin:github/typescript"],
 	"rules": {
-		"optimize-regex/optimize-regex": "warn"
+		"optimize-regex/optimize-regex": "warn",
+		"no-console": ["error", { "allow": ["warn", "error"] }]
 	}
 }
