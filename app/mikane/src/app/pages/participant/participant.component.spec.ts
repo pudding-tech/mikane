@@ -115,6 +115,7 @@ describe('ParticipantComponent', () => {
 					{ user: { id: '2' }, balance: 2 },
 					{ user: { id: '3' }, balance: 3 },
 				] as UserBalance[]);
+
 				expect(component.dataSources.length).toBe(3);
 			});
 		});
@@ -159,10 +160,10 @@ describe('ParticipantComponent', () => {
 
 				component.joinEvent();
 
-				expect(eventServiceStub.loadBalances).toHaveBeenCalled();
+				expect(eventServiceStub.loadBalances).toHaveBeenCalledWith(component.event.id);
 			});
 
-			it('should show success message', () => {
+			it('should show join event success message', () => {
 				createComponent();
 
 				component.joinEvent();
@@ -177,7 +178,7 @@ describe('ParticipantComponent', () => {
 				(authServiceStub.getCurrentUser as jasmine.Spy).and.returnValue(of({ id: '1' } as User));
 			});
 
-			it('should show error message', () => {
+			it('should show add user error message', () => {
 				createComponent();
 
 				component.joinEvent();
@@ -283,7 +284,7 @@ describe('ParticipantComponent', () => {
 			});
 		});
 
-		describe('with error', () => {
+		describe('with user add error', () => {
 			beforeEach(() => {
 				(dialogStub.open as jasmine.Spy).and.returnValue({
 					afterClosed: () =>
@@ -296,7 +297,7 @@ describe('ParticipantComponent', () => {
 				(eventServiceStub.addUser as jasmine.Spy).and.returnValue(throwError(() => 'test error'));
 			});
 
-			it('should show error message', () => {
+			it('should show user add error message', () => {
 				createComponent();
 
 				component.openDialog();
@@ -327,7 +328,7 @@ describe('ParticipantComponent', () => {
 				expect(userServiceStub.createUser).toHaveBeenCalledWith('1', 'test');
 			});
 
-			it('should show success message', () => {
+			it('should show user creation success message', () => {
 				createComponent();
 
 				component.createUser({
@@ -337,7 +338,7 @@ describe('ParticipantComponent', () => {
 				expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('User created');
 			});
 
-			it('should load users after adding user', () => {
+			it('should load users after creating user', () => {
 				createComponent();
 
 				component.createUser({
@@ -348,7 +349,7 @@ describe('ParticipantComponent', () => {
 			});
 		});
 
-		describe('with error', () => {
+		describe('with create user error', () => {
 			beforeEach(() => {
 				(userServiceStub.createUser as jasmine.Spy).and.returnValue(throwError(() => 'test error'));
 				(eventServiceStub.addUser as jasmine.Spy).and.returnValue(
@@ -358,7 +359,7 @@ describe('ParticipantComponent', () => {
 				);
 			});
 
-			it('should show error message', () => {
+			it('should show create user error message', () => {
 				createComponent();
 
 				component.createUser({
@@ -379,7 +380,7 @@ describe('ParticipantComponent', () => {
 				(eventServiceStub.removeUser as jasmine.Spy).and.returnValue(of({} as PuddingEvent));
 			});
 
-			it('should open dialog', () => {
+			it('should open user deletion dialog', () => {
 				createComponent();
 
 				component.deleteUserDialog('1');
@@ -402,7 +403,7 @@ describe('ParticipantComponent', () => {
 				expect(eventServiceStub.removeUser).toHaveBeenCalledWith('1', '1');
 			});
 
-			it('should show success message', () => {
+			it('should show delete user success message', () => {
 				createComponent();
 
 				component.deleteUserDialog('1');
@@ -443,7 +444,7 @@ describe('ParticipantComponent', () => {
 				(eventServiceStub.removeUser as jasmine.Spy).and.returnValue(of({} as PuddingEvent));
 			});
 
-			it('should delete user', () => {
+			it('should remove user', () => {
 				createComponent();
 
 				component.removeUser('1');
@@ -451,7 +452,7 @@ describe('ParticipantComponent', () => {
 				expect(eventServiceStub.removeUser).toHaveBeenCalledWith('1', '1');
 			});
 
-			it('should show success message', () => {
+			it('should show remove user success message', () => {
 				createComponent();
 
 				component.removeUser('1');
@@ -459,7 +460,7 @@ describe('ParticipantComponent', () => {
 				expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('User removed!');
 			});
 
-			it('should load users after deleting user', () => {
+			it('should load users after removing user', () => {
 				createComponent();
 
 				component.removeUser('1');
@@ -468,12 +469,12 @@ describe('ParticipantComponent', () => {
 			});
 		});
 
-		describe('with error', () => {
+		describe('with user remove error', () => {
 			beforeEach(() => {
 				(eventServiceStub.removeUser as jasmine.Spy).and.returnValue(throwError(() => 'test error'));
 			});
 
-			it('should show error message', () => {
+			it('should show user remove error message', () => {
 				createComponent();
 
 				component.removeUser('1');
@@ -528,7 +529,7 @@ describe('ParticipantComponent', () => {
 			);
 		});
 
-		it('should open dialog', () => {
+		it('should open expense creation dialog', () => {
 			createComponent();
 
 			component.createExpenseDialog('1', jasmine.createSpyObj('ExpenseDataSource', ['addExpense']));
@@ -567,7 +568,7 @@ describe('ParticipantComponent', () => {
 			expect(dataSource.addExpense).toHaveBeenCalledWith(returnExpense);
 		});
 
-		it('should show success message', () => {
+		it('should show create expense success message', () => {
 			createComponent();
 
 			component.createExpenseDialog('1', jasmine.createSpyObj('ExpenseDataSource', ['addExpense']));
@@ -602,7 +603,7 @@ describe('ParticipantComponent', () => {
 				expect(expenseServiceStub.deleteExpense).toHaveBeenCalledWith('1');
 			});
 
-			it('should show success message', () => {
+			it('should show delete expense success message', () => {
 				createComponent();
 
 				component.deleteExpense('1', jasmine.createSpyObj('ExpenseDataSource', ['removeExpense']));
@@ -620,12 +621,12 @@ describe('ParticipantComponent', () => {
 			});
 		});
 
-		describe('with error', () => {
+		describe('with delete expense error', () => {
 			beforeEach(() => {
 				(expenseServiceStub.deleteExpense as jasmine.Spy).and.returnValue(throwError(() => 'test error'));
 			});
 
-			it('should show error message', () => {
+			it('should show delete expense error message', () => {
 				createComponent();
 
 				component.deleteExpense('1', jasmine.createSpyObj('ExpenseDataSource', ['removeExpense']));
@@ -649,7 +650,6 @@ describe('ParticipantComponent', () => {
 			createComponent();
 
 			component.accordion = jasmine.createSpyObj('accordion', ['closeAll']);
-			(component.accordion.closeAll as jasmine.Spy).and.callFake(() => {});
 		});
 
 		it('should sort by user name ascending', () => {
