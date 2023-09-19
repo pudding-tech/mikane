@@ -45,7 +45,7 @@ describe('ExpenseDataSource', () => {
 
 	it('should remove expense', () => {
 		const expenseId = 'expenseId';
-		dataSource.addExpense({ id: expenseId } as any);
+		dataSource.addExpense({ id: expenseId } as Expense);
 		dataSource.removeExpense(expenseId);
 
 		expect(dataSource.notEmpty.value).toBeFalse();
@@ -53,7 +53,7 @@ describe('ExpenseDataSource', () => {
 
 	it('should add expense', () => {
 		const expenseId = 'expenseId';
-		dataSource.addExpense({ id: expenseId } as any);
+		dataSource.addExpense({ id: expenseId } as Expense);
 
 		expect(dataSource.notEmpty.value).toBeTrue();
 	});
@@ -92,14 +92,14 @@ describe('ExpenseDataSource', () => {
 	});
 
 	it('should set not empty to true when expenses are not empty', () => {
-		dataSource.addExpense({ id: 'expenseId' } as any);
+		dataSource.addExpense({ id: 'expenseId' } as Expense);
 		dataSource.connect().subscribe(() => {
 			expect(dataSource.notEmpty.value).toBeTrue();
 		});
 	});
 
 	it('should set not empty when last expense is removed', () => {
-		dataSource.addExpense({ id: 'expenseId' } as any);
+		dataSource.addExpense({ id: 'expenseId' } as Expense);
 		dataSource.removeExpense('expenseId');
 		dataSource.connect().subscribe(() => {
 			expect(dataSource.notEmpty.value).toBeFalse();

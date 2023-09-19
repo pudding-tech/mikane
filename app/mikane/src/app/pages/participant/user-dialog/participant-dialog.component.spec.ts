@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatOptionModule } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -66,13 +66,12 @@ describe('ParticipantDialogComponent', () => {
 		});
 	});
 
-	xit('should filter the users by name', () => {
+	/* xit('should filter the users by name', () => {
 		component.addUserForm.get('users').setValue('user 1');
 		component.filteredUsers.subscribe((result) => {
-			console.log('result', result);
-			expect(result).toEqual([users[0]]);
+            expect(result).toEqual([users[0]]);
 		});
-	});
+	}) */
 
 	it('should add a user to the selected users', () => {
 		const user = users[0];
@@ -80,9 +79,12 @@ describe('ParticipantDialogComponent', () => {
 		component.add({
 			value: user as unknown,
 			chipInput: {
-				clear: () => {},
+				clear: () => {
+					return;
+				},
 			},
 		} as MatChipInputEvent);
+
 		expect(component.selectedUsers).toEqual([user]);
 	});
 
@@ -90,22 +92,26 @@ describe('ParticipantDialogComponent', () => {
 		const user = users[0];
 		component.selectedUsers = [user];
 		component.remove(user);
+
 		expect(component.selectedUsers).toEqual([]);
 	});
 
 	it('should select a user from the autocomplete', () => {
 		const user = users[0];
-		component.selected({ option: { value: user } } as any);
+		component.selected({ option: { value: user } } as MatAutocompleteSelectedEvent);
+
 		expect(component.selectedUsers).toEqual([user]);
 	});
 
 	it('should display the user name', () => {
 		const user = users[0];
+
 		expect(component.displayFn(user)).toEqual(user.name);
 	});
 
 	it('should close the dialog', () => {
 		component.onNoClick();
-		expect(dialogRefSpy.close).toHaveBeenCalled();
+
+		expect(dialogRefSpy.close).toHaveBeenCalledTimes(1);
 	});
 });
