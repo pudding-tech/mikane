@@ -22,7 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, filter, map, of, skip, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, filter, map, of, skip, switchMap, take, takeUntil } from 'rxjs';
 import { ExpenseItemComponent } from 'src/app/features/mobile/expense-item/expense-item.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -143,6 +143,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 								map((params) => {
 									return [params.get('filter'), params.get('payers'), params.get('categories')];
 								}),
+								take(1)
 							),
 						]);
 					} else {
@@ -153,8 +154,6 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			.subscribe({
 				next: ([expenses, params]) => {
 					this.expenses.set(expenses);
-					this.payers.set([]);
-					this.categories.set([]);
 
 					const uniquePayersSet = new Set<string>();
 					const uniqueCategoriesSet = new Set<string>();
