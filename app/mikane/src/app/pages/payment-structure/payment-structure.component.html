@@ -1,7 +1,7 @@
 <div *ngIf="(loading | async) === false; else loadingSpinner">
 	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView">
 		<div *ngIf="senders.length > 0; else noPayments">
-			<div class="payments-header" [ngClass]="{ 'no-payments': paymentsSelf.length === 0 }">
+			<div class="payments-header" [ngClass]="{ 'empty-payments': paymentsSelf.length === 0 }">
 				<h3 class="payments-title">Your payments</h3>
 				<button *ngIf="paymentsSelf.length > 0" mat-button color="accent" (click)="toggleExpand(1)" class="collapse-button">
 					<mat-icon>{{ allExpandedSelf ? "visibility_off" : "visibility" }}</mat-icon>
@@ -18,9 +18,9 @@
 			>
 			</app-payment-expansion-panel-item>
 			<ng-template #noPaymentsSelf>
-				<span class="no-payments-text">You have no payments in this event</span>
+				<span class="empty-payments-text">You have no payments in this event</span>
 			</ng-template>
-			<div class="payments-header" [ngClass]="{ 'no-payments': paymentsOthers.length === 0 }">
+			<div class="payments-header" [ngClass]="{ 'empty-payments': paymentsOthers.length === 0 }">
 				<h3 class="payments-title">Other payments</h3>
 				<button *ngIf="paymentsOthers.length > 0" mat-button color="accent" (click)="toggleExpand(2)" class="collapse-button">
 					<mat-icon>{{ allExpandedOthers ? "visibility_off" : "visibility" }}</mat-icon>
@@ -37,7 +37,7 @@
 			>
 			</app-payment-expansion-panel-item>
 			<ng-template #noPaymentsOthers>
-				<span class="no-payments-text">There are no other payments in this event</span>
+				<span class="empty-payments-text">There are no other payments in this event</span>
 			</ng-template>
 		</div>
 	</div>

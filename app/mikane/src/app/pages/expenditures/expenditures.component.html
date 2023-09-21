@@ -8,12 +8,31 @@
 <div *ngIf="loading === false; else loadingSpinner">
 	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" [ngClass]="{ 'extra-margin': !event?.active }">
 		<div *ngIf="expenses().length > 0; else noExpenses">
-			<mat-form-field>
-				<mat-label>Filter expenses</mat-label>
+			<mat-form-field class="filters">
+				<mat-label>Search expenses</mat-label>
 				<input matInput (keyup)="applyFilter($event)" #input />
 				<button matSuffix *ngIf="input.value" mat-icon-button (click)="clearInput()">
 					<mat-icon>cancel</mat-icon>
 				</button>
+			</mat-form-field>
+			<mat-form-field class="filters">
+				<mat-label>Filter by payer</mat-label>
+				<mat-select [(value)]="payersFilterSelect" multiple (selectionChange)="payerSelected()">
+					<mat-option *ngFor="let payer of payers()" [value]="payer.id">
+						<span class="payer">
+							<img [src]="payer.avatarURL" alt="User avatar" class="payer-avatar" />
+							{{ payer.name }}
+						</span>
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field class="filters">
+				<mat-label>Filter by category</mat-label>
+				<mat-select [(value)]="categoriesFilterSelect" multiple (selectionChange)="categorySelected()">
+					<mat-option *ngFor="let category of categories()" [value]="category.id">
+						{{ category.name }}
+					</mat-option>
+				</mat-select>
 			</mat-form-field>
 			<table class="expense-table" mat-table matSort [dataSource]="filteredExpenses()" (matSortChange)="onSortData($event)">
 				<!-- Icon Column -->
@@ -102,7 +121,7 @@
 
 				<!-- Row shown when there is no matching data -->
 				<tr class="mat-row" *matNoDataRow>
-					<td class="mat-cell" colspan="8">No expenses matching the filter "{{ input?.value }}"</td>
+					<td class="mat-cell" colspan="8" class="no-expenses">No expenses matching the filter "{{ input?.value }}"</td>
 				</tr>
 			</table>
 		</div>

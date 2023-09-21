@@ -47,6 +47,7 @@
 	"extends": ["plugin:jasmine/recommended", "plugin:github/typescript"],
 	"rules": {
 		"optimize-regex/optimize-regex": "warn",
+		"semi": ["error", "always"],
 		"no-console": ["error", { "allow": ["warn", "error"] }]
 	}
 }

@@ -18,10 +18,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, filter, map, of, skip, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, filter, map, of, skip, switchMap, take, takeUntil } from 'rxjs';
 import { ExpenseItemComponent } from 'src/app/features/mobile/expense-item/expense-item.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -30,6 +31,7 @@ import { ContextService } from 'src/app/services/context/context.service';
 import { PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dialog.component';
@@ -46,6 +48,7 @@ import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dia
 		MatTableModule,
 		ProgressSpinnerComponent,
 		ExpenseItemComponent,
+		MatSelectModule,
 		MatCardModule,
 		MatDialogModule,
 		MatListModule,
@@ -61,11 +64,25 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	private filterValue: WritableSignal<string> = signal('');
 	private sortValue: WritableSignal<Sort> = signal({} as Sort);
 	protected expenses: WritableSignal<Expense[]> = signal([]);
+	protected payers: WritableSignal<User[]> = signal([]);
+	protected categories: WritableSignal<Array<{ id: string, name: string, icon: string }>> = signal([]);
+
 	filteredExpenses = computed(() => {
 		return this.sortData(this.sortValue(), this.expenses()).filter((expense) => {
+			if (this.payersFilter().length && !this.payersFilter().includes(expense.payer.id)) {
+				return false;
+			}
+			if (this.categoriesFilter().length && !this.categoriesFilter().includes(expense.categoryInfo.id)) {
+				return false;
+			}
 			return this.expenseToString(expense).includes(this.filterValue().toLowerCase());
 		});
 	});
+
+	protected payersFilter: WritableSignal<string[]> = signal([]);
+	protected payersFilterSelect: string[] = [];
+	protected categoriesFilter: WritableSignal<string[]> = signal([]);
+	protected categoriesFilterSelect: string[] = [];
 
 	@ViewChild('input') set filterInput(input: ElementRef<HTMLInputElement>) {
 		if (input) {
@@ -114,7 +131,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		this.eventSubscription = this.$event
 			?.pipe(
 				filter((event) => event?.id !== undefined),
-				switchMap((event): Observable<[Expense[], string] | []> => {
+				switchMap((event): Observable<[Expense[], string[]] | []> => {
 					if (event.id) {
 						if (event.active) {
 							this.displayedColumns.push(...['edit', 'delete']);
@@ -124,8 +141,9 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 							this.expenseService.loadExpenses(this.event.id),
 							this.route.queryParamMap.pipe(
 								map((params) => {
-									return params.get('filter');
+									return [params.get('filter'), params.get('payers'), params.get('categories')];
 								}),
+								take(1)
 							),
 						]);
 					} else {
@@ -136,13 +154,35 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			.subscribe({
 				next: ([expenses, params]) => {
 					this.expenses.set(expenses);
+
+					const uniquePayersSet = new Set<string>();
+					const uniqueCategoriesSet = new Set<string>();
+					this.expenses().map((expense) => {
+						if (!uniquePayersSet.has(expense.payer.id)) {
+							uniquePayersSet.add(expense.payer.id);
+							this.payers().push(expense.payer);
+						}
+						if (!uniqueCategoriesSet.has(expense.categoryInfo.id)) {
+							uniqueCategoriesSet.add(expense.categoryInfo.id);
+							this.categories().push(expense.categoryInfo);
+						}
+					});
+
 					this.loading = false;
 					this.changeDetector.detectChanges();
-					if (params) {
-						this.filterValue.set(params);
-						this._filterInput.nativeElement.value = params;
+					if (params[0]) {
+						this.filterValue.set(params[0]);
+						this._filterInput.nativeElement.value = params[0];
 					} else {
 						this.clearFilter();
+					}
+					if (params[1]) {
+						this.payersFilter.set(params[1].split(';'));
+						this.payersFilterSelect = params[1].split(';');
+					}
+					if (params[2]) {
+						this.categoriesFilter.set(params[2].split(';'));
+						this.categoriesFilterSelect = params[2].split(';');
 					}
 				},
 				error: (err: ApiError) => {
@@ -307,6 +347,34 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			queryParams: {
 				...this.route.snapshot.queryParams,
 				filter: null,
+			},
+			replaceUrl: true,
+			queryParamsHandling: 'merge',
+		});
+	}
+
+	payerSelected() {
+		this.payersFilter.set(this.payersFilterSelect);
+
+		this.router.navigate([], {
+			relativeTo: this.route,
+			queryParams: {
+				...this.route.snapshot.queryParams,
+				payers: this.payersFilter().toString().replace(new RegExp(',', 'g'), ';') || null,
+			},
+			replaceUrl: true,
+			queryParamsHandling: 'merge',
+		});
+	}
+
+	categorySelected() {
+		this.categoriesFilter.set(this.categoriesFilterSelect);
+
+		this.router.navigate([], {
+			relativeTo: this.route,
+			queryParams: {
+				...this.route.snapshot.queryParams,
+				categories: this.categoriesFilter().toString().replace(new RegExp(',', 'g'), ';') || null,
 			},
 			replaceUrl: true,
 			queryParamsHandling: 'merge',
