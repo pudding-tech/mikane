@@ -13,7 +13,7 @@
 	background-color: #1c1c1c;
 	border-radius: 4px;
 
-	&.no-payments {
+	&.empty-payments {
 		padding-top: 14px;
 		padding-bottom: 14px;
 	}
@@ -27,7 +27,7 @@
 	}
 }
 
-.no-payments-text {
+.empty-payments-text {
 	margin-left: 24px;
 }
 
