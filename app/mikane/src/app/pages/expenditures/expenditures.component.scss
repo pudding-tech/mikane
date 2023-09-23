@@ -56,3 +56,55 @@
 	margin-right: 20px;
 	width: 280px;
 }
+
+.mobile-filters {
+	padding: 10px 14px;
+	border-bottom: 1px solid rgba(181, 181, 181, 0.1);
+	white-space: nowrap;
+  overflow-x: auto;
+
+	mat-chip {
+		display: inline-block;
+		vertical-align: middle;
+	}
+}
+
+.filter-chip {
+	display: flex;
+	align-items: center;
+
+	.filter-one-element-text {
+		display: flex;
+		align-items: center;
+	}
+
+	.elements-circle {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		background-color: white;
+		color: black;
+		font-size: 12px;
+		margin-right: 2px;
+	}
+
+	.filter-icon {
+		font-size: 14px;
+		width: 14px;
+		height: 14px;
+		margin-right: 4px;
+
+		&.payer {
+			border-radius: 50%;
+			object-fit: cover;
+			margin-right: 6px;
+		}
+	}
+}
+
+.selected-chip {
+	background-color: #1e1e1e !important;
+}

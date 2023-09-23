@@ -1,0 +1,46 @@
+<div *ngIf="data.type === 'search'; else payerCategoryTitle" class="title">
+	Filter
+</div>
+<ng-template #payerCategoryTitle>
+	<div class="title">
+		Filter by {{ data.type === 'payers' ? 'payer' : 'category' }}
+	</div>
+</ng-template>
+
+<div *ngIf="data.type === 'search'; else payerCategoryContent" class="search-container">
+	<mat-form-field class="search-input">
+		<mat-label>Search expenses</mat-label>
+		<input matInput [(ngModel)]="searchValue" (keyup)="applySearchFilter()" #input />
+		<button matSuffix *ngIf="input.value" mat-icon-button (click)="clearInput()">
+			<mat-icon>cancel</mat-icon>
+		</button>
+	</mat-form-field>
+</div>
+<ng-template #payerCategoryContent>
+	<ng-container *ngIf="data.type === 'payers'; else categoriesContent">
+		<mat-nav-list>
+			<mat-list-item *ngFor="let payer of payers" mat-list-item (click)="selectItem(payer.id)" class="wrapper">
+				<div class="payers">
+					<div class="name">
+						<img [src]="payer.avatarURL" alt="Payer avatar" class="avatar" />
+						{{ payer.name }}
+					</div>
+					<mat-icon *ngIf="selectedValues.includes(payer.id)" class="checkmark">check</mat-icon>
+				</div>
+			</mat-list-item>
+		</mat-nav-list>
+	</ng-container>
+	<ng-template #categoriesContent>
+		<mat-nav-list>
+			<mat-list-item *ngFor="let category of categories" mat-list-item (click)="selectItem(category.id)" class="wrapper">
+				<div class="categories">
+					<div class="name">
+						<mat-icon class="category-icon">{{ category.icon ?? "shopping_cart" }}</mat-icon>
+						{{ category.name }}
+					</div>
+					<mat-icon *ngIf="selectedValues.includes(category.id)" class="checkmark">check</mat-icon>
+				</div>
+			</mat-list-item>
+		</mat-nav-list>
+	</ng-template>	
+</ng-template>

@@ -11,8 +11,10 @@ import {
 	computed,
 	signal,
 } from '@angular/core';
+import { MatBottomSheet, MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -35,6 +37,7 @@ import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dialog.component';
+import { ExpenseBottomSheetComponent } from './expense-bottom-sheet/expense-bottom-sheet.component';
 
 @Component({
 	selector: 'app-expenditures',
@@ -55,13 +58,14 @@ import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dia
 		MatSortModule,
 		MatFormFieldModule,
 		MatInputModule,
+		MatChipsModule,
+		MatBottomSheetModule,
 	],
 })
 export class ExpendituresComponent implements OnInit, OnDestroy {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event!: PuddingEvent;
 
-	private filterValue: WritableSignal<string> = signal('');
 	private sortValue: WritableSignal<Sort> = signal({} as Sort);
 	protected expenses: WritableSignal<Expense[]> = signal([]);
 	protected payers: WritableSignal<User[]> = signal([]);
@@ -79,10 +83,17 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		});
 	});
 
+	protected filterValue: WritableSignal<string> = signal('');
 	protected payersFilter: WritableSignal<string[]> = signal([]);
 	protected payersFilterSelect: string[] = [];
 	protected categoriesFilter: WritableSignal<string[]> = signal([]);
 	protected categoriesFilterSelect: string[] = [];
+	protected filteredPayer = computed(() => {
+		return this.payers().find(payer => this.payersFilter().includes(payer.id));
+	});
+	protected filteredCategory = computed(() => {
+		return this.categories().find(category => this.categoriesFilter().includes(category.id));
+	});
 
 	@ViewChild('input') set filterInput(input: ElementRef<HTMLInputElement>) {
 		if (input) {
@@ -111,6 +122,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		private route: ActivatedRoute,
 		private router: Router,
 		private changeDetector: ChangeDetectorRef,
+		private bottomSheet: MatBottomSheet,
 	) {}
 
 	ngOnInit(): void {
@@ -172,7 +184,9 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 					this.changeDetector.detectChanges();
 					if (params[0]) {
 						this.filterValue.set(params[0]);
-						this._filterInput.nativeElement.value = params[0];
+						if (this._filterInput) {
+							this._filterInput.nativeElement.value = params[0];
+						}
 					} else {
 						this.clearFilter();
 					}
@@ -422,6 +436,63 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 
 	private expenseToString(expense: Expense): string {
 		return (expense.name + expense.categoryInfo.name + expense.payer.name + expense.amount.toString()).toLowerCase();
+	}
+
+	openFilterSearchBottomSheet(): void {
+		const searchBottomSheetRef = this.bottomSheet.open(ExpenseBottomSheetComponent, {
+			data: { type: 'search', currentFilter: [this.filterValue()] }
+		});
+
+		searchBottomSheetRef.instance.inputDataChange.subscribe((filterValue) => {
+			this.filterValue.set(filterValue[0]);
+			this.router.navigate([], {
+				relativeTo: this.route,
+				queryParams: {
+					...this.route.snapshot.queryParams,
+					filter: filterValue[0] || null,
+				},
+				replaceUrl: true,
+				queryParamsHandling: 'merge',
+			});
+		});
+	}
+
+	openFilterPayerBottomSheet(): void {
+		const payerBottomSheetRef = this.bottomSheet.open(ExpenseBottomSheetComponent, {
+			data: { type: 'payers', filterData: this.payers(), currentFilter: this.payersFilter() }
+		});
+
+		payerBottomSheetRef.instance.inputDataChange.subscribe((payers) => {
+			this.payersFilter.set(payers);
+			this.router.navigate([], {
+				relativeTo: this.route,
+				queryParams: {
+					...this.route.snapshot.queryParams,
+					payers: this.payersFilter().toString().replace(new RegExp(',', 'g'), ';') || null,
+				},
+				replaceUrl: true,
+				queryParamsHandling: 'merge',
+			});
+		});
+	}
+
+	openFilterCategoryBottomSheet(): void {
+		const categoryBottomSheetRef = this.bottomSheet.open(ExpenseBottomSheetComponent, {
+			data: { type: 'categories', filterData: this.categories(), currentFilter: this.categoriesFilter() }
+		});
+
+		categoryBottomSheetRef.instance.inputDataChange.subscribe((categories) => {
+			this.categoriesFilter.set(categories);
+			this.router.navigate([], {
+				relativeTo: this.route,
+				queryParams: {
+					...this.route.snapshot.queryParams,
+					categories: this.categoriesFilter().toString().replace(new RegExp(',', 'g'), ';') || null,
+				},
+				replaceUrl: true,
+				queryParamsHandling: 'merge',
+			});
+		});
 	}
 
 	ngOnDestroy(): void {
