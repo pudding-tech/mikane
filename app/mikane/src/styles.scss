@@ -221,6 +221,17 @@ input:-webkit-autofill:active {
 	overflow-y: initial;
 }
 
+// Remove left/right padding from bottom sheet
+.mat-bottom-sheet-container {
+  padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+// Set display to allow horizontal scroll on filter chips
+.mobile-filters .mdc-evolution-chip-set__chips {
+	display: inline-block !important;
+}
+
 // Prevent hover-selection on tooltips
 mat-tooltip-component {
 	user-select: none;

@@ -129,6 +129,55 @@
 </div>
 
 <ng-template #mobileView>
+	<mat-chip-set class="mobile-filters">
+		<mat-chip (click)="openFilterSearchBottomSheet()" [ngClass]="{ 'selected-chip': filterValue().length > 0 }">
+			<div class="filter-chip">
+				<div *ngIf="filterValue().length > 0; else noSearchFilter" class="filter-one-element-text">
+					{{ filterValue() }}
+				</div>
+				<ng-template #noSearchFilter>
+					Filter
+				</ng-template>
+				<mat-icon>keyboard_arrow_down</mat-icon>
+			</div>
+		</mat-chip>
+		<mat-chip (click)="openFilterPayerBottomSheet()" [ngClass]="{ 'selected-chip': payersFilter().length > 0 }">
+			<div class="filter-chip">
+				<div *ngIf="payersFilter().length > 1; else onePayer">
+					<span class="elements-circle">{{ payersFilter().length }}</span>
+					Payers
+				</div>
+				<ng-template #onePayer>
+					<div *ngIf="payersFilter().length === 1; else noPayerFilter" class="filter-one-element-text">
+						<img [src]="filteredPayer().avatarURL" alt="User avatar" class="filter-icon payer" />
+						{{ filteredPayer().name }}
+					</div>
+					<ng-template #noPayerFilter>
+						Payer
+					</ng-template>
+				</ng-template>
+				<mat-icon>keyboard_arrow_down</mat-icon>
+			</div>
+		</mat-chip>
+		<mat-chip (click)="openFilterCategoryBottomSheet()" [ngClass]="{ 'selected-chip': categoriesFilter().length > 0 }">
+			<div class="filter-chip">
+				<div *ngIf="categoriesFilter().length > 1; else oneCategory">
+					<span class="elements-circle">{{ categoriesFilter().length }}</span>
+					Categories
+				</div>
+				<ng-template #oneCategory>
+					<div *ngIf="categoriesFilter().length === 1; else noCategoryFilter" class="filter-one-element-text">
+						<mat-icon class="filter-icon">{{ filteredCategory().icon }}</mat-icon>
+						{{ filteredCategory().name }}
+					</div>
+					<ng-template #noCategoryFilter>
+						Category
+					</ng-template>
+				</ng-template>
+				<mat-icon>keyboard_arrow_down</mat-icon>
+			</div>
+		</mat-chip>
+	</mat-chip-set>
 	<mat-nav-list #expensesList *ngIf="filteredExpenses().length > 0; else noExpensesMobile" class="expenses-list-mobile">
 		<app-expense-item *ngFor="let expense of filteredExpenses()" [expense]="expense"></app-expense-item>
 	</mat-nav-list>
