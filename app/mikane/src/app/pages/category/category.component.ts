@@ -191,8 +191,13 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			.pipe(takeUntil(this.destroy$))
 			.subscribe({
 				next: (category) => {
-					this.categories.push(category);
-					this.messageService.showSuccess('Category created');
+					if (category) {
+						this.categories.push(category);
+						this.messageService.showSuccess('Category created');
+					} else {
+						this.messageService.showError('Error creating category');
+						console.error('create category returned undefined');
+					}
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error creating category');
@@ -207,13 +212,18 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			.pipe(takeUntil(this.destroy$))
 			.subscribe({
 				next: (newCategory) => {
-					Object.assign(
-						this.categories.find((category) => {
-							return category.id === categoryId;
-						}),
-						newCategory,
-					);
-					this.messageService.showSuccess('Category edited');
+					if (newCategory?.id) {
+						Object.assign(
+							this.categories?.find((category) => {
+								return category?.id === categoryId;
+							}),
+							newCategory,
+						);
+						this.messageService.showSuccess('Category edited');
+					} else {
+						this.messageService.showError('Error editing category');
+						console.error('edit category returned undefined');
+					}
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error editing category');
@@ -229,16 +239,21 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 				.pipe(takeUntil(this.destroy$))
 				.subscribe({
 					next: (res) => {
-						const index = this.categories.findIndex((category) => category.id === res.id);
-						if (index > -1) {
-							this.categories[index].users = res.users;
-							this.cd.detectChanges();
-						}
-						this.addUserForm.get('participantName')?.setValue('');
-						this.addUserForm.get('participantName')?.markAsUntouched();
-						this.addUserForm.get('weight')?.setValue(1);
+						if (res) {
+							const index = this.categories.findIndex((category) => category.id === res.id);
+							if (index > -1) {
+								this.categories[index].users = res.users;
+								this.cd.detectChanges();
+							}
+							this.addUserForm.get('participantName')?.setValue('');
+							this.addUserForm.get('participantName')?.markAsUntouched();
+							this.addUserForm.get('weight')?.setValue(1);
 
-						this.messageService.showSuccess('User added to category "' + this.categories[index].name + '"');
+							this.messageService.showSuccess('User added to category "' + this.categories[index].name + '"');
+						} else {
+							this.messageService.showError('Error adding user to category');
+							console.error('add user to category returned undefined');
+						}
 					},
 					error: (err: ApiError) => {
 						this.messageService.showError('Error adding user to category');
@@ -254,12 +269,17 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			.pipe(takeUntil(this.destroy$))
 			.subscribe({
 				next: (res) => {
-					const index = this.categories.findIndex((category) => category.id === res.id);
-					if (index > -1) {
-						this.categories[index].users = res.users;
-						this.cd.detectChanges();
+					if (res) {
+						const index = this.categories.findIndex((category) => category?.id === res?.id);
+						if (index > -1) {
+							this.categories[index].users = res.users;
+							this.cd.detectChanges();
+						}
+						this.messageService.showSuccess('User removed from category "' + this.categories[index].name + '"');
+					} else {
+						this.messageService.showError('Error removing user from category');
+						console.error('remove user from category returned undefined');
 					}
-					this.messageService.showSuccess('User removed from category "' + this.categories[index].name + '"');
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error removing user from category');
@@ -287,17 +307,22 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			.pipe(takeUntil(this.destroy$))
 			.subscribe({
 				next: (res) => {
-					const catIndex = this.categories.findIndex((category) => {
-						return category.id === res.id;
-					});
-					if (catIndex > -1) {
-						const userIndex = this.categories[catIndex].users.findIndex((user) => {
-							return user.id === userId;
+					if (res) {
+						const catIndex = this.categories?.findIndex((category) => {
+							return category?.id === res?.id;
 						});
-						if (userIndex > -1) {
-							this.categories[catIndex].users[userIndex].weight = weight;
-							this.messageService.showSuccess('Category updated');
+						if (catIndex > -1) {
+							const userIndex = this.categories[catIndex].users.findIndex((user) => {
+								return user.id === userId;
+							});
+							if (userIndex > -1) {
+								this.categories[catIndex].users[userIndex].weight = weight;
+								this.messageService.showSuccess('Category updated');
+							}
 						}
+					} else {
+						this.messageService.showError('Error editing category');
+						console.error('edit category returned undefined');
 					}
 				},
 				error: (err: ApiError) => {
@@ -313,13 +338,18 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			.pipe(takeUntil(this.destroy$))
 			.subscribe({
 				next: (result) => {
-					const newCategory = this.categories.indexOf(
-						this.categories.find((category) => {
-							return category.id === result.id;
-						}),
-					);
-					if (~newCategory) {
-						Object.assign(this.categories[newCategory], result);
+					if (result) {
+						const newCategory = this.categories.indexOf(
+							this.categories.find((category) => {
+								return category.id === result.id;
+							}),
+						);
+						if (~newCategory) {
+							Object.assign(this.categories[newCategory], result);
+						}
+					} else {
+						this.messageService.showError('Error toggling weighted status');
+						console.error('toggle weighted status returned undefined');
 					}
 				},
 				error: (err: ApiError) => {
@@ -354,7 +384,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 				next: () => {
 					const index = this.categories.findIndex((category) => category.id === categoryId);
 					this.categories.splice(index, 1);
-					this.messageService.showSuccess('Successfully deleted category');
+					this.messageService.showSuccess('Category deleted');
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error deleting category');
