@@ -171,6 +171,7 @@
 		<app-participant-item
 			*ngFor="let userWithBalance of usersWithBalance; let i = index"
 			[userBalance]="userWithBalance"
+			(click)="gotoUserExpenses(userWithBalance)"
 		></app-participant-item>
 	</mat-nav-list>
 	<button

@@ -18,6 +18,9 @@ export class ExpenseItemComponent {
 	constructor(private router: Router, private route: ActivatedRoute) {}
 
 	gotoExpense() {
-		this.router.navigate([this.expense.id], { relativeTo: this.route });
+		this.router.navigate([this.expense.id], {
+			relativeTo: this.route,
+			queryParams: { ...this.route.snapshot.queryParams }
+		});
 	}
 }
