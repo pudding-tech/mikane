@@ -167,7 +167,7 @@
 				</div>
 				<ng-template #oneCategory>
 					<div *ngIf="categoriesFilter().length === 1; else noCategoryFilter" class="filter-one-element-text">
-						<mat-icon class="filter-icon">{{ filteredCategory().icon }}</mat-icon>
+						<mat-icon class="filter-icon">{{ filteredCategory().icon ?? "shopping_cart" }}</mat-icon>
 						{{ filteredCategory().name }}
 					</div>
 					<ng-template #noCategoryFilter>

@@ -386,6 +386,15 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		this.router.navigate(['events', this.event.id, 'settings']);
 	}
 
+	gotoUserExpenses(user: UserBalance) {
+		if (user.expensesCount < 1) {
+			return;
+		}
+		this.router.navigate(['events', this.event.id, 'expenses'], {
+			queryParams: { payers: user.user.id }
+		});
+	}
+
 	private compare(a: string | number, b: string | number, isAsc: boolean) {
 		if (a === b) return 0;
 		return (a < b ? -1 : 1) * (isAsc ? 1 : -1);

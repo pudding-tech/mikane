@@ -95,6 +95,6 @@ describe('ExpenseItemComponent', () => {
 	it('should navigate to expense details when gotoExpense is called', () => {
 		component.gotoExpense();
 
-		expect(routerSpy.navigate).toHaveBeenCalledWith([expense.id], { relativeTo: routeSpy });
+		expect(routerSpy.navigate).toHaveBeenCalledWith([expense.id], { relativeTo: routeSpy, queryParams: jasmine.any(Object) });
 	});
 });

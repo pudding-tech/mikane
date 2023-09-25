@@ -826,4 +826,26 @@ describe('ParticipantComponent', () => {
 			expect(routerStub.navigate).toHaveBeenCalledWith(['events', component.event.id, 'settings']);
 		});
 	});
+
+	describe('#gotoUserExpenses', () => {
+		beforeEach(() => {
+			(eventServiceStub.loadBalances as jasmine.Spy).and.returnValue(
+				of([
+					{ user: { id: '1', name: 'a' }, balance: 1, expensesCount: 1, spending: 1, expenses: 1  },
+					{ user: { id: '2', name: 'b' }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
+				] as UserBalance[]),
+			);
+			(authServiceStub.getCurrentUser as jasmine.Spy).and.returnValue(of({ id: '1' }));
+		});
+
+		it('should navigate to expenses page, filtered by user', () => {
+			createComponent();
+
+			component.gotoUserExpenses(component.usersWithBalance[0]);
+
+			expect(routerStub.navigate).toHaveBeenCalledWith(['events', component.event.id, 'expenses'], {
+				queryParams: { payers: component.usersWithBalance[0].user.id }
+			});
+		});
+	});
 });

@@ -174,7 +174,9 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	}
 
 	goBack() {
-		this.router.navigate(['events', this.event.id, 'expenses']);
+		this.router.navigate(['events', this.event.id, 'expenses'], {
+			queryParams: { ...this.route.snapshot.queryParams }
+		});
 	}
 
 	ngOnDestroy(): void {
