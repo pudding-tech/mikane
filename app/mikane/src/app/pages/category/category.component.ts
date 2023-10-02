@@ -1,4 +1,3 @@
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
 import { AfterViewChecked, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -391,10 +390,6 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 					console.error('something went wrong while deleting category', err?.error?.message);
 				},
 			});
-	}
-
-	drop(event: CdkDragDrop<Category[]>) {
-		moveItemInArray(this.categories, event.previousIndex, event.currentIndex);
 	}
 
 	ngOnDestroy(): void {
