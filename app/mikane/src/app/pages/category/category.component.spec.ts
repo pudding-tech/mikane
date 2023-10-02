@@ -326,6 +326,7 @@ describe('CategoryComponent', () => {
 			} as MatDialogRef<CategoryDialogComponent>);
 			categoryServiceStub.createCategory.and.returnValue(of({} as Category));
 		});
+
 		it('should open dialog', () => {
 			createComponent();
 			component.openDialog();
@@ -458,7 +459,7 @@ describe('CategoryComponent', () => {
 			expect(categoryServiceStub.editCategory).toHaveBeenCalledWith('1', 'name', CategoryIcon.SHOPPING);
 		});
 
-		it('should push category and show success message', () => {
+		it('should push edited category and show success message', () => {
 			createComponent();
 
 			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
@@ -477,7 +478,7 @@ describe('CategoryComponent', () => {
 			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error editing category');
 		});
 
-		it('should show error if category is undefined', () => {
+		it('should show error if edited category is undefined', () => {
 			categoryServiceStub.editCategory.and.returnValue(of(undefined));
 
 			createComponent();
@@ -579,7 +580,7 @@ describe('CategoryComponent', () => {
 			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error adding user to category');
 		});
 
-		it('should show error if category is undefined', () => {
+		it('should show error if user added category is undefined', () => {
 			categoryServiceStub.addUser.and.returnValue(of(undefined));
 
 			createComponent();
@@ -663,7 +664,7 @@ describe('CategoryComponent', () => {
 			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error removing user from category');
 		});
 
-		it('should show error if category is undefined', () => {
+		it('should show error if user removed category is undefined', () => {
 			categoryServiceStub.deleteUser.and.returnValue(of(undefined));
 
 			createComponent();
@@ -695,7 +696,7 @@ describe('CategoryComponent', () => {
 			);
 		});
 
-		it('should open edit dialog', () => {
+		it('should open weight edit dialog', () => {
 			createComponent();
 			component.openWeightEditDialog('1', '1', 2);
 
@@ -797,6 +798,7 @@ describe('CategoryComponent', () => {
 					],
 				},
 			] as Category[]);
+
 			expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('Category updated');
 		});
 
@@ -809,7 +811,7 @@ describe('CategoryComponent', () => {
 			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error editing category');
 		});
 
-		it('should show error if category is undefined', () => {
+		it('should show error if user edited category is undefined', () => {
 			categoryServiceStub.editUser.and.returnValue(of(undefined));
 
 			createComponent();
@@ -868,7 +870,7 @@ describe('CategoryComponent', () => {
 			expect(messageServiceStub.showError).toHaveBeenCalledWith('Failed to toggle weighted status');
 		});
 
-		it('should show error if category is undefined', () => {
+		it('should show error if toggled category is undefined', () => {
 			categoryServiceStub.setWeighted.and.returnValue(of(undefined));
 
 			createComponent();
@@ -886,7 +888,7 @@ describe('CategoryComponent', () => {
 			categoryServiceStub.deleteCategory.and.returnValue(of([{}] as Category[]));
 		});
 
-		it('should open dialog', () => {
+		it('should open delete dialog', () => {
 			createComponent();
 			component.deleteCategoryDialog('1');
 
