@@ -19,7 +19,7 @@
 			<mat-error *ngIf="addCategoryForm?.get('categoryName')?.errors?.['invalid']">Invalid category name</mat-error>
 		</mat-form-field>
 		<div *ngIf="!data.name">
-			<mat-checkbox name="weighted" formControlName="weighted">Weighted</mat-checkbox>
+			<mat-checkbox id="weighted" name="weighted" formControlName="weighted">Weighted</mat-checkbox>
 		</div>
 	</form>
 </div>
@@ -31,6 +31,7 @@
 </div>
 
 <ng-template
+	id="iconOverlay"
 	cdkConnectedOverlay
 	(overlayOutsideClick)="isOpen = false"
 	[cdkConnectedOverlayOrigin]="trigger"
