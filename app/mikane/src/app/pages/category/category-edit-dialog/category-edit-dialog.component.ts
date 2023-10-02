@@ -19,7 +19,7 @@ export class CategoryEditDialogComponent {
 
 	constructor(
 		public dialogRef: MatDialogRef<CategoryEditDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: { catId: number; userId: number; weight: number }
+		@Inject(MAT_DIALOG_DATA) public data: { catId: number; userId: number; weight: number },
 	) {}
 
 	onNoClick(): void {

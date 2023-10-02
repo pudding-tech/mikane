@@ -42,7 +42,7 @@ export class CategoryDialogComponent implements OnInit {
 		categoryName: new FormControl(
 			'',
 			[Validators.required],
-			categoryNameValidator(this.formValidationService, this.data.eventId, this.data.categoryId ?? undefined)
+			categoryNameValidator(this.formValidationService, this.data.eventId, this.data.categoryId ?? undefined),
 		),
 		weighted: new FormControl(false),
 		selectedIcon: new FormControl(CategoryIcon.SHOPPING),
@@ -52,7 +52,7 @@ export class CategoryDialogComponent implements OnInit {
 		public dialogRef: MatDialogRef<CategoryDialogComponent>,
 		@Inject(MAT_DIALOG_DATA)
 		public data: { name: string; weighted: boolean; eventId: string; categoryId: string; icon: CategoryIcon },
-		private formValidationService: FormValidationService
+		private formValidationService: FormValidationService,
 	) {}
 
 	ngOnInit(): void {
@@ -75,7 +75,9 @@ export class CategoryDialogComponent implements OnInit {
 	}
 
 	iconChange(icon: CategoryIcon) {
-		this.addCategoryForm.get('selectedIcon').patchValue(icon);
+		if (icon) {
+			this.addCategoryForm.get('selectedIcon').patchValue(icon);
+		}
 		this.isOpen = false;
 	}
 }
