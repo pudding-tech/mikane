@@ -61,6 +61,18 @@ describe('CategoryDialogComponent', () => {
 		});
 	});
 
+	describe('getErrorMessage', () => {
+		it('should return the error message', () => {
+			component.addCategoryForm.get('categoryName').setErrors({ required: true });
+
+			expect(component.getErrorMessage()).toEqual('You must enter a value');
+		});
+
+		it('should return an empty string', () => {
+			expect(component.getErrorMessage()).toEqual('');
+		});
+	});
+
 	describe('onNoClick', () => {
 		it('should close the dialog', () => {
 			component.onNoClick();
