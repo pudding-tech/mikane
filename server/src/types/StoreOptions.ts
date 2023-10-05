@@ -14,7 +14,7 @@ export interface StoreOptions {
 
   /**
    * Table to use as session store.
-   * Default: `[session]`
+   * Default: `session`
    */
   table?: string;
 

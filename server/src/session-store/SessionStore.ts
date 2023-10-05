@@ -1,4 +1,3 @@
-// import { pool as appPool } from "../db";
 import { Pool } from "pg";
 import { Store, SessionData } from "express-session";
 import { StoreOptions } from "../types/StoreOptions";
