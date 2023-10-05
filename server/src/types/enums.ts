@@ -1,3 +1,9 @@
+export enum EventStatusType {
+  ACTIVE = 1,
+  READY_TO_SETTLE = 2,
+  ARCHIVED = 3
+}
+
 export enum Target {
   CLIENT = "client",
   CALC = "calc"

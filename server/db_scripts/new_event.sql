@@ -4,7 +4,7 @@ create or replace function new_event(
   ip_description varchar(400),
   ip_user_id uuid,
   ip_private boolean,
-  ip_active boolean,
+  ip_status int,
   ip_usernames_only boolean
 )
 returns table (
@@ -13,7 +13,8 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
-  active boolean,
+  status int,
+  status_name varchar(255),
   admin_ids jsonb,
   user_id uuid,
   user_in_event boolean,
@@ -31,8 +32,8 @@ begin
     raise exception 'User not found' using errcode = 'P0008';
   end if;
 
-  insert into "event"("name", "description", created, "private", active, usernames_only)
-    values (ip_name, nullif(trim(ip_description), ''), CURRENT_TIMESTAMP, ip_private, ip_active, ip_usernames_only)
+  insert into "event"("name", "description", created, "private", status, usernames_only)
+    values (ip_name, nullif(trim(ip_description), ''), CURRENT_TIMESTAMP, ip_private, ip_status, ip_usernames_only)
     returning "event".id into tmp_event_id;
 
   return query

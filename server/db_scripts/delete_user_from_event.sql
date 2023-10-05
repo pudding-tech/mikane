@@ -7,7 +7,7 @@ returns void as
 $$
 begin
 
-  if exists (select 1 from "event" e where e.id = ip_event_id and e.active = false) then
+  if exists (select 1 from "event" e where e.id = ip_event_id and e.status != 1) then
     raise exception 'Cannot delete user from archived event' using errcode = 'P0120';
   end if;
 

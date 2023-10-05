@@ -23,7 +23,7 @@ begin
   end if;
 
   -- Delete user from active events
-  for tmp_event_id in select e.id from "event" e where e.active = true
+  for tmp_event_id in select e.id from "event" e where e.status = 1
   loop
     perform delete_user_from_event(ip_user_id, tmp_event_id);
   end loop;

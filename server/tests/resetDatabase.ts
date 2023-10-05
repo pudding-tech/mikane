@@ -22,6 +22,7 @@ export const resetDatabase = async () => {
     DROP TABLE "category";
     DROP TABLE "event";
     DROP TABLE "user";
+    DROP TABLE "event_status_type";
   `);
   await pool.query(sqlScript);
   await pool.query(`

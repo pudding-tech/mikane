@@ -10,7 +10,8 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
-  active boolean,
+  status int,
+  status_name varchar(255),
   admin_ids jsonb,
   user_id uuid,
   user_in_event boolean,
@@ -23,7 +24,7 @@ begin
     begin
       return query
       select
-        e.id, e.name, e.description, e.created, e.private, e.active,
+        e.id, e.name, e.description, e.created, e.private, e.status, est.name,
         (
           select
             JSONB_AGG(jsonb_build_object('user_id', u.id))
@@ -38,9 +39,10 @@ begin
         null::boolean as user_is_admin
       from
         "event" e
+        inner join event_status_type est on e.status = est.id
       where
         e.id = coalesce(ip_event_id, e.id) and
-        e.active = case when ip_active_only = true then true else e.active end
+        e.status = case when ip_active_only = true then 1 else e.status end
       order by
         e.created desc;
     end;
@@ -53,7 +55,7 @@ begin
 
       return query
       select
-        e.id, e.name, e.description, e.created, e.private, e.active,
+        e.id, e.name, e.description, e.created, e.private, e.status, est.name,
         (
           select
             JSONB_AGG(jsonb_build_object('user_id', u.id))
@@ -76,10 +78,11 @@ begin
           end as user_is_admin
       from
         "event" e
+        inner join event_status_type est on e.status = est.id
         left join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
       where
         e.id = coalesce(ip_event_id, e.id) and
-        e.active = case when ip_active_only = true then true else e.active end
+        e.status = case when ip_active_only = true then 1 else e.status end
       order by
         e.created desc;
     end;
