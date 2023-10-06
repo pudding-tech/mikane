@@ -38,7 +38,7 @@
 				<span class="back">Back</span>
 			</button>
 		</div>
-		<div *ngIf="event.active && (expense.payer.id === currentUserId || event.userInfo?.isAdmin)">
+		<div *ngIf="event.status.id === EventStatusType.ACTIVE && (expense.payer.id === currentUserId || event.userInfo?.isAdmin)">
 			<button mat-icon-button (click)="editExpense()">
 				<mat-icon>edit</mat-icon>
 			</button>

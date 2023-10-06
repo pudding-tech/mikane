@@ -12,7 +12,7 @@ import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
+import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
@@ -41,6 +41,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	event: PuddingEvent;
 	currentUserId: string;
 
+	readonly EventStatusType = EventStatusType;
 	cancel$: Subject<void> = new Subject();
 	destroy$: Subject<void> = new Subject();
 

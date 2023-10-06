@@ -1,4 +1,4 @@
-<div *ngIf="(breakpointService.isMobile() | async) === false && event?.active" class="add-button">
+<div *ngIf="(breakpointService.isMobile() | async) === false && event?.status.id === EventStatusType.ACTIVE" class="add-button">
 	<button mat-raised-button color="primary" (click)="openDialog()">
 		<mat-icon>post_add</mat-icon>
 		Add category
@@ -6,7 +6,7 @@
 </div>
 
 <div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" [ngClass]="{ 'extra-margin': !event?.active }">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" [ngClass]="{ 'extra-margin': event?.status.id !== EventStatusType.ACTIVE }">
 		<mat-accordion *ngIf="categories.length > 0; else noCategories">
 			<mat-expansion-panel *ngFor="let category of categories" class="categories">
 				<mat-expansion-panel-header>
@@ -130,12 +130,12 @@
 							<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 							<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
-							<ng-container *ngIf="event?.active">
+							<ng-container *ngIf="event?.status.id === EventStatusType.ACTIVE">
 								<tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
 							</ng-container>
 						</form>
 					</table>
-					<div id="category-actions" *ngIf="event?.active">
+					<div id="category-actions" *ngIf="event?.status.id === EventStatusType.ACTIVE">
 						<button
 							mat-raised-button
 							type="button"
@@ -163,7 +163,7 @@
 	<mat-nav-list *ngIf="categories.length > 0; else noCategoriesMobile" class="categories-list-mobile">
 		<app-category-item
 			*ngFor="let category of categories"
-			[active]="event?.active"
+			[eventActive]="event?.status.id === EventStatusType.ACTIVE"
 			[category]="category"
 			[addUserForm]="addUserForm"
 			[filterUsers]="filterUsers"
@@ -177,7 +177,7 @@
 		</app-category-item>
 	</mat-nav-list>
 	<button
-		*ngIf="event?.active"
+		*ngIf="event?.status.id === EventStatusType.ACTIVE"
 		mat-fab
 		color="primary"
 		class="add-category-button-mobile"

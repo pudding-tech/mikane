@@ -12,7 +12,7 @@ import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { MobileEventNavbarComponent } from 'src/app/features/mobile/mobile-event-navbar/mobile-event-navbar.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
+import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { CategoryComponent } from '../../category/category.component';
 import { EventInfoComponent } from '../../event-info/event-info.component';
@@ -42,6 +42,7 @@ export class EventComponent implements OnInit {
 		name: '',
 	} as PuddingEvent;
 	$event: BehaviorSubject<PuddingEvent> = new BehaviorSubject<PuddingEvent>(undefined);
+	readonly EventStatusType = EventStatusType;
 
 	activeLink = '';
 	isMobile = toSignal(this.breakpointService.isMobile());

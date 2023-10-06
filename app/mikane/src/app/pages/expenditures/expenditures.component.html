@@ -1,4 +1,4 @@
-<div *ngIf="(breakpointService.isMobile() | async) === false && event?.active" class="add-button">
+<div *ngIf="(breakpointService.isMobile() | async) === false && event?.status.id === EventStatusType.ACTIVE" class="add-button">
 	<button mat-raised-button color="primary" (click)="openDialog()">
 		<mat-icon>add_shopping_cart</mat-icon>
 		Add expense
@@ -6,7 +6,7 @@
 </div>
 
 <div *ngIf="loading === false; else loadingSpinner">
-	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" [ngClass]="{ 'extra-margin': !event?.active }">
+	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" [ngClass]="{ 'extra-margin': event?.status.id !== EventStatusType.ACTIVE }">
 		<div *ngIf="expenses().length > 0; else noExpenses">
 			<mat-form-field class="filters">
 				<mat-label>Search expenses</mat-label>
@@ -182,7 +182,7 @@
 		<app-expense-item *ngFor="let expense of filteredExpenses()" [expense]="expense"></app-expense-item>
 	</mat-nav-list>
 	<button
-		*ngIf="event?.active"
+		*ngIf="event?.status.id === EventStatusType.ACTIVE"
 		mat-fab
 		color="primary"
 		class="add-expense-button-mobile"

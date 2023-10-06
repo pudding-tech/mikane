@@ -10,7 +10,7 @@
 	</div>
 	<div class="name">
 		{{ event.name }}
-		<button *ngIf="event.active === false && (breakpointService.isMobile() | async) === false" mat-stroked-button disabled>
+		<button *ngIf="event.status?.id !== EventStatusType.ACTIVE && (breakpointService.isMobile() | async) === false" mat-stroked-button disabled>
 			Archived
 		</button>
 	</div>

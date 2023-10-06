@@ -13,7 +13,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { EventItemComponent } from 'src/app/features/mobile/event-item/event-item.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
+import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
@@ -46,10 +46,10 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 export class EventsComponent implements OnInit, OnDestroy {
 	events: WritableSignal<PuddingEvent[]> = signal([]);
 	eventsActive = computed(() => {
-		return this.events().filter((event) => event.active);
+		return this.events().filter((event) => event.status.id === EventStatusType.ACTIVE);
 	});
 	eventsArchived = computed(() => {
-		return this.events().filter((event) => !event.active);
+		return this.events().filter((event) => event.status.id !== EventStatusType.ACTIVE);
 	});
 	pagedEventsActive = computed(() => {
 		return this.eventsActive().slice(this.startIndexActive(), this.endIndexActive());
@@ -121,7 +121,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 		this.editSubscription = dialogRef.afterClosed().subscribe({
 			next: (editedEvent: PuddingEvent) => {
 				if (editedEvent) {
-					this.eventService.editEvent(editedEvent).subscribe({
+					this.eventService.editEvent({ id: editedEvent.id, name: editedEvent.name, description: editedEvent.description }).subscribe({
 						next: (result) => {
 							const index = this.events().indexOf(this.events().find((event) => event.id === result.id));
 							if (~index) {

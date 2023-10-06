@@ -14,7 +14,7 @@ import { BehaviorSubject, NEVER, Subscription, combineLatest, filter, switchMap 
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
+import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
@@ -56,6 +56,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 		userId: new FormControl('', [Validators.required]),
 	}) as FormGroup;
 
+	readonly EventStatusType = EventStatusType;
 	private eventSubscription: Subscription;
 	private deleteSubscription: Subscription;
 
@@ -115,11 +116,11 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	archiveEvent(archive: boolean) {
-		this.eventService.editEvent({ id: this.event.id, active: !archive }).subscribe({
+	archiveEvent(status: number) {
+		this.eventService.editEvent({ id: this.event.id, status: status }).subscribe({
 			next: (event) => {
 				this.event = event;
-				this.messageService.showSuccess(archive ? 'Event successfully archived' : 'Event successfully set as active');
+				this.messageService.showSuccess(status === EventStatusType.ARCHIVED ? 'Event successfully archived' : 'Event successfully set as active');
 
 				// Reload to refresh now archived event
 				this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {

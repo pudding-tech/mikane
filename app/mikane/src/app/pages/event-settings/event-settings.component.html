@@ -72,17 +72,17 @@
 </ng-template>
 
 <ng-template #archiveContent>
-	<div *ngIf="event?.active; else setActive">
+	<div *ngIf="event?.status.id === EventStatusType.ACTIVE else setActive">
 		<div class="event-settings-text">
 			This event is currently active. By archiving the event any further editing by any participants will not be possible.
 		</div>
-		<button mat-raised-button color="primary" (click)="archiveEvent(true)">Archive event</button>
+		<button mat-raised-button color="primary" (click)="archiveEvent(EventStatusType.ARCHIVED)">Archive event</button>
 	</div>
 	<ng-template #setActive>
 		<div class="event-settings-text">
 			This event is currently archived. By setting this event as active participants can start editing the event again.
 		</div>
-		<button mat-raised-button color="accent" (click)="archiveEvent(false)">Set event as active</button>
+		<button mat-raised-button color="accent" (click)="archiveEvent(EventStatusType.ACTIVE)">Set event as active</button>
 	</ng-template>
 </ng-template>
 
@@ -133,8 +133,8 @@
 		Warning: Deleting this event will remove the event in its entirety, along with all categories and expenses. This action is
 		irreversible.
 	</div>
-	<button mat-raised-button color="warn" (click)="deleteEvent()" [disabled]="!event.active">
-		{{ event.active ? "Delete event" : "Archived events cannot be deleted" }}
+	<button mat-raised-button color="warn" (click)="deleteEvent()" [disabled]="event.status.id !== EventStatusType.ACTIVE">
+		{{ event.status.id === EventStatusType.ACTIVE ? "Delete event" : "Archived events cannot be deleted" }}
 	</button>
 </ng-template>
 
