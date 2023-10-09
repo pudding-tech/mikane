@@ -10,7 +10,7 @@ import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { PuddingEvent } from 'src/app/services/event/event.service';
+import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { CategoryIcon } from 'src/app/types/enums';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
@@ -63,7 +63,10 @@ describe('CategoryComponent', () => {
 		fixture = MockRender(CategoryComponent, {
 			$event: of({
 				id: '1',
-				active: true,
+				status: {
+					id: EventStatusType.ACTIVE,
+					name: 'Active',
+				},
 			} as PuddingEvent),
 		});
 		component = fixture.point.componentInstance;
@@ -81,7 +84,10 @@ describe('CategoryComponent', () => {
 
 		expect(component.event).toEqual({
 			id: '1',
-			active: true,
+			status: {
+				id: EventStatusType.ACTIVE,
+				name: 'Active',
+			},
 		} as PuddingEvent);
 	});
 
@@ -99,7 +105,10 @@ describe('CategoryComponent', () => {
 		fixture = MockRender(CategoryComponent, {
 			$event: of({
 				id: undefined,
-				active: true,
+				status: {
+					id: EventStatusType.ACTIVE,
+					name: 'Active',
+				},
 			} as PuddingEvent),
 		});
 		component = fixture.point.componentInstance;
@@ -118,7 +127,10 @@ describe('CategoryComponent', () => {
 		fixture = MockRender(CategoryComponent, {
 			$event: of({
 				id: '1',
-				active: false,
+				status: {
+					id: EventStatusType.ARCHIVED,
+					name: 'Archived',
+				},
 			} as PuddingEvent),
 		});
 		component = fixture.point.componentInstance;

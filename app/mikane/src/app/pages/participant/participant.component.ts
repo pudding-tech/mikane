@@ -31,7 +31,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
+import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
 import { ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
@@ -68,6 +68,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 	private userSubscription: Subscription;
 	private addUserSubscription: Subscription;
 	private eventSubscription: Subscription;
+	readonly EventStatusType = EventStatusType;
 
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 	cancel$: Subject<void> = new Subject();
@@ -112,7 +113,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: (event) => {
-					if (event.active) {
+					if (event.status.id === EventStatusType.ACTIVE) {
 						this.displayedColumns.push('actions');
 					}
 					this.event = event;

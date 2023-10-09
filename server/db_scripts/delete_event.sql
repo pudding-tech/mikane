@@ -18,7 +18,7 @@ begin
     raise exception 'Only event admins can delete event' using errcode = 'P0085';
   end if;
 
-  if exists (select 1 from "event" e where e.id = ip_event_id and e.active = false) then
+  if exists (select 1 from "event" e where e.id = ip_event_id and e.status != 1) then
     raise exception 'Archived events cannot be deleted' using errcode = 'P0119';
   end if;
 

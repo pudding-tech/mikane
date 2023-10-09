@@ -10,7 +10,7 @@ import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
+import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
 import { CategoryIcon } from 'src/app/types/enums';
@@ -62,7 +62,10 @@ describe('ParticipantComponent', () => {
 		fixture = MockRender(ParticipantComponent, {
 			$event: of({
 				id: '1',
-				active: true,
+				status: {
+					id: EventStatusType.ACTIVE,
+					name: 'Active',
+				}
 			} as PuddingEvent),
 		});
 		component = fixture.point.componentInstance;
@@ -78,7 +81,7 @@ describe('ParticipantComponent', () => {
 	it('should load event', () => {
 		createComponent();
 
-		expect(component.event).toEqual({ id: '1', active: true } as PuddingEvent);
+		expect(component.event).toEqual({ id: '1', status: { id: EventStatusType.ACTIVE, name: 'Active' } } as PuddingEvent);
 		expect(component.displayedColumns).toContain('actions');
 	});
 

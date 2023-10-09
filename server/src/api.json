@@ -1399,9 +1399,9 @@
                     "type": "boolean",
                     "example": true
                   },
-                  "active": {
-                    "type": "boolean",
-                    "example": true
+                  "status": {
+                    "type": "number",
+                    "example": 1
                   }
                 }
               }
@@ -3892,9 +3892,18 @@
             "type": "boolean",
             "example": false
           },
-          "active": {
-            "type": "boolean",
-            "example": true
+          "status": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "Active"
+              }
+            }
           }
         }
       },
@@ -3928,9 +3937,18 @@
             "type": "boolean",
             "example": false
           },
-          "active": {
-            "type": "boolean",
-            "example": true
+          "status": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "Active"
+              }
+            }
           },
           "userInfo": {
             "type": "object",

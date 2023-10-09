@@ -5,7 +5,7 @@ import { parseCategories } from "../parsers/parseCategories";
 import { parseExpenses } from "../parsers/parseExpenses";
 import { parseUsers } from "../parsers/parseUsers";
 import { BalanceCalculationResult, Category, Event, Expense, Payment, User, UserBalance } from "../types/types";
-import { Target } from "../types/enums";
+import { EventStatusType, Target } from "../types/enums";
 import { ErrorExt } from "../types/errorExt";
 import * as ec from "../types/errorCodes";
 
@@ -209,7 +209,7 @@ export const getEventPayments = async (eventId: string) => {
 export const createEvent = async (name: string, userId: string, privateEvent: boolean, description?: string) => {
   const query = {
     text: "SELECT * FROM new_event($1, $2, $3, $4, $5, $6);",
-    values: [name, description, userId, privateEvent, true, false]
+    values: [name, description, userId, privateEvent, EventStatusType.ACTIVE, false]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {
@@ -392,13 +392,13 @@ export const removeUserAsEventAdmin = async (eventId: string, userId: string, by
  * @param name New name
  * @param description New description
  * @param privateEvent Whether event should be open for all or invite only
- * @param active Whether event should be active or not
+ * @param status Event status
  * @returns Edited event
  */
-export const editEvent = async (eventId: string, userId: string, name?: string, description?: string, privateEvent?: boolean, active?: boolean) => {
+export const editEvent = async (eventId: string, userId: string, name?: string, description?: string, privateEvent?: boolean, status?: number) => {
   const query = {
     text: "SELECT * FROM edit_event($1, $2, $3, $4, $5, $6);",
-    values: [eventId, userId, name, description, privateEvent, active]
+    values: [eventId, userId, name, description, privateEvent, status]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {

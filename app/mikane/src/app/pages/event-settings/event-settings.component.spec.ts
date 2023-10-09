@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { EventService, PuddingEvent } from 'src/app/services/event/event.service';
+import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -68,7 +68,10 @@ describe('EventSettingsComponent', () => {
 			id: '1',
 			name: 'test',
 			description: 'test',
-			active: true,
+			status: {
+				id: EventStatusType.ACTIVE,
+				name: 'Active',
+			},
 			adminIds: [],
 		} as PuddingEvent);
 
@@ -87,7 +90,10 @@ describe('EventSettingsComponent', () => {
 			id: '1',
 			name: 'test',
 			description: 'test',
-			active: true,
+			status: {
+				id: EventStatusType.ACTIVE,
+				name: 'Active',
+			},
 			adminIds: ['1'],
 		} as PuddingEvent);
 
@@ -112,7 +118,10 @@ describe('EventSettingsComponent', () => {
 				id: '1',
 				name: 'test',
 				description: 'test',
-				active: true,
+				status: {
+					id: EventStatusType.ACTIVE,
+					name: 'Active',
+				},
 				adminIds: ['1'],
 			} as PuddingEvent);
 
@@ -130,6 +139,7 @@ describe('EventSettingsComponent', () => {
 		it('should show error message if loading users fails', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 			} as PuddingEvent);
 			const fixture = MockRender(EventSettingsComponent, { $event: $event });
 			const component = fixture.point.componentInstance;
@@ -152,6 +162,7 @@ describe('EventSettingsComponent', () => {
 		it('should show error message if loading current user fails', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 			} as PuddingEvent);
 			const fixture = MockRender(EventSettingsComponent, { $event: $event });
 			const component = fixture.point.componentInstance;
@@ -176,6 +187,7 @@ describe('EventSettingsComponent', () => {
 		it('should show error message if editing event fails', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 			} as PuddingEvent);
 			const fixture = MockRender(EventSettingsComponent, { $event: $event });
 			const component = fixture.point.componentInstance;
@@ -198,6 +210,7 @@ describe('EventSettingsComponent', () => {
 		it('should show success message and reload page if editing event succeeds', fakeAsync(() => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 			} as PuddingEvent);
 
 			const fixture = MockRender(EventSettingsComponent, { $event: $event });
@@ -227,7 +240,10 @@ describe('EventSettingsComponent', () => {
 		it('should archive event', fakeAsync(() => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
-				active: true,
+				status: {
+					id: EventStatusType.ACTIVE,
+					name: 'Active',
+				},
 			} as PuddingEvent);
 
 			const fixture = MockRender(EventSettingsComponent, { $event: $event });
@@ -239,7 +255,7 @@ describe('EventSettingsComponent', () => {
 			);
 			tick();
 			fixture.detectChanges();
-			component.archiveEvent(true);
+			component.archiveEvent(EventStatusType.ARCHIVED);
 
 			tick();
 
@@ -255,7 +271,10 @@ describe('EventSettingsComponent', () => {
 		it('should unarchive Event', fakeAsync(() => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
-				active: false,
+				status: {
+					id: EventStatusType.ARCHIVED,
+					name: 'Archived',
+				},
 			} as PuddingEvent);
 
 			const fixture = MockRender(EventSettingsComponent, { $event: $event });
@@ -267,7 +286,7 @@ describe('EventSettingsComponent', () => {
 			);
 			tick();
 			fixture.detectChanges();
-			component.archiveEvent(false);
+			component.archiveEvent(EventStatusType.ACTIVE);
 
 			tick();
 
@@ -283,6 +302,7 @@ describe('EventSettingsComponent', () => {
 		it('should show error message if archiving event fails', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 			} as PuddingEvent);
 
 			const fixture = MockRender(EventSettingsComponent, { $event: $event });
@@ -299,7 +319,7 @@ describe('EventSettingsComponent', () => {
 				})
 			);
 			fixture.detectChanges();
-			component.archiveEvent(true);
+			component.archiveEvent(EventStatusType.ARCHIVED);
 
 			expect(messageService.showError).toHaveBeenCalledWith('Failed to archive event');
 		});
@@ -309,6 +329,7 @@ describe('EventSettingsComponent', () => {
 		it('should delete event', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 			} as PuddingEvent);
 
 			const fixture = MockRender(EventSettingsComponent, { $event: $event });
@@ -332,6 +353,7 @@ describe('EventSettingsComponent', () => {
 		it('should show error message if deleting event fails', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 			} as PuddingEvent);
 
 			const fixture = MockRender(EventSettingsComponent, { $event: $event });
@@ -362,6 +384,7 @@ describe('EventSettingsComponent', () => {
 		it('should not delete event if user cancels', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 			} as PuddingEvent);
 
 			const fixture = MockRender(EventSettingsComponent, { $event: $event });
@@ -385,6 +408,7 @@ describe('EventSettingsComponent', () => {
 		it('should add admin', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 				adminIds: ['1'],
 			} as PuddingEvent);
 
@@ -398,6 +422,7 @@ describe('EventSettingsComponent', () => {
 			eventService.setUserAsAdmin.and.returnValue(
 				of({
 					id: '1',
+					status: {},
 					adminIds: ['1', '2'],
 				} as PuddingEvent)
 			);
@@ -416,6 +441,7 @@ describe('EventSettingsComponent', () => {
 
 			expect(component.event).toEqual({
 				id: '1',
+				status: {},
 				adminIds: ['1', '2'],
 			} as PuddingEvent);
 
@@ -433,6 +459,7 @@ describe('EventSettingsComponent', () => {
 		it('should show error message if adding admin fails', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 			} as PuddingEvent);
 
 			const fixture = MockRender(EventSettingsComponent, { $event: $event });
@@ -462,6 +489,7 @@ describe('EventSettingsComponent', () => {
 		it('should remove admin', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 				adminIds: ['1', '2'],
 			} as PuddingEvent);
 
@@ -473,6 +501,7 @@ describe('EventSettingsComponent', () => {
 			eventService.removeUserAsAdmin.and.returnValue(
 				of({
 					id: '1',
+					status: {},
 					adminIds: ['1'],
 				} as PuddingEvent)
 			);
@@ -487,6 +516,7 @@ describe('EventSettingsComponent', () => {
 
 			expect(component.event).toEqual({
 				id: '1',
+				status: {},
 				adminIds: ['1', '2'],
 			} as PuddingEvent);
 
@@ -501,6 +531,7 @@ describe('EventSettingsComponent', () => {
 
 			expect(component.event).toEqual({
 				id: '1',
+				status: {},
 				adminIds: ['1'],
 			} as PuddingEvent);
 
@@ -513,6 +544,7 @@ describe('EventSettingsComponent', () => {
 		it('should ask before removing current user as admin', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 				adminIds: ['1', '2'],
 			} as PuddingEvent);
 
@@ -534,6 +566,7 @@ describe('EventSettingsComponent', () => {
 		it('should remove current user as admin after asking', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 				adminIds: ['1', '2'],
 			} as PuddingEvent);
 
@@ -555,6 +588,7 @@ describe('EventSettingsComponent', () => {
 		it('should show error message if removing admin fails', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
+				status: {},
 				adminIds: ['1', '2'],
 			} as PuddingEvent);
 

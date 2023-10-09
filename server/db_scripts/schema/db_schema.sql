@@ -1,3 +1,8 @@
+create table event_status_type (
+  id int primary key,
+  name varchar(255) not null
+);
+
 create table "user" (
   id uuid primary key default gen_random_uuid(),
   username varchar(255) not null unique,
@@ -17,7 +22,7 @@ create table "event" (
   "description" varchar(400),
   created timestamp not null,
   "private" boolean not null,
-  active boolean not null default true,
+  status int not null references "event_status_type"(id) on delete restrict,
   usernames_only boolean not null
 );
 create index idx_event_created on "event"(created);
@@ -96,5 +101,8 @@ create table password_reset_key (
   used boolean not null,
   expires timestamp not null
 );
+
+insert into event_status_type (id, name)
+  values (1, 'Active'), (2, 'Ready to settle'), (3, 'Archived');
 
 create extension if not exists pgcrypto;

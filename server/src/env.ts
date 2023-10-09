@@ -11,9 +11,12 @@ else {
 interface EnvVariables {
   NODE_ENV: "dev" | "production" | "staging" | "test";
   IN_PROD: boolean;
+  DEPLOYED: boolean;
   PORT: number;
   ALLOWED_ORIGIN: string;
   SESSION_SECRET: string;
+  COOKIE_NAME?: string;
+  COOKIE_DOMAIN?: string;
 
   DB_HOST: string;
   DB_PORT: number;
@@ -54,12 +57,15 @@ const validateEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
   return {
     NODE_ENV: (env.NODE_ENV === "dev" || env.NODE_ENV === "production" || env.NODE_ENV === "staging" || env.NODE_ENV === "test") ? env.NODE_ENV : "dev",
     IN_PROD: env.NODE_ENV === "production",
+    DEPLOYED: env.DEPLOYED === "true",
     PORT: parseInt(env.PORT ?? "") || 3002,
     ALLOWED_ORIGIN: env.ALLOWED_ORIGIN || "http://localhost:4200",
     SESSION_SECRET: env.SESSION_SECRET || "abcdef",
+    COOKIE_NAME: env.COOKIE_NAME,
+    COOKIE_DOMAIN: env.COOKIE_DOMAIN,
 
     DB_HOST: env.DB_HOST as string,
-    DB_PORT: parseInt(env.DB_PORT ?? "") || 1433,
+    DB_PORT: parseInt(env.DB_PORT ?? "") || 5432,
     DB_DATABASE: env.DB_DATABASE || "master",
     DB_USER: env.DB_USER as string,
     DB_PASSWORD: env.DB_PASSWORD as string,

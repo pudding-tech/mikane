@@ -1,14 +1,14 @@
 <div *ngIf="(loading | async) === false; else loadingSpinner">
 	<div
 		*ngIf="(breakpointService.isMobile() | async) === false; else mobileView"
-		[ngClass]="{ 'extra-margin': !inEvent && !event?.active }"
+		[ngClass]="{ 'extra-margin': !inEvent && event?.status.id !== EventStatusType.ACTIVE }"
 	>
 		<div class="add-actions">
-			<button mat-raised-button color="primary" (click)="openDialog()" *ngIf="event?.active">
+			<button mat-raised-button color="primary" (click)="openDialog()" *ngIf="event?.status.id === EventStatusType.ACTIVE">
 				<mat-icon>person_add</mat-icon>
 				Add users to event
 			</button>
-			<button mat-raised-button color="primary" *ngIf="!inEvent && event?.active; else joinedEvent" (click)="joinEvent()">
+			<button mat-raised-button color="primary" *ngIf="!inEvent && event?.status.id === EventStatusType.ACTIVE; else joinedEvent" (click)="joinEvent()">
 				Join event
 			</button>
 			<ng-template #joinedEvent>
@@ -124,7 +124,7 @@
 							<td class="mat-cell no-expenses" [attr.colspan]="displayedColumns.length">No expenses found</td>
 						</tr>
 					</table>
-					<div class="user-actions" *ngIf="event?.active">
+					<div class="user-actions" *ngIf="event?.status.id === EventStatusType.ACTIVE">
 						<button mat-raised-button color="accent" (click)="createExpenseDialog(userWithBalance.user.id, dataSources[i])">
 							Add expense
 						</button>
@@ -175,7 +175,7 @@
 		></app-participant-item>
 	</mat-nav-list>
 	<button
-		*ngIf="event?.active"
+		*ngIf="event?.status.id === EventStatusType.ACTIVE"
 		mat-fab
 		color="primary"
 		class="add-users-button-mobile"

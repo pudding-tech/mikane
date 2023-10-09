@@ -4,6 +4,7 @@ import nodemailerMock from "nodemailer-mock";
 import app from "./setup";
 import * as ec from "../src/types/errorCodes";
 import { Category, Event, User } from "../src/types/types";
+import { EventStatusType } from "../src/types/enums";
 
 // Mock nodemailer
 vi.mock("nodemailer", () => nodemailerMock);
@@ -373,7 +374,7 @@ describe("users", async () => {
         .put("/api/events/" + event1.id)
         .set("Cookie", authToken)
         .send({
-          active: false
+          status: EventStatusType.ARCHIVED
         });
 
       const finalEvent1: Event = (await request(app)
@@ -383,10 +384,10 @@ describe("users", async () => {
         .get("/api/events/" + event2.id)
         .set("Cookie", authToken2)).body;
 
-      expect(finalEvent1.active).toEqual(false);
+      expect(finalEvent1.status.id).toEqual(EventStatusType.ARCHIVED);
       expect(finalEvent1.userInfo?.inEvent).toEqual(true);
 
-      expect(finalEvent2.active).toEqual(true);
+      expect(finalEvent2.status.id).toEqual(EventStatusType.ACTIVE);
       expect(finalEvent2.userInfo?.inEvent).toEqual(true);
     });
 

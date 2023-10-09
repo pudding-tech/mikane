@@ -94,19 +94,20 @@ const store = new SessionStore({
 const tenDays = 1000 * 60 * 60 * 24 * 10;
 // const twentyMinutes = 1000 * 60 * 20;
 app.use(session({
-    name: "mikane.sid",
-    secret: env.SESSION_SECRET,
-    store: store,
-    cookie: {
-      maxAge: tenDays,
-      httpOnly: true,
-      secure: env.IN_PROD,
-      sameSite: "strict",
-    },
-    saveUninitialized: false,
-    resave: false,
-    rolling: true,
-    unset: "destroy",
+  name: env.COOKIE_NAME ?? "mikane.sid",
+  secret: env.SESSION_SECRET,
+  store: store,
+  cookie: {
+    domain: env.COOKIE_DOMAIN,
+    maxAge: tenDays,
+    httpOnly: true,
+    secure: env.DEPLOYED,
+    sameSite: "strict"
+  },
+  saveUninitialized: false,
+  resave: false,
+  rolling: true,
+  unset: "destroy"
 }));
 
 app.post("*", (req, res, next) => {

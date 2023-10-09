@@ -31,14 +31,14 @@
 				</span>
 				<button
 					mat-icon-button
-					*ngIf="category.weighted && active"
+					*ngIf="category.weighted && eventActive"
 					(click)="openEditWeight(category.id, user.id, user.weight)"
 					class="button"
 				>
 					<mat-icon>edit</mat-icon>
 				</button>
 				<button
-					*ngIf="active"
+					*ngIf="eventActive"
 					mat-icon-button
 					(click)="removeUserFromCategory(category.id, user.id)"
 					[ngClass]="{ button: !category.weighted }"
@@ -47,7 +47,7 @@
 				</button>
 			</div>
 		</mat-list-item>
-		<ng-container *ngIf="active">
+		<ng-container *ngIf="eventActive">
 			<form [formGroup]="addUserForm" *ngIf="filterUsers(category.id).length !== 0; else allUsersAdded" class="new-user">
 				<div class="inputs">
 					<mat-form-field subscriptSizing="dynamic" [ngClass]="{ 'user-input-weighted': !category.weighted }">
@@ -77,7 +77,7 @@
 				</div>
 				<button
 					mat-icon-button
-					*ngIf="active"
+					*ngIf="eventActive"
 					type="button"
 					(click)="addUserToCategory(category.id)"
 					[disabled]="
@@ -94,7 +94,7 @@
 		<ng-template #allUsersAdded>
 			<div class="all-users-in-category">No more participants to add</div>
 		</ng-template>
-		<div class="sub-buttons" *ngIf="active">
+		<div class="sub-buttons" *ngIf="eventActive">
 			<button mat-stroked-button color="accent" (click)="toggleWeightedCategory(category.id, category.weighted)">
 				Toggle weighted
 			</button>

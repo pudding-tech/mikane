@@ -12,7 +12,10 @@ export interface PuddingEvent {
 	created: Date;
 	adminIds: string[];
 	private: boolean;
-	active: boolean;
+	status: {
+		id: number;
+		name: string;
+	};
 	userInfo?: {
 		id: string;
 		inEvent: boolean;
@@ -24,6 +27,12 @@ export interface Payment {
 	sender: User;
 	receiver: User;
 	amount: number;
+}
+
+export enum EventStatusType {
+	ACTIVE = 1,
+	READY_TO_SETTLE = 2,
+	ARCHIVED = 3
 }
 
 @Injectable({
@@ -54,8 +63,8 @@ export class EventService {
 		return this.httpClient.post<PuddingEvent>(this.apiUrl, { name, description, private: false });
 	}
 
-	editEvent({ id, name, description, active }: { id: string; name?: string; description?: string; active?: boolean }): Observable<PuddingEvent> {
-		return this.httpClient.put<PuddingEvent>(this.apiUrl + `/${id}`, { name, description, private: false, active });
+	editEvent({ id, name, description, status }: { id: string; name?: string; description?: string; status?: EventStatusType }): Observable<PuddingEvent> {
+		return this.httpClient.put<PuddingEvent>(this.apiUrl + `/${id}`, { name, description, private: false, status });
 	}
 
 	deleteEvent(eventId: string): Observable<void> {

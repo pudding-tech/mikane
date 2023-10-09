@@ -18,7 +18,7 @@ import { CategoryItemComponent } from 'src/app/features/mobile/category-item/cat
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { PuddingEvent } from 'src/app/services/event/event.service';
+import { PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
@@ -59,6 +59,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	readonly EventStatusType = EventStatusType;
 
 	addUserForm = new FormGroup({
 		participantName: new FormControl('', [Validators.required]),
@@ -97,7 +98,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			)
 			.subscribe({
 				next: (event) => {
-					if (event.active) {
+					if (event.status.id === EventStatusType.ACTIVE) {
 						this.displayedColumns.push('save');
 					}
 					this.event = event;

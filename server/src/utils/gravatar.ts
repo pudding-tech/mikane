@@ -15,7 +15,7 @@ const generateMD5 = (input: string) => {
 
 const convertToRecord = (options: GravatarOptions): Record<string, string> => {
   const params: Record<string, string> = {};
-  
+
   if (options.size) {
     params.s = options.size.toString();
   }
@@ -28,7 +28,7 @@ const convertToRecord = (options: GravatarOptions): Record<string, string> => {
   if (options.forceDefault) {
     params.f = options.forceDefault ? "y" : "n";
   }
-  
+
   return params;
 };
 

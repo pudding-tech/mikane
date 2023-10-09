@@ -3,6 +3,7 @@ import request from "supertest";
 import app from "./setup";
 import * as ec from "../src/types/errorCodes";
 import { Category, Event, User } from "../src/types/types";
+import { EventStatusType } from "../src/types/enums";
 
 describe("categories", async () => {
 
@@ -148,11 +149,11 @@ describe("categories", async () => {
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          active: false
+          status: EventStatusType.ARCHIVED
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.active).toEqual(false);
+      expect(res.body.status.id).toEqual(EventStatusType.ARCHIVED);
     });
 
     test("fail creating category in archived event", async () => {
@@ -175,11 +176,11 @@ describe("categories", async () => {
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          active: true
+          status: EventStatusType.ACTIVE
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.active).toEqual(true);
+      expect(res.body.status.id).toEqual(EventStatusType.ACTIVE);
     });
   });
 

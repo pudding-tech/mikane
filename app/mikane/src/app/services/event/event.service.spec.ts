@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { UserBalance } from '../user/user.service';
-import { EventService, Payment, PuddingEvent } from './event.service';
+import { EventService, Payment, PuddingEvent, EventStatusType } from './event.service';
 
 describe('EventService', () => {
 	let service: EventService;
@@ -15,7 +15,10 @@ describe('EventService', () => {
 		created: new Date(),
 		adminIds: ['id'],
 		private: false,
-		active: true,
+		status: {
+			id: EventStatusType.ACTIVE,
+			name: 'Active',
+		}
 	} as PuddingEvent;
 	const mockUserBalance = {
 		user: {
@@ -147,7 +150,7 @@ describe('EventService', () => {
 
 	describe('#editEvent', () => {
 		it('should edit event', () => {
-			service.editEvent({ id: 'eventId', name: 'name', description: 'description', active: true }).subscribe({
+			service.editEvent({ id: 'eventId', name: 'name', description: 'description', status: EventStatusType.ACTIVE }).subscribe({
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual(mockEvent);
 				},
@@ -157,7 +160,7 @@ describe('EventService', () => {
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId');
 
 			expect(req.request.method).toEqual('PUT');
-			expect(req.request.body).toEqual({ name: 'name', description: 'description', private: false, active: true });
+			expect(req.request.body).toEqual({ name: 'name', description: 'description', private: false, status: EventStatusType.ACTIVE });
 
 			req.flush(mockEvent);
 		});

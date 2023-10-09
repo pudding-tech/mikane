@@ -30,7 +30,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { PuddingEvent } from 'src/app/services/event/event.service';
+import { PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
@@ -107,6 +107,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	loading = false;
 	cancel$: Subject<void> = new Subject();
 	destroy$: Subject<void> = new Subject();
+	readonly EventStatusType = EventStatusType;
 
 	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description'];
 	currentUserId: string;
@@ -145,7 +146,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 				filter((event) => event?.id !== undefined),
 				switchMap((event): Observable<[Expense[], string[]] | []> => {
 					if (event.id) {
-						if (event.active) {
+						if (event.status.id === EventStatusType.ACTIVE) {
 							this.displayedColumns.push(...['edit', 'delete']);
 						}
 						this.event = event;

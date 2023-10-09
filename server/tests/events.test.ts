@@ -3,6 +3,7 @@ import request from "supertest";
 import app from "./setup";
 import * as ec from "../src/types/errorCodes";
 import { Event, User } from "../src/types/types";
+import { EventStatusType } from "../src/types/enums";
 
 describe("events", async () => {
 
@@ -48,7 +49,7 @@ describe("events", async () => {
         usernameEmail: "testuser",
         password: "secret"
       });
-    
+
     const resLogin2 = await request(app)
       .post("/api/login")
       .send({
@@ -73,7 +74,7 @@ describe("events", async () => {
           description: "Example description",
           private: false
         });
-      
+
       const res2 = await request(app)
         .post("/api/events")
         .set("Cookie", authToken)
@@ -253,11 +254,11 @@ describe("events", async () => {
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          active: false
+          status: EventStatusType.ARCHIVED
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.active).toEqual(false);
+      expect(res.body.status.id).toEqual(EventStatusType.ARCHIVED);
     });
 
     test("fail editing archived event", async () => {
@@ -277,11 +278,11 @@ describe("events", async () => {
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          active: true
+          status: EventStatusType.ACTIVE
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.active).toEqual(true);
+      expect(res.body.status.id).toEqual(EventStatusType.ACTIVE);
     });
   });
 
@@ -305,11 +306,11 @@ describe("events", async () => {
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          active: false
+          status: EventStatusType.ARCHIVED
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.active).toEqual(false);
+      expect(res.body.status.id).toEqual(EventStatusType.ARCHIVED);
     });
 
     test("fail adding user2 to archived event", async () => {
@@ -326,11 +327,11 @@ describe("events", async () => {
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          active: true
+          status: EventStatusType.ACTIVE
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.active).toEqual(true);
+      expect(res.body.status.id).toEqual(EventStatusType.ACTIVE);
     });
 
     // Add user2 to event
@@ -374,11 +375,11 @@ describe("events", async () => {
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          active: false
+          status: EventStatusType.ARCHIVED
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.active).toEqual(false);
+      expect(res.body.status.id).toEqual(EventStatusType.ARCHIVED);
     });
 
     // Add user2 as admin of event
@@ -395,11 +396,11 @@ describe("events", async () => {
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          active: true
+          status: EventStatusType.ACTIVE
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.active).toEqual(true);
+      expect(res.body.status.id).toEqual(EventStatusType.ACTIVE);
     });
 
     // Check that user2 is also event admin
@@ -542,11 +543,11 @@ describe("events", async () => {
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          active: false
+          status: EventStatusType.ARCHIVED
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.active).toEqual(false);
+      expect(res.body.status.id).toEqual(EventStatusType.ARCHIVED);
     });
 
     test("fail removal of user2 in archived event", async () => {
@@ -563,11 +564,11 @@ describe("events", async () => {
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          active: true
+          status: EventStatusType.ACTIVE
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.active).toEqual(true);
+      expect(res.body.status.id).toEqual(EventStatusType.ACTIVE);
     });
 
     // Remove user2 from event
@@ -628,11 +629,11 @@ describe("events", async () => {
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          active: false
+          status: EventStatusType.ARCHIVED
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.active).toEqual(false);
+      expect(res.body.status.id).toEqual(EventStatusType.ARCHIVED);
     });
 
     test("fail delete archived event", async () => {
@@ -649,11 +650,11 @@ describe("events", async () => {
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          active: true
+          status: EventStatusType.ACTIVE
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.active).toEqual(true);
+      expect(res.body.status.id).toEqual(EventStatusType.ACTIVE);
     });
 
     test("should delete event", async () => {
