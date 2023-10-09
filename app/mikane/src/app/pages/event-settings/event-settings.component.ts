@@ -116,7 +116,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	archiveEvent(status: number) {
+	archiveEvent(status: EventStatusType) {
 		this.eventService.editEvent({ id: this.event.id, status: status }).subscribe({
 			next: (event) => {
 				this.event = event;
