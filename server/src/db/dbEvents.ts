@@ -413,6 +413,8 @@ export const editEvent = async (eventId: string, userId: string, name?: string, 
         throw new ErrorExt(ec.PUD087, err);
       else if (err.code === "P0118")
         throw new ErrorExt(ec.PUD118, err);
+      else if (err.code === "P0128")
+        throw new ErrorExt(ec.PUD128, err);
       else
         throw new ErrorExt(ec.PUD044, err);
     });
