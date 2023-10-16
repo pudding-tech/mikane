@@ -3,6 +3,10 @@
 	padding-top: 18px;
 	padding-bottom: 18px;
 	border-bottom: 1px solid rgba(181, 181, 181, 0.1);
+
+	&.ready-to-settle {
+		background-color: #534149;
+	}
 }
 
 .event-title {

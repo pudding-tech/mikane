@@ -46,10 +46,10 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 export class EventsComponent implements OnInit, OnDestroy {
 	events: WritableSignal<PuddingEvent[]> = signal([]);
 	eventsActive = computed(() => {
-		return this.events().filter((event) => event.status.id === EventStatusType.ACTIVE);
+		return this.events().filter((event) => event.status.id !== EventStatusType.ARCHIVED);
 	});
 	eventsArchived = computed(() => {
-		return this.events().filter((event) => event.status.id !== EventStatusType.ACTIVE);
+		return this.events().filter((event) => event.status.id === EventStatusType.ARCHIVED);
 	});
 	pagedEventsActive = computed(() => {
 		return this.eventsActive().slice(this.startIndexActive(), this.endIndexActive());
@@ -61,6 +61,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 	selectedEvent!: PuddingEvent;
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 	editSubscription: Subscription;
+	readonly EventStatusType = EventStatusType;
 
 	// Paginator
 	lengthActive = computed(() => {

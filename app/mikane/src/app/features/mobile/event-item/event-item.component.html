@@ -1,4 +1,4 @@
-<mat-list-item class="wrapper">
+<mat-list-item class="wrapper" [ngClass]="{ 'ready-to-settle': event.status.id === EventStatusType.READY_TO_SETTLE}">
 	<div class="event-title">
 		<span class="title-text">{{ event.name }}</span>
 		<mat-icon
@@ -19,6 +19,6 @@
 		</span>
 	</div>
 	<div *ngIf="event.description" class="description">
-		{{ event.description }}
+		{{ event.status.id === EventStatusType.READY_TO_SETTLE ? 'READY TO SETTLE' : event.description }}
 	</div>
 </mat-list-item>

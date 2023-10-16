@@ -48,6 +48,14 @@ mat-toolbar button {
 	margin-right: 16px;
 	margin-bottom: 0.4em;
 
+	&.ready-to-settle {
+		background-color: #4b3a41;
+
+		.clickable:hover {
+			background-image: linear-gradient(#705963, #705963, #705963);
+		}
+	}
+
 	.event-header {
 		min-height: 48px;
 		align-items: center;
