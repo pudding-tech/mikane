@@ -160,7 +160,7 @@ describe('EventService', () => {
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId');
 
 			expect(req.request.method).toEqual('PUT');
-			expect(req.request.body).toEqual({ name: 'name', description: 'description', private: false, status: EventStatusType.ACTIVE });
+			expect(req.request.body).toEqual({ name: 'name', description: 'description', status: EventStatusType.ACTIVE });
 
 			req.flush(mockEvent);
 		});

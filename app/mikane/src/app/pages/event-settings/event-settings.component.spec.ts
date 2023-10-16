@@ -255,7 +255,7 @@ describe('EventSettingsComponent', () => {
 			);
 			tick();
 			fixture.detectChanges();
-			component.archiveEvent(EventStatusType.ARCHIVED);
+			component.setStatus(EventStatusType.ARCHIVED);
 
 			tick();
 
@@ -286,7 +286,7 @@ describe('EventSettingsComponent', () => {
 			);
 			tick();
 			fixture.detectChanges();
-			component.archiveEvent(EventStatusType.ACTIVE);
+			component.setStatus(EventStatusType.ACTIVE);
 
 			tick();
 
@@ -319,7 +319,7 @@ describe('EventSettingsComponent', () => {
 				})
 			);
 			fixture.detectChanges();
-			component.archiveEvent(EventStatusType.ARCHIVED);
+			component.setStatus(EventStatusType.ARCHIVED);
 
 			expect(messageService.showError).toHaveBeenCalledWith('Failed to archive event');
 		});
