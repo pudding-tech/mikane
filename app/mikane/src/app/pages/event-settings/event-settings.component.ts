@@ -116,20 +116,28 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	archiveEvent(status: EventStatusType) {
+	setStatus(status: EventStatusType) {
 		this.eventService.editEvent({ id: this.event.id, status: status }).subscribe({
 			next: (event) => {
 				this.event = event;
-				this.messageService.showSuccess(status === EventStatusType.ARCHIVED ? 'Event successfully archived' : 'Event successfully set as active');
+				if (status === EventStatusType.ACTIVE) {
+					this.messageService.showSuccess('Event successfully set as active');
+				}
+				else if (status === EventStatusType.READY_TO_SETTLE) {
+					this.messageService.showSuccess('Event successfully ready to be settled');
+				}
+				else if (status === EventStatusType.ARCHIVED) {
+					this.messageService.showSuccess('Event successfully archived');
+				}
 
-				// Reload to refresh now archived event
+				// Reload to refresh event
 				this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
 					this.router.navigate(['events', this.event.id, 'settings']);
 				});
 			},
 			error: (err: ApiError) => {
-				this.messageService.showError('Failed to archive event');
-				console.error('Something went wrong while archiving event', err?.error?.message);
+				this.messageService.showError('Failed to change event status');
+				console.error('Something went wrong while changing event status', err?.error?.message);
 			},
 		});
 	}

@@ -396,6 +396,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	gotoPayments() {
+		this.router.navigate(['events', this.event.id, 'payment']);
+	}
+
 	private compare(a: string | number, b: string | number, isAsc: boolean) {
 		if (a === b) return 0;
 		return (a < b ? -1 : 1) * (isAsc ? 1 : -1);

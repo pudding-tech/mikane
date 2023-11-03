@@ -249,6 +249,30 @@ describe("events", async () => {
       expect(res.body.code).toEqual(ec.PUD053.code);
     });
 
+    test("should set event as ready to settle", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          status: EventStatusType.READY_TO_SETTLE
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.status.id).toEqual(EventStatusType.READY_TO_SETTLE);
+    });
+
+    test("fail editing event with status 'ready to settle'", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          name: "New name"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD118.code);
+    });
+
     test("should set event as archived", async () => {
       const res = await request(app)
         .put("/api/events/" + event.id)
@@ -284,6 +308,18 @@ describe("events", async () => {
       expect(res.status).toEqual(200);
       expect(res.body.status.id).toEqual(EventStatusType.ACTIVE);
     });
+
+    test("fail setting event status as invalid type", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          status: 9
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD128.code);
+    });
   });
 
   /* ----------------------------- */
@@ -301,19 +337,19 @@ describe("events", async () => {
       expect(res.body.length).toEqual(1);
     });
 
-    test("should set event as archived", async () => {
+    test("should set event as ready to settle", async () => {
       const res = await request(app)
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          status: EventStatusType.ARCHIVED
+          status: EventStatusType.READY_TO_SETTLE
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.status.id).toEqual(EventStatusType.ARCHIVED);
+      expect(res.body.status.id).toEqual(EventStatusType.READY_TO_SETTLE);
     });
 
-    test("fail adding user2 to archived event", async () => {
+    test("fail adding user2 to 'ready to settle' event", async () => {
       const res = await request(app)
         .post(`/api/events/${event.id}/user/${user2.id}`)
         .set("Cookie", authToken);

@@ -19,6 +19,13 @@
 			</ng-template>
 		</div>
 
+		<div *ngIf="event?.status.id === EventStatusType.READY_TO_SETTLE" class="ready-to-settle-box" (click)="gotoPayments()">
+			<div class="info">
+				<mat-icon class="info-icon">info</mat-icon>
+				This event is ready for settlement. Go to the payments page to find your pending payments.
+			</div>
+		</div>
+
 		<mat-accordion class="user-list" *ngIf="usersWithBalance.length > 0; else noUsers" #accordion>
 			<!-- HEADER ROW -->
 			<table mat-table matSort (matSortChange)="sortData($event)" class="participants-header">
@@ -166,6 +173,12 @@
 				<mat-icon>info</mat-icon>
 			</button>
 		</ng-template>
+	</div>
+	<div *ngIf="event?.status.id === EventStatusType.READY_TO_SETTLE" class="ready-to-settle-box-mobile" (click)="gotoPayments()">
+		<div class="info">
+			<mat-icon class="info-icon">info</mat-icon>
+			This event is ready for settlement. Go to the payments page to find your pending payments.
+		</div>
 	</div>
 	<mat-nav-list class="userbalances-list-mobile">
 		<app-participant-item

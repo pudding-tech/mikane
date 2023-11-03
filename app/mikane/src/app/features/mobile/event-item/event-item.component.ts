@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { PuddingEvent } from 'src/app/services/event/event.service';
+import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 
 @Component({
 	selector: 'app-event-item',
@@ -14,4 +14,5 @@ import { PuddingEvent } from 'src/app/services/event/event.service';
 })
 export class EventItemComponent {
 	@Input() event: PuddingEvent;
+	readonly EventStatusType = EventStatusType;
 }

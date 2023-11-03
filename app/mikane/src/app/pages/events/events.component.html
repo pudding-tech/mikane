@@ -12,7 +12,7 @@
 			<mat-card-content class="card-content">
 				<div class="header">Active Events</div>
 				<div *ngIf="pagedEventsActive().length > 0; else noActiveEvents">
-					<mat-card *ngFor="let event of pagedEventsActive()" class="event-item">
+					<mat-card *ngFor="let event of pagedEventsActive()" class="event-item" [ngClass]="{ 'ready-to-settle': event.status.id === EventStatusType.READY_TO_SETTLE}">
 						<mat-card-header class="event-header clickable" (click)="clickEvent(event)">
 							<mat-card-title class="event-title">
 								<span class="event-name">
@@ -36,7 +36,7 @@
 								</span>
 							</mat-card-title>
 							<mat-card-subtitle>
-								{{ event.description }}
+								{{ event.status.id === EventStatusType.READY_TO_SETTLE ? 'READY TO SETTLE' : event.description }}
 							</mat-card-subtitle>
 							<span *ngIf="event.userInfo.isAdmin" class="event-actions">
 								<button mat-icon-button (click)="editEvent(event); $event.stopPropagation()">

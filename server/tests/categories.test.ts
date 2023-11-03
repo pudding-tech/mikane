@@ -144,19 +144,19 @@ describe("categories", async () => {
       expect(res.body.code).toEqual(ec.PUD096.code);
     });
 
-    test("should set event as archived", async () => {
+    test("should set event as ready to settle", async () => {
       const res = await request(app)
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          status: EventStatusType.ARCHIVED
+          status: EventStatusType.READY_TO_SETTLE
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.status.id).toEqual(EventStatusType.ARCHIVED);
+      expect(res.body.status.id).toEqual(EventStatusType.READY_TO_SETTLE);
     });
 
-    test("fail creating category in archived event", async () => {
+    test("fail creating category in event with status 'ready to settle'", async () => {
       const res = await request(app)
         .post("/api/categories")
         .set("Cookie", authToken)

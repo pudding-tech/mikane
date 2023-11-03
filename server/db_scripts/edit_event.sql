@@ -34,8 +34,14 @@ begin
     raise exception 'Only event admins can edit event' using errcode = 'P0087';
   end if;
 
-  if exists (select 1 from "event" e where e.id = ip_event_id and e.status != 1) and (ip_status != 1 or ip_status is null) then
+  if exists (select 1 from "event" e where e.id = ip_event_id and e.status != 1) and (
+    ip_name is not null or ip_description is not null or ip_private is not null
+  ) then
     raise exception 'Only active events can be edited' using errcode = 'P0118';
+  end if;
+
+  if ip_status is not null and not exists (select 1 from event_status_type est where est.id = ip_status) then
+    raise exception 'Not a valid event status type' using errcode = 'P0128';
   end if;
 
   if exists (select 1 from "event" e where e.name ilike ip_name and e.id != ip_event_id) then

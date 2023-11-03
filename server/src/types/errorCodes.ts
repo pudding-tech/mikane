@@ -1208,3 +1208,12 @@ export const PUD127: ErrorCode = {
   status: 500,
   log: true
 };
+
+/**
+ * PUD-128: Not a valid event status type (400)
+ */
+export const PUD128: ErrorCode = {
+  code: "PUD-128",
+  message: "Not a valid event status type",
+  status: 400
+};

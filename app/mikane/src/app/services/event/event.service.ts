@@ -64,7 +64,7 @@ export class EventService {
 	}
 
 	editEvent({ id, name, description, status }: { id: string; name?: string; description?: string; status?: EventStatusType }): Observable<PuddingEvent> {
-		return this.httpClient.put<PuddingEvent>(this.apiUrl + `/${id}`, { name, description, private: false, status });
+		return this.httpClient.put<PuddingEvent>(this.apiUrl + `/${id}`, { name, description, status });
 	}
 
 	deleteEvent(eventId: string): Observable<void> {

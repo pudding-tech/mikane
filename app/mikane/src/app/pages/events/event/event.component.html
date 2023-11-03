@@ -10,8 +10,8 @@
 	</div>
 	<div class="name">
 		{{ event.name }}
-		<button *ngIf="event.status?.id !== EventStatusType.ACTIVE && (breakpointService.isMobile() | async) === false" mat-stroked-button disabled>
-			Archived
+		<button *ngIf="event.status?.id !== EventStatusType.ACTIVE && (breakpointService.isMobile() | async) === false" mat-stroked-button disabled [ngClass]="{ 'ready-to-settle': event.status?.id === EventStatusType.READY_TO_SETTLE}">
+			{{ event.status?.id === EventStatusType.READY_TO_SETTLE ? 'Ready to settle' : 'Archived' }}
 		</button>
 	</div>
 	<span class="toolbar-spacer"></span>
