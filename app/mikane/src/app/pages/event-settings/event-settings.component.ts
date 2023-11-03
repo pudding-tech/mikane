@@ -130,14 +130,14 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 					this.messageService.showSuccess('Event successfully archived');
 				}
 
-				// Reload to refresh now archived event
+				// Reload to refresh event
 				this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
 					this.router.navigate(['events', this.event.id, 'settings']);
 				});
 			},
 			error: (err: ApiError) => {
-				this.messageService.showError('Failed to archive event');
-				console.error('Something went wrong while archiving event', err?.error?.message);
+				this.messageService.showError('Failed to change event status');
+				console.error('Something went wrong while changing event status', err?.error?.message);
 			},
 		});
 	}

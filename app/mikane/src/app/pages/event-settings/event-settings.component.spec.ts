@@ -236,7 +236,38 @@ describe('EventSettingsComponent', () => {
 		}));
 	});
 
-	describe('archiveEvent', () => {
+	describe('setEventStatus', () => {
+		it('should set event as ready to settle', fakeAsync(() => {
+			const $event = new BehaviorSubject<PuddingEvent>({
+				id: '1',
+				status: {
+					id: EventStatusType.ACTIVE,
+					name: 'Active',
+				},
+			} as PuddingEvent);
+
+			const fixture = MockRender(EventSettingsComponent, { $event: $event });
+			const component = fixture.point.componentInstance;
+			const messageService = fixture.point.injector.get(MessageService) as jasmine.SpyObj<MessageService>;
+
+			(fixture.point.injector.get(EventService) as jasmine.SpyObj<EventService>).editEvent.and.returnValue(
+				of({ id: '10' } as PuddingEvent)
+			);
+			tick();
+			fixture.detectChanges();
+			component.setStatus(EventStatusType.READY_TO_SETTLE);
+
+			tick();
+
+			expect(component.event).toEqual({ id: '10' } as PuddingEvent);
+			expect(messageService.showSuccess).toHaveBeenCalledWith('Event successfully ready to be settled');
+			expect((fixture.point.injector.get(Router) as jasmine.SpyObj<Router>).navigate).toHaveBeenCalledWith([
+				'events',
+				'10',
+				'settings',
+			]);
+		}));
+
 		it('should archive event', fakeAsync(() => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
@@ -268,7 +299,7 @@ describe('EventSettingsComponent', () => {
 			]);
 		}));
 
-		it('should unarchive Event', fakeAsync(() => {
+		it('should set event as active', fakeAsync(() => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
 				status: {
@@ -299,6 +330,31 @@ describe('EventSettingsComponent', () => {
 			]);
 		}));
 
+		it('should show error message if setting event as ready to settle fails', () => {
+			const $event = new BehaviorSubject<PuddingEvent>({
+				id: '1',
+				status: {},
+			} as PuddingEvent);
+
+			const fixture = MockRender(EventSettingsComponent, { $event: $event });
+			const component = fixture.point.componentInstance;
+			const messageService = fixture.point.injector.get(MessageService) as jasmine.SpyObj<MessageService>;
+
+			(fixture.point.injector.get(EventService) as jasmine.SpyObj<EventService>).editEvent.and.returnValue(
+				throwError(() => {
+					return {
+						error: {
+							message: 'error',
+						},
+					} as ApiError;
+				})
+			);
+			fixture.detectChanges();
+			component.setStatus(EventStatusType.READY_TO_SETTLE);
+
+			expect(messageService.showError).toHaveBeenCalledWith('Failed to change event status');
+		});
+
 		it('should show error message if archiving event fails', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
@@ -321,7 +377,7 @@ describe('EventSettingsComponent', () => {
 			fixture.detectChanges();
 			component.setStatus(EventStatusType.ARCHIVED);
 
-			expect(messageService.showError).toHaveBeenCalledWith('Failed to archive event');
+			expect(messageService.showError).toHaveBeenCalledWith('Failed to change event status');
 		});
 	});
 
