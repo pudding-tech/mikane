@@ -1,44 +1,57 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute } from '@angular/router';
-import { MockComponent, MockModule } from 'ng-mocks';
-import { MessageService } from 'src/app/services/message/message.service';
-import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
+import { MockBuilder, MockRender, MockedComponentFixture } from 'ng-mocks';
 
-import { Environment } from 'src/environments/environment.interface';
-import { ENV } from 'src/environments/environment.provider';
+import { ActivatedRoute } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { PuddingEvent } from 'src/app/services/event/event.service';
+import { User } from 'src/app/services/user/user.service';
 import { ExpendituresComponent } from './expenditures.component';
 
-describe('ExpendituresComponent', () => {
+fdescribe('ExpendituresComponent', () => {
 	let component: ExpendituresComponent;
-	let fixture: ComponentFixture<ExpendituresComponent>;
-	let activatedRouteStub: ActivatedRoute;
-	let messageServiceStub: MessageService;
+	let fixture: MockedComponentFixture<ExpendituresComponent, { $event: Observable<PuddingEvent> }>;
+	let activatedRouteMock: jasmine.SpyObj<ActivatedRoute>;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				HttpClientTestingModule,
-				MockModule(MatDialogModule),
-				MockModule(MatIconModule),
-				ExpendituresComponent,
-				MockComponent(ProgressSpinnerComponent),
-			],
-			providers: [
-				{ provide: ActivatedRoute, useValue: activatedRouteStub },
-				{ provide: MessageService, useValue: messageServiceStub },
-				{ provide: ENV, useValue: {} as Environment },
-			],
-		}).compileComponents();
+		activatedRouteMock = jasmine.createSpyObj('ActivatedRoute', ['']);
 
-		fixture = TestBed.createComponent(ExpendituresComponent);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
+		return MockBuilder(ExpendituresComponent)
+			.provide({ provide: ActivatedRoute, useValue: activatedRouteMock })
+			.provide({
+				provide: BreakpointService,
+				useValue: {
+					isMobile: jasmine.createSpy('isMobile').and.returnValue(of(false)) as () => Observable<boolean>,
+				} as BreakpointService,
+			})
+			.provide({
+				provide: AuthService,
+				useValue: {
+					getCurrentUser: jasmine.createSpy('getCurrentUser').and.returnValue(
+						of({
+							id: '1',
+							name: 'test',
+							email: '',
+						}),
+					) as () => Observable<User>,
+				} as AuthService,
+			});
 	});
 
+	function createComponent() {
+		fixture = MockRender(ExpendituresComponent, {
+			$event: of({
+				id: '1',
+				active: true,
+			} as PuddingEvent),
+		});
+		component = fixture.point.componentInstance;
+		fixture.detectChanges();
+	}
+
 	it('should create', () => {
+		createComponent();
+
 		expect(component).toBeTruthy();
 	});
 });
