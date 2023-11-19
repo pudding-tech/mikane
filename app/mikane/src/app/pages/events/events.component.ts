@@ -13,7 +13,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { EventItemComponent } from 'src/app/features/mobile/event-item/event-item.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
+import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
@@ -122,18 +122,23 @@ export class EventsComponent implements OnInit, OnDestroy {
 		this.editSubscription = dialogRef.afterClosed().subscribe({
 			next: (editedEvent: PuddingEvent) => {
 				if (editedEvent) {
-					this.eventService.editEvent({ id: editedEvent.id, name: editedEvent.name, description: editedEvent.description }).subscribe({
-						next: (result) => {
-							const index = this.events().indexOf(this.events().find((event) => event.id === result.id));
-							if (~index) {
-								this.events.mutate((events) => (events[index] = result));
-							}
-						},
-						error: (err: ApiError) => {
-							this.messageService.showError('Failed to edit event');
-							console.error('something went wrong while editing event', err?.error?.message);
-						},
-					});
+					this.eventService
+						.editEvent({ id: editedEvent.id, name: editedEvent.name, description: editedEvent.description })
+						.subscribe({
+							next: (result) => {
+								const index = this.events().indexOf(this.events().find((event) => event.id === result.id));
+								if (~index) {
+									this.events.update((events) => {
+										events[index] = result;
+										return [...events];
+									});
+								}
+							},
+							error: (err: ApiError) => {
+								this.messageService.showError('Failed to edit event');
+								console.error('something went wrong while editing event', err?.error?.message);
+							},
+						});
 				}
 			},
 		});
@@ -148,7 +153,10 @@ export class EventsComponent implements OnInit, OnDestroy {
 			if (event) {
 				this.eventService.createEvent(event).subscribe({
 					next: (newEvent) => {
-						this.events.mutate((events) => events.unshift(newEvent));
+						this.events.update((events) => {
+							events.unshift(newEvent);
+							return [...events];
+						});
 						this.startIndexActive.set(0);
 						this.endIndexActive.set(this.pageSizeActive());
 					},

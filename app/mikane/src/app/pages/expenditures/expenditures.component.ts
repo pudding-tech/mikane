@@ -30,7 +30,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
+import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
@@ -69,7 +69,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	private sortValue: WritableSignal<Sort> = signal({} as Sort);
 	protected expenses: WritableSignal<Expense[]> = signal([]);
 	protected payers: WritableSignal<User[]> = signal([]);
-	protected categories: WritableSignal<Array<{ id: string, name: string, icon: string }>> = signal([]);
+	protected categories: WritableSignal<Array<{ id: string; name: string; icon: string }>> = signal([]);
 
 	filteredExpenses = computed(() => {
 		return this.sortData(this.sortValue(), this.expenses()).filter((expense) => {
@@ -89,10 +89,10 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	protected categoriesFilter: WritableSignal<string[]> = signal([]);
 	protected categoriesFilterSelect: string[] = [];
 	protected filteredPayer = computed(() => {
-		return this.payers().find(payer => this.payersFilter().includes(payer.id));
+		return this.payers().find((payer) => this.payersFilter().includes(payer.id));
 	});
 	protected filteredCategory = computed(() => {
-		return this.categories().find(category => this.categoriesFilter().includes(category.id));
+		return this.categories().find((category) => this.categoriesFilter().includes(category.id));
 	});
 
 	@ViewChild('input') set filterInput(input: ElementRef<HTMLInputElement>) {
@@ -156,7 +156,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 								map((params) => {
 									return [params.get('filter'), params.get('payers'), params.get('categories')];
 								}),
-								take(1)
+								take(1),
 							),
 						]);
 					} else {
@@ -249,7 +249,10 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: (expense) => {
-					this.expenses.mutate((expenses) => expenses.unshift(expense));
+					this.expenses.update((expenses) => {
+						expenses.unshift(expense);
+						return [...expenses];
+					});
 					this.messageService.showSuccess('New expense created');
 				},
 				error: (err: ApiError) => {
@@ -300,7 +303,10 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 				next: (newExpense) => {
 					const index = this.expenses().indexOf(this.expenses().find((expense) => expense.id === newExpense.id));
 					if (~index) {
-						this.expenses.mutate((expenses) => (expenses[index] = newExpense));
+						this.expenses.update((expenses) => {
+							expenses[index] = newExpense;
+							return [...expenses];
+						});
 					}
 					this.messageService.showSuccess('Expense edited');
 				},
@@ -316,8 +322,9 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			next: () => {
 				const index = this.expenses().indexOf(this.expenses().find((expense) => expense.id === expenseId));
 				if (~index) {
-					this.expenses.mutate((expenses) => {
+					this.expenses.update((expenses) => {
 						expenses.splice(index, 1);
+						return [...expenses];
 					});
 					this.messageService.showSuccess('Expense deleted');
 				} else {
@@ -334,7 +341,9 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 
 	applyFilter(event: Event) {
 		const filterValue = (event.target as HTMLInputElement).value;
-		this.filterValue.update(() => filterValue);
+		this.filterValue.update(() => {
+			return filterValue;
+		});
 
 		this.router.navigate([], {
 			relativeTo: this.route,
@@ -441,7 +450,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 
 	openFilterSearchBottomSheet(): void {
 		const searchBottomSheetRef = this.bottomSheet.open(ExpenseBottomSheetComponent, {
-			data: { type: 'search', currentFilter: [this.filterValue()] }
+			data: { type: 'search', currentFilter: [this.filterValue()] },
 		});
 
 		searchBottomSheetRef.instance.inputDataChange.subscribe((filterValue) => {
@@ -460,7 +469,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 
 	openFilterPayerBottomSheet(): void {
 		const payerBottomSheetRef = this.bottomSheet.open(ExpenseBottomSheetComponent, {
-			data: { type: 'payers', filterData: this.payers(), currentFilter: this.payersFilter() }
+			data: { type: 'payers', filterData: this.payers(), currentFilter: this.payersFilter() },
 		});
 
 		payerBottomSheetRef.instance.inputDataChange.subscribe((payers) => {
@@ -479,7 +488,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 
 	openFilterCategoryBottomSheet(): void {
 		const categoryBottomSheetRef = this.bottomSheet.open(ExpenseBottomSheetComponent, {
-			data: { type: 'categories', filterData: this.categories(), currentFilter: this.categoriesFilter() }
+			data: { type: 'categories', filterData: this.categories(), currentFilter: this.categoriesFilter() },
 		});
 
 		categoryBottomSheetRef.instance.inputDataChange.subscribe((categories) => {
