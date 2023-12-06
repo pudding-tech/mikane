@@ -10,8 +10,8 @@ jobs:
   build-frontend:
     uses: ./.github/workflows/frontend-build.yml
     with:
-      node-version: 16.x
+      node-version: 18.x
   test-frontend:
     uses: ./.github/workflows/frontend-test.yml
     with:
-      node-version: 16.x
+      node-version: 18.x
