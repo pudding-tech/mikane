@@ -22,7 +22,8 @@
 		"useDefineForClassFields": false,
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
-		"strictNullChecks": false
+		"strictNullChecks": false,
+		"esModuleInterop": true
 	},
 	"angularCompilerOptions": {
 		"enableI18nLegacyMessageIdFormat": false,
