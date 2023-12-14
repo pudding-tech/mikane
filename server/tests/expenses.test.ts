@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeAll } from "vitest";
 import request from "supertest";
-import app from "./setup";
+import app from "../src/server";
 import * as ec from "../src/types/errorCodes";
 import { Category, Event, Expense, User } from "../src/types/types";
 import { EventStatusType } from "../src/types/enums";
