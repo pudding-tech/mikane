@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeAll, afterEach, vi } from "vitest";
 import request from "supertest";
 import nodemailerMock from "nodemailer-mock";
-import app from "./setup";
+import app from "../src/server";
 import * as ec from "../src/types/errorCodes";
 import { User } from "../src/types/types";
 

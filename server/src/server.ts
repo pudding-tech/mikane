@@ -24,15 +24,6 @@ const checkDBConnection = () => {
     .then(client => {
       console.log(`Connected to SQL database: ${env.DB_HOST} - ${env.DB_DATABASE}`);
       client.release();
-      store.checkConnection()
-        .then(() => {
-          app.set("dbReady", true);
-          app.emit("dbConnected");
-        })
-        .catch(() => {
-          app.set("dbReady", false);
-          app.emit("dbConnectionError");
-        });
     })
     .catch(err => {
       console.log("An error occurred connecting to database: " + err);

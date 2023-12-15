@@ -1,5 +1,5 @@
 ### BUILDER ###
-FROM node:18-alpine as builder
+FROM node:20-alpine as builder
 
 # Use directory
 WORKDIR /app
@@ -16,7 +16,7 @@ COPY ./ ./
 RUN npx tsc -p ./
 
 ### FINAL APP ###
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Set default environment
 ENV NODE_ENV=dev

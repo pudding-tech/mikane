@@ -9,7 +9,6 @@ export const resetDatabase = async () => {
     return;
   }
 
-  const sqlScript = fs.readFileSync("./db_scripts/schema/db_schema.sql", "utf8");
   await pool.query(`
     DROP TABLE "api_key";
     DROP TABLE "session";
@@ -24,6 +23,7 @@ export const resetDatabase = async () => {
     DROP TABLE "user";
     DROP TABLE "event_status_type";
   `);
+  const sqlScript = fs.readFileSync("./db_scripts/schema/db_schema.sql", "utf8");
   await pool.query(sqlScript);
   await pool.query(`
     INSERT INTO api_key (id, "name", hashed_key, master, valid_from, valid_to)
