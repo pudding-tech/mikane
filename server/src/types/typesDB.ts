@@ -7,6 +7,8 @@ export type UserDB = {
   phone_number: string,
   created: Date,
   guest: boolean,
+  guest_created_by: string;
+  super_admin: boolean,
   deleted: boolean,
   event_id?: string,
   is_event_admin?: boolean,

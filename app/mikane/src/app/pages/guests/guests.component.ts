@@ -11,8 +11,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { EMPTY, Subscription, switchMap } from 'rxjs';
+import { EMPTY, Subscription, combineLatest, switchMap } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
@@ -46,6 +47,7 @@ export class GuestsComponent implements OnInit, OnDestroy {
 	loading = false;
 	guests: User[] = [];
 	pagedGuests: User[] = [];
+	currentUser: User;
 
 	private guestsSubscription: Subscription;
 	private editSubscription: Subscription;
@@ -57,6 +59,7 @@ export class GuestsComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private userService: UserService,
+		private authService: AuthService,
 		private messageService: MessageService,
 		protected breakpointService: BreakpointService,
 		public dialog: MatDialog
@@ -68,11 +71,12 @@ export class GuestsComponent implements OnInit, OnDestroy {
 
 	loadUsers() {
 		this.loading = true;
-		this.guestsSubscription = this.userService.loadGuestUsers().subscribe({
-			next: (guests) => {
+		this.guestsSubscription = combineLatest([this.userService.loadGuestUsers(), this.authService.getCurrentUser()]).subscribe({
+			next: ([guests, currentUser]) => {
 				this.guests = guests;
 				this.pagedGuests = guests.slice(0, this.pageSize);
 				this.length = guests.length;
+				this.currentUser = currentUser;
 				this.loading = false;
 			},
 			error: (err: ApiError) => {

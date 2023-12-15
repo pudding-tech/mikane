@@ -1217,3 +1217,21 @@ export const PUD128: ErrorCode = {
   message: "Not a valid event status type",
   status: 400
 };
+
+/**
+ * PUD-129: Only super-admins and guest's creator can delete guest users (403)
+ */
+export const PUD129: ErrorCode = {
+  code: "PUD-129",
+  message: "Only super-admins and guest's creator can delete guest users",
+  status: 403
+};
+
+/**
+ * PUD-130: Only super-admins and guest's creator can edit guest users (403)
+ */
+export const PUD130: ErrorCode = {
+  code: "PUD-130",
+  message: "Only super-admins and guest's creator can edit guest users",
+  status: 403
+};

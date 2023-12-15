@@ -37,6 +37,7 @@ begin
     email = null,
     phone_number = null,
     "password" = '22',
+    super_admin = false,
     deleted = true
   where
     u.id = ip_user_id;

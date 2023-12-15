@@ -1,6 +1,7 @@
 drop function if exists delete_guest_user;
 create or replace function delete_guest_user(
-  ip_guest_id uuid
+  ip_guest_id uuid,
+  ip_by_user_id uuid
 )
 returns void as
 $$
@@ -10,6 +11,14 @@ begin
 
   if not exists (select 1 from "user" u where u.id = ip_guest_id and u.guest = true and u.deleted = false) then
     raise exception 'Guest user not found' using errcode = 'P0122';
+  end if;
+
+  if not (
+    exists (select 1 from "user" u where u.id = ip_by_user_id and u.super_admin = true)
+    or
+    exists (select 1 from "user" u where u.id = ip_guest_id and u.guest_created_by = ip_by_user_id)
+  ) then
+    raise exception 'Only super-admins and guests creator can delete guest users' using errcode = 'P0129';
   end if;
 
   -- Delete user from active events
@@ -23,7 +32,8 @@ begin
   set
     first_name = 'deleted',
     last_name = null,
-    deleted = true
+    deleted = true,
+    guest_created_by = null
   where
     u.id = ip_guest_id and
     u.guest = true;

@@ -6,6 +6,7 @@ declare module "express-session" {
     userId: string;
     username: string;
     avatarURL: string;
+    superAdmin: boolean;
   }
   export interface Store {
     destroyExpired(): void;

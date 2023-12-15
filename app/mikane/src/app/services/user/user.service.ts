@@ -16,6 +16,8 @@ export interface User {
 	phone?: string;
 	created?: Date;
 	guest: boolean;
+	guestCreatedBy?: string;
+	superAdmin?: boolean;
 	avatarURL?: string;
 	eventInfo?: {
 		id: string;

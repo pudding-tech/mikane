@@ -953,7 +953,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/User"
+                    "$ref": "#/components/schemas/Guest"
                   }
                 }
               }
@@ -997,7 +997,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDetailed"
+                  "$ref": "#/components/schemas/Guest"
                 }
               }
             }
@@ -1064,7 +1064,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDetailed"
+                  "$ref": "#/components/schemas/Guest"
                 }
               }
             }
@@ -3724,6 +3724,10 @@
           "avatarURL": {
             "type": "string",
             "example": "https://gravatar.com/avatar/aaaa"
+          },
+          "superAdmin": {
+            "type": "boolean",
+            "example": "false"
           }
         }
       },
@@ -3753,6 +3757,10 @@
           "avatarURL": {
             "type": "string",
             "example": "https://gravatar.com/avatar/aaaa"
+          },
+          "superAdmin": {
+            "type": "boolean",
+            "example": "false"
           },
           "eventInfo": {
             "type": "object",
@@ -3818,6 +3826,10 @@
           "avatarURL": {
             "type": "string",
             "example": "https://gravatar.com/avatar/aaaa"
+          },
+          "superAdmin": {
+            "type": "boolean",
+            "example": "false"
           }
         }
       },
@@ -3859,6 +3871,47 @@
           "avatarURL": {
             "type": "string",
             "example": "https://gravatar.com/avatar/aaaa"
+          },
+          "superAdmin": {
+            "type": "boolean",
+            "example": "false"
+          }
+        }
+      },
+      "Guest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+          },
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "name": {
+            "type": "string",
+            "example": "Test"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@user.com"
+          },
+          "created": {
+            "type": "date-time",
+            "example": "2023-01-20T18:00:00"
+          },
+          "avatarURL": {
+            "type": "string",
+            "example": "https://gravatar.com/avatar/aaaa"
+          },
+          "superAdmin": {
+            "type": "boolean",
+            "example": "false"
+          },
+          "guestCreatedBy": {
+            "type": "string",
+            "example": "13b96dad-e95a-4794-9dea-25fd2bbd21a1"
           }
         }
       },

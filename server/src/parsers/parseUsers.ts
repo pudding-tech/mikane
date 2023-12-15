@@ -22,7 +22,8 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean, exclude
         username: "Deleted user",
         name: "Deleted user",
         avatarURL: getGravatarURL("", { size: avatarSize ?? 200, default: "mp" }),
-        guest: userObj.guest
+        guest: userObj.guest,
+        superAdmin: userObj.super_admin
       };
       allUsers.push(user);
       if (!excludeGuests || (excludeGuests && !user.guest)) {
@@ -41,6 +42,7 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean, exclude
       created: userObj.created,
       avatarURL: getGravatarURL(userObj.email ?? "", { size: avatarSize ?? 200, default: userObj.guest ? "mp" : "identicon" }),
       guest: userObj.guest,
+      superAdmin: userObj.super_admin,
       eventInfo: withEventData && userObj.event_id && userObj.event_joined_time ? {
         id: userObj.event_id,
         isAdmin: userObj.is_event_admin ?? false,
@@ -94,8 +96,9 @@ export const parseGuestUsers = (usersInput: UserDB[], avatarSize?: number): Gues
       name: userObj.first_name,
       firstName: userObj.first_name,
       lastName: userObj.last_name,
+      avatarURL: getGravatarURL(userObj.email ?? "", { size: avatarSize ?? 200, default: "mp" }),
       guest: userObj.guest,
-      avatarURL: getGravatarURL(userObj.email ?? "", { size: avatarSize ?? 200, default: "mp" })
+      guestCreatedBy: userObj.guest_created_by
     };
     guests.push(user);
   });
@@ -126,7 +129,8 @@ export const parseUser = (userObj: UserDB, avatarSize?: number): User => {
     phone: userObj.phone_number,
     created: userObj.created,
     avatarURL: getGravatarURL(userObj.email ?? "", { size: avatarSize ?? 200, default: userObj.guest ? "mp" : "identicon" }),
-    guest: userObj.guest
+    guest: userObj.guest,
+    superAdmin: userObj.super_admin
   };
 };
 
@@ -143,6 +147,7 @@ export const parseGuestUser = (userObj: UserDB, avatarSize?: number): Guest => {
     firstName: userObj.first_name,
     lastName: userObj.last_name,
     avatarURL: getGravatarURL(userObj.email ?? "", { size: avatarSize ?? 200, default: "mp" }),
-    guest: userObj.guest
+    guest: userObj.guest,
+    guestCreatedBy: userObj.guest_created_by
   };
 };

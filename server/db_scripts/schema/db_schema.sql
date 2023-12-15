@@ -13,6 +13,8 @@ create table "user" (
   "password" varchar(255) not null,
   created timestamp not null,
   guest boolean not null,
+  guest_created_by uuid,
+  super_admin boolean not null,
   deleted boolean not null
 );
 

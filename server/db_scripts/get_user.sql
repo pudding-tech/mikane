@@ -13,14 +13,16 @@ returns table (
   phone_number varchar(20),
   "password" varchar(255),
   created timestamp,
-  guest boolean
+  guest boolean,
+  guest_created_by uuid,
+  super_admin boolean
 ) as
 $$
 begin
   if (ip_user_id is not null) then
     return query
     select
-      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created, u.guest
+      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created, u.guest, u.guest_created_by, u.super_admin
     from
       "user" u
     where
@@ -30,7 +32,7 @@ begin
   elsif (ip_username is not null) then
     return query
     select
-      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created, u.guest
+      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created, u.guest, u.guest_created_by, u.super_admin
     from
       "user" u
     where

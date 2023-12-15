@@ -11,3 +11,7 @@ ADD status int not null references "event_status_type"(id) on delete restrict de
 
 ALTER TABLE "event"
 DROP COLUMN active;
+
+ALTER TABLE "user"
+ADD super_admin boolean not null default false,
+ADD guest_created_by uuid;
