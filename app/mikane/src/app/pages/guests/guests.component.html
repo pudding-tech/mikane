@@ -39,9 +39,11 @@
 						<img [src]="guest.avatarURL" alt="Guest user avatar" class="avatar" />
 						{{ guest.name }}
 					</div>
-					<button mat-icon-button (click)="editGuest(guest)">
-						<mat-icon>edit</mat-icon>
-					</button>
+					@if (currentUser.superAdmin || guest.guestCreatedBy === currentUser.id) {
+						<button mat-icon-button (click)="editGuest(guest)">
+							<mat-icon>edit</mat-icon>
+						</button>
+					}
 				</div>
 			</mat-list-item>
 		</mat-nav-list>

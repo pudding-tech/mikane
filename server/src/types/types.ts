@@ -11,6 +11,7 @@ export type User = {
   created?: Date;
   avatarURL?: string;
   guest: boolean;
+  superAdmin?: boolean;
   eventInfo?: {
     id: string;
     isAdmin: boolean;
@@ -25,6 +26,7 @@ export type Guest = {
   avatarURL: string;
   firstName: string;
   lastName: string;
+  guestCreatedBy?: string;
 }
 
 export type Event = {

@@ -16,7 +16,9 @@ returns table (
   phone_number varchar(20),
   "password" varchar(255),
   created timestamp,
-  guest boolean
+  guest boolean,
+  guest_created_by uuid,
+  super_admin boolean
 ) as
 $$
 begin

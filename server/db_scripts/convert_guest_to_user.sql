@@ -17,7 +17,9 @@ returns table (
   phone_number varchar(20),
   "password" varchar(255),
   created timestamp,
-  guest boolean
+  guest boolean,
+  guest_created_by uuid,
+  super_admin boolean
 ) as
 $$
 declare tmp_user_id uuid;
@@ -48,7 +50,8 @@ begin
     phone_number = nullif(ip_phone_number, ''),
     "password" = ip_password,
     created = CURRENT_TIMESTAMP,
-    guest = false
+    guest = false,
+    guest_created_by = null
   where
     u.id = ip_guest_id and
     u.guest = true and

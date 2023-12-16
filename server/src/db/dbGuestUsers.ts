@@ -31,19 +31,23 @@ export const getGuestUsers = async () => {
  * @param id 
  * @param firstName 
  * @param lastName 
+ * @param byUserId ID of user performing action
  * @returns Newly created guest user
  */
-export const createGuestUser = async (id: string, firstName: string, lastName: string) => {
+export const createGuestUser = async (id: string, firstName: string, lastName: string, byUserId: string) => {
   const query = {
-    text: "SELECT * FROM new_guest_user($1, $2, $3)",
-    values: [id, firstName, lastName]
+    text: "SELECT * FROM new_guest_user($1, $2, $3, $4)",
+    values: [id, firstName, lastName, byUserId]
   };
   const guestUser: Guest = await pool.query(query)
     .then(data => {
       return parseGuestUser(data.rows[0]);
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD123, err);
+      if (err.code === "P0008")
+        throw new ErrorExt(ec.PUD008, err);
+      else
+        throw new ErrorExt(ec.PUD123, err);
     });
 
   return guestUser;
@@ -53,19 +57,22 @@ export const createGuestUser = async (id: string, firstName: string, lastName: s
  * DB interface: Edit a guest user
  * @param guestId Guest ID to edit
  * @param data Data object
+ * @param byUserId ID of user performing the action
  * @returns Edited user
  */
-export const editGuestUser = async (guestId: string, data: { firstName?: string, lastName?: string }) => {
+export const editGuestUser = async (guestId: string, data: { firstName?: string, lastName?: string }, byUserId: string) => {
   const query = {
-    text: "SELECT * FROM edit_guest_user($1, $2, $3)",
-    values: [guestId, data.firstName, data.lastName]
+    text: "SELECT * FROM edit_guest_user($1, $2, $3, $4)",
+    values: [guestId, data.firstName, data.lastName, byUserId]
   };
   const guestUser: Guest = await pool.query(query)
     .then(data => {
       return parseGuestUser(data.rows[0]);
     })
     .catch(err => {
-      if (err.code === "P0122")
+      if (err.code === "P0130")
+        throw new ErrorExt(ec.PUD130, err);
+      else if (err.code === "P0122")
         throw new ErrorExt(ec.PUD122, err);
       else
         throw new ErrorExt(ec.PUD124, err);
@@ -77,19 +84,22 @@ export const editGuestUser = async (guestId: string, data: { firstName?: string,
 /**
  * DB interface: Delete a guest user
  * @param guestId 
+ * @param byUserId ID of user performing the action
  * @returns True if successful
  */
-export const deleteGuestUser = async (guestId: string) => {
+export const deleteGuestUser = async (guestId: string, byUserId: string) => {
   const query = {
-    text: "SELECT * FROM delete_guest_user($1)",
-    values: [guestId]
+    text: "SELECT * FROM delete_guest_user($1, $2)",
+    values: [guestId, byUserId]
   };
   const success = await pool.query(query)
     .then(() => {
       return true;
     })
     .catch(err => {
-      if (err.code === "P0122")
+      if (err.code === "P0129")
+        throw new ErrorExt(ec.PUD129, err);
+      else if (err.code === "P0122")
         throw new ErrorExt(ec.PUD122, err);
       else if (err.code === "P0120")
         throw new ErrorExt(ec.PUD120, err);

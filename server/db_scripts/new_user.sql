@@ -16,7 +16,9 @@ returns table (
   phone_number varchar(20),
   "password" varchar(255),
   created timestamp,
-  guest boolean
+  guest boolean,
+  guest_created_by uuid,
+  super_admin boolean
 ) as
 $$
 declare tmp_user_id uuid;
@@ -33,8 +35,8 @@ begin
     raise exception 'Phone number already taken' using errcode = 'P0019';
   end if;
 
-  insert into "user"(username, first_name, last_name, email, phone_number, "password", created, guest, deleted)
-    values (ip_username, ip_first_name, nullif(ip_last_name, ''), nullif(ip_email, ''), nullif(ip_phone_number, ''), ip_password, CURRENT_TIMESTAMP, false, false)
+  insert into "user"(username, first_name, last_name, email, phone_number, "password", created, guest, super_admin, deleted)
+    values (ip_username, ip_first_name, nullif(ip_last_name, ''), nullif(ip_email, ''), nullif(ip_phone_number, ''), ip_password, CURRENT_TIMESTAMP, false, false, false)
     returning "user".id into tmp_user_id;
 
   return query

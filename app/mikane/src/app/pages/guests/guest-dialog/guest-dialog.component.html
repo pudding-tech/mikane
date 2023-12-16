@@ -1,5 +1,10 @@
 <h1 mat-dialog-title>
-	{{ data?.edit ? (delete ? "Delete " + guest.firstName + " " + guest.lastName + "?" : "Edit guest") : "Create guest" }}
+	@if (data?.edit) {
+		{{ delete ? "Delete " + guest.firstName + (guest.lastName ? " " + guest.lastName : "") + "?" : "Edit guest" }}
+	}
+	@else {
+		Create guest
+	}
 </h1>
 <div *ngIf="!delete; else deleteContent">
 	<div mat-dialog-content>
