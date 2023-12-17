@@ -473,7 +473,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		});
 
 		payerBottomSheetRef.instance.inputDataChange.subscribe((payers) => {
-			this.payersFilter.set(payers);
+			this.payersFilter.set([...payers]);
 			this.router.navigate([], {
 				relativeTo: this.route,
 				queryParams: {
@@ -492,7 +492,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		});
 
 		categoryBottomSheetRef.instance.inputDataChange.subscribe((categories) => {
-			this.categoriesFilter.set(categories);
+			this.categoriesFilter.set([...categories]);
 			this.router.navigate([], {
 				relativeTo: this.route,
 				queryParams: {

@@ -7,29 +7,35 @@
 .upper {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	padding-top: 12px;
 	padding-bottom: 12px;
 	padding-left: 16px;
 	padding-right: 16px;
 
-	.avatar {
-		position: relative;
-		width: 24px;
-		height: 24px;
-		margin-right: 16px;
-		border-radius: 50%;
-		object-fit: cover;
-	}
-	
-	.number-of-expenses {
-		font-size: 0.8em;
-		color: rgba(255, 255, 255, 0.7);
-	}
-	
-	.name {
-		font-size: 1.1em;
-		position: relative;
-		margin-top: -2px;
+	.title {
+		display: flex;
+		align-items: center;
+
+		.avatar {
+			position: relative;
+			width: 24px;
+			height: 24px;
+			margin-right: 16px;
+			border-radius: 50%;
+			object-fit: cover;
+		}
+		
+		.number-of-expenses {
+			font-size: 0.8em;
+			color: rgba(255, 255, 255, 0.7);
+		}
+		
+		.name {
+			font-size: 1.1em;
+			position: relative;
+			margin-top: -2px;
+		}
 	}
 }
 

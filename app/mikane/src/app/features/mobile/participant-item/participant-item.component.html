@@ -1,12 +1,19 @@
 <mat-list-item class="wrapper">
 	<div class="upper">
-		<img [src]="userBalance.user.avatarURL" alt="User avatar" class="avatar" />
-		<div>
-			<div class="number-of-expenses">Number of expenses: {{ userBalance.expensesCount }}</div>
-			<div class="name">
-				{{ userBalance.user.name }}
+		<div class="title">
+			<img [src]="userBalance.user.avatarURL" alt="User avatar" class="avatar" />
+			<div>
+				<div class="number-of-expenses">Number of expenses: {{ userBalance.expensesCount }}</div>
+				<div class="name">
+					{{ userBalance.user.name }}
+				</div>
 			</div>
 		</div>
+		@if (eventActive && userBalance.expensesCount === 0) {
+			<button	mat-icon-button (click)="removeUserFromEvent(); $event.stopPropagation()">
+				<mat-icon>remove</mat-icon>
+			</button>
+		}
 	</div>
 	<div class="lower">
 		<div class="balances">

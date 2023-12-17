@@ -184,7 +184,9 @@
 		<app-participant-item
 			*ngFor="let userWithBalance of usersWithBalance; let i = index"
 			[userBalance]="userWithBalance"
+			[eventActive]="event?.status.id === EventStatusType.ACTIVE"
 			(click)="gotoUserExpenses(userWithBalance)"
+			(removeUser)="deleteUserDialog($event.userId)"
 		></app-participant-item>
 	</mat-nav-list>
 	<button
