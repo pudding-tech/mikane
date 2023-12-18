@@ -10,6 +10,7 @@ returns table (
   weighted boolean,
   event_id uuid,
   created timestamp,
+  number_of_expenses int,
   user_weights jsonb
 ) as
 $$
@@ -47,6 +48,14 @@ begin
     c.weighted,
     e.id as event_id,
     c.created,
+    (
+      select
+        count(e.id)::int
+      from
+        expense e
+      where
+        e.category_id = c.id
+    ) as number_of_expenses,
     (
       select
         jsonb_agg(jsonb_build_object(

@@ -5,11 +5,12 @@ create or replace function remove_user_from_category(
 )
 returns table (
   id uuid,
-  name varchar(255),
+  "name" varchar(255),
   icon varchar(255),
   weighted boolean,
   event_id uuid,
   created timestamp,
+  number_of_expenses int,
   user_weights jsonb
 ) as
 $$

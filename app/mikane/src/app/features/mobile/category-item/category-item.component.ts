@@ -41,6 +41,7 @@ export class CategoryItemComponent {
 	@Output() openWeightEditDialog = new EventEmitter<{ categoryId: string; userId: string; weight: number }>();
 	@Output() toggleWeighted = new EventEmitter<{ categoryId: string; weighted: boolean }>();
 	@Output() deleteCategoryDialog = new EventEmitter<{ categoryId: string }>();
+	@Output() gotoCategoryExpenses = new EventEmitter<{ category: Category }>();
 
 	dropdownOpen = false;
 	lowerHeight = 0;
@@ -84,4 +85,8 @@ export class CategoryItemComponent {
 	deleteCategory = (categoryId: string) => {
 		this.deleteCategoryDialog.emit({ categoryId });
 	};
+
+	gotoExpenses = () => {
+		this.gotoCategoryExpenses.emit({ category: this.category });
+	}
 }

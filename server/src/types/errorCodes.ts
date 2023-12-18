@@ -1235,3 +1235,12 @@ export const PUD130: ErrorCode = {
   message: "Only super-admins and guest's creator can edit guest users",
   status: 403
 };
+
+/**
+ * PUD-131: Cannot delete category, as it has at least one expense associated with it (400)
+ */
+export const PUD131: ErrorCode = {
+  code: "PUD-131",
+  message: "Cannot delete category, as it has at least one expense associated with it",
+  status: 400
+};

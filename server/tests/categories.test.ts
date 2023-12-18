@@ -2,7 +2,7 @@ import { describe, test, expect, beforeAll } from "vitest";
 import request from "supertest";
 import app from "../src/server";
 import * as ec from "../src/types/errorCodes";
-import { Category, Event, User } from "../src/types/types";
+import { Category, Event, Expense, User } from "../src/types/types";
 import { EventStatusType } from "../src/types/enums";
 
 describe("categories", async () => {
@@ -11,6 +11,7 @@ describe("categories", async () => {
   let user: User;
   let event: Event;
   let category: Category;
+  let expense: Expense;
 
   /*
    * Create user, log in, then create event
@@ -440,6 +441,42 @@ describe("categories", async () => {
 
       expect(res.status).toEqual(400);
       expect(res.body.code).toEqual(ec.PUD045.code);
+    });
+
+    test("should create expense for this category", async () => {
+      const res = await request(app)
+        .post("/api/expenses")
+        .set("Cookie", authToken)
+        .send({
+          name: "Test expense 1",
+          description: "This is test",
+          amount: 100,
+          categoryId: category.id,
+          payerId: user.id
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.name).toEqual("Test expense 1");
+      expect(res.body.categoryInfo.id).toEqual(category.id);
+      expense = res.body;
+    });
+
+    test("fail delete category associated with at least one expense", async () => {
+      const res = await request(app)
+        .delete("/api/categories/" + category.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD131.code);
+    });
+
+    test("should delete expense", async () => {
+      const res = await request(app)
+        .delete("/api/expenses/" + expense.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.success).toEqual(true);
     });
 
     test("should delete category", async () => {

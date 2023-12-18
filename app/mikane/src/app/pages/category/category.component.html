@@ -15,9 +15,13 @@
 							{{ category.icon ?? "shopping_cart" }}
 						</mat-icon>
 						<span class="category-name">{{ category.name }}</span>
-						<span class="number-of-participants">
-							<span class="number">{{ category.users.length }}</span>
-							participants
+						<span class="number-of">
+							<span class="number" [ngClass]="{ 'zero': category.users.length === 0 }">{{ category.users.length }}</span>
+							{{ category.users.length === 1 ? 'participant' : 'participants' }}
+						</span>
+						<span class="number-of">
+							<span class="number" [ngClass]="{ 'zero': category.numberOfExpenses === 0 }">{{ category.numberOfExpenses }}</span>
+							{{ category.numberOfExpenses === 1 ? 'expense' : 'expenses' }}
 						</span>
 					</mat-panel-title>
 				</mat-expansion-panel-header>
@@ -136,6 +140,9 @@
 						</form>
 					</table>
 					<div id="category-actions" *ngIf="event?.status.id === EventStatusType.ACTIVE">
+						<button mat-stroked-button type="button" color="accent" class="goto-expenses-button" [disabled]="category.numberOfExpenses === 0" (click)="gotoCategoryExpenses(category)">
+							See expenses
+						</button>
 						<button
 							mat-raised-button
 							type="button"
@@ -148,11 +155,26 @@
 						<button mat-raised-button type="button" color="accent" (click)="toggleWeighted(category.id, category.weighted)">
 							Toggle weighted
 						</button>
-						<button mat-raised-button type="button" color="warn" (click)="deleteCategoryDialog(category.id)">
-							Delete category
-							<mat-icon>delete</mat-icon>
-						</button>
+						@if (category.numberOfExpenses === 0) {
+							<button mat-raised-button type="button" color="warn" (click)="deleteCategoryDialog(category.id)">
+								Delete category
+								<mat-icon>delete</mat-icon>
+							</button>
+						}
+						@else {
+							<span matTooltip="Cannot delete a category with expenses" style="padding: 8px 0">
+								<button mat-raised-button disabled>
+									Delete category
+									<mat-icon>delete</mat-icon>
+								</button>
+							</span>
+						}
 					</div>
+					@if (event?.status.id !== EventStatusType.ACTIVE && category.numberOfExpenses > 0) {
+						<button mat-stroked-button type="button" color="accent" class="goto-expenses-button" [disabled]="category.numberOfExpenses === 0" (click)="gotoCategoryExpenses(category)">
+							See expenses
+						</button>
+					}
 				</ng-template>
 			</mat-expansion-panel>
 		</mat-accordion>
@@ -173,6 +195,7 @@
 			(openEditCategoryDialog)="openEditCategoryDialog(category.id, category.name, category.icon)"
 			(toggleWeighted)="toggleWeighted($event.categoryId, $event.weighted)"
 			(deleteCategoryDialog)="deleteCategoryDialog($event.categoryId)"
+			(gotoCategoryExpenses)="gotoCategoryExpenses($event.category)"
 		>
 		</app-category-item>
 	</mat-nav-list>

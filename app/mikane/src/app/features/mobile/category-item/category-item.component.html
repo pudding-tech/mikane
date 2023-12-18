@@ -1,16 +1,22 @@
 <div class="wrapper">
 	<mat-list-item (click)="toggleDropdown()">
 		<div class="upper">
-			<mat-icon matListItemIcon class="category-icon">{{ category.icon ?? "shopping_cart" }}</mat-icon>
-			<mat-icon matListItemIcon class="dropdown-arrow">
-				{{ dropdownOpen ? "arrow_drop_up" : "arrow_drop_down" }}
-			</mat-icon>
-			<div>
-				<div class="number-of-participants">Number of participants: {{ category.users.length }}</div>
-				<div class="name">
-					{{ category.name }}
+			<div class="leftside">
+				<mat-icon matListItemIcon class="category-icon">{{ category.icon ?? "shopping_cart" }}</mat-icon>
+				<mat-icon matListItemIcon class="dropdown-arrow">
+					{{ dropdownOpen ? "arrow_drop_up" : "arrow_drop_down" }}
+				</mat-icon>
+				<div>
+					<div class="number-of-participants">Number of participants: {{ category.users.length }}</div>
+					<div class="name">
+						{{ category.name }}
+					</div>
 				</div>
 			</div>
+			<button	mat-icon-button class="expenses-button" [disabled]="category.numberOfExpenses === 0" (click)="gotoExpenses(); $event.stopPropagation()">
+				<div class="count">{{ category.numberOfExpenses }}</div>
+				<mat-icon class="icon">payment</mat-icon>
+			</button>
 		</div>
 	</mat-list-item>
 	<div #lower class="lower" [style.height.px]="lowerHeight">
@@ -102,7 +108,7 @@
 				<button mat-icon-button (click)="openEdit(category.id, category.name, category.icon)">
 					<mat-icon>edit</mat-icon>
 				</button>
-				<button mat-icon-button color="warn" (click)="deleteCategory(category.id)">
+				<button mat-icon-button [disabled]="category.numberOfExpenses !== 0" color="warn" (click)="deleteCategory(category.id)">
 					<mat-icon>delete</mat-icon>
 				</button>
 			</div>

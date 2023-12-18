@@ -10,22 +10,52 @@
 .upper {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	padding-top: 12px;
 	padding-bottom: 12px;
 	padding-left: 16px;
-	padding-right: 16px;
+	padding-right: 12px;
 
-	.category-icon {
-		margin-right: 2px !important;
+	.leftside {
+		display: flex;
+		align-items: center;
+
+		.category-icon {
+			margin-right: 2px !important;
+		}
+
+		.dropdown-arrow {
+			margin-right: 14px;
+		}
+
+		.number-of-participants {
+			font-size: 0.8em;
+			color: rgba(255, 255, 255, 0.7);
+		}
+
+		.name {
+			white-space: normal;
+			overflow: hidden;
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			-webkit-box-orient: vertical;
+		}
 	}
 
-	.dropdown-arrow {
-		margin-right: 14px;
-	}
+	.expenses-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
 
-	.number-of-participants {
-		font-size: 0.8em;
-		color: rgba(255, 255, 255, 0.7);
+		.count {
+			font-size: small;
+			color: rgba(255, 255, 255, 0.7);
+		}
+
+		.icon {
+			overflow: visible;
+		}
 	}
 }
 

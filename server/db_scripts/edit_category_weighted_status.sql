@@ -10,6 +10,7 @@ returns table (
   weighted boolean,
   event_id uuid,
   created timestamp,
+  number_of_expenses int,
   user_weights jsonb
 ) as
 $$

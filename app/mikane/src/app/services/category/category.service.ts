@@ -11,6 +11,7 @@ export interface Category {
 	icon: CategoryIcon;
 	weighted: boolean;
 	created: Date;
+	numberOfExpenses: number;
 	users: Array<{
 		id: string;
 		name: string;

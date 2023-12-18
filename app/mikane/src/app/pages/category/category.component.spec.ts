@@ -908,7 +908,7 @@ describe('CategoryComponent', () => {
 				width: '350px',
 				data: {
 					title: 'Delete Category',
-					content: 'Are you sure you want to delete this category? All of its expenses will be permanently deleted!',
+					content: 'Are you sure you want to delete this category?',
 					confirm: 'I am sure',
 				},
 			});
