@@ -14,6 +14,10 @@ begin
     raise exception 'Only active events can be edited' using errcode = 'P0118';
   end if;
 
+  if exists (select 1 from expense ex inner join category c on ex.category_id = c.id where c.id = ip_category_id) then
+    raise exception 'Cannot delete category, as it has at least one expense associated with it' using errcode = 'P0131';
+  end if;
+
   delete from category c where c.id = ip_category_id;
 
 end;

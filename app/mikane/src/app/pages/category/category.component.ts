@@ -11,6 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 import { map } from 'lodash-es';
 import { BehaviorSubject, Subject, filter, of, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
@@ -48,6 +50,7 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 		MatInputModule,
 		ProgressSpinnerComponent,
 		MatCardModule,
+		MatTooltipModule,
 		AsyncPipe,
 		MatDialogModule,
 		FormControlPipe,
@@ -81,6 +84,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 		private messageService: MessageService,
 		public breakpointService: BreakpointService,
 		public contextService: ContextService,
+		private router: Router
 	) {}
 
 	ngOnInit(): void {
@@ -364,7 +368,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			width: '350px',
 			data: {
 				title: 'Delete Category',
-				content: 'Are you sure you want to delete this category? All of its expenses will be permanently deleted!',
+				content: 'Are you sure you want to delete this category?',
 				confirm: 'I am sure',
 			},
 		});
@@ -391,6 +395,15 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 					console.error('something went wrong while deleting category', err?.error?.message);
 				},
 			});
+	}
+
+	gotoCategoryExpenses(category: Category) {
+		if (category.numberOfExpenses < 1) {
+			return;
+		}
+		this.router.navigate(['events', this.event.id, 'expenses'], {
+			queryParams: { categories: category.id }
+		});
 	}
 
 	ngOnDestroy(): void {

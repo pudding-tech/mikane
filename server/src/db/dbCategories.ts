@@ -241,6 +241,8 @@ export const deleteCategory = async (categoryId: string) => {
         throw new ErrorExt(ec.PUD007, err);
       else if (err.code === "P0118")
         throw new ErrorExt(ec.PUD118, err);
+      else if (err.code === "P0131")
+        throw new ErrorExt(ec.PUD131, err);
       else
         throw new ErrorExt(ec.PUD022, err);
     });

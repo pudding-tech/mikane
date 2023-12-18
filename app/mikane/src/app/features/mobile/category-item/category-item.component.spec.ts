@@ -28,6 +28,7 @@ describe('CategoryItemComponent', () => {
 			icon: CategoryIcon.SHOPPING,
 			users: [user],
 			weighted: false,
+			numberOfExpenses: 0,
 			created: new Date(),
 		} as Category;
 		component.category = category;

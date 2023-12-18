@@ -5,11 +5,18 @@
 		width: 20%;
 	}
 
-	.number-of-participants {
+	.number-of {
 		color: rgba(255, 255, 255, 0.45);
+		width: 15%;
+		min-width: 120px;
+
 		.number {
 			color: rgba(255, 255, 255, 0.8);
 			margin-right: 4px;
+
+			&.zero {
+				color: rgba(255, 255, 255, 0.3);
+			}
 		}
 	}
 }
@@ -86,6 +93,10 @@
 
 .extra-margin {
 	margin-top: 2em;
+}
+
+.goto-expenses-button {
+	margin: 1em;
 }
 
 .no-categories {

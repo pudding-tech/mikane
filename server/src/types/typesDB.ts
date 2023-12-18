@@ -37,6 +37,7 @@ export type CategoryDB = {
   icon: string,
   weighted: boolean,
   created: Date,
+  number_of_expenses: number,
   user_weights: {
     user_id: string,
     guest: boolean,

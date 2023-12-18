@@ -26,7 +26,8 @@ export const parseCategories = (catInput: CategoryDB[], target: Target, usersInE
       name: catObj.name,
       icon: icon,
       weighted: catObj.weighted,
-      created: catObj.created
+      created: catObj.created,
+      numberOfExpenses: catObj.number_of_expenses
     };
 
     if (target === Target.CLIENT) {

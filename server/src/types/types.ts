@@ -53,6 +53,7 @@ export type Category = {
   icon: CategoryIcon;
   weighted: boolean;
   created: Date;
+  numberOfExpenses: number;
   userWeights?: Map<string, number>;
   users?: {
     id: string;
