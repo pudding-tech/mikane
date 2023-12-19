@@ -132,7 +132,7 @@
 	<ng-template #noArchivedEvents>
 		<div class="no-events-mobile">There are currently no archived events</div>
 	</ng-template>
-	<button mat-fab color="primary" class="add-event-button-mobile" (click)="openDialog()">
+	<button mat-fab color="primary" class="add-event-button-mobile" (click)="openDialog()" [ngClass]="{ hidden: scrollService.isScrolledToBottom() | async }">
 		<mat-icon>edit_calendar</mat-icon>
 	</button>
 </ng-template>

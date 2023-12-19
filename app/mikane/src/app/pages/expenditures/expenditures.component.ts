@@ -30,6 +30,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
+import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -120,6 +121,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		private messageService: MessageService,
 		public breakpointService: BreakpointService,
 		public contextService: ContextService,
+		public scrollService: ScrollService,
 		private route: ActivatedRoute,
 		private router: Router,
 		private changeDetector: ChangeDetectorRef,

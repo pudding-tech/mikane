@@ -35,6 +35,7 @@ import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/ev
 import { ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
+import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { ExpenditureDialogComponent } from '../expenditures/expenditure-dialog/expenditure-dialog.component';
@@ -97,6 +98,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		protected authService: AuthService,
 		public breakpointService: BreakpointService,
 		public contextService: ContextService,
+		public scrollService: ScrollService,
 	) {}
 
 	ngOnInit() {
@@ -195,7 +197,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 					}),
 				),
 			},
-			autoFocus: false,
 		});
 
 		dialogRef

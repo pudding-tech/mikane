@@ -15,6 +15,7 @@ import { EventItemComponent } from 'src/app/features/mobile/event-item/event-ite
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { EventDialogComponent } from './event-dialog/event-dialog.component';
@@ -80,11 +81,12 @@ export class EventsComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private eventService: EventService,
+		private messageService: MessageService,
 		private router: Router,
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
-		private messageService: MessageService,
 		public breakpointService: BreakpointService,
+		public scrollService: ScrollService,
 	) {}
 
 	ngOnInit() {

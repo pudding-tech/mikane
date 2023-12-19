@@ -20,6 +20,7 @@ import { CategoryItemComponent } from 'src/app/features/mobile/category-item/cat
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
+import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
@@ -84,6 +85,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 		private messageService: MessageService,
 		public breakpointService: BreakpointService,
 		public contextService: ContextService,
+		public scrollService: ScrollService,
 		private router: Router
 	) {}
 
