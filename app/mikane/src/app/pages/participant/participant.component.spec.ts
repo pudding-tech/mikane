@@ -244,7 +244,6 @@ describe('ParticipantComponent', () => {
 					data: {
 						users: jasmine.any(Observable),
 					},
-					autoFocus: false,
 				});
 			});
 

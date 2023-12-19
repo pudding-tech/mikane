@@ -195,7 +195,7 @@
 		color="primary"
 		class="add-users-button-mobile"
 		(click)="openDialog()"
-		[ngClass]="{ iOS: contextService.isIos }"
+		[ngClass]="{ iOS: contextService.isIos, hidden: scrollService.isScrolledToBottom() | async }"
 	>
 		<mat-icon>person_add</mat-icon>
 	</button>

@@ -133,4 +133,12 @@ mat-card-content {
 	bottom: 50px;
 	right: 20px;
 	z-index: 9999;
+	opacity: 1;
+	transition: opacity 0.2s ease;
+
+	&.hidden {
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.2s ease;
+	}
 }
