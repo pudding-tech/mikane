@@ -17,36 +17,43 @@ const routes: Routes = [
 	},
 	{
 		path: 'login',
+		title: 'Login | Mikane',
 		canActivate: [loggedInGuard],
 		loadChildren: () => import('./pages/login/login.routes'),
 	},
 	{
 		path: 'register',
+		title: 'Register | Mikane',
 		canActivate: [loggedInGuard],
 		loadChildren: () => import('./pages/register/register-user.routes'),
 	},
 	{
 		path: 'account',
+		title: 'Account | Mikane',
 		canActivate: [authGuard],
 		loadChildren: () => import('./pages/account/account.routes'),
 	},
 	{
 		path: 'reset-password',
+		title: 'Reset password | Mikane',
 		canActivate: [loggedInGuard],
 		loadChildren: () => import('./pages/reset-password/reset-password.routes'),
 	},
 	{
 		path: 'guests',
+		title: 'Guests | Mikane',
 		canActivate: [authGuard],
 		loadChildren: () => import('./pages/guests/guests.routes'),
 	},
 	{
 		path: 'invite',
+		title: 'Invite User | Mikane',
 		canActivate: [authGuard],
 		loadChildren: () => import('./pages/invite/invite.routes'),
 	},
 	{
 		path: 'delete-account',
+		title: 'Delete Account | Mikane',
 		canActivate: [authGuard],
 		loadChildren: () => import('./pages/delete-account/delete-account.routes'),
 	},
