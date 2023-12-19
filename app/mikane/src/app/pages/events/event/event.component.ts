@@ -5,14 +5,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { MobileEventNavbarComponent } from 'src/app/features/mobile/mobile-event-navbar/mobile-event-navbar.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
+import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { CategoryComponent } from '../../category/category.component';
 import { EventInfoComponent } from '../../event-info/event-info.component';
@@ -77,8 +76,7 @@ export class EventComponent implements OnInit {
 				icon: 'settings',
 				location: './settings',
 			});
-		}
-		else if (!this.isEventAdmin() && !this.isMobile()) {
+		} else if (!this.isEventAdmin() && !this.isMobile()) {
 			eventLinks.push({
 				name: 'Info',
 				icon: 'info',
@@ -93,19 +91,19 @@ export class EventComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		private messageService: MessageService,
-		private titleService: Title,
 		public breakpointService: BreakpointService,
-		public contextService: ContextService
+		public contextService: ContextService,
 	) {
 		const event = this.router.getCurrentNavigation()?.extras.state?.['event'];
 		if (event) {
 			this.event = event;
 			this.isEventAdmin.set(event.userInfo.isAdmin);
-			this.titleService.setTitle(event.name);
 		}
 	}
 
-	onOutletLoaded(component: ExpendituresComponent | EventInfoComponent | EventSettingsComponent | ParticipantComponent | CategoryComponent) {
+	onOutletLoaded(
+		component: ExpendituresComponent | EventInfoComponent | EventSettingsComponent | ParticipantComponent | CategoryComponent,
+	) {
 		if (
 			component instanceof ExpendituresComponent ||
 			component instanceof EventInfoComponent ||
@@ -134,14 +132,13 @@ export class EventComponent implements OnInit {
 					return events.find((event) => {
 						return event.id === params['eventId'];
 					});
-				})
+				}),
 			)
 			.subscribe({
 				next: (event) => {
 					if (event) {
 						this.event = event;
 						this.isEventAdmin.set(event.userInfo.isAdmin);
-						this.titleService.setTitle(event.name);
 						this.$event.next(event);
 					} else {
 						// Event not found, redirect to event list

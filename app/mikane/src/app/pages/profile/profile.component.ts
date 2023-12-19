@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription, catchError, map, of, switchMap } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
@@ -40,8 +41,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		private authService: AuthService,
 		private userService: UserService,
 		private messageService: MessageService,
+		private titleService: Title,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
 	) {}
 
 	ngOnInit() {
@@ -62,12 +64,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 					this.messageService.showError('Something went wrong');
 					console.error('something went wrong while getting user on profile page', err);
 					return of(undefined);
-				})
+				}),
 			)
 			.subscribe({
 				next: (user) => {
 					if (user) {
 						this.user = user;
+						this.titleService.setTitle(`${user.name} | Mikane`);
 						this.loading = false;
 					} else {
 						this.messageService.showError('User not found');
