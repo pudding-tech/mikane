@@ -1,4 +1,4 @@
-name: "* Deploy frontend"
+name: "~ Deploy frontend"
 
 on:
   workflow_call:

@@ -1,4 +1,4 @@
-name: "* Build frontend"
+name: "~ Build frontend"
 on:
   workflow_call:
     inputs:

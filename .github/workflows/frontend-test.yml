@@ -1,4 +1,4 @@
-name: "* Run frontend tests"
+name: "~ Run frontend tests"
 on:
   workflow_call:
     inputs:
