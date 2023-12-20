@@ -1,66 +1,66 @@
 name: "* Bump version"
 on:
-    workflow_call:
-        inputs:
-            version:
-                required: true
-                description: Full version number to build and deploy
-                type: string
-            node-version:
-                required: true
-                default: 16.x
-                description: Node version to use
-                type: string
-            dry-run:
-                required: false
-                default: false
-                description: Whether to run the build in dry-run mode
-                type: boolean
-        secrets:
-            github-token:
-                required: true
-        outputs:
-            tag:
-                description: "The git tag"
-                value: ${{ jobs.bump.outputs.tag }}
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        description: Full version number to build and deploy
+        type: string
+      node-version:
+        required: true
+        default: 18.x
+        description: Node version to use
+        type: string
+      dry-run:
+        required: false
+        default: false
+        description: Whether to run the build in dry-run mode
+        type: boolean
+    secrets:
+      github-token:
+        required: true
+    outputs:
+      tag:
+        description: "The git tag"
+        value: ${{ jobs.bump.outputs.tag }}
 
 jobs:
-    bump:
-        runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: ./app/mikane/
-        outputs:
-            tag: ${{ steps.summary.version_tag }}
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-            - name: Setup Node.js ${{ inputs.node-version }}
-              uses: actions/setup-node@v3
-              with:
-                  node-version: ${{ inputs.node-version }}
-            - uses: fregante/setup-git-user@v2
-            - name: Bump release version
-              id: bump
-              run: |
-                  echo "NEW_VERSION=$(npm --no-git-tag-version version $VERSION)" >> $GITHUB_ENV
-              env:
-                  VERSION: ${{ inputs.version }}
-            - name: Commit package.json changes and create tag
-              if: ${{ !inputs.dry-run }}
-              run: |
-                  git add "package.json"
-                  git commit -m "chore: release ${{ env.NEW_VERSION }}"
-                  git tag ${{ env.NEW_VERSION }}
-            - name: Push changes to repository
-              if: ${{ !inputs.dry-run }}
-              env:
-                  GITHUB_TOKEN: ${{ secrets.github-token }}
-              run: |
-                  git push --force origin
-                  git push --force --tags
-            - name: Summary
-              id: summary
-              run: |
-                  echo "version_tag=${{ env.NEW_VERSION }}" >> $GITHUB_OUTPUT
-                  echo Bumped and tagged version ${{ env.NEW_VERSION }} >> $GITHUB_STEP_SUMMARY
+  bump:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app/mikane/
+    outputs:
+      tag: ${{ steps.summary.version_tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node.js ${{ inputs.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node-version }}
+      - uses: fregante/setup-git-user@v2
+      - name: Bump release version
+        id: bump
+        run: |
+          echo "NEW_VERSION=$(npm --no-git-tag-version version $VERSION)" >> $GITHUB_ENV
+        env:
+          VERSION: ${{ inputs.version }}
+      - name: Commit package.json changes and create tag
+        if: ${{ !inputs.dry-run }}
+        run: |
+          git add "package.json"
+          git commit -m "chore: release ${{ env.NEW_VERSION }}"
+          git tag ${{ env.NEW_VERSION }}
+      - name: Push changes to repository
+        if: ${{ !inputs.dry-run }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.github-token }}
+        run: |
+          git push --force origin
+          git push --force --tags
+      - name: Summary
+        id: summary
+        run: |
+          echo "version_tag=${{ env.NEW_VERSION }}" >> $GITHUB_OUTPUT
+          echo Bumped and tagged version ${{ env.NEW_VERSION }} >> $GITHUB_STEP_SUMMARY

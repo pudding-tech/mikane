@@ -4,6 +4,7 @@
   "description": "API server for Mikane",
   "scripts": {
     "build": "rimraf ./build && tsc && npm run copy && cd build && npm ci --omit=dev",
+    "esbuild": "esbuild src/index.ts --bundle --platform=node --outfile=build/index.js --minify --external:*.env",
     "copy": "copyfiles package.json package-lock.json \"./public/**/*\" ./build",
     "start": "node build/index.js",
     "startts": "npx ts-node src/index.ts",
@@ -34,6 +35,7 @@
     "@typescript-eslint/parser": "^6.14.0",
     "@vitest/coverage-v8": "^1.0.4",
     "copyfiles": "^2.4.1",
+    "esbuild": "^0.19.10",
     "eslint": "^8.55.0",
     "nodemailer-mock": "^2.0.2",
     "nodemon": "^3.0.2",
