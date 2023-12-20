@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "2.0.0",
+    "version": "2.2.0",
     "title": "Mikane API",
     "description": "Documentation for all endpoints in the Mikane API"
   },

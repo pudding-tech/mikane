@@ -9,7 +9,7 @@ on:
         type: boolean
       node-version:
         required: true
-        default: 16.x
+        default: 18.x
         type: string
 
 jobs:
