@@ -11,6 +11,7 @@ jobs:
     uses: ./.github/workflows/frontend-build.yml
     with:
       node-version: 18.x
+      upload-artifact: true
   test-frontend:
     uses: ./.github/workflows/frontend-test.yml
     with:
