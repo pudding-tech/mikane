@@ -4,7 +4,8 @@
   "description": "API server for Mikane",
   "scripts": {
     "build": "rimraf ./build && tsc && npm run copy && cd build && npm ci --omit=dev",
-    "esbuild": "esbuild src/index.ts --bundle --platform=node --outfile=build/index.js --minify --external:*.env",
+    "esbuild": "rimraf ./build && node ./esbuild.config.mjs && npm run copyesbuild",
+    "copyesbuild": "copyfiles \"./public/**/*\" ./build && copyfiles -u 1 src/api.json ./build",
     "copy": "copyfiles package.json package-lock.json \"./public/**/*\" ./build",
     "start": "node build/index.js",
     "startts": "npx ts-node src/index.ts",

@@ -59,6 +59,7 @@ jobs:
           script: |
             export PATH="$PATH:/home/${{ secrets.SSH_USER }}/.nvm/versions/node/v18.19.0/bin/"
             cd /opt/mikane/server/
+            npm install swagger-ui-express
             cp .env ./mikane/.env
             pm2 reload ecosystem.config.js
 
@@ -90,5 +91,6 @@ jobs:
           script: |
             export PATH="$PATH:/home/${{ secrets.SSH_USER }}/.nvm/versions/node/v18.19.0/bin/"
             cd /opt/mikane-test/
+            npm install swagger-ui-express
             cp .env ./mikane/.env
             pm2 reload ecosystem.config.js
