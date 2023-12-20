@@ -39,24 +39,24 @@ jobs:
           name: ${{ inputs.artifact }}
       - name: Deploy to production with rsync (dry-run)
         if: inputs.dry-run && inputs.environment == 'production'
-        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane/ --delete
+        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane --delete
 
       - name: Deploy to production with rsync
         if: ${{!inputs.dry-run && inputs.environment == 'production'}}
-        run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane/ --delete
+        run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane --delete
 
       - name: Deploy to staging with rsync (dry-run)
         if: inputs.dry-run && inputs.environment == 'staging'
-        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane-staging/ --delete
+        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane-staging --delete
 
       - name: Deploy to staging with rsync
         if: ${{!inputs.dry-run && inputs.environment == 'staging'}}
-        run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane-staging/ --delete
+        run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane-staging --delete
 
       - name: Deploy to test with rsync (dry-run)
         if: inputs.dry-run && inputs.environment == 'test'
-        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane-test/ --delete
+        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane-test --delete
 
       - name: Deploy to test with rsync
         if: ${{!inputs.dry-run && inputs.environment == 'test'}}
-        run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane-test/ --delete
+        run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/mikane-test --delete

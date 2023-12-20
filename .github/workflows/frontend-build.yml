@@ -85,4 +85,4 @@ jobs:
         with:
           if-no-files-found: error
           name: ${{ needs.configure.outputs.artifact }}
-          path: ./app/mikane/dist/mikane/
+          path: ./app/mikane/dist/mikane/browser/
