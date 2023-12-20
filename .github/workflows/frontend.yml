@@ -19,7 +19,7 @@ jobs:
   deploy-frontend:
     if: github.event_name == 'push'
     needs: [build-frontend, test-frontend]
-    uses: ./.github/workflows/backend-deploy.yml
+    uses: ./.github/workflows/frontend-deploy.yml
     with:
       dry-run: false
       environment: test
