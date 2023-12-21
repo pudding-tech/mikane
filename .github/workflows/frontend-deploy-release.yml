@@ -57,6 +57,7 @@ jobs:
       node-version: ${{ inputs.node-version }}
       upload-artifact: true
       environment: ${{ inputs.environment }}
+      dry-run: ${{ inputs.dry-run }}
   deploy:
     needs: [build, test]
     uses: ./.github/workflows/frontend-deploy.yml
