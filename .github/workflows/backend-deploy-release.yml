@@ -1,55 +1,59 @@
 name: Build and deploy backend release
 on:
-    workflow_dispatch:
-        inputs:
-            node-version:
-                required: true
-                default: 20.x
-                description: Node version to use
-                type: choice
-                options:
-                    - 20.x
-                    - 21.x
-            upload-coverage:
-                required: false
-                default: true
-                description: Upload code coverage
-                type: boolean
-            environment:
-                required: true
-                default: test
-                description: Environment to deploy to
-                type: choice
-                options:
-                    - staging
-                    - production
-                    - test
-            dry-run:
-                required: false
-                default: false
-                description: Dry run for testing
-                type: boolean
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        description: Version to deploy
+        type: string
+      node-version:
+        required: true
+        default: 20.x
+        description: Node version to use
+        type: choice
+        options:
+          - 20.x
+          - 21.x
+      upload-coverage:
+        required: false
+        default: true
+        description: Upload code coverage
+        type: boolean
+      environment:
+        required: true
+        default: test
+        description: Environment to deploy to
+        type: choice
+        options:
+          - staging
+          - production
+          - test
+      dry-run:
+        required: false
+        default: false
+        description: Dry run for testing
+        type: boolean
 
 jobs:
-    test:
-        uses: ./.github/workflows/backend-test.yml
-        with:
-            node-version: ${{ inputs.node-version }}
-            upload-coverage: ${{ inputs.upload-coverage }}
-    build:
-        uses: ./.github/workflows/backend-build.yml
-        with:
-            tag: v${{ inputs.version }}
-            node-version: ${{ inputs.node-version }}
-            upload-artifact: true
-    deploy:
-        needs: [build, test]
-        uses: ./.github/workflows/backend-deploy.yml
-        with:
-            dry-run: ${{ inputs.dry-run }}
-            artifact: ${{ needs.build.outputs.artifact }}
-            environment: ${{ inputs.environment }}
-        secrets:
-            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            SSH_HOST: ${{ secrets.SSH_HOST }}
-            SSH_USER: ${{ secrets.SSH_USER }}
+  test:
+    uses: ./.github/workflows/backend-test.yml
+    with:
+      node-version: ${{ inputs.node-version }}
+      upload-coverage: ${{ inputs.upload-coverage }}
+  build:
+    uses: ./.github/workflows/backend-build.yml
+    with:
+      tag: v${{ inputs.version }}
+      node-version: ${{ inputs.node-version }}
+      upload-artifact: true
+  deploy:
+    needs: [build, test]
+    uses: ./.github/workflows/backend-deploy.yml
+    with:
+      dry-run: ${{ inputs.dry-run }}
+      artifact: ${{ needs.build.outputs.artifact }}
+      environment: ${{ inputs.environment }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
