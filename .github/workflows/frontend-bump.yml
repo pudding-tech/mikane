@@ -39,10 +39,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ inputs.node-version }}
-      - uses: fregante/setup-git-user@v2
       - name: Bump release version
         id: bump
         run: |
+          git config user.name "aydex"
+          git config user.email "41898282+mikane-actions[bot]@users.noreply.github.com"
           echo "NEW_VERSION=$(npm --no-git-tag-version version $VERSION)" >> $GITHUB_ENV
         env:
           VERSION: ${{ inputs.version }}
