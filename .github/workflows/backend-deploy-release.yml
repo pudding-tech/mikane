@@ -2,10 +2,6 @@ name: Build and deploy backend release
 on:
     workflow_dispatch:
         inputs:
-            version:
-                required: true
-                description: Full version number to build and deploy
-                type: string
             node-version:
                 required: true
                 default: 20.x
@@ -21,12 +17,13 @@ on:
                 type: boolean
             environment:
                 required: true
-                default: staging
+                default: test
                 description: Environment to deploy to
                 type: choice
                 options:
                     - staging
                     - production
+                    - test
             dry-run:
                 required: false
                 default: false
@@ -40,7 +37,6 @@ jobs:
             node-version: ${{ inputs.node-version }}
             upload-coverage: ${{ inputs.upload-coverage }}
     build:
-        needs: bump
         uses: ./.github/workflows/backend-build.yml
         with:
             tag: v${{ inputs.version }}
