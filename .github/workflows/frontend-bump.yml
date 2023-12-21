@@ -35,6 +35,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - uses: mukunku/tag-exists-action@v1.5.0
+        id: check-tag
+        with:
+          tag: v${{ inputs.version }}
       - name: Setup Node.js ${{ inputs.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -46,7 +50,7 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
       - name: Commit package.json changes and create tag
-        if: ${{ !inputs.dry-run }}
+        if: ${{ !inputs.dry-run || steps.check-tag.outputs.exists == 'false' }}
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
@@ -54,7 +58,7 @@ jobs:
           git commit -m "chore: release ${{ env.NEW_VERSION }}"
           git tag ${{ env.NEW_VERSION }}
       - name: Push changes to repository
-        if: ${{ !inputs.dry-run }}
+        if: ${{ !inputs.dry-run || steps.check-tag.outputs.exists == 'false' }}
         uses: CasperWA/push-protected@v2
         with:
           token: ${{ secrets.github-token }}
