@@ -57,7 +57,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            export PATH="$PATH:/home/${{ secrets.SSH_USER }}/.nvm/versions/node/v18.19.0/bin/"
+            export PATH="$PATH:/home/${{ secrets.SSH_USER }}/.nvm/versions/node/v20.10.0/bin/"
             cd /opt/mikane/server/
             npm install swagger-ui-express --prefix mikane
             cp .env ./mikane/.env
@@ -89,7 +89,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            export PATH="$PATH:/home/${{ secrets.SSH_USER }}/.nvm/versions/node/v18.19.0/bin/"
+            export PATH="$PATH:/home/${{ secrets.SSH_USER }}/.nvm/versions/node/v20.10.0/bin/"
             cd /opt/mikane-test/
             npm install swagger-ui-express --prefix mikane
             cp .env ./mikane/.env
