@@ -42,7 +42,7 @@ jobs:
       node-version: ${{ inputs.node-version }}
       dry-run: ${{ inputs.dry-run }}
     secrets:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
+      github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
   test:
     needs: bump
     uses: ./.github/workflows/frontend-test.yml
