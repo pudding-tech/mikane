@@ -8,7 +8,7 @@ on:
         type: string
       node-version:
         required: true
-        default: 18.x
+        default: 20.x
         description: Node version to use
         type: choice
         options:
