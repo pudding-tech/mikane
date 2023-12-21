@@ -68,6 +68,13 @@ jobs:
     outputs:
       outcome: ${{ steps.upload.outcome }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Fetch tag ${{ inputs.tag }}
+        if: ${{inputs.tag != '' && !inputs.dry-run}}
+        run: |
+          git fetch --tags
+          git checkout ${{ inputs.tag }}
       - name: Use Node.js ${{ inputs.node-version }}
         uses: actions/setup-node@v3
         with:
