@@ -42,14 +42,14 @@ jobs:
       - name: Bump release version
         id: bump
         run: |
-          git config user.name "aydex"
-          git config user.email "41898282+mikane-actions[bot]@users.noreply.github.com"
           echo "NEW_VERSION=$(npm --no-git-tag-version version $VERSION)" >> $GITHUB_ENV
         env:
           VERSION: ${{ inputs.version }}
       - name: Commit package.json changes and create tag
         if: ${{ !inputs.dry-run }}
         run: |
+          git config user.name "aydex"
+          git config user.email "adrian.hundseth@gmail.com"
           git add "package.json"
           git commit -m "chore: release ${{ env.NEW_VERSION }}"
           git tag ${{ env.NEW_VERSION }}
