@@ -55,11 +55,12 @@ jobs:
           git tag ${{ env.NEW_VERSION }}
       - name: Push changes to repository
         if: ${{ !inputs.dry-run }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.github-token }}
-        run: |
-          git push --force origin
-          git push --force --tags
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.github-token }}
+          branch: develop
+          tags: true
+          force: true
       - name: Summary
         id: summary
         run: |
