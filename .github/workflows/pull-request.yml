@@ -9,12 +9,10 @@ jobs:
     uses: ./.github/workflows/frontend-build.yml
     with:
       node-version: 20.x
-      upload-artifact: true
   build-backend:
     uses: ./.github/workflows/backend-build.yml
     with:
       node-version: 20.x
-      upload-artifact: true
   test-frontend:
     uses: ./.github/workflows/frontend-test.yml
     with:
