@@ -1,0 +1,73 @@
+name: Post Merge Snapshot
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - develop
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+      - name: Bump frontend version
+        run: |
+          cd ./app/mikane/
+          npm --no-git-tag-version version prerelease --preid "SNAPSHOT"
+      - name: Bump backend version
+        run: |
+          cd ./server/
+          npm --no-git-tag-version version prerelease --preid "SNAPSHOT"
+      - name: Commit and push
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+          git add "./app/mikane/package.json"
+          git add "./server/package.json"
+          git commit -m "chore: bump ${{ env.NEW_VERSION }}"
+      - name: Push changes to repository
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          branch: develop
+          force: true
+  build-frontend:
+    needs: snapshot
+    uses: ./.github/workflows/frontend-build.yml
+    with:
+      node-version: 20.x
+      upload-artifact: true
+      environment: test
+  build-backend:
+    needs: snapshot
+    uses: ./.github/workflows/backend-build.yml
+    with:
+      node-version: 20.x
+      upload-artifact: true
+  deploy-frontend:
+    needs: build-frontend
+    uses: ./.github/workflows/frontend-deploy.yml
+    with:
+      environment: test
+      artifact: ${{ needs.build-frontend.outputs.artifact }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+  deploy-backend:
+    needs: build-backend
+    uses: ./.github/workflows/backend-deploy.yml
+    with:
+      environment: test
+      artifact: ${{ needs.build-backend.outputs.artifact }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}

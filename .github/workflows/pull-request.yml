@@ -1,0 +1,25 @@
+name: Pull Request Build & Test
+
+on:
+  pull_request:
+    branches: ["develop"]
+
+jobs:
+  build-frontend:
+    uses: ./.github/workflows/frontend-build.yml
+    with:
+      node-version: 20.x
+      upload-artifact: true
+  build-backend:
+    uses: ./.github/workflows/backend-build.yml
+    with:
+      node-version: 20.x
+      upload-artifact: true
+  test-frontend:
+    uses: ./.github/workflows/frontend-test.yml
+    with:
+      node-version: 20.x
+  test-backend:
+    uses: ./.github/workflows/backend-test.yml
+    with:
+      node-version: 20.x

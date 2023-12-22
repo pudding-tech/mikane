@@ -2,19 +2,15 @@ name: "~ Bump version"
 on:
   workflow_call:
     inputs:
-      version:
+      bump:
         required: true
-        description: Full version number to build and deploy
         type: string
       node-version:
         required: true
-        default: 20.x
-        description: Node version to use
         type: string
       dry-run:
-        required: false
+        required: true
         default: false
-        description: Whether to run the build in dry-run mode
         type: boolean
     secrets:
       github-token:
@@ -22,51 +18,58 @@ on:
     outputs:
       tag:
         description: "The git tag"
-        value: ${{ jobs.bump.outputs.tag }}
-
+        value: ${{ jobs.bump.outputs.tag}}
 jobs:
   bump:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./app/mikane/
     outputs:
       tag: ${{ steps.summary.version_tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - uses: mukunku/tag-exists-action@v1.5.0
-        id: check-tag
-        with:
-          tag: v${{ inputs.version }}
-      - name: Setup Node.js ${{ inputs.node-version }}
+
+      - name: Setup Node ${{ inputs.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ inputs.node-version }}
-      - name: Bump release version
-        id: bump
+          node-version: ${{ inputs.node-version }}@
+
+      - name: Bump frontend version
+        id: bump-frontend
         run: |
+          cd ./app/mikane/
           echo "NEW_VERSION=$(npm --no-git-tag-version version $VERSION)" >> $GITHUB_ENV
         env:
-          VERSION: ${{ inputs.version }}
+          VERSION: ${{ inputs.bump }}
+
+      - name: Bump backend version
+        id: bump-backend
+        run: |
+          cd ./server/
+          npm --no-git-tag-version version $VERSION
+        env:
+          VERSION: ${{ inputs.bump }}
+
       - name: Commit package.json changes and create tag
-        if: ${{ !inputs.dry-run && steps.check-tag.outputs.exists == 'false' }}
+        if: ${{ !inputs.dry-run }}
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
-          git add "package.json"
+          git add "./app/mikane/package.json"
+          git add "./server/package.json"
           git commit -m "chore: release ${{ env.NEW_VERSION }}"
           git tag ${{ env.NEW_VERSION }}
+
       - name: Push changes to repository
-        if: ${{ !inputs.dry-run && steps.check-tag.outputs.exists == 'false' }}
+        if: ${{ !inputs.dry-run }}
         uses: CasperWA/push-protected@v2
         with:
           token: ${{ secrets.github-token }}
-          branch: develop
+          branch: ${{ github.ref_name }}
           tags: true
           force: true
+
       - name: Summary
         id: summary
         run: |
-          echo "version_tag=${{ env.NEW_VERSION }}" >> $GITHUB_OUTPUT
+          echo "version_tag"=${{ env.NEW_VERSION }}" >> $GITHUB_OUTPUT
           echo Bumped and tagged version ${{ env.NEW_VERSION }} >> $GITHUB_STEP_SUMMARY

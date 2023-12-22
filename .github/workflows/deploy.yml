@@ -1,0 +1,90 @@
+name: Deploy specific release
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Release tag to deploy"
+        required: true
+        type: string
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        type: choice
+        default: test
+        options:
+          - test
+          - production
+      node-version:
+        description: "Node version"
+        required: true
+        type: choice
+        default: 20.x
+        options:
+          - 18.x
+          - 20.x
+      dry-run:
+        description: "Dry run for testing"
+        required: false
+        type: boolean
+        default: false
+jobs:
+  check-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: mukunku/tag-exists-action@v1.5.0
+        id: check-tag
+        with:
+          tag: v${{ inputs.release }}
+      - run: |
+          echo "Tag exists, building and deploying ${{ inputs.release }}" >> $GITHUB_STEP_SUMMARY
+        if: steps.check-tag.outputs.exists == 'true'
+      - run: |
+          echo "Tag does not exist, skipping build and deploy of ${{ inputs.release }}" >> $GITHUB_STEP_SUMMARY
+        if: steps.check-tag.outputs.exists == 'false'
+    outputs:
+      tag-exists: ${{ steps.check-tag.outputs.exists }}
+  build-frontend:
+    needs: check-tag
+    if: needs.check-tag.outputs.tag-exists == 'true'
+    uses: ./.github/workflows/frontend-build.yml
+    with:
+      tag: ${{ inputs.release }}
+      node-version: ${{ inputs.node-version }}
+      dry-run: ${{ inputs.dry-run }}
+      environment: ${{ inputs.environment }}
+      upload-artifact: true
+  build-backend:
+    needs: check-tag
+    if: needs.check-tag.outputs.tag-exists == 'true'
+    uses: ./.github/workflows/backend-build.yml
+    with:
+      tag: ${{ inputs.release }}
+      node-version: ${{ inputs.node-version }}
+      dry-run: ${{ inputs.dry-run }}
+      upload-artifact: true
+  deploy-frontend:
+    needs: [check-tag, build-frontend]
+    if: needs.check-tag.outputs.tag-exists == 'true'
+    uses: ./.github/workflows/frontend-deploy.yml
+    with:
+      dry-run: ${{ inputs.dry-run }}
+      environment: ${{ inputs.environment }}
+      artifact: ${{ needs.build-frontend.outputs.artifact }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+  deploy-backend:
+    needs: [check-tag, build-backend]
+    if: needs.check-tag.outputs.tag-exists == 'true'
+    uses: ./.github/workflows/backend-deploy.yml
+    with:
+      dry-run: ${{ inputs.dry-run }}
+      environment: ${{ inputs.environment }}
+      artifact: ${{ needs.build-backend.outputs.artifact }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
