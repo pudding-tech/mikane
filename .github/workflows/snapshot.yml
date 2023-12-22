@@ -51,22 +51,34 @@ jobs:
     with:
       node-version: 20.x
       upload-artifact: true
+  test-frontend:
+    needs: snapshot
+    uses: ./.github/workflows/frontend-test.yml
+    with:
+      node-version: 20.x
+  test-backend:
+    needs: snapshot
+    uses: ./.github/workflows/backend-test.yml
+    with:
+      node-version: 20.x
   deploy-frontend:
-    needs: build-frontend
+    needs: [build-frontend, test-frontend]
     uses: ./.github/workflows/frontend-deploy.yml
     with:
       environment: test
       artifact: ${{ needs.build-frontend.outputs.artifact }}
+      dry-run: false
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_USER: ${{ secrets.SSH_USER }}
   deploy-backend:
-    needs: build-backend
+    needs: [build-backend, test-backend]
     uses: ./.github/workflows/backend-deploy.yml
     with:
       environment: test
       artifact: ${{ needs.build-backend.outputs.artifact }}
+      dry-run: false
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
