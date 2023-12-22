@@ -1,0 +1,84 @@
+name: Bump and deploy release
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Bump version"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      node-version:
+        description: "Node version"
+        required: true
+        type: choice
+        default: 20.x
+        options:
+          - 18.x
+          - 20.x
+      dry-run:
+        description: "Dry run for testing"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  test-frontend:
+    uses: ./.github/workflows/frontend-test.yml
+    with:
+      node-version: ${{ inputs.node-version }}
+  test-backend:
+    uses: ./.github/workflows/backend-test.yml
+    with:
+      node-version: ${{ inputs.node-version }}
+  bump:
+    needs: [test-frontend, test-backend]
+    uses: ./.github/workflows/bump.yml
+    with:
+      bump: ${{ inputs.bump }}
+      node-version: ${{ inputs.node-version }}
+      dry-run: ${{ inputs.dry-run }}
+    secrets:
+      github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+  build-frontend:
+    needs: bump
+    uses: ./.github/workflows/frontend-build.yml
+    with:
+      tag: ${{ needs.bump.outputs.tag }}
+      node-version: ${{ inputs.node-version }}
+      upload-artifact: true
+      environment: production
+      dry-run: ${{ inputs.dry-run }}
+  build-backend:
+    needs: bump
+    uses: ./.github/workflows/backend-build.yml
+    with:
+      tag: ${{ needs.bump.outputs.tag }}
+      node-version: ${{ inputs.node-version }}
+      upload-artifact: true
+      dry-run: ${{ inputs.dry-run }}
+  deploy-frontend:
+    needs: build-frontend
+    uses: ./.github/workflows/frontend-deploy.yml
+    with:
+      dry-run: ${{ inputs.dry-run }}
+      artifact: ${{ needs.build-frontend.outputs.artifact }}
+      environment: production
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+  deploy-backend:
+    needs: build-backend
+    uses: ./.github/workflows/backend-deploy.yml
+    with:
+      dry-run: ${{ inputs.dry-run }}
+      artifact: ${{ needs.build-backend.outputs.artifact }}
+      environment: production
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
