@@ -31,7 +31,7 @@ jobs:
       - name: Setup Node ${{ inputs.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ inputs.node-version }}@
+          node-version: ${{ inputs.node-version }}
 
       - name: Bump frontend version
         id: bump-frontend
@@ -50,7 +50,6 @@ jobs:
           VERSION: ${{ inputs.bump }}
 
       - name: Commit package.json changes and create tag
-        if: ${{ !inputs.dry-run }}
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
@@ -71,5 +70,5 @@ jobs:
       - name: Summary
         id: summary
         run: |
-          echo "version_tag"=${{ env.NEW_VERSION }}" >> $GITHUB_OUTPUT
+          echo "version_tag=${{ env.NEW_VERSION }}" >> $GITHUB_OUTPUT
           echo Bumped and tagged version ${{ env.NEW_VERSION }} >> $GITHUB_STEP_SUMMARY
