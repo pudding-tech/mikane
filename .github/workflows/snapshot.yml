@@ -1,7 +1,9 @@
 name: Post Merge Snapshot
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - develop
 
