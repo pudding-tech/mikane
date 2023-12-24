@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
-          name: ${{ steps.bump-snapshot.outputs.artifact }}
+          name: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
           path: ./app/mikane/dist/mikane/browser/
 
       - name: Install backend dependencies
@@ -75,7 +75,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
-          name: ${{ steps.bump-snapshot.outputs.artifact }}
+          name: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
           path: ./server/build/
   test-frontend:
     needs: snapshot
