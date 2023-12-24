@@ -11,8 +11,8 @@ jobs:
   snapshot:
     runs-on: ubuntu-latest
     outputs:
-      frontend-artifact: ${{ steps.upload-artifact-frontend.outputs.artifact }}
-      backend-artifact: ${{ steps.upload-artifact-backend.outputs.artifact }}
+      frontend-artifact: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
+      backend-artifact: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
