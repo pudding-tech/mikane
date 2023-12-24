@@ -48,22 +48,27 @@
 
 <ng-template #formContent>
 	<form (ngSubmit)="editEvent()" class="event-settings-content form">
+		@if (event.status.id !== EventStatusType.ACTIVE) {
+			<div class="only-active-edit">
+				Only active events can be edited
+			</div>
+		}
 		<mat-form-field appearance="fill">
 			<mat-label>Event Name</mat-label>
-			<input matInput name="name" [(ngModel)]="eventData.name" required [appEventName]="eventData.id" #name="ngModel" />
+			<input matInput name="name" [(ngModel)]="eventData.name" required [disabled]="event.status.id !== EventStatusType.ACTIVE" [appEventName]="eventData.id" #name="ngModel" />
 			<mat-error *ngIf="name.errors?.['required']">Event name is required</mat-error>
 			<mat-error *ngIf="name.errors?.['duplicate']">Event name already exists</mat-error>
 			<mat-error *ngIf="name.errors?.['invalid']">Invalid event name</mat-error>
 		</mat-form-field>
 		<mat-form-field appearance="fill">
 			<mat-label>Event Description</mat-label>
-			<input matInput name="description" [(ngModel)]="eventData.description" />
+			<input matInput name="description" [(ngModel)]="eventData.description" [disabled]="event.status.id !== EventStatusType.ACTIVE" />
 		</mat-form-field>
 		<button
 			mat-raised-button
 			color="primary"
 			type="submit"
-			[disabled]="name.invalid || name.pending"
+			[disabled]="event.status.id !== EventStatusType.ACTIVE || name.invalid || name.pending"
 			[ngClass]="(breakpointService.isMobile() | async) ? 'save-button-mobile' : 'save-button-pc'"
 		>
 			Save

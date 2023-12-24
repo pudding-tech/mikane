@@ -18,7 +18,7 @@
 			A
 		</span>
 	</div>
-	<div *ngIf="event.description" class="description">
+	<div class="description">
 		{{ event.status.id === EventStatusType.READY_TO_SETTLE ? 'READY TO SETTLE' : event.description }}
 	</div>
 </mat-list-item>

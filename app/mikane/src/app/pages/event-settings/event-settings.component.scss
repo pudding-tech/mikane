@@ -44,6 +44,10 @@
 	flex-direction: column;
 	margin-bottom: 40px;
 
+	.only-active-edit {
+		margin-bottom: 18px;
+	}
+
 	.save-button-pc {
 		max-width: 140px;
 	}
