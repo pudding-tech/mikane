@@ -44,12 +44,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Fetch branch if branch event
-        if: ${{ github.event_name == 'push' }}
-        run: |
-          git fetch origin
-          git checkout ${{ github.ref_name }}
-          git pull
       - name: Fetch tag ${{ inputs.tag }}
         if: ${{inputs.tag != '' && !inputs.dry-run}}
         run: |
