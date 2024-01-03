@@ -24,6 +24,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     steps:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2.5.1
@@ -40,16 +41,16 @@ jobs:
         with:
           name: ${{ inputs.artifact }}
 
-      - name: Deploy to production with rsync (dry-run)
-        if: inputs.dry-run && inputs.environment == 'production'
-        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane/server/ --delete
+      - name: Deploy to ${{ inputs.environment }} with rsync (dry-run)
+        if: inputs.dry-run
+        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.BACKEND_LOCATION }} --delete
 
-      - name: Deploy to production with rsync
-        if: ${{!inputs.dry-run && inputs.environment == 'production'}}
+      - name: Deploy to ${{ inputs.environment }} with rsync
+        if: ${{!inputs.dry-run}}
         run: |
-          rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane/server/ --delete
+          rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.BACKEND_LOCATION }} --delete
 
-      - name: Reload backend production
+      - name: Reload backend ${{ inputs.environment }}
         if: ${{!inputs.dry-run && inputs.environment == 'production'}}
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -58,39 +59,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             export PATH="$PATH:/home/${{ secrets.SSH_USER }}/.nvm/versions/node/v20.10.0/bin/"
-            cd /opt/mikane/server/
-            npm install swagger-ui-express --prefix mikane
-            cp .env ./mikane/.env
-            pm2 reload ecosystem.config.js
-
-      - name: Deploy to staging with rsync (dry-run)
-        if: inputs.dry-run && inputs.environment == 'staging'
-        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-staging/ --delete
-
-      - name: Deploy to staging with rsync
-        if: ${{!inputs.dry-run && inputs.environment == 'staging'}}
-        run: |
-          rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-staging/ --delete
-
-      - name: Deploy to test with rsync (dry-run)
-        if: inputs.dry-run && inputs.environment == 'test'
-        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/ --delete
-
-      - name: Deploy to test with rsync
-        if: ${{!inputs.dry-run && inputs.environment == 'test'}}
-        run: |
-          rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/mikane-test/ --delete
-
-      - name: Reload backend test
-        if: ${{!inputs.dry-run && inputs.environment == 'test'}}
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            export PATH="$PATH:/home/${{ secrets.SSH_USER }}/.nvm/versions/node/v20.10.0/bin/"
-            cd /opt/mikane-test/
+            cd ${{ vars.BACKEND_LOCATION }}}
             npm install swagger-ui-express --prefix mikane
             cp .env ./mikane/.env
             pm2 reload ecosystem.config.js
