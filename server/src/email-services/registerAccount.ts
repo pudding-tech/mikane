@@ -1,6 +1,6 @@
 import env from "../env";
 import { User } from "../types/types";
-import { sendEmail } from "./sendEmail";
+import { sendEmail } from "../utils/sendEmail";
 
 const url = env.ALLOWED_ORIGIN + "/register/";
 

@@ -1,7 +1,7 @@
 import express from "express";
 import * as db from "../db/dbCategories";
 import { authCheck } from "../middlewares/authCheck";
-import { isUUID } from "../utils/uuidValidator";
+import { isUUID } from "../utils/validators/uuidValidator";
 import { Category } from "../types/types";
 import { CategoryIcon } from "../types/enums";
 import { ErrorExt } from "../types/errorExt";
