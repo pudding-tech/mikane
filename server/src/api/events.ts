@@ -1,7 +1,7 @@
 import express from "express";
 import * as db from "../db/dbEvents";
 import { authCheck, authKeyCheck } from "../middlewares/authCheck";
-import { isUUID } from "../utils/uuidValidator";
+import { isUUID } from "../utils/validators/uuidValidator";
 import { Event, Payment, UserBalance } from "../types/types";
 import { ErrorExt } from "../types/errorExt";
 import * as ec from "../types/errorCodes";

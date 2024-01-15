@@ -5,7 +5,7 @@ import { randomUUID } from "crypto";
 import { authCheck } from "../middlewares/authCheck";
 import { Guest } from "../types/types";
 import { ErrorExt } from "../types/errorExt";
-import { isUUID } from "../utils/uuidValidator";
+import { isUUID } from "../utils/validators/uuidValidator";
 const router = express.Router();
 
 /* --- */
