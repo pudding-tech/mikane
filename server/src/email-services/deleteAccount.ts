@@ -1,5 +1,5 @@
 import env from "../env";
-import { sendEmail } from "./sendEmail";
+import { sendEmail } from "../utils/sendEmail";
 
 const url = env.ALLOWED_ORIGIN + "/delete-account/";
 
