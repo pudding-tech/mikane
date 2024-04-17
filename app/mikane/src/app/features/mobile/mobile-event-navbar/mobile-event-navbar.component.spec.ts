@@ -28,10 +28,10 @@ describe('MobileEventNavbarComponent', () => {
 		fixture = TestBed.createComponent(MobileEventNavbarComponent);
 		component = fixture.componentInstance;
 		component.activeLink = '/events';
-		component.links = [
+		fixture.componentRef.setInput('links', [
 			{ name: 'Link 1', icon: 'icon1', location: '/link1' },
 			{ name: 'Link 2', icon: 'icon2', location: '/link2' },
-		];
+		]);
 		fixture.detectChanges();
 	});
 
@@ -48,7 +48,7 @@ describe('MobileEventNavbarComponent', () => {
 	it('should display the correct number of links', () => {
 		const linkEls = fixture.debugElement.queryAll(By.css('.nav-button'));
 		// Back arrow counts as its own link and is always present
-		expect(linkEls.length).toEqual(component.links.length + 1);
+		expect(linkEls.length).toEqual(component.links().length + 1);
 	});
 
 	it('should set the active class on the active link', () => {
