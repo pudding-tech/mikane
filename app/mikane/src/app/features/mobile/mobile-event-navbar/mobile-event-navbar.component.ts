@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, computed, Input, input } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterOutlet } from '@angular/router';
@@ -18,22 +18,20 @@ interface Route {
 	standalone: true,
 	imports: [CommonModule, RouterLink, RouterOutlet, MatIconModule, MatRippleModule],
 })
-export class MobileEventNavbarComponent implements OnInit {
+export class MobileEventNavbarComponent {
 	@Input() activeLink: string;
-	@Input() links: Route[];
+	links = input.required<Route[]>();
 
-	constructor(public contextService: ContextService) {}
-
-	mobileLinks: Route[];
-
-	ngOnInit(): void {
-		this.mobileLinks = [
+	mobileLinks = computed(() => {
+		return [
 			{
 				name: '',
 				icon: 'arrow_back_ios',
 				location: '/events',
 			},
-			...this.links,
+			...this.links(),
 		];
-	}
+	});
+
+	constructor(public contextService: ContextService) {}
 }

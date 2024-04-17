@@ -1,7 +1,7 @@
 <div class="navbar" [ngClass]="{ iOS: contextService.isIos }">
 	<a
 		class="nav-button"
-		*ngFor="let link of mobileLinks"
+		*ngFor="let link of mobileLinks()"
 		[routerLink]="link.location"
 		(click)="activeLink = link.location"
 		[ngClass]="{ active: activeLink.includes(link.location), 'nav-back-button': link.location === '/events' }"

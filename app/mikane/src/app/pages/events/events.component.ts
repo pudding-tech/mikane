@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
-import { Component, OnDestroy, OnInit, WritableSignal, computed, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -45,7 +45,7 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 	],
 })
 export class EventsComponent implements OnInit, OnDestroy {
-	events: WritableSignal<PuddingEvent[]> = signal([]);
+	events = signal<PuddingEvent[]>([]);
 	eventsActive = computed(() => {
 		return this.events().filter((event) => event.status.id !== EventStatusType.ARCHIVED);
 	});

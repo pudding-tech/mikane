@@ -7,7 +7,6 @@ import {
 	OnDestroy,
 	OnInit,
 	ViewChild,
-	WritableSignal,
 	computed,
 	signal,
 } from '@angular/core';
@@ -67,10 +66,10 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event!: PuddingEvent;
 
-	private sortValue: WritableSignal<Sort> = signal({} as Sort);
-	protected expenses: WritableSignal<Expense[]> = signal([]);
-	protected payers: WritableSignal<User[]> = signal([]);
-	protected categories: WritableSignal<Array<{ id: string; name: string; icon: string }>> = signal([]);
+	private sortValue = signal<Sort>({} as Sort);
+	protected expenses = signal<Expense[]>([]);
+	protected payers = signal<User[]>([]);
+	protected categories = signal<Array<{ id: string; name: string; icon: string }>>([]);
 
 	filteredExpenses = computed(() => {
 		return this.sortData(this.sortValue(), this.expenses()).filter((expense) => {
@@ -84,10 +83,10 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		});
 	});
 
-	protected filterValue: WritableSignal<string> = signal('');
-	protected payersFilter: WritableSignal<string[]> = signal([]);
+	protected filterValue = signal<string>('');
+	protected payersFilter = signal<string[]>([]);
 	protected payersFilterSelect: string[] = [];
-	protected categoriesFilter: WritableSignal<string[]> = signal([]);
+	protected categoriesFilter = signal<string[]>([]);
 	protected categoriesFilterSelect: string[] = [];
 	protected filteredPayer = computed(() => {
 		return this.payers().find((payer) => this.payersFilter().includes(payer.id));
