@@ -13,16 +13,18 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { map } from 'lodash-es';
-import { BehaviorSubject, Subject, filter, of, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, filter, of, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { CategoryItemComponent } from 'src/app/features/mobile/category-item/category-item.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { CategoryApiActions } from 'src/app/services/category/category.actions';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { ScrollService } from 'src/app/services/scroll/scroll.service';
-import { PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
+import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -62,6 +64,8 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 
+	categories$: Observable<Category[]> = this.store.select((state) => state.categories);
+
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 	readonly EventStatusType = EventStatusType;
 
@@ -86,7 +90,8 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 		public breakpointService: BreakpointService,
 		public contextService: ContextService,
 		public scrollService: ScrollService,
-		private router: Router
+		private router: Router,
+		private store: Store<{ categories: Category[] }>,
 	) {}
 
 	ngOnInit(): void {
@@ -119,6 +124,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 
 	loadCategories() {
 		this.loading.next(true);
+		this.store.dispatch(CategoryApiActions.retrieveCategories({ eventId: this.event.id }));
 		this.categoryService
 			.loadCategories(this.event.id)
 			.pipe(takeUntil(this.destroy$))
@@ -404,7 +410,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			return;
 		}
 		this.router.navigate(['events', this.event.id, 'expenses'], {
-			queryParams: { categories: category.id }
+			queryParams: { categories: category.id },
 		});
 	}
 

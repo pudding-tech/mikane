@@ -41,6 +41,10 @@
 		{
 			"files": [".ts", ".tsx", ".js", ".jsx"],
 			"extends": ["plugin:sonarjs/recommended"]
+		},
+		{
+			"files": ["*.ts"],
+			"extends": ["plugin:@ngrx/recommended-requiring-type-checking"]
 		}
 	],
 	"plugins": ["jasmine", "optimize-regex", "github"],
@@ -51,6 +55,11 @@
 	"rules": {
 		"optimize-regex/optimize-regex": "warn",
 		"semi": ["error", "always"],
-		"no-console": ["error", { "allow": ["warn", "error"] }]
+		"no-console": [
+			"error",
+			{
+				"allow": ["warn", "error"]
+			}
+		]
 	}
 }

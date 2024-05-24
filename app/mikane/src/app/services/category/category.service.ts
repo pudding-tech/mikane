@@ -26,7 +26,10 @@ export interface Category {
 export class CategoryService {
 	private apiUrl = this.env.apiUrl + 'categories';
 
-	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
+	constructor(
+		private httpClient: HttpClient,
+		@Inject(ENV) private env: Environment,
+	) {}
 
 	loadCategories(eventId: string): Observable<Category[]> {
 		return this.httpClient.get<Category[]>(this.apiUrl + `?eventId=${eventId}`);
@@ -64,8 +67,8 @@ export class CategoryService {
 		return this.httpClient.put<Category>(this.apiUrl + `/${categoryId}/weighted`, { weighted });
 	}
 
-	deleteCategory(categoryId: string): Observable<Category[]> {
-		return this.httpClient.delete<Category[]>(this.apiUrl + `/${categoryId}`);
+	deleteCategory(categoryId: string): Observable<{ success: boolean }> {
+		return this.httpClient.delete<{ success: boolean }>(this.apiUrl + `/${categoryId}`);
 	}
 
 	findOrCreate(eventId: string, categoryName: string): Observable<Category> {
@@ -79,7 +82,7 @@ export class CategoryService {
 				} else {
 					return this.createCategory(categoryName, eventId, false, CategoryIcon.SHOPPING);
 				}
-			})
+			}),
 		);
 	}
 }
