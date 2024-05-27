@@ -146,6 +146,10 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 								this.messageService.showError('Phonenumber already taken');
 								this.registerUserForm.get('phone').setErrors({ duplicate: true });
 								break;
+							case 'PUD-132':
+								this.messageService.showError('Can only contain letters, numbers, hyphens, and underscores. Must be between 3-40 characters. Username cannot begin or end with hyphen/underscore.');
+								this.registerUserForm.get('username').setErrors({ invalid: true });
+								break;
 							default:
 								this.messageService.showError('Failed to register');
 								break;

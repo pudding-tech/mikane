@@ -9,6 +9,7 @@ import { generateKey } from "../utils/generateKey";
 import { isUUID } from "../utils/validators/uuidValidator";
 import { isEmail } from "../utils/validators/emailValidator";
 import { isPhoneNumber } from "../utils/validators/phoneValidator";
+import { isValidUsername } from "../utils/validators/usernameValidator";
 import { sendRegisterAccountEmail } from "../email-services/registerAccount";
 import { sendDeleteAccountEmail } from "../email-services/deleteAccount";
 import { Expense, User } from "../types/types";
@@ -138,10 +139,7 @@ router.post("/users", async (req, res, next) => {
       }
     }
 
-    let guestId: string | null = null;
-    if (keyInfo.guestUser) {
-      guestId = keyInfo.guestId;
-    }
+    const guestId = keyInfo.guestUser ? keyInfo.guestId : null;
 
     const username: string = req.body.username;
     const firstName: string = req.body.firstName;
@@ -157,7 +155,10 @@ router.post("/users", async (req, res, next) => {
       throw new ErrorExt(ec.PUD059);
     }
 
-    // Validate email and phone number
+    // Validate username, email and phone number
+    if (!isValidUsername(username)) {
+      throw new ErrorExt(ec.PUD132);
+    }
     if (!isEmail(email)) {
       throw new ErrorExt(ec.PUD004);
     }
