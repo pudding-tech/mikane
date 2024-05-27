@@ -1244,3 +1244,12 @@ export const PUD131: ErrorCode = {
   message: "Cannot delete category, as it has at least one expense associated with it",
   status: 400
 };
+
+/**
+ * PUD-132: Username can only contain alphanumeric characters (letters and numbers), hyphens, and underscores. Must be between 3-40 characters. Username cannot begin or end with hyphen/underscore (400)
+ */
+export const PUD132: ErrorCode = {
+  code: "PUD-132",
+  message: "Username can only contain alphanumeric characters (letters and numbers), hyphens, and underscores. Must be between 3-40 characters. Username cannot begin or end with hyphen/underscore",
+  status: 400
+};

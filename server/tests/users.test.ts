@@ -100,6 +100,118 @@ describe("users", async () => {
       expect(res.body.code).toEqual(ec.PUD017.code);
     });
 
+    test("fail create user with invalid username (longer than 40 characters)", async () => {
+      const res = await request(app)
+        .post("/api/users")
+        .send({
+          username: "123456789-abcdefghi-123456789-abcdefghi-1",
+          firstName: "Test",
+          lastName: "User",
+          email: "anothertest@user.com",
+          phone: "55555552",
+          password: "secret"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
+    });
+
+    test("fail create user with invalid username (shorter than 3 characters)", async () => {
+      const res = await request(app)
+        .post("/api/users")
+        .send({
+          username: "ta",
+          firstName: "Test",
+          lastName: "User",
+          email: "anothertest@user.com",
+          phone: "55555552",
+          password: "secret"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
+    });
+
+    test("fail create user with invalid username (includes invalid character)", async () => {
+      const res = await request(app)
+        .post("/api/users")
+        .send({
+          username: "another.testuser",
+          firstName: "Test",
+          lastName: "User",
+          email: "anothertest@user.com",
+          phone: "55555552",
+          password: "secret"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
+    });
+
+    test("fail create user with invalid username (cannot start with hyphen)", async () => {
+      const res = await request(app)
+        .post("/api/users")
+        .send({
+          username: "-anothertestuser",
+          firstName: "Test",
+          lastName: "User",
+          email: "anothertest@user.com",
+          phone: "55555552",
+          password: "secret"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
+    });
+
+    test("fail create user with invalid username (cannot end with hyphen)", async () => {
+      const res = await request(app)
+        .post("/api/users")
+        .send({
+          username: "anothertestuser-",
+          firstName: "Test",
+          lastName: "User",
+          email: "anothertest@user.com",
+          phone: "55555552",
+          password: "secret"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
+    });
+
+    test("fail create user with invalid username (cannot start with underscore)", async () => {
+      const res = await request(app)
+        .post("/api/users")
+        .send({
+          username: "_anothertestuser",
+          firstName: "Test",
+          lastName: "User",
+          email: "anothertest@user.com",
+          phone: "55555552",
+          password: "secret"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
+    });
+
+    test("fail create user with invalid username (cannot end with underscore)", async () => {
+      const res = await request(app)
+        .post("/api/users")
+        .send({
+          username: "anothertestuser_",
+          firstName: "Test",
+          lastName: "User",
+          email: "anothertest@user.com",
+          phone: "55555552",
+          password: "secret"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
+    });
+
     test("fail create user with invalid email", async () => {
       const res = await request(app)
         .post("/api/users")
