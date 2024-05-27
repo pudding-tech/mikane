@@ -43,7 +43,7 @@
 				<mat-label>Username</mat-label>
 				<input type="text" matInput placeholder="Username" formControlName="username" />
 				<mat-error *ngIf="registerUserForm.get('username')?.errors?.['required']"> Username required </mat-error>
-				<mat-error *ngIf="registerUserForm.get('username')?.errors?.['invalid']"> Invalid username </mat-error>
+				<mat-error *ngIf="registerUserForm.get('username')?.errors?.['invalid']"> Between 3-40 characters - only letters, numbers, hyphens, underscores </mat-error>
 				<mat-error *ngIf="registerUserForm.get('username')?.errors?.['duplicate']"> Username already taken </mat-error>
 			</mat-form-field>
 		</div>
