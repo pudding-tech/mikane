@@ -32,5 +32,6 @@ jobs:
         uses: codecov/codecov-action@v4
         if: inputs.upload-coverage
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./app/mikane/coverage/mikane/cobertura-coverage.xml
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
