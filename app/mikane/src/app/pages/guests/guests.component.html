@@ -7,66 +7,68 @@
 	<app-menu></app-menu>
 </mat-toolbar>
 
-<div *ngIf="loading === false; else loadingSpinner">
-	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="guests-section">
-		<mat-card class="guests-content">
-			<mat-card-header class="card-header">
-				<div mat-card-avatar>
-					<mat-icon>supervisor_account</mat-icon>
-				</div>
-				<mat-card-title>Manage guests</mat-card-title>
-			</mat-card-header>
-			<mat-card-content class="card-content">
+@if (loading === false) {
+	<div>
+		@if ((breakpointService.isMobile() | async) === false) {
+			<div class="guests-section">
+				<mat-card class="guests-content">
+					<mat-card-header class="card-header">
+						<div mat-card-avatar>
+							<mat-icon>supervisor_account</mat-icon>
+						</div>
+						<mat-card-title>Manage guests</mat-card-title>
+					</mat-card-header>
+					<mat-card-content class="card-content">
+						<ng-container *ngTemplateOutlet="guestsContent"></ng-container>
+					</mat-card-content>
+				</mat-card>
+			</div>
+		} @else {
+			<div class="mobile-view">
+				<div class="title-mobile">Manage guest users</div>
 				<ng-container *ngTemplateOutlet="guestsContent"></ng-container>
-			</mat-card-content>
-		</mat-card>
+			</div>
+		}
 	</div>
-</div>
-
-<ng-template #mobileView>
-	<div class="mobile-view">
-		<div class="title-mobile">Manage guest users</div>
-		<ng-container *ngTemplateOutlet="guestsContent"></ng-container>
-	</div>
-</ng-template>
+} @else {
+	<app-loading-spinner></app-loading-spinner>
+}
 
 <ng-template #guestsContent>
 	<div class="guest-list">
 		<mat-nav-list>
-			<mat-list-item *ngFor="let guest of pagedGuests" class="list-item">
-				<div class="user">
-					<div class="name">
-						<img [src]="guest.avatarURL" alt="Guest user avatar" class="avatar" />
-						{{ guest.name }}
+			@for (guest of pagedGuests; track guest) {
+				<mat-list-item class="list-item">
+					<div class="user">
+						<div class="name">
+							<img [src]="guest.avatarURL" alt="Guest user avatar" class="avatar" />
+							{{ guest.name }}
+						</div>
+						@if (currentUser.superAdmin || guest.guestCreatedBy === currentUser.id) {
+							<button mat-icon-button (click)="editGuest(guest)">
+								<mat-icon>edit</mat-icon>
+							</button>
+						}
 					</div>
-					@if (currentUser.superAdmin || guest.guestCreatedBy === currentUser.id) {
-						<button mat-icon-button (click)="editGuest(guest)">
-							<mat-icon>edit</mat-icon>
-						</button>
-					}
-				</div>
-			</mat-list-item>
+				</mat-list-item>
+			}
 		</mat-nav-list>
-		<mat-paginator
-			*ngIf="(breakpointService.isMobile() | async) ? length > pageSize : true"
-			[length]="length"
-			[pageSize]="pageSize"
-			[pageSizeOptions]="pageSizeOptions"
-			(page)="onPageChange($event)"
-			[ngClass]="{ 'paginator-mobile': breakpointService.isMobile() | async }"
-		>
-		</mat-paginator>
+		@if ((breakpointService.isMobile() | async) ? length > pageSize : true) {
+			<mat-paginator
+				[length]="length"
+				[pageSize]="pageSize"
+				[pageSizeOptions]="pageSizeOptions"
+				(page)="onPageChange($event)"
+				[ngClass]="{ 'paginator-mobile': breakpointService.isMobile() | async }"
+			>
+			</mat-paginator>
+		}
 	</div>
-	<ng-container *ngIf="(breakpointService.isMobile() | async) === false; else mobileButton">
+	@if ((breakpointService.isMobile() | async) === false) {
 		<mat-card-actions>
 			<button mat-raised-button color="primary" (click)="newGuest()">New guest user</button>
 		</mat-card-actions>
-	</ng-container>
-	<ng-template #mobileButton>
+	} @else {
 		<button mat-raised-button color="primary" (click)="newGuest()" class="new-guest-button-mobile">New guest user</button>
-	</ng-template>
-</ng-template>
-
-<ng-template #loadingSpinner>
-	<app-loading-spinner></app-loading-spinner>
+	}
 </ng-template>

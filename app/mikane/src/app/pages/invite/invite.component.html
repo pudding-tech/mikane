@@ -6,32 +6,32 @@
 	<span class="toolbar-spacer"></span>
 	<app-menu></app-menu>
 </mat-toolbar>
-<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="invite-user-section">
-	<mat-card class="invite-content">
-		<mat-card-header class="card-header">
-			<div mat-card-avatar>
-				<mat-icon>person_add</mat-icon>
-			</div>
-			<mat-card-title>Invite user</mat-card-title>
-		</mat-card-header>
-		<mat-card-content class="card-content">
-			<ng-container *ngTemplateOutlet="inviteNewContent"></ng-container>
-		</mat-card-content>
-	</mat-card>
-	<mat-card class="invite-content">
-		<mat-card-header class="card-header">
-			<div mat-card-avatar>
-				<mat-icon>person_add</mat-icon>
-			</div>
-			<mat-card-title>Invite user from guest</mat-card-title>
-		</mat-card-header>
-		<mat-card-content class="card-content">
-			<ng-container *ngTemplateOutlet="inviteFromGuestContent"></ng-container>
-		</mat-card-content>
-	</mat-card>
-</div>
-
-<ng-template #mobileView>
+@if ((breakpointService.isMobile() | async) === false) {
+	<div class="invite-user-section">
+		<mat-card class="invite-content">
+			<mat-card-header class="card-header">
+				<div mat-card-avatar>
+					<mat-icon>person_add</mat-icon>
+				</div>
+				<mat-card-title>Invite user</mat-card-title>
+			</mat-card-header>
+			<mat-card-content class="card-content">
+				<ng-container *ngTemplateOutlet="inviteNewContent"></ng-container>
+			</mat-card-content>
+		</mat-card>
+		<mat-card class="invite-content">
+			<mat-card-header class="card-header">
+				<div mat-card-avatar>
+					<mat-icon>person_add</mat-icon>
+				</div>
+				<mat-card-title>Invite user from guest</mat-card-title>
+			</mat-card-header>
+			<mat-card-content class="card-content">
+				<ng-container *ngTemplateOutlet="inviteFromGuestContent"></ng-container>
+			</mat-card-content>
+		</mat-card>
+	</div>
+} @else {
 	<div class="mobile-view">
 		<div class="title-mobile">Invite a new user to Mikane</div>
 		<div class="content-mobile">
@@ -42,16 +42,22 @@
 			<ng-container *ngTemplateOutlet="inviteFromGuestContent"></ng-container>
 		</div>
 	</div>
-</ng-template>
+}
 
 <ng-template #inviteNewContent>
 	<form [formGroup]="inviteForm" (ngSubmit)="inviteUser(formDirective)" #formDirective="ngForm">
 		<mat-form-field appearance="fill">
 			<mat-label>Email</mat-label>
 			<input type="email" matInput placeholder="Email" formControlName="email" />
-			<mat-error *ngIf="inviteForm.get('email')?.errors?.['required']"> Email required </mat-error>
-			<mat-error *ngIf="inviteForm.get('email')?.errors?.['email']"> Not a valid email </mat-error>
-			<mat-error *ngIf="inviteForm.get('email')?.errors?.['duplicate']"> User with email already exists </mat-error>
+			@if (inviteForm.get("email")?.errors?.["required"]) {
+				<mat-error> Email required </mat-error>
+			}
+			@if (inviteForm.get("email")?.errors?.["email"]) {
+				<mat-error> Not a valid email </mat-error>
+			}
+			@if (inviteForm.get("email")?.errors?.["duplicate"]) {
+				<mat-error> User with email already exists </mat-error>
+			}
 		</mat-form-field>
 		<br />
 		<button type="submit" [class.spinner]="loading" [disabled]="loading" mat-raised-button color="primary" class="invite-button">
@@ -69,22 +75,32 @@
 		<div class="add-admin" [ngClass]="{ mobile: breakpointService.isMobile() | async }">
 			<mat-form-field>
 				<mat-select formControlName="guestId" name="guestId" placeholder="Select guest" required>
-					<mat-option *ngFor="let guest of guests" [value]="guest.id">
-						<span class="name">
-							<img [src]="guest.avatarURL" alt="Guest user avatar" class="avatar" />
-							{{ guest.name }}
-						</span>
-					</mat-option>
+					@for (guest of guests; track guest) {
+						<mat-option [value]="guest.id">
+							<span class="name">
+								<img [src]="guest.avatarURL" alt="Guest user avatar" class="avatar" />
+								{{ guest.name }}
+							</span>
+						</mat-option>
+					}
 				</mat-select>
-				<mat-error *ngIf="inviteFromGuestForm.get('guestId')?.errors?.['required']"> Guest required </mat-error>
+				@if (inviteFromGuestForm.get("guestId")?.errors?.["required"]) {
+					<mat-error> Guest required </mat-error>
+				}
 			</mat-form-field>
 		</div>
 		<mat-form-field appearance="fill">
 			<mat-label>Email</mat-label>
 			<input type="email" matInput placeholder="Email" formControlName="email" />
-			<mat-error *ngIf="inviteFromGuestForm.get('email')?.errors?.['required']"> Email required </mat-error>
-			<mat-error *ngIf="inviteFromGuestForm.get('email')?.errors?.['email']"> Not a valid email </mat-error>
-			<mat-error *ngIf="inviteFromGuestForm.get('email')?.errors?.['duplicate']"> User with email already exists </mat-error>
+			@if (inviteFromGuestForm.get("email")?.errors?.["required"]) {
+				<mat-error> Email required </mat-error>
+			}
+			@if (inviteFromGuestForm.get("email")?.errors?.["email"]) {
+				<mat-error> Not a valid email </mat-error>
+			}
+			@if (inviteFromGuestForm.get("email")?.errors?.["duplicate"]) {
+				<mat-error> User with email already exists </mat-error>
+			}
 		</mat-form-field>
 		<br />
 		<button

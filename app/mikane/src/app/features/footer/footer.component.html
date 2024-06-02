@@ -1,6 +1,8 @@
-<div *ngIf="(breakpointService.isMobile() | async) === false || showFooter()" id="footer">
-	<div id="text" class="unselectable">
-		Mikane {{ version }}<br />
-		Developed by PuddingTech
+@if ((breakpointService.isMobile() | async) === false || showFooter()) {
+	<div id="footer">
+		<div id="text" class="unselectable">
+			Mikane {{ version }}<br />
+			Developed by PuddingTech
+		</div>
 	</div>
-</div>
+}

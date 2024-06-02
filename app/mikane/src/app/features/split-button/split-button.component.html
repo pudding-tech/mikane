@@ -1,28 +1,35 @@
 <mat-button-toggle-group class="button-group">
-	<mat-button-toggle (click)="onClick()" class="split-button main-button" *ngIf="(breakpointService.isMobile() | async) === false">
-		<ng-content select="[button]"></ng-content>
-	</mat-button-toggle>
+	@if ((breakpointService.isMobile() | async) === false) {
+		<mat-button-toggle (click)="onClick()" class="split-button main-button">
+			<ng-content select="[button]"></ng-content>
+		</mat-button-toggle>
+	}
 	<mat-button-toggle (click)="toggleDropdown()" class="split-button" [ngClass]="{ mobile: breakpointService.isMobile() | async }">
 		<div #ref>
 			<ng-content select="[dropdown-button]"></ng-content>
 		</div>
-		<mat-icon *ngIf="!ref.children.length"> arrow_drop_down </mat-icon>
+		@if (!ref.children.length) {
+			<mat-icon> arrow_drop_down </mat-icon>
+		}
 	</mat-button-toggle>
 </mat-button-toggle-group>
 
-<div
-	*ngIf="toggled"
-	class="dropdown"
-	[ngClass]="{ 'dropdown-mobile-override': breakpointService.isMobile() | async }"
-	[@overlayAnimation]="{
-		value: 'toggled',
-		params: { showTransitionParams: showTransitionOptions, hideTransitionParams: hideTransitionOptions }
-	}"
->
-	<ul class="menu-list">
-		<li *ngFor="let item of items">
-			<ng-container *ngTemplateOutlet="item.templateRef"></ng-container>
-		</li>
-		<!-- <li class="menu-separator"></li> -->
-	</ul>
-</div>
+@if (toggled) {
+	<div
+		class="dropdown"
+		[ngClass]="{ 'dropdown-mobile-override': breakpointService.isMobile() | async }"
+		[@overlayAnimation]="{
+			value: 'toggled',
+			params: { showTransitionParams: showTransitionOptions, hideTransitionParams: hideTransitionOptions }
+		}"
+	>
+		<ul class="menu-list">
+			@for (item of items; track item) {
+				<li>
+					<ng-container *ngTemplateOutlet="item.templateRef"></ng-container>
+				</li>
+			}
+			<!-- <li class="menu-separator"></li> -->
+		</ul>
+	</div>
+}

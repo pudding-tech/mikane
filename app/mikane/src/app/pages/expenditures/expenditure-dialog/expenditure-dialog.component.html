@@ -4,7 +4,9 @@
 		<mat-form-field appearance="fill">
 			<mat-label>Expense Name</mat-label>
 			<input matInput formControlName="name" type="text" required />
-			<mat-error *ngIf="addExpenseForm.get('name')?.errors?.['required']"> Name is required </mat-error>
+			@if (addExpenseForm.get("name")?.errors?.["required"]) {
+				<mat-error> Name is required </mat-error>
+			}
 		</mat-form-field>
 		<mat-form-field appearance="fill">
 			<mat-label>Description</mat-label>
@@ -22,32 +24,58 @@
 				autocomplete="off"
 				[matAutocomplete]="categorySelector"
 			/>
-			<mat-error *ngIf="addExpenseForm.get('category')?.errors?.['required']"> Category is required </mat-error>
+			@if (addExpenseForm.get("category")?.errors?.["required"]) {
+				<mat-error> Category is required </mat-error>
+			}
 			<mat-autocomplete #categorySelector="matAutocomplete">
-				<mat-option *ngFor="let category of categories" [value]="category.name">
-					<mat-icon matPrefix>{{ category.icon ?? "shopping_cart" }}</mat-icon>
-					{{ category.name }}
-				</mat-option>
+				@for (category of categories; track category) {
+					<mat-option [value]="category.name">
+						<mat-icon matPrefix>{{ category.icon ?? "shopping_cart" }}</mat-icon>
+						{{ category.name }}
+					</mat-option>
+				}
 			</mat-autocomplete>
 		</mat-form-field>
 		<mat-form-field appearance="fill">
 			<mat-label>Amount</mat-label>
 			<input matInput type="number" min="0" formControlName="amount" required />
-			<mat-error *ngIf="addExpenseForm.get('amount')?.errors?.['required']"> Amount is required </mat-error>
-			<mat-error *ngIf="addExpenseForm.get('amount')?.errors?.['min']"> Amount must be positive </mat-error>
+			@if (addExpenseForm.get("amount")?.errors?.["required"]) {
+				<mat-error> Amount is required </mat-error>
+			}
+			@if (addExpenseForm.get("amount")?.errors?.["min"]) {
+				<mat-error> Amount must be positive </mat-error>
+			}
 		</mat-form-field>
-		<mat-form-field appearance="fill" *ngIf="(breakpointService.isMobile() | async) === false; else mobileSelect">
-			<mat-label>Payer</mat-label>
-			<mat-select formControlName="payer" required>
-				<mat-option *ngFor="let user of users" [value]="user.id">
-					<span class="user">
-						<img [src]="user.avatarURL" alt="User avatar" class="avatar" />
-						{{ user.name }}
-					</span>
-				</mat-option>
-			</mat-select>
-			<mat-error *ngIf="addExpenseForm.get('payer')?.errors?.['required']"> Payer is required </mat-error>
-		</mat-form-field>
+		@if ((breakpointService.isMobile() | async) === false) {
+			<mat-form-field appearance="fill">
+				<mat-label>Payer</mat-label>
+				<mat-select formControlName="payer" required>
+					@for (user of users; track user) {
+						<mat-option [value]="user.id">
+							<span class="user">
+								<img [src]="user.avatarURL" alt="User avatar" class="avatar" />
+								{{ user.name }}
+							</span>
+						</mat-option>
+					}
+				</mat-select>
+				@if (addExpenseForm.get("payer")?.errors?.["required"]) {
+					<mat-error> Payer is required </mat-error>
+				}
+			</mat-form-field>
+		} @else {
+			<mat-form-field appearance="fill">
+				<mat-label>Payer</mat-label>
+				<select matNativeControl required [formControl]="addExpenseForm.get('payer') | formControl">
+					<option value="" disabled>Choose payer</option>
+					@for (user of users; track user) {
+						<option [selected]="user.id === data.userId" [value]="user.id">
+							{{ user.name }}
+						</option>
+					}
+				</select>
+			</mat-form-field>
+		}
 	</form>
 </div>
 <div mat-dialog-actions class="dialog-buttons">
@@ -56,15 +84,3 @@
 		{{ data.expense ? "Edit" : "Create" }}
 	</button>
 </div>
-
-<ng-template #mobileSelect>
-	<mat-form-field appearance="fill">
-		<mat-label>Payer</mat-label>
-		<select matNativeControl required [formControl]="addExpenseForm.get('payer') | formControl">
-			<option value="" disabled>Choose payer</option>
-			<option [selected]="user.id === data.userId" *ngFor="let user of users" [value]="user.id">
-				{{ user.name }}
-			</option>
-		</select>
-	</mat-form-field>
-</ng-template>

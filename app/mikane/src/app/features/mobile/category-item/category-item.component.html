@@ -13,7 +13,12 @@
 					</div>
 				</div>
 			</div>
-			<button	mat-icon-button class="expenses-button" [disabled]="category.numberOfExpenses === 0" (click)="gotoExpenses(); $event.stopPropagation()">
+			<button
+				mat-icon-button
+				class="expenses-button"
+				[disabled]="category.numberOfExpenses === 0"
+				(click)="gotoExpenses(); $event.stopPropagation()"
+			>
 				<div class="count">{{ category.numberOfExpenses }}</div>
 				<mat-icon class="icon">payment</mat-icon>
 			</button>
@@ -26,92 +31,100 @@
 				{{ category.weighted ? "Weight" : "" }}
 			</span>
 		</div>
-		<mat-list-item *ngFor="let user of category.users">
-			<div class="user data">
-				<span class="name">
-					<img [src]="user.avatarURL" alt="User avatar" class="avatar" />
-					{{ user.name }}
-				</span>
-				<span>
-					{{ category.weighted ? user.weight : "" }}
-				</span>
-				<button
-					mat-icon-button
-					*ngIf="category.weighted && eventActive"
-					(click)="openEditWeight(category.id, user.id, user.weight)"
-					class="button"
-				>
-					<mat-icon>edit</mat-icon>
-				</button>
-				<button
-					*ngIf="eventActive"
-					mat-icon-button
-					(click)="removeUserFromCategory(category.id, user.id)"
-					[ngClass]="{ button: !category.weighted }"
-				>
-					<mat-icon>remove</mat-icon>
-				</button>
-			</div>
-		</mat-list-item>
-		<ng-container *ngIf="eventActive">
-			<form [formGroup]="addUserForm" *ngIf="filterUsers(category.id).length !== 0; else allUsersAdded" class="new-user">
-				<div class="inputs">
-					<mat-form-field subscriptSizing="dynamic" [ngClass]="{ 'user-input-weighted': !category.weighted }">
-						<select
-							matNativeControl
-							[formControl]="addUserForm.get('participantName') | formControl"
-							name="participantName"
-							required
+		@for (user of category.users; track user) {
+			<mat-list-item>
+				<div class="user data">
+					<span class="name">
+						<img [src]="user.avatarURL" alt="User avatar" class="avatar" />
+						{{ user.name }}
+					</span>
+					<span>
+						{{ category.weighted ? user.weight : "" }}
+					</span>
+					@if (category.weighted && eventActive) {
+						<button mat-icon-button (click)="openEditWeight(category.id, user.id, user.weight)" class="button">
+							<mat-icon>edit</mat-icon>
+						</button>
+					}
+					@if (eventActive) {
+						<button
+							mat-icon-button
+							(click)="removeUserFromCategory(category.id, user.id)"
+							[ngClass]="{ button: !category.weighted }"
 						>
-							<option value="" disabled selected>Add participant</option>
-							<option *ngFor="let user of filterUsers(category.id)" [value]="user.id">
-								{{ user.name }}
-							</option>
-						</select>
-					</mat-form-field>
-					<mat-form-field *ngIf="category.weighted" subscriptSizing="dynamic" class="weight-input">
-						<input
-							matInput
-							type="number"
-							min="1"
-							formControlName="weight"
-							name="weight"
-							placeholder="Weight"
-							readonly="false"
-						/>
-					</mat-form-field>
+							<mat-icon>remove</mat-icon>
+						</button>
+					}
 				</div>
-				<button
-					mat-icon-button
-					*ngIf="eventActive"
-					type="button"
-					(click)="addUserToCategory(category.id)"
-					[disabled]="
-						addUserForm.get('participantName')?.invalid ||
-						!addUserForm.get('participantName')?.dirty ||
-						(category.weighted && addUserForm.get('weight')?.invalid)
-					"
-					class="add-user"
-				>
-					<mat-icon>add_circle</mat-icon>
+			</mat-list-item>
+		}
+		@if (eventActive) {
+			@if (filterUsers(category.id).length !== 0) {
+				<form [formGroup]="addUserForm" class="new-user">
+					<div class="inputs">
+						<mat-form-field subscriptSizing="dynamic" [ngClass]="{ 'user-input-weighted': !category.weighted }">
+							<select
+								matNativeControl
+								[formControl]="addUserForm.get('participantName') | formControl"
+								name="participantName"
+								required
+							>
+								<option value="" disabled selected>Add participant</option>
+								@for (user of filterUsers(category.id); track user) {
+									<option [value]="user.id">
+										{{ user.name }}
+									</option>
+								}
+							</select>
+						</mat-form-field>
+						@if (category.weighted) {
+							<mat-form-field subscriptSizing="dynamic" class="weight-input">
+								<input
+									matInput
+									type="number"
+									min="1"
+									formControlName="weight"
+									name="weight"
+									placeholder="Weight"
+									readonly="false"
+								/>
+							</mat-form-field>
+						}
+					</div>
+					@if (eventActive) {
+						<button
+							mat-icon-button
+							type="button"
+							(click)="addUserToCategory(category.id)"
+							[disabled]="
+								addUserForm.get('participantName')?.invalid ||
+								!addUserForm.get('participantName')?.dirty ||
+								(category.weighted && addUserForm.get('weight')?.invalid)
+							"
+							class="add-user"
+						>
+							<mat-icon>add_circle</mat-icon>
+						</button>
+					}
+				</form>
+			} @else {
+				<div class="all-users-in-category">No more participants to add</div>
+			}
+		}
+		@if (eventActive) {
+			<div class="sub-buttons">
+				<button mat-stroked-button color="accent" (click)="toggleWeightedCategory(category.id, category.weighted)">
+					Toggle weighted
 				</button>
-			</form>
-		</ng-container>
-		<ng-template #allUsersAdded>
-			<div class="all-users-in-category">No more participants to add</div>
-		</ng-template>
-		<div class="sub-buttons" *ngIf="eventActive">
-			<button mat-stroked-button color="accent" (click)="toggleWeightedCategory(category.id, category.weighted)">
-				Toggle weighted
-			</button>
-			<div>
-				<button mat-icon-button (click)="openEdit(category.id, category.name, category.icon)">
-					<mat-icon>edit</mat-icon>
-				</button>
-				<button mat-icon-button [disabled]="category.numberOfExpenses !== 0" color="warn" (click)="deleteCategory(category.id)">
-					<mat-icon>delete</mat-icon>
-				</button>
+				<div>
+					<button mat-icon-button (click)="openEdit(category.id, category.name, category.icon)">
+						<mat-icon>edit</mat-icon>
+					</button>
+					<button mat-icon-button [disabled]="category.numberOfExpenses !== 0" color="warn" (click)="deleteCategory(category.id)">
+						<mat-icon>delete</mat-icon>
+					</button>
+				</div>
 			</div>
-		</div>
+		}
 	</div>
 </div>

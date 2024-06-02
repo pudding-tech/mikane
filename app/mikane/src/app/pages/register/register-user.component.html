@@ -1,27 +1,29 @@
-<mat-toolbar *ngIf="(breakpointService.isMobile() | async) === false">
-	<span class="logo-container">
-		<img src="assets/mikane.svg" alt="Mikane logo" class="logo" />
-	</span>
-	<span>MIKANE</span>
-</mat-toolbar>
-<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="register-user-section">
-	<mat-card class="register-content">
-		<mat-card-header class="card-header">
-			<div mat-card-avatar>
-				<mat-icon aria-hidden="false">person_add</mat-icon>
-			</div>
-			<mat-card-title>Register</mat-card-title>
-		</mat-card-header>
-		<mat-card-content class="card-content">
-			<p *ngIf="guestRegistration">
-				This is the information currently registered on you. <br />Please make sure it is accurate and change it if not.
-			</p>
-			<ng-container *ngTemplateOutlet="registerContent"></ng-container>
-		</mat-card-content>
-	</mat-card>
-</div>
-
-<ng-template #mobileView>
+@if ((breakpointService.isMobile() | async) === false) {
+	<mat-toolbar>
+		<span class="logo-container">
+			<img src="assets/mikane.svg" alt="Mikane logo" class="logo" />
+		</span>
+		<span>MIKANE</span>
+	</mat-toolbar>
+}
+@if ((breakpointService.isMobile() | async) === false) {
+	<div class="register-user-section">
+		<mat-card class="register-content">
+			<mat-card-header class="card-header">
+				<div mat-card-avatar>
+					<mat-icon aria-hidden="false">person_add</mat-icon>
+				</div>
+				<mat-card-title>Register</mat-card-title>
+			</mat-card-header>
+			<mat-card-content class="card-content">
+				@if (guestRegistration) {
+					<p>This is the information currently registered on you. <br />Please make sure it is accurate and change it if not.</p>
+				}
+				<ng-container *ngTemplateOutlet="registerContent"></ng-container>
+			</mat-card-content>
+		</mat-card>
+	</div>
+} @else {
 	<div class="bg">
 		<div class="mobile-view">
 			<h1 class="mobile-title">
@@ -34,118 +36,143 @@
 			<ng-container *ngTemplateOutlet="registerContent"></ng-container>
 		</div>
 	</div>
-</ng-template>
+}
 
 <ng-template #registerContent>
-	<form [formGroup]="registerUserForm" (ngSubmit)="register()" *ngIf="key !== null">
-		<div>
-			<mat-form-field appearance="fill">
-				<mat-label>Username</mat-label>
-				<input type="text" matInput placeholder="Username" formControlName="username" />
-				<mat-error *ngIf="registerUserForm.get('username')?.errors?.['required']"> Username required </mat-error>
-				<mat-error *ngIf="registerUserForm.get('username')?.errors?.['invalid']"> Between 3-40 characters - only letters, numbers, hyphens, underscores </mat-error>
-				<mat-error *ngIf="registerUserForm.get('username')?.errors?.['duplicate']"> Username already taken </mat-error>
-			</mat-form-field>
-		</div>
-		<div>
-			<mat-form-field appearance="fill">
-				<mat-label>First Name</mat-label>
-				<input type="text" matInput placeholder="First name" autocomplete="given-name" formControlName="firstName" />
-				<mat-error *ngIf="registerUserForm.get('firstName')?.errors?.['required']"> First name required </mat-error>
-			</mat-form-field>
-		</div>
-		<div>
-			<mat-form-field appearance="fill">
-				<mat-label>Last Name</mat-label>
-				<input type="text" matInput placeholder="Last name" autocomplete="family-name" formControlName="lastName" />
-				<mat-error *ngIf="registerUserForm.get('lastName')?.invalid"> Invalid last name </mat-error>
-			</mat-form-field>
-		</div>
-		<div>
-			<mat-form-field appearance="fill">
-				<mat-label>Email</mat-label>
-				<input type="text" matInput placeholder="Email" autocomplete="email" formControlName="email" />
-				<mat-error *ngIf="registerUserForm.get('email')?.errors?.['required']"> Email required </mat-error>
-				<mat-error *ngIf="registerUserForm.get('email')?.errors?.['invalid']"> Invalid email </mat-error>
-				<mat-error *ngIf="registerUserForm.get('email')?.errors?.['duplicate']"> Email address already taken </mat-error>
-			</mat-form-field>
-		</div>
-		<div>
-			<mat-form-field appearance="fill">
-				<mat-label>Phone Number</mat-label>
-				<input type="tel" matInput placeholder="Phone number" autocomplete="tel" formControlName="phone" />
-				<mat-error *ngIf="registerUserForm.get('phone')?.errors?.['required']"> Phone number required </mat-error>
-				<mat-error *ngIf="registerUserForm.get('phone')?.errors?.['invalid']"> Invalid phone number </mat-error>
-				<mat-error *ngIf="registerUserForm.get('phone')?.errors?.['duplicate']"> Phone number already taken </mat-error>
-			</mat-form-field>
-		</div>
-		<div formGroupName="passwordGroup">
+	@if (key !== null) {
+		<form [formGroup]="registerUserForm" (ngSubmit)="register()">
 			<div>
 				<mat-form-field appearance="fill">
-					<mat-label>Password</mat-label>
-					<input
-						[type]="hide ? 'password' : 'text'"
-						matInput
-						placeholder="Password"
-						autocomplete="off"
-						formControlName="password"
-					/>
-					<button
-						mat-icon-button
-						matSuffix
-						(click)="hide = !hide"
-						[attr.aria-label]="'Hide password'"
-						[attr.aria-pressed]="hide"
-						type="button"
-						tabindex="-1"
-					>
-						<mat-icon>
-							{{ hide ? "visibility_off" : "visibility" }}
-						</mat-icon>
-					</button>
-					<mat-error *ngIf="registerUserForm.get('passwordGroup').get('password')?.invalid"> Invalid password </mat-error>
+					<mat-label>Username</mat-label>
+					<input type="text" matInput placeholder="Username" formControlName="username" />
+					@if (registerUserForm.get("username")?.errors?.["required"]) {
+						<mat-error> Username required </mat-error>
+					}
+					@if (registerUserForm.get("username")?.errors?.["invalid"]) {
+						<mat-error> Between 3-40 characters - only letters, numbers, hyphens, underscores </mat-error>
+					}
+					@if (registerUserForm.get("username")?.errors?.["duplicate"]) {
+						<mat-error> Username already taken </mat-error>
+					}
 				</mat-form-field>
 			</div>
-
 			<div>
 				<mat-form-field appearance="fill">
-					<mat-label>Retype Password</mat-label>
-					<input
-						[type]="hide ? 'password' : 'text'"
-						matInput
-						placeholder="Retype Password"
-						autocomplete="off"
-						formControlName="passwordRetype"
-					/>
-					<button
-						mat-icon-button
-						matSuffix
-						(click)="hide = !hide"
-						[attr.aria-label]="'Hide password'"
-						[attr.aria-pressed]="hide"
-						type="button"
-						tabindex="-1"
-					>
-						<mat-icon>
-							{{ hide ? "visibility_off" : "visibility" }}
-						</mat-icon>
-					</button>
-					<mat-error *ngIf="registerUserForm.get('passwordGroup').get('passwordRetype')?.invalid">
-						Password does not match
-					</mat-error>
+					<mat-label>First Name</mat-label>
+					<input type="text" matInput placeholder="First name" autocomplete="given-name" formControlName="firstName" />
+					@if (registerUserForm.get("firstName")?.errors?.["required"]) {
+						<mat-error> First name required </mat-error>
+					}
 				</mat-form-field>
 			</div>
-		</div>
-		<br />
-		<button
-			type="submit"
-			mat-raised-button
-			color="primary"
-			[class.spinner]="loading"
-			[disabled]="loading || registerUserForm.invalid || registerUserForm.pending"
-			class="register-button"
-		>
-			Register <mat-icon aria-hidden="false">person_add</mat-icon>
-		</button>
-	</form>
+			<div>
+				<mat-form-field appearance="fill">
+					<mat-label>Last Name</mat-label>
+					<input type="text" matInput placeholder="Last name" autocomplete="family-name" formControlName="lastName" />
+					@if (registerUserForm.get("lastName")?.invalid) {
+						<mat-error> Invalid last name </mat-error>
+					}
+				</mat-form-field>
+			</div>
+			<div>
+				<mat-form-field appearance="fill">
+					<mat-label>Email</mat-label>
+					<input type="text" matInput placeholder="Email" autocomplete="email" formControlName="email" />
+					@if (registerUserForm.get("email")?.errors?.["required"]) {
+						<mat-error> Email required </mat-error>
+					}
+					@if (registerUserForm.get("email")?.errors?.["invalid"]) {
+						<mat-error> Invalid email </mat-error>
+					}
+					@if (registerUserForm.get("email")?.errors?.["duplicate"]) {
+						<mat-error> Email address already taken </mat-error>
+					}
+				</mat-form-field>
+			</div>
+			<div>
+				<mat-form-field appearance="fill">
+					<mat-label>Phone Number</mat-label>
+					<input type="tel" matInput placeholder="Phone number" autocomplete="tel" formControlName="phone" />
+					@if (registerUserForm.get("phone")?.errors?.["required"]) {
+						<mat-error> Phone number required </mat-error>
+					}
+					@if (registerUserForm.get("phone")?.errors?.["invalid"]) {
+						<mat-error> Invalid phone number </mat-error>
+					}
+					@if (registerUserForm.get("phone")?.errors?.["duplicate"]) {
+						<mat-error> Phone number already taken </mat-error>
+					}
+				</mat-form-field>
+			</div>
+			<div formGroupName="passwordGroup">
+				<div>
+					<mat-form-field appearance="fill">
+						<mat-label>Password</mat-label>
+						<input
+							[type]="hide ? 'password' : 'text'"
+							matInput
+							placeholder="Password"
+							autocomplete="off"
+							formControlName="password"
+						/>
+						<button
+							mat-icon-button
+							matSuffix
+							(click)="hide = !hide"
+							[attr.aria-label]="'Hide password'"
+							[attr.aria-pressed]="hide"
+							type="button"
+							tabindex="-1"
+						>
+							<mat-icon>
+								{{ hide ? "visibility_off" : "visibility" }}
+							</mat-icon>
+						</button>
+						@if (registerUserForm.get("passwordGroup").get("password")?.invalid) {
+							<mat-error> Invalid password </mat-error>
+						}
+					</mat-form-field>
+				</div>
+				<div>
+					<mat-form-field appearance="fill">
+						<mat-label>Retype Password</mat-label>
+						<input
+							[type]="hide ? 'password' : 'text'"
+							matInput
+							placeholder="Retype Password"
+							autocomplete="off"
+							formControlName="passwordRetype"
+						/>
+						<button
+							mat-icon-button
+							matSuffix
+							(click)="hide = !hide"
+							[attr.aria-label]="'Hide password'"
+							[attr.aria-pressed]="hide"
+							type="button"
+							tabindex="-1"
+						>
+							<mat-icon>
+								{{ hide ? "visibility_off" : "visibility" }}
+							</mat-icon>
+						</button>
+						@if (registerUserForm.get("passwordGroup").get("passwordRetype")?.invalid) {
+							<mat-error> Password does not match </mat-error>
+						}
+					</mat-form-field>
+				</div>
+			</div>
+			<br />
+			<button
+				type="submit"
+				mat-raised-button
+				color="primary"
+				[class.spinner]="loading"
+				[disabled]="loading || registerUserForm.invalid || registerUserForm.pending"
+				class="register-button"
+			>
+				Register <mat-icon aria-hidden="false">person_add</mat-icon>
+			</button>
+		</form>
+	}
 </ng-template>

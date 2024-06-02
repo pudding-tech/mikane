@@ -1,206 +1,215 @@
-<div *ngIf="(breakpointService.isMobile() | async) === false && event?.status.id === EventStatusType.ACTIVE" class="add-button">
-	<button mat-raised-button color="primary" (click)="openDialog()">
-		<mat-icon>add_shopping_cart</mat-icon>
-		Add expense
-	</button>
-</div>
-
-<div *ngIf="loading === false; else loadingSpinner">
-	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" [ngClass]="{ 'extra-margin': event?.status.id !== EventStatusType.ACTIVE }">
-		<div *ngIf="expenses().length > 0; else noExpenses">
-			<mat-form-field class="filters">
-				<mat-label>Search expenses</mat-label>
-				<input matInput (keyup)="applyFilter($event)" #input />
-				<button matSuffix *ngIf="input.value" mat-icon-button (click)="clearInput()">
-					<mat-icon>cancel</mat-icon>
-				</button>
-			</mat-form-field>
-			<mat-form-field class="filters">
-				<mat-label>Filter by payer</mat-label>
-				<mat-select [(value)]="payersFilterSelect" multiple (selectionChange)="payerSelected()">
-					<mat-option *ngFor="let payer of payers()" [value]="payer.id">
-						<span class="payer">
-							<img [src]="payer.avatarURL" alt="User avatar" class="payer-avatar" />
-							{{ payer.name }}
-						</span>
-					</mat-option>
-				</mat-select>
-			</mat-form-field>
-			<mat-form-field class="filters">
-				<mat-label>Filter by category</mat-label>
-				<mat-select [(value)]="categoriesFilterSelect" multiple (selectionChange)="categorySelected()">
-					<mat-option *ngFor="let category of categories()" [value]="category.id">
-						{{ category.name }}
-					</mat-option>
-				</mat-select>
-			</mat-form-field>
-			<table class="expense-table" mat-table matSort [dataSource]="filteredExpenses()" (matSortChange)="onSortData($event)">
-				<!-- Icon Column -->
-				<ng-container matColumnDef="icon">
-					<th mat-header-cell *matHeaderCellDef></th>
-					<td mat-cell class="expense-icon" *matCellDef="let expense">
-						<mat-icon>{{ expense.categoryInfo.icon ?? "shopping_cart" }}</mat-icon>
-					</td>
-				</ng-container>
-
-				<!-- Name Column -->
-				<ng-container matColumnDef="name">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-					<td mat-cell class="expense-name" *matCellDef="let expense">
-						{{ expense.name }}
-					</td>
-				</ng-container>
-
-				<!-- Payer Column -->
-				<ng-container matColumnDef="payer">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header>Paid by</th>
-					<td mat-cell *matCellDef="let expense">
-						<div class="payer">
-							<img [src]="expense.payer.avatarURL" alt="User avatar" class="payer-avatar" />
-							{{ expense.payer.name }}
-						</div>
-					</td>
-				</ng-container>
-
-				<!-- Expense Category -->
-				<ng-container matColumnDef="categoryName">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
-					<td mat-cell *matCellDef="let expense">
-						{{ expense.categoryInfo.name }}
-					</td>
-				</ng-container>
-
-				<!-- Amount Column -->
-				<ng-container matColumnDef="amount">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
-					<td mat-cell class="amount-color" *matCellDef="let expense">
-						<div>{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr</div>
-					</td>
-				</ng-container>
-
-				<!-- Description Column -->
-				<ng-container matColumnDef="description">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
-					<td mat-cell *matCellDef="let expense">
-						{{ expense.description }}
-					</td>
-				</ng-container>
-
-				<!-- Edit Column -->
-				<ng-container matColumnDef="edit">
-					<th mat-header-cell *matHeaderCellDef></th>
-					<td mat-cell *matCellDef="let expense">
-						<button
-							*ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin"
-							mat-icon-button
-							type="button"
-							(click)="editExpense(expense.id)"
-						>
-							<mat-icon>edit</mat-icon>
-						</button>
-					</td>
-				</ng-container>
-
-				<!-- Delete Column -->
-				<ng-container matColumnDef="delete">
-					<th mat-header-cell *matHeaderCellDef></th>
-					<td mat-cell *matCellDef="let expense">
-						<button
-							*ngIf="expense.payer.id === currentUserId || event?.userInfo?.isAdmin"
-							mat-icon-button
-							type="button"
-							(click)="removeExpense(expense.id)"
-						>
-							<mat-icon>delete</mat-icon>
-						</button>
-					</td>
-				</ng-container>
-
-				<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-				<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
-				<!-- Row shown when there is no matching data -->
-				<tr class="mat-row" *matNoDataRow>
-					<td class="mat-cell" colspan="8" class="no-expenses">No expenses matching the filter "{{ input?.value }}"</td>
-				</tr>
-			</table>
-		</div>
+@if ((breakpointService.isMobile() | async) === false && event?.status.id === EventStatusType.ACTIVE) {
+	<div class="add-button">
+		<button mat-raised-button color="primary" (click)="openDialog()">
+			<mat-icon>add_shopping_cart</mat-icon>
+			Add expense
+		</button>
 	</div>
-</div>
+}
 
-<ng-template #mobileView>
-	<mat-chip-set class="mobile-filters">
-		<mat-chip (click)="openFilterSearchBottomSheet()" [ngClass]="{ 'selected-chip': filterValue().length > 0 }">
-			<div class="filter-chip">
-				<div *ngIf="filterValue().length > 0; else noSearchFilter" class="filter-one-element-text">
-					{{ filterValue() }}
-				</div>
-				<ng-template #noSearchFilter>
-					Filter
-				</ng-template>
-				<mat-icon>keyboard_arrow_down</mat-icon>
-			</div>
-		</mat-chip>
-		<mat-chip (click)="openFilterPayerBottomSheet()" [ngClass]="{ 'selected-chip': payersFilter().length > 0 }">
-			<div class="filter-chip">
-				<div *ngIf="payersFilter().length > 1; else onePayer">
-					<span class="elements-circle">{{ payersFilter().length }}</span>
-					Payers
-				</div>
-				<ng-template #onePayer>
-					<div *ngIf="payersFilter().length === 1; else noPayerFilter" class="filter-one-element-text">
-						<img [src]="filteredPayer().avatarURL" alt="User avatar" class="filter-icon payer" />
-						{{ filteredPayer().name }}
+@if (loading === false) {
+	<div>
+		@if ((breakpointService.isMobile() | async) === false) {
+			<div [ngClass]="{ 'extra-margin': event?.status.id !== EventStatusType.ACTIVE }">
+				@if (expenses().length > 0) {
+					<div>
+						<mat-form-field class="filters">
+							<mat-label>Search expenses</mat-label>
+							<input matInput (keyup)="applyFilter($event)" #input />
+							@if (input.value) {
+								<button matSuffix mat-icon-button (click)="clearInput()">
+									<mat-icon>cancel</mat-icon>
+								</button>
+							}
+						</mat-form-field>
+						<mat-form-field class="filters">
+							<mat-label>Filter by payer</mat-label>
+							<mat-select [(value)]="payersFilterSelect" multiple (selectionChange)="payerSelected()">
+								@for (payer of payers(); track payer) {
+									<mat-option [value]="payer.id">
+										<span class="payer">
+											<img [src]="payer.avatarURL" alt="User avatar" class="payer-avatar" />
+											{{ payer.name }}
+										</span>
+									</mat-option>
+								}
+							</mat-select>
+						</mat-form-field>
+						<mat-form-field class="filters">
+							<mat-label>Filter by category</mat-label>
+							<mat-select [(value)]="categoriesFilterSelect" multiple (selectionChange)="categorySelected()">
+								@for (category of categories(); track category) {
+									<mat-option [value]="category.id">
+										{{ category.name }}
+									</mat-option>
+								}
+							</mat-select>
+						</mat-form-field>
+						<table
+							class="expense-table"
+							mat-table
+							matSort
+							[dataSource]="filteredExpenses()"
+							(matSortChange)="onSortData($event)"
+						>
+							<!-- Icon Column -->
+							<ng-container matColumnDef="icon">
+								<th mat-header-cell *matHeaderCellDef></th>
+								<td mat-cell class="expense-icon" *matCellDef="let expense">
+									<mat-icon>{{ expense.categoryInfo.icon ?? "shopping_cart" }}</mat-icon>
+								</td>
+							</ng-container>
+							<!-- Name Column -->
+							<ng-container matColumnDef="name">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+								<td mat-cell class="expense-name" *matCellDef="let expense">
+									{{ expense.name }}
+								</td>
+							</ng-container>
+							<!-- Payer Column -->
+							<ng-container matColumnDef="payer">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>Paid by</th>
+								<td mat-cell *matCellDef="let expense">
+									<div class="payer">
+										<img [src]="expense.payer.avatarURL" alt="User avatar" class="payer-avatar" />
+										{{ expense.payer.name }}
+									</div>
+								</td>
+							</ng-container>
+							<!-- Expense Category -->
+							<ng-container matColumnDef="categoryName">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+								<td mat-cell *matCellDef="let expense">
+									{{ expense.categoryInfo.name }}
+								</td>
+							</ng-container>
+							<!-- Amount Column -->
+							<ng-container matColumnDef="amount">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
+								<td mat-cell class="amount-color" *matCellDef="let expense">
+									<div>{{ expense.amount | currency: "" : "" : "1.2-2" : "no" }} kr</div>
+								</td>
+							</ng-container>
+							<!-- Description Column -->
+							<ng-container matColumnDef="description">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+								<td mat-cell *matCellDef="let expense">
+									{{ expense.description }}
+								</td>
+							</ng-container>
+							<!-- Edit Column -->
+							<ng-container matColumnDef="edit">
+								<th mat-header-cell *matHeaderCellDef></th>
+								<td mat-cell *matCellDef="let expense">
+									@if (expense.payer.id === currentUserId || event?.userInfo?.isAdmin) {
+										<button mat-icon-button type="button" (click)="editExpense(expense.id)">
+											<mat-icon>edit</mat-icon>
+										</button>
+									}
+								</td>
+							</ng-container>
+							<!-- Delete Column -->
+							<ng-container matColumnDef="delete">
+								<th mat-header-cell *matHeaderCellDef></th>
+								<td mat-cell *matCellDef="let expense">
+									@if (expense.payer.id === currentUserId || event?.userInfo?.isAdmin) {
+										<button mat-icon-button type="button" (click)="removeExpense(expense.id)">
+											<mat-icon>delete</mat-icon>
+										</button>
+									}
+								</td>
+							</ng-container>
+							<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+							<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+							<!-- Row shown when there is no matching data -->
+							<tr class="mat-row" *matNoDataRow>
+								<td class="mat-cell" colspan="8" class="no-expenses">
+									No expenses matching the filter "{{ input?.value }}"
+								</td>
+							</tr>
+						</table>
 					</div>
-					<ng-template #noPayerFilter>
-						Payer
-					</ng-template>
-				</ng-template>
-				<mat-icon>keyboard_arrow_down</mat-icon>
+				} @else {
+					<mat-card appearance="outlined" class="no-expenses"> No expenses </mat-card>
+				}
 			</div>
-		</mat-chip>
-		<mat-chip (click)="openFilterCategoryBottomSheet()" [ngClass]="{ 'selected-chip': categoriesFilter().length > 0 }">
-			<div class="filter-chip">
-				<div *ngIf="categoriesFilter().length > 1; else oneCategory">
-					<span class="elements-circle">{{ categoriesFilter().length }}</span>
-					Categories
-				</div>
-				<ng-template #oneCategory>
-					<div *ngIf="categoriesFilter().length === 1; else noCategoryFilter" class="filter-one-element-text">
-						<mat-icon class="filter-icon">{{ filteredCategory().icon ?? "shopping_cart" }}</mat-icon>
-						{{ filteredCategory().name }}
+		} @else {
+			<mat-chip-set class="mobile-filters">
+				<mat-chip (click)="openFilterSearchBottomSheet()" [ngClass]="{ 'selected-chip': filterValue().length > 0 }">
+					<div class="filter-chip">
+						@if (filterValue().length > 0) {
+							<div class="filter-one-element-text">
+								{{ filterValue() }}
+							</div>
+						} @else {
+							Filter
+						}
+						<mat-icon>keyboard_arrow_down</mat-icon>
 					</div>
-					<ng-template #noCategoryFilter>
-						Category
-					</ng-template>
-				</ng-template>
-				<mat-icon>keyboard_arrow_down</mat-icon>
-			</div>
-		</mat-chip>
-	</mat-chip-set>
-	<mat-nav-list #expensesList *ngIf="filteredExpenses().length > 0; else noExpensesMobile" class="expenses-list-mobile">
-		<app-expense-item *ngFor="let expense of filteredExpenses()" [expense]="expense"></app-expense-item>
-	</mat-nav-list>
-	<button
-		*ngIf="event?.status.id === EventStatusType.ACTIVE"
-		mat-fab
-		color="primary"
-		class="add-expense-button-mobile"
-		(click)="openDialog()"
-		[ngClass]="{ iOS: contextService.isIos, hidden: scrollService.isScrolledToBottom() | async }"
-	>
-		<mat-icon>add_shopping_cart</mat-icon>
-	</button>
-</ng-template>
-
-<ng-template #loadingSpinner>
+				</mat-chip>
+				<mat-chip (click)="openFilterPayerBottomSheet()" [ngClass]="{ 'selected-chip': payersFilter().length > 0 }">
+					<div class="filter-chip">
+						@if (payersFilter().length > 1) {
+							<div>
+								<span class="elements-circle">{{ payersFilter().length }}</span>
+								Payers
+							</div>
+						} @else {
+							@if (payersFilter().length === 1) {
+								<div class="filter-one-element-text">
+									<img [src]="filteredPayer().avatarURL" alt="User avatar" class="filter-icon payer" />
+									{{ filteredPayer().name }}
+								</div>
+							} @else {
+								Payer
+							}
+						}
+						<mat-icon>keyboard_arrow_down</mat-icon>
+					</div>
+				</mat-chip>
+				<mat-chip (click)="openFilterCategoryBottomSheet()" [ngClass]="{ 'selected-chip': categoriesFilter().length > 0 }">
+					<div class="filter-chip">
+						@if (categoriesFilter().length > 1) {
+							<div>
+								<span class="elements-circle">{{ categoriesFilter().length }}</span>
+								Categories
+							</div>
+						} @else {
+							@if (categoriesFilter().length === 1) {
+								<div class="filter-one-element-text">
+									<mat-icon class="filter-icon">{{ filteredCategory().icon ?? "shopping_cart" }}</mat-icon>
+									{{ filteredCategory().name }}
+								</div>
+							} @else {
+								Category
+							}
+						}
+						<mat-icon>keyboard_arrow_down</mat-icon>
+					</div>
+				</mat-chip>
+			</mat-chip-set>
+			@if (filteredExpenses().length > 0) {
+				<mat-nav-list #expensesList class="expenses-list-mobile">
+					@for (expense of filteredExpenses(); track expense) {
+						<app-expense-item [expense]="expense"></app-expense-item>
+					}
+				</mat-nav-list>
+			} @else {
+				<div class="no-expenses-mobile">No expenses</div>
+			}
+			@if (event?.status.id === EventStatusType.ACTIVE) {
+				<button
+					mat-fab
+					color="primary"
+					class="add-expense-button-mobile"
+					(click)="openDialog()"
+					[ngClass]="{ iOS: contextService.isIos, hidden: scrollService.isScrolledToBottom() | async }"
+				>
+					<mat-icon>add_shopping_cart</mat-icon>
+				</button>
+			}
+		}
+	</div>
+} @else {
 	<app-loading-spinner></app-loading-spinner>
-</ng-template>
-
-<ng-template #noExpenses>
-	<mat-card appearance="outlined" class="no-expenses"> No expenses </mat-card>
-</ng-template>
-
-<ng-template #noExpensesMobile>
-	<div class="no-expenses-mobile">No expenses</div>
-</ng-template>
+}

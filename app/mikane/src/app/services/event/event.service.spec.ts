@@ -1,9 +1,10 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { UserBalance } from '../user/user.service';
-import { EventService, Payment, PuddingEvent, EventStatusType } from './event.service';
+import { EventService, EventStatusType, Payment, PuddingEvent } from './event.service';
 
 describe('EventService', () => {
 	let service: EventService;
@@ -18,7 +19,7 @@ describe('EventService', () => {
 		status: {
 			id: EventStatusType.ACTIVE,
 			name: 'Active',
-		}
+		},
 	} as PuddingEvent;
 	const mockUserBalance = {
 		user: {
@@ -51,8 +52,13 @@ describe('EventService', () => {
 	beforeEach(() => {
 		const env = { apiUrl: 'http://localhost:3002/api/' } as Environment;
 		TestBed.configureTestingModule({
-			providers: [EventService, { provide: ENV, useValue: env }],
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				EventService,
+				{ provide: ENV, useValue: env },
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(EventService);
 

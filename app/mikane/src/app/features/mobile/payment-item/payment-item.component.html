@@ -16,14 +16,16 @@
 		</div>
 	</mat-list-item>
 	<div #lower class="lower" [style.height.px]="lowerHeight">
-		<mat-list-item *ngFor="let receiver of sender.receivers">
-			<div class="payment">
-				<span class="name">
-					<img [src]="receiver.receiver.avatarURL" alt="Receiver avatar" class="avatar" />
-					{{ self && receiver.receiver.id === currentUser.id ? "You" : receiver.receiver.name }}
-				</span>
-				<span class="amount-color"> {{ receiver.amount | currency : "" : "" : "1.2-2" : "no" }} kr </span>
-			</div>
-		</mat-list-item>
+		@for (receiver of sender.receivers; track receiver) {
+			<mat-list-item>
+				<div class="payment">
+					<span class="name">
+						<img [src]="receiver.receiver.avatarURL" alt="Receiver avatar" class="avatar" />
+						{{ self && receiver.receiver.id === currentUser.id ? "You" : receiver.receiver.name }}
+					</span>
+					<span class="amount-color"> {{ receiver.amount | currency: "" : "" : "1.2-2" : "no" }} kr </span>
+				</div>
+			</mat-list-item>
+		}
 	</div>
 </div>

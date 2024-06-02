@@ -1,5 +1,5 @@
 import { ENTER } from '@angular/cdk/keycodes';
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
@@ -24,7 +24,6 @@ import { User } from 'src/app/services/user/user.service';
 		ReactiveFormsModule,
 		MatFormFieldModule,
 		MatSelectModule,
-		NgFor,
 		MatOptionModule,
 		MatButtonModule,
 		MatAutocompleteModule,

@@ -1,4 +1,5 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
@@ -30,8 +31,13 @@ describe('ExpenseService', () => {
 	beforeEach(() => {
 		const env = { apiUrl: 'http://localhost:3002/api/' } as Environment;
 		TestBed.configureTestingModule({
-			providers: [FormValidationService, { provide: ENV, useValue: env }],
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				FormValidationService,
+				{ provide: ENV, useValue: env },
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(ExpenseService);
 
@@ -46,9 +52,9 @@ describe('ExpenseService', () => {
 	describe('#loadExpenses', () => {
 		it('should load expenses', () => {
 			service.loadExpenses('eventId').subscribe({
-				next: (result) =>
-
-    expect(result).withContext('should return result').toEqual([mockExpense]),
+				next: (result) => {
+					expect(result).withContext('should return result').toEqual([mockExpense]);
+				},
 				error: fail,
 			});
 

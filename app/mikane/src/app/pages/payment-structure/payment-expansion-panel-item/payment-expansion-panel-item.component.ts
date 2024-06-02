@@ -1,4 +1,4 @@
-import { AsyncPipe, CurrencyPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -15,11 +15,9 @@ import { User } from 'src/app/services/user/user.service';
 	styleUrls: ['./payment-expansion-panel-item.component.scss'],
 	standalone: true,
 	imports: [
-		NgIf,
 		MatButtonModule,
 		MatIconModule,
 		MatExpansionModule,
-		NgFor,
 		MatTableModule,
 		MatCardModule,
 		MatListModule,

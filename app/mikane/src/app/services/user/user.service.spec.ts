@@ -1,4 +1,5 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
@@ -13,8 +14,13 @@ describe('UserService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			providers: [UserService, { provide: ENV, useValue: env }],
+			imports: [],
+			providers: [
+				UserService,
+				{ provide: ENV, useValue: env },
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(UserService);
 		httpMock = TestBed.inject(HttpTestingController);
