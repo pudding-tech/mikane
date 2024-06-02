@@ -1,12 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Inject, Output } from "@angular/core";
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MAT_BOTTOM_SHEET_DATA } from "@angular/material/bottom-sheet";
+import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from "@angular/material/list";
+import { MatListModule } from '@angular/material/list';
 import { User } from 'src/app/services/user/user.service';
 
 type CategoryInfo = {
@@ -20,7 +19,7 @@ type CategoryInfo = {
 	templateUrl: './expense-bottom-sheet.component.html',
 	styleUrls: ['./expense-bottom-sheet.component.scss'],
 	standalone: true,
-	imports: [CommonModule, MatListModule, MatButtonModule, MatIconModule, FormsModule, MatFormFieldModule, MatInputModule],
+	imports: [MatListModule, MatButtonModule, MatIconModule, FormsModule, MatFormFieldModule, MatInputModule],
 })
 export class ExpenseBottomSheetComponent {
 	@Output() inputDataChange = new EventEmitter<string[]>();
@@ -30,16 +29,15 @@ export class ExpenseBottomSheetComponent {
 	protected categories: CategoryInfo[];
 
 	constructor(
-		@Inject(MAT_BOTTOM_SHEET_DATA) public data: { type: 'search' | 'payers' | 'categories', filterData?: User[] | CategoryInfo[], currentFilter: string[] }
+		@Inject(MAT_BOTTOM_SHEET_DATA)
+		public data: { type: 'search' | 'payers' | 'categories'; filterData?: User[] | CategoryInfo[]; currentFilter: string[] },
 	) {
 		this.selectedValues = data.currentFilter ?? [];
 		if (data.type === 'search') {
 			this.searchValue = data.currentFilter[0];
-		}
-		else if (data.type === 'payers') {
+		} else if (data.type === 'payers') {
 			this.payers = (data.filterData ?? []) as User[];
-		}
-		else if (data.type === 'categories') {
+		} else if (data.type === 'categories') {
 			this.categories = (data.filterData ?? []) as CategoryInfo[];
 		}
 	}
@@ -48,8 +46,7 @@ export class ExpenseBottomSheetComponent {
 		const indexToRemove = this.selectedValues.indexOf(value);
 		if (indexToRemove !== -1) {
 			this.selectedValues.splice(indexToRemove, 1);
-		}
-		else {
+		} else {
 			this.selectedValues.push(value);
 		}
 		this.inputDataChange.emit(this.selectedValues);

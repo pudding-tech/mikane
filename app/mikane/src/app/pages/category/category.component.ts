@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { AfterViewChecked, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,9 +20,9 @@ import { CategoryItemComponent } from 'src/app/features/mobile/category-item/cat
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { ScrollService } from 'src/app/services/scroll/scroll.service';
-import { PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
+import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -40,9 +40,7 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 		CommonModule,
 		MatButtonModule,
 		MatIconModule,
-		NgIf,
 		MatExpansionModule,
-		NgFor,
 		MatTableModule,
 		MatListModule,
 		FormsModule,
@@ -86,7 +84,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 		public breakpointService: BreakpointService,
 		public contextService: ContextService,
 		public scrollService: ScrollService,
-		private router: Router
+		private router: Router,
 	) {}
 
 	ngOnInit(): void {
@@ -404,7 +402,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			return;
 		}
 		this.router.navigate(['events', this.event.id, 'expenses'], {
-			queryParams: { categories: category.id }
+			queryParams: { categories: category.id },
 		});
 	}
 

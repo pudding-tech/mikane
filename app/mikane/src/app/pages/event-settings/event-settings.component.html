@@ -1,68 +1,89 @@
-<div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="settings">
-		<mat-card class="card">
-			<mat-card-header>
-				<div mat-card-avatar>
-					<mat-icon>settings</mat-icon>
-				</div>
-				<mat-card-title>Event settings</mat-card-title>
-			</mat-card-header>
-			<mat-card-content>
-				<div class="header">Edit event</div>
-				<div>
-					<ng-container *ngTemplateOutlet="formContent"></ng-container>
-				</div>
-				<div class="header">Change status</div>
-				<div class="event-settings-content archive">
-					<ng-container *ngTemplateOutlet="statusContent"></ng-container>
-				</div>
-				<div class="header">Manage admins</div>
-				<div class="event-settings-content admins">
-					<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
-				</div>
-				<div class="header">Delete event</div>
-				<div class="event-settings-content delete">
-					<ng-container *ngTemplateOutlet="deleteContent"></ng-container>
-				</div>
-			</mat-card-content>
-		</mat-card>
+@if ((loading | async) === false) {
+	<div>
+		@if ((breakpointService.isMobile() | async) === false) {
+			<div class="settings">
+				<mat-card class="card">
+					<mat-card-header>
+						<div mat-card-avatar>
+							<mat-icon>settings</mat-icon>
+						</div>
+						<mat-card-title>Event settings</mat-card-title>
+					</mat-card-header>
+					<mat-card-content>
+						<div class="header">Edit event</div>
+						<div>
+							<ng-container *ngTemplateOutlet="formContent"></ng-container>
+						</div>
+						<div class="header">Change status</div>
+						<div class="event-settings-content archive">
+							<ng-container *ngTemplateOutlet="statusContent"></ng-container>
+						</div>
+						<div class="header">Manage admins</div>
+						<div class="event-settings-content admins">
+							<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
+						</div>
+						<div class="header">Delete event</div>
+						<div class="event-settings-content delete">
+							<ng-container *ngTemplateOutlet="deleteContent"></ng-container>
+						</div>
+					</mat-card-content>
+				</mat-card>
+			</div>
+		} @else {
+			<div class="header-mobile">Edit event</div>
+			<ng-container *ngTemplateOutlet="formContent"></ng-container>
+			<div class="header-mobile">Change status</div>
+			<div class="event-settings-content archive">
+				<ng-container *ngTemplateOutlet="statusContent"></ng-container>
+			</div>
+			<div class="header-mobile admins">Manage admins</div>
+			<div class="admins">
+				<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
+			</div>
+			<div class="header-mobile">Delete event</div>
+			<div class="event-settings-content delete-mobile">
+				<ng-container *ngTemplateOutlet="deleteContent"></ng-container>
+			</div>
+		}
 	</div>
-</div>
-
-<ng-template #mobileView>
-	<div class="header-mobile">Edit event</div>
-	<ng-container *ngTemplateOutlet="formContent"></ng-container>
-	<div class="header-mobile">Change status</div>
-	<div class="event-settings-content archive">
-		<ng-container *ngTemplateOutlet="statusContent"></ng-container>
-	</div>
-	<div class="header-mobile admins">Manage admins</div>
-	<div class="admins">
-		<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
-	</div>
-	<div class="header-mobile">Delete event</div>
-	<div class="event-settings-content delete-mobile">
-		<ng-container *ngTemplateOutlet="deleteContent"></ng-container>
-	</div>
-</ng-template>
+} @else {
+	<app-loading-spinner></app-loading-spinner>
+}
 
 <ng-template #formContent>
 	<form (ngSubmit)="editEvent()" class="event-settings-content form">
 		@if (event.status.id !== EventStatusType.ACTIVE) {
-			<div class="only-active-edit">
-				Only active events can be edited
-			</div>
+			<div class="only-active-edit">Only active events can be edited</div>
 		}
 		<mat-form-field appearance="fill">
 			<mat-label>Event Name</mat-label>
-			<input matInput name="name" [(ngModel)]="eventData.name" required [disabled]="event.status.id !== EventStatusType.ACTIVE" [appEventName]="eventData.id" #name="ngModel" />
-			<mat-error *ngIf="name.errors?.['required']">Event name is required</mat-error>
-			<mat-error *ngIf="name.errors?.['duplicate']">Event name already exists</mat-error>
-			<mat-error *ngIf="name.errors?.['invalid']">Invalid event name</mat-error>
+			<input
+				matInput
+				name="name"
+				[(ngModel)]="eventData.name"
+				required
+				[disabled]="event.status.id !== EventStatusType.ACTIVE"
+				[appEventName]="eventData.id"
+				#name="ngModel"
+			/>
+			@if (name.errors?.["required"]) {
+				<mat-error>Event name is required</mat-error>
+			}
+			@if (name.errors?.["duplicate"]) {
+				<mat-error>Event name already exists</mat-error>
+			}
+			@if (name.errors?.["invalid"]) {
+				<mat-error>Invalid event name</mat-error>
+			}
 		</mat-form-field>
 		<mat-form-field appearance="fill">
 			<mat-label>Event Description</mat-label>
-			<input matInput name="description" [(ngModel)]="eventData.description" [disabled]="event.status.id !== EventStatusType.ACTIVE" />
+			<input
+				matInput
+				name="description"
+				[(ngModel)]="eventData.description"
+				[disabled]="event.status.id !== EventStatusType.ACTIVE"
+			/>
 		</mat-form-field>
 		<button
 			mat-raised-button
@@ -77,58 +98,77 @@
 </ng-template>
 
 <ng-template #statusContent>
-	<div *ngIf="event?.status.id === EventStatusType.ACTIVE else notActive">
-		<div class="event-settings-text">
-			This event is currently <b>active</b>. By setting the event as 'ready to settle' any further editing by any participants will not be possible, and participants will be urged to settle their payments.
-		</div>
-		<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.READY_TO_SETTLE)">Set event as ready to settle</button>
-	</div>
-	<ng-template #notActive>
-		<div *ngIf="event?.status.id === EventStatusType.READY_TO_SETTLE else archived">
+	@if (event?.status.id === EventStatusType.ACTIVE) {
+		<div>
 			<div class="event-settings-text">
-				This event is currently <b>ready to settle</b>. When all participants have settled their payments the event should be archived. Should any changes be neccessary, set the event as active again.
+				This event is currently <b>active</b>. By setting the event as 'ready to settle' any further editing by any participants
+				will not be possible, and participants will be urged to settle their payments.
 			</div>
-			<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.ARCHIVED)" class="status-button">Archive event</button>
-			<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)">Set event as active</button>
+			<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.READY_TO_SETTLE)">
+				Set event as ready to settle
+			</button>
 		</div>
+	} @else {
+		@if (event?.status.id === EventStatusType.READY_TO_SETTLE) {
+			<div>
+				<div class="event-settings-text">
+					This event is currently <b>ready to settle</b>. When all participants have settled their payments the event should be
+					archived. Should any changes be neccessary, set the event as active again.
+				</div>
+				<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.ARCHIVED)" class="status-button">
+					Archive event
+				</button>
+				<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)">Set event as active</button>
+			</div>
+		} @else {
+			<div class="event-settings-text">
+				This event is currently <b>archived</b>. By setting this event as active participants can start editing the event again.
+			</div>
+			<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)">Set event as active</button>
+		}
 		<ng-template #archived>
 			<div class="event-settings-text">
 				This event is currently <b>archived</b>. By setting this event as active participants can start editing the event again.
 			</div>
 			<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)">Set event as active</button>
 		</ng-template>
-	</ng-template>
+	}
 </ng-template>
 
 <ng-template #adminsContent>
 	<div class="admins-content" [ngClass]="{ 'full-view': (breakpointService.isMobile() | async) === false }">
 		<mat-nav-list>
-			<mat-list-item *ngFor="let admin of adminsInEvent" class="list-item">
-				<div class="admin">
-					<div class="name">
-						<img [src]="admin.avatarURL" alt="User avatar" class="avatar" />
-						{{ admin.name }}
+			@for (admin of adminsInEvent; track admin) {
+				<mat-list-item class="list-item">
+					<div class="admin">
+						<div class="name">
+							<img [src]="admin.avatarURL" alt="User avatar" class="avatar" />
+							{{ admin.name }}
+						</div>
+						<button mat-icon-button (click)="removeAdmin(admin.id)" [disabled]="adminsInEvent.length < 2">
+							<mat-icon>remove</mat-icon>
+						</button>
 					</div>
-					<button mat-icon-button (click)="removeAdmin(admin.id)" [disabled]="adminsInEvent.length < 2">
-						<mat-icon>remove</mat-icon>
-					</button>
-				</div>
-			</mat-list-item>
+				</mat-list-item>
+			}
 		</mat-nav-list>
 		<div class="add-admin" [ngClass]="{ mobile: breakpointService.isMobile() | async }">
-			<mat-form-field *ngIf="otherUsersInEvent.length !== 0; else allUsersAdded">
-				<mat-select [formControl]="addAdminForm.get('userId') | formControl" name="userId" placeholder="Add admins" required>
-					<mat-option *ngFor="let user of otherUsersInEvent" [value]="user.id">
-						<span class="name">
-							<img [src]="user.avatarURL" alt="User avatar" class="avatar" />
-							{{ user.name }}
-						</span>
-					</mat-option>
-				</mat-select>
-			</mat-form-field>
-			<ng-template #allUsersAdded>
+			@if (otherUsersInEvent.length !== 0) {
+				<mat-form-field>
+					<mat-select [formControl]="addAdminForm.get('userId') | formControl" name="userId" placeholder="Add admins" required>
+						@for (user of otherUsersInEvent; track user) {
+							<mat-option [value]="user.id">
+								<span class="name">
+									<img [src]="user.avatarURL" alt="User avatar" class="avatar" />
+									{{ user.name }}
+								</span>
+							</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+			} @else {
 				<div class="all-users-admins">All users in this event are admins</div>
-			</ng-template>
+			}
 			<button
 				mat-icon-button
 				type="button"
@@ -150,8 +190,4 @@
 	<button mat-raised-button color="warn" (click)="deleteEvent()" [disabled]="event.status.id !== EventStatusType.ACTIVE">
 		{{ event.status.id === EventStatusType.ACTIVE ? "Delete event" : "Archived events cannot be deleted" }}
 	</button>
-</ng-template>
-
-<ng-template #loadingSpinner>
-	<app-loading-spinner></app-loading-spinner>
 </ng-template>

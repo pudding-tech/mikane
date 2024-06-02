@@ -1,4 +1,4 @@
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -10,7 +10,7 @@ import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.serv
 	templateUrl: 'event-item.component.html',
 	styleUrls: ['./event-item.component.scss'],
 	standalone: true,
-	imports: [CommonModule, NgIf, MatIconModule, MatListModule, MatTooltipModule],
+	imports: [CommonModule, MatIconModule, MatListModule, MatTooltipModule],
 })
 export class EventItemComponent {
 	@Input() event: PuddingEvent;

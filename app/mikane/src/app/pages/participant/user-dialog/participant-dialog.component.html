@@ -4,12 +4,14 @@
 		<mat-form-field appearance="fill">
 			<mat-label>User</mat-label>
 			<mat-chip-grid #chipGrid>
-				<mat-chip-row *ngFor="let user of selectedUsers" (removed)="remove(user)">
-					{{ user.name }}
-					<button matChipRemove>
-						<mat-icon>cancel</mat-icon>
-					</button>
-				</mat-chip-row>
+				@for (user of selectedUsers; track user) {
+					<mat-chip-row (removed)="remove(user)">
+						{{ user.name }}
+						<button matChipRemove>
+							<mat-icon>cancel</mat-icon>
+						</button>
+					</mat-chip-row>
+				}
 			</mat-chip-grid>
 			<input
 				type="text"
@@ -22,12 +24,14 @@
 				(matChipInputTokenEnd)="add($event)"
 			/>
 			<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selected($event)">
-				<mat-option *ngFor="let user of filteredUsers | async" [value]="user">
-					<span class="user">
-						<img [src]="user.avatarURL" alt="Avatar URL" class="avatar" />
-						{{ user.name }}
-					</span>
-				</mat-option>
+				@for (user of filteredUsers | async; track user) {
+					<mat-option [value]="user">
+						<span class="user">
+							<img [src]="user.avatarURL" alt="Avatar URL" class="avatar" />
+							{{ user.name }}
+						</span>
+					</mat-option>
+				}
 			</mat-autocomplete>
 		</mat-form-field>
 	</form>

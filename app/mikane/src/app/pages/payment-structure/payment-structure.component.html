@@ -1,79 +1,93 @@
-<div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView">
-		<div *ngIf="senders.length > 0; else noPayments">
-			<div class="payments-header" [ngClass]="{ 'empty-payments': paymentsSelf.length === 0 }">
-				<h3 class="payments-title">Your payments</h3>
-				<button *ngIf="paymentsSelf.length > 0" mat-button color="accent" (click)="toggleExpand(1)" class="collapse-button">
-					<mat-icon>{{ allExpandedSelf ? "visibility_off" : "visibility" }}</mat-icon>
-					{{ allExpandedSelf ? "Collapse all payments" : "Show all payments" }}
-				</button>
+@if ((loading | async) === false) {
+	<div>
+		@if ((breakpointService.isMobile() | async) === false) {
+			<div>
+				@if (senders.length > 0) {
+					<div>
+						<div class="payments-header" [ngClass]="{ 'empty-payments': paymentsSelf.length === 0 }">
+							<h3 class="payments-title">Your payments</h3>
+							@if (paymentsSelf.length > 0) {
+								<button mat-button color="accent" (click)="toggleExpand(1)" class="collapse-button">
+									<mat-icon>{{ allExpandedSelf ? "visibility_off" : "visibility" }}</mat-icon>
+									{{ allExpandedSelf ? "Collapse all payments" : "Show all payments" }}
+								</button>
+							}
+						</div>
+						@if (paymentsSelf.length > 0) {
+							<app-payment-expansion-panel-item
+								#paymentsSelfRef
+								[senders]="paymentsSelf"
+								[self]="true"
+								[currentUser]="currentUser"
+								(allPanelsExpanded)="panelToggled(1, $event)"
+							>
+							</app-payment-expansion-panel-item>
+						} @else {
+							<span class="empty-payments-text">You have no payments in this event</span>
+						}
+						<div class="payments-header" [ngClass]="{ 'empty-payments': paymentsOthers.length === 0 }">
+							<h3 class="payments-title">Other payments</h3>
+							@if (paymentsOthers.length > 0) {
+								<button mat-button color="accent" (click)="toggleExpand(2)" class="collapse-button">
+									<mat-icon>{{ allExpandedOthers ? "visibility_off" : "visibility" }}</mat-icon>
+									{{ allExpandedOthers ? "Collapse all payments" : "Show all payments" }}
+								</button>
+							}
+						</div>
+						@if (paymentsOthers.length > 0) {
+							<app-payment-expansion-panel-item
+								#paymentsOthersRef
+								[senders]="paymentsOthers"
+								[self]="false"
+								[currentUser]="currentUser"
+								(allPanelsExpanded)="panelToggled(2, $event)"
+							>
+							</app-payment-expansion-panel-item>
+						} @else {
+							<span class="empty-payments-text">There are no other payments in this event</span>
+						}
+					</div>
+				} @else {
+					<div class="no-payments">
+						<mat-card appearance="outlined">
+							<mat-card-content><h1>No payments</h1></mat-card-content>
+						</mat-card>
+					</div>
+				}
 			</div>
-			<app-payment-expansion-panel-item
-				#paymentsSelfRef
-				*ngIf="paymentsSelf.length > 0; else noPaymentsSelf"
-				[senders]="paymentsSelf"
-				[self]="true"
-				[currentUser]="currentUser"
-				(allPanelsExpanded)="panelToggled(1, $event)"
-			>
-			</app-payment-expansion-panel-item>
-			<ng-template #noPaymentsSelf>
-				<span class="empty-payments-text">You have no payments in this event</span>
-			</ng-template>
-			<div class="payments-header" [ngClass]="{ 'empty-payments': paymentsOthers.length === 0 }">
-				<h3 class="payments-title">Other payments</h3>
-				<button *ngIf="paymentsOthers.length > 0" mat-button color="accent" (click)="toggleExpand(2)" class="collapse-button">
-					<mat-icon>{{ allExpandedOthers ? "visibility_off" : "visibility" }}</mat-icon>
-					{{ allExpandedOthers ? "Collapse all payments" : "Show all payments" }}
-				</button>
-			</div>
-			<app-payment-expansion-panel-item
-				#paymentsOthersRef
-				*ngIf="paymentsOthers.length > 0; else noPaymentsOthers"
-				[senders]="paymentsOthers"
-				[self]="false"
-				[currentUser]="currentUser"
-				(allPanelsExpanded)="panelToggled(2, $event)"
-			>
-			</app-payment-expansion-panel-item>
-			<ng-template #noPaymentsOthers>
-				<span class="empty-payments-text">There are no other payments in this event</span>
-			</ng-template>
-		</div>
+		} @else {
+			@if (senders.length > 0) {
+				<div>
+					@if (paymentsSelf.length > 0) {
+						<div>
+							@if (paymentsOthers.length > 0) {
+								<div class="title-mobile">Your payments</div>
+							}
+							<mat-nav-list class="payments-list-mobile">
+								@for (sender of paymentsSelf; track sender) {
+									<app-payment-item [sender]="sender" [self]="true" [currentUser]="currentUser"> </app-payment-item>
+								}
+							</mat-nav-list>
+						</div>
+					}
+					@if (paymentsOthers.length > 0) {
+						<div>
+							@if (paymentsSelf.length > 0) {
+								<div class="title-mobile">Other payments</div>
+							}
+							<mat-nav-list class="payments-list-mobile">
+								@for (sender of paymentsOthers; track sender) {
+									<app-payment-item [sender]="sender" [self]="false" [currentUser]="currentUser"> </app-payment-item>
+								}
+							</mat-nav-list>
+						</div>
+					}
+				</div>
+			} @else {
+				<div class="no-payments-mobile">No payments</div>
+			}
+		}
 	</div>
-</div>
-
-<ng-template #mobileView>
-	<div *ngIf="senders.length > 0; else noPaymentsMobile">
-		<div *ngIf="paymentsSelf.length > 0">
-			<div *ngIf="paymentsOthers.length > 0" class="title-mobile">Your payments</div>
-			<mat-nav-list class="payments-list-mobile">
-				<app-payment-item *ngFor="let sender of paymentsSelf" [sender]="sender" [self]="true" [currentUser]="currentUser">
-				</app-payment-item>
-			</mat-nav-list>
-		</div>
-		<div *ngIf="paymentsOthers.length > 0">
-			<div *ngIf="paymentsSelf.length > 0" class="title-mobile">Other payments</div>
-			<mat-nav-list class="payments-list-mobile">
-				<app-payment-item *ngFor="let sender of paymentsOthers" [sender]="sender" [self]="false" [currentUser]="currentUser">
-				</app-payment-item>
-			</mat-nav-list>
-		</div>
-	</div>
-</ng-template>
-
-<ng-template #loadingSpinner>
+} @else {
 	<app-loading-spinner></app-loading-spinner>
-</ng-template>
-
-<ng-template #noPayments>
-	<div class="no-payments">
-		<mat-card appearance="outlined">
-			<mat-card-content><h1>No payments</h1></mat-card-content>
-		</mat-card>
-	</div>
-</ng-template>
-
-<ng-template #noPaymentsMobile>
-	<div class="no-payments-mobile">No payments</div>
-</ng-template>
+}

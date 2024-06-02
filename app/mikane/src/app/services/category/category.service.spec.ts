@@ -1,4 +1,5 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { CategoryIcon } from 'src/app/types/enums';
 import { Environment } from 'src/environments/environment.interface';
@@ -22,8 +23,13 @@ describe('CategoryService', () => {
 		} as Category;
 
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			providers: [CategoryService, { provide: ENV, useValue: env }],
+			imports: [],
+			providers: [
+				CategoryService,
+				{ provide: ENV, useValue: env },
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 
 		service = TestBed.inject(CategoryService);

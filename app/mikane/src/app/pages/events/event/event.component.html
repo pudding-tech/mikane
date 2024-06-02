@@ -10,32 +10,40 @@
 	</div>
 	<div class="name">
 		{{ event.name }}
-		<button *ngIf="event.status?.id !== EventStatusType.ACTIVE && (breakpointService.isMobile() | async) === false" mat-stroked-button disabled [ngClass]="{ 'ready-to-settle': event.status?.id === EventStatusType.READY_TO_SETTLE}">
-			{{ event.status?.id === EventStatusType.READY_TO_SETTLE ? 'Ready to settle' : 'Archived' }}
-		</button>
+		@if (event.status?.id !== EventStatusType.ACTIVE && (breakpointService.isMobile() | async) === false) {
+			<button mat-stroked-button disabled [ngClass]="{ 'ready-to-settle': event.status?.id === EventStatusType.READY_TO_SETTLE }">
+				{{ event.status?.id === EventStatusType.READY_TO_SETTLE ? "Ready to settle" : "Archived" }}
+			</button>
+		}
 	</div>
 	<span class="toolbar-spacer"></span>
 	<app-menu [ngClass]="{ 'mobile-menu': breakpointService.isMobile() | async }"></app-menu>
 </mat-toolbar>
-<nav *ngIf="(breakpointService.isMobile() | async) === false; else mobileNavbar" class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
-	<a
-		mat-tab-link
-		*ngFor="let link of links()"
-		[routerLink]="link.location"
-		(click)="activeLink = link.location"
-		[active]="activeLink.includes(link.location)"
-		[ngClass]="{ 'settings-tab': link.name === 'Settings' || link.name === 'Info' }"
-	>
-		<mat-icon *ngIf="link.name === 'Settings' || link.name === 'Info'; else name">{{ link.icon }}</mat-icon>
-		<ng-template #name>
-			{{ link.name }}
-		</ng-template>
-	</a>
-</nav>
-<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
-<ng-template #mobileNavbar>
+@if ((breakpointService.isMobile() | async) === false) {
+	<nav class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
+		@for (link of links(); track link) {
+			<a
+				mat-tab-link
+				[routerLink]="link.location"
+				(click)="activeLink = link.location"
+				[active]="activeLink.includes(link.location)"
+				[ngClass]="{ 'settings-tab': link.name === 'Settings' || link.name === 'Info' }"
+			>
+				@if (link.name === "Settings" || link.name === "Info") {
+					<mat-icon>{{ link.icon }}</mat-icon>
+				} @else {
+					{{ link.name }}
+				}
+				<ng-template #name>
+					{{ link.name }}
+				</ng-template>
+			</a>
+		}
+	</nav>
+} @else {
 	<app-mobile-event-navbar [activeLink]="activeLink" [links]="links()"></app-mobile-event-navbar>
-</ng-template>
+}
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
 <div
 	[ngClass]="{
 		content: (breakpointService.isMobile() | async) === false,

@@ -1,5 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations';
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, ContentChildren, ElementRef, EventEmitter, HostListener, Output, QueryList } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,7 +17,7 @@ import { SplitButtonItemDirective } from './split-button-item/split-button-item.
 			transition(':leave', [animate('{{hideTransitionParams}}', style({ opacity: 0 }))]),
 		]),
 	],
-	imports: [CommonModule, NgIf, MatButtonToggleModule, MatIconModule],
+	imports: [CommonModule, MatButtonToggleModule, MatIconModule],
 })
 export class SplitButtonComponent {
 	@Output() splitButtonClick = new EventEmitter();
@@ -35,7 +35,10 @@ export class SplitButtonComponent {
 	showTransitionOptions = '.12s cubic-bezier(0, 0, 0.2, 1)';
 	hideTransitionOptions = '.1s linear';
 
-	constructor(private self: ElementRef, public breakpointService: BreakpointService) {}
+	constructor(
+		private self: ElementRef,
+		public breakpointService: BreakpointService,
+	) {}
 
 	onClick() {
 		this.splitButtonClick.emit();

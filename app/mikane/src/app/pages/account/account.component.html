@@ -6,25 +6,29 @@
 	<span class="toolbar-spacer"></span>
 	<app-menu></app-menu>
 </mat-toolbar>
-<div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div class="account-settings" *ngIf="user; else noUser">
-		<app-user-settings
-			[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc first'"
-			[user]="user"
-		></app-user-settings>
-		<app-change-password [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"></app-change-password>
-		<app-danger-zone [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc last'"></app-danger-zone>
+@if ((loading | async) === false) {
+	<div>
+		@if (user) {
+			<div class="account-settings">
+				<app-user-settings
+					[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc first'"
+					[user]="user"
+				></app-user-settings>
+				<app-change-password
+					[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"
+				></app-change-password>
+				<app-danger-zone
+					[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc last'"
+				></app-danger-zone>
+			</div>
+		} @else {
+			<div class="no-user">
+				<mat-card appearance="outlined">
+					<mat-card-content> <h1>Error loading user</h1></mat-card-content>
+				</mat-card>
+			</div>
+		}
 	</div>
-</div>
-
-<ng-template #noUser>
-	<div class="no-user">
-		<mat-card appearance="outlined">
-			<mat-card-content> <h1>Error loading user</h1></mat-card-content>
-		</mat-card>
-	</div>
-</ng-template>
-
-<ng-template #loadingSpinner>
+} @else {
 	<app-loading-spinner></app-loading-spinner>
-</ng-template>
+}

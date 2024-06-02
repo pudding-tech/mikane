@@ -1,4 +1,4 @@
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -27,11 +27,9 @@ import { CategoryIcon } from 'src/app/types/enums';
 		MatFormFieldModule,
 		MatInputModule,
 		MatAutocompleteModule,
-		NgFor,
 		MatOptionModule,
 		MatButtonModule,
 		AsyncPipe,
-		NgIf,
 		MatSelectModule,
 		FormControlPipe,
 		MatIconModule,
@@ -64,7 +62,7 @@ export class ExpenditureDialogComponent implements OnInit {
 		},
 		private categoryService: CategoryService,
 		private userService: UserService,
-		public breakpointService: BreakpointService
+		public breakpointService: BreakpointService,
 	) {}
 
 	ngOnInit() {
