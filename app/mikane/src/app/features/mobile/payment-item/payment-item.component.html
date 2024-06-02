@@ -16,7 +16,7 @@
 		</div>
 	</mat-list-item>
 	<div #lower class="lower" [style.height.px]="lowerHeight">
-		@for (receiver of sender.receivers; track receiver) {
+		@for (receiver of sender.receivers; track receiver.receiver.id) {
 			<mat-list-item>
 				<div class="payment">
 					<span class="name">

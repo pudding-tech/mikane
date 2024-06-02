@@ -24,7 +24,7 @@
 				(matChipInputTokenEnd)="add($event)"
 			/>
 			<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selected($event)">
-				@for (user of filteredUsers | async; track user) {
+				@for (user of filteredUsers | async; track user.id) {
 					<mat-option [value]="user">
 						<span class="user">
 							<img [src]="user.avatarURL" alt="Avatar URL" class="avatar" />

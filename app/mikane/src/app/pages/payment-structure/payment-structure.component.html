@@ -64,7 +64,7 @@
 								<div class="title-mobile">Your payments</div>
 							}
 							<mat-nav-list class="payments-list-mobile">
-								@for (sender of paymentsSelf; track sender) {
+								@for (sender of paymentsSelf; track sender.sender.id) {
 									<app-payment-item [sender]="sender" [self]="true" [currentUser]="currentUser"> </app-payment-item>
 								}
 							</mat-nav-list>
@@ -76,7 +76,7 @@
 								<div class="title-mobile">Other payments</div>
 							}
 							<mat-nav-list class="payments-list-mobile">
-								@for (sender of paymentsOthers; track sender) {
+								@for (sender of paymentsOthers; track sender.sender.id) {
 									<app-payment-item [sender]="sender" [self]="false" [currentUser]="currentUser"> </app-payment-item>
 								}
 							</mat-nav-list>

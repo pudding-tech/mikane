@@ -13,7 +13,7 @@
 			<div [ngClass]="{ 'extra-margin': event?.status.id !== EventStatusType.ACTIVE }">
 				@if (categories.length > 0) {
 					<mat-accordion>
-						@for (category of categories; track category) {
+						@for (category of categories; track category.id) {
 							<mat-expansion-panel class="categories">
 								<mat-expansion-panel-header>
 									<mat-panel-title>
@@ -59,7 +59,7 @@
 																placeholder="Add participant"
 																required
 															>
-																@for (user of filterUsers(category.id); track user) {
+																@for (user of filterUsers(category.id); track user.id) {
 																	<mat-option [value]="user.id">
 																		<span class="user">
 																			<img
@@ -226,7 +226,7 @@
 		} @else {
 			@if (categories.length > 0) {
 				<mat-nav-list class="categories-list-mobile">
-					@for (category of categories; track category) {
+					@for (category of categories; track category.id) {
 						<app-category-item
 							[eventActive]="event?.status.id === EventStatusType.ACTIVE"
 							[category]="category"

@@ -1,4 +1,4 @@
-<mat-button-toggle-group class="button-group">
+<mat-button-toggle-group class="button-group" hideSingleSelectionIndicator="true">
 	@if ((breakpointService.isMobile() | async) === false) {
 		<mat-button-toggle (click)="onClick()" class="split-button main-button">
 			<ng-content select="[button]"></ng-content>

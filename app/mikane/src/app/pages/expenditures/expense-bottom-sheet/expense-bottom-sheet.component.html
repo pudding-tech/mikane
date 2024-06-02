@@ -19,7 +19,7 @@
 } @else {
 	@if (data.type === "payers") {
 		<mat-nav-list>
-			@for (payer of payers; track payer) {
+			@for (payer of payers; track payer.id) {
 				<mat-list-item mat-list-item (click)="selectItem(payer.id)" class="wrapper">
 					<div class="payers">
 						<div class="name">
@@ -35,7 +35,7 @@
 		</mat-nav-list>
 	} @else {
 		<mat-nav-list>
-			@for (category of categories; track category) {
+			@for (category of categories; track category.id) {
 				<mat-list-item mat-list-item (click)="selectItem(category.id)" class="wrapper">
 					<div class="categories">
 						<div class="name">

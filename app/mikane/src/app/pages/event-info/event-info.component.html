@@ -34,7 +34,7 @@
 	</div>
 	<div class="admins-content" [ngClass]="{ 'full-view': (breakpointService.isMobile() | async) === false }">
 		<mat-nav-list>
-			@for (admin of adminsInEvent; track admin) {
+			@for (admin of adminsInEvent; track admin.id) {
 				<mat-list-item class="list-item">
 					<div class="admin">
 						<div class="name">
