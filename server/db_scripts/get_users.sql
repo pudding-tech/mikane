@@ -16,6 +16,8 @@ returns table (
   guest_created_by uuid,
   super_admin boolean,
   deleted boolean,
+  public_email boolean,
+  public_phone boolean,
   event_id uuid,
   is_event_admin boolean,
   event_joined_time timestamp
@@ -28,11 +30,13 @@ begin
     return query
     select
       u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, u.guest, u.guest_created_by, u.super_admin, u.deleted,
+      up.public_email, up.public_phone,
       null::uuid as event_id,
       null::boolean as is_event_admin,
       null::timestamp as event_joined_time
     from
       "user" u
+      left join user_preferences up on u.id = up.user_id
     where
       ((ip_exclude_user_id is not null and u.id != ip_exclude_user_id) or
       (ip_exclude_user_id is null and u.id = u.id)) and
@@ -52,11 +56,13 @@ begin
     return query
     select
       u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, u.guest, u.guest_created_by, u.super_admin, u.deleted,
+      up.public_email, up.public_phone,
       e.id as event_id, ue.admin as is_event_admin, ue.joined_time as event_joined_time
     from
       "user" u
       inner join user_event ue on ue.user_id = u.id
       inner join "event" e on e.id = ue.event_id
+      left join user_preferences up on u.id = up.user_id
     where
       ue.event_id = ip_event_id and
       ((ip_exclude_user_id is not null and u.id != ip_exclude_user_id) or

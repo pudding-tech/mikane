@@ -16,7 +16,9 @@ returns table (
   created timestamp,
   guest boolean,
   guest_created_by uuid,
-  super_admin boolean
+  super_admin boolean,
+  public_email boolean,
+  public_phone boolean
 ) as
 $$
 begin

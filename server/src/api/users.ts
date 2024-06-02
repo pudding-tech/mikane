@@ -317,14 +317,17 @@ router.put("/users/:id", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD059);
     }
 
-    // Validate email and phone number
+    // Validate username, email and phone number
+    if (username && !isValidUsername(username)) {
+      throw new ErrorExt(ec.PUD132);
+    }
     if (email && !isEmail(email)) {
       throw new ErrorExt(ec.PUD004);
     }
     if (phoneNumber && !isPhoneNumber(phoneNumber)) {
       throw new ErrorExt(ec.PUD113);
     }
-    
+
     const data = {
       username: username,
       firstName: firstName,
@@ -334,6 +337,43 @@ router.put("/users/:id", authCheck, async (req, res, next) => {
     };
 
     const user = await db.editUser(userId, data);
+    if (!user) {
+      throw new ErrorExt(ec.PUD008);
+    }
+    res.status(200).send(user);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
+/*
+* Edit user preferences
+*/
+router.put("/users/:id/preferences", authCheck, async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    if (!isUUID(userId)) {
+      throw new ErrorExt(ec.PUD016);
+    }
+
+    const publicEmail: boolean | undefined = req.body.publicEmail !== undefined
+      ? req.body.publicEmail === true
+      : undefined;
+    const publicPhone: boolean | undefined = req.body.publicPhone !== undefined
+      ? req.body.publicPhone === true
+      : undefined;
+
+    if (publicEmail === undefined && publicPhone === undefined) {
+      throw new ErrorExt(ec.PUD133);
+    }
+
+    const data = {
+      publicEmail: publicEmail,
+      publicPhone: publicPhone
+    };
+
+    const user = await db.editUserPreferences(userId, data);
     if (!user) {
       throw new ErrorExt(ec.PUD008);
     }
