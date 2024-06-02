@@ -25,7 +25,7 @@
 						<mat-form-field class="filters">
 							<mat-label>Filter by payer</mat-label>
 							<mat-select [(value)]="payersFilterSelect" multiple (selectionChange)="payerSelected()">
-								@for (payer of payers(); track payer) {
+								@for (payer of payers(); track payer.id) {
 									<mat-option [value]="payer.id">
 										<span class="payer">
 											<img [src]="payer.avatarURL" alt="User avatar" class="payer-avatar" />
@@ -38,7 +38,7 @@
 						<mat-form-field class="filters">
 							<mat-label>Filter by category</mat-label>
 							<mat-select [(value)]="categoriesFilterSelect" multiple (selectionChange)="categorySelected()">
-								@for (category of categories(); track category) {
+								@for (category of categories(); track category.id) {
 									<mat-option [value]="category.id">
 										{{ category.name }}
 									</mat-option>
@@ -190,7 +190,7 @@
 			</mat-chip-set>
 			@if (filteredExpenses().length > 0) {
 				<mat-nav-list #expensesList class="expenses-list-mobile">
-					@for (expense of filteredExpenses(); track expense) {
+					@for (expense of filteredExpenses(); track expense.id) {
 						<app-expense-item [expense]="expense"></app-expense-item>
 					}
 				</mat-nav-list>

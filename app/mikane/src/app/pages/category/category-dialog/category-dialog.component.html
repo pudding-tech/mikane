@@ -44,7 +44,7 @@
 	[cdkConnectedOverlayOpen]="isOpen"
 >
 	<mat-grid-list class="icon-grid" cols="5">
-		@for (icon of categoryIcons | keyvalue; track icon) {
+		@for (icon of categoryIcons | keyvalue; track icon.value) {
 			<mat-grid-tile [colspan]="1">
 				<button mat-icon-button (click)="iconChange(icon.value)">
 					<mat-icon>{{ icon.value }}</mat-icon>

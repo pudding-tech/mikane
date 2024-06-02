@@ -31,7 +31,7 @@
 				{{ category.weighted ? "Weight" : "" }}
 			</span>
 		</div>
-		@for (user of category.users; track user) {
+		@for (user of category.users; track user.id) {
 			<mat-list-item>
 				<div class="user data">
 					<span class="name">
@@ -70,7 +70,7 @@
 								required
 							>
 								<option value="" disabled selected>Add participant</option>
-								@for (user of filterUsers(category.id); track user) {
+								@for (user of filterUsers(category.id); track user.id) {
 									<option [value]="user.id">
 										{{ user.name }}
 									</option>

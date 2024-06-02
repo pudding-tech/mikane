@@ -37,7 +37,7 @@
 <ng-template #guestsContent>
 	<div class="guest-list">
 		<mat-nav-list>
-			@for (guest of pagedGuests; track guest) {
+			@for (guest of pagedGuests; track guest.id) {
 				<mat-list-item class="list-item">
 					<div class="user">
 						<div class="name">

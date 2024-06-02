@@ -75,7 +75,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
+          name: ${{ steps.bump-snapshot.outputs.artifact-backend }}
           path: ./server/build/
   test-frontend:
     needs: snapshot

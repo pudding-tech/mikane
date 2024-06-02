@@ -1,5 +1,5 @@
 <mat-accordion multi>
-	@for (sender of senders; track sender) {
+	@for (sender of senders; track sender.sender.id) {
 		<mat-expansion-panel [expanded]="self">
 			<mat-expansion-panel-header (click)="panelToggled()">
 				<div class="user">
