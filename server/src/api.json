@@ -474,7 +474,7 @@
           "Users"
         ],
         "summary": "Get user",
-        "description": "Get information about a specific user",
+        "description": "Get information about a specific user. If the requester is not the signed-in user, some sensitive information may be excluded.",
         "operationId": "getUser",
         "security": [
           { "cookieAuth": [] }

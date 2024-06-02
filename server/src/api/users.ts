@@ -10,6 +10,7 @@ import { isUUID } from "../utils/validators/uuidValidator";
 import { isEmail } from "../utils/validators/emailValidator";
 import { isPhoneNumber } from "../utils/validators/phoneValidator";
 import { isValidUsername } from "../utils/validators/usernameValidator";
+import { removeUserInfo } from "../parsers/parseUserInfo";
 import { sendRegisterAccountEmail } from "../email-services/registerAccount";
 import { sendDeleteAccountEmail } from "../email-services/deleteAccount";
 import { Expense, User } from "../types/types";
@@ -40,6 +41,10 @@ router.get("/users", authCheck, async (req, res, next) => {
     }
 
     const users: User[] = await db.getUsers(filter);
+
+    // Remove sensitive information if users are not signed in user
+    removeUserInfo(users, req.session.userId ?? "");
+
     res.status(200).send(users);
   }
   catch (err) {
@@ -53,14 +58,22 @@ router.get("/users", authCheck, async (req, res, next) => {
 router.get("/users/:id", authCheck, async (req, res, next) => {
   try {
     const userId = req.params.id;
+    const activeUserId = req.session.userId;
     if (!isUUID(userId)) {
       throw new ErrorExt(ec.PUD016);
+    }
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD054);
     }
 
     const user = await db.getUser(userId);
     if (!user) {
       throw new ErrorExt(ec.PUD008);
     }
+
+    // Remove sensitive information if user is not signed in user
+    removeUserInfo([user], activeUserId);
+
     res.status(200).send(user);
   }
   catch (err) {
