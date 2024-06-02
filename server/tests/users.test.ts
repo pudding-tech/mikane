@@ -351,6 +351,18 @@ describe("users", async () => {
       expect(res.status).toEqual(400);
       expect(res.body.code).toEqual(ec.PUD059.code);
     });
+
+    test("fail edit user when signed-in as another user", async () => {
+      const res = await request(app)
+        .put("/api/users/" + user2.id)
+        .set("Cookie", authToken)
+        .send({
+          firstName: "Changed"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD136.code);
+    });
   });
 
   /* -------------------------- */
@@ -589,6 +601,18 @@ describe("users", async () => {
 
         expect(res.status).toEqual(400);
         expect(res.body.code).toEqual(ec.PUD108.code);
+    });
+
+    test("fail delete user when signed-in as another user", async () => {
+      const res = await request(app)
+        .delete("/api/users/" + user2.id)
+        .set("Cookie", authToken)
+        .send({
+          key: deleteAccountKey
+        });
+
+        expect(res.status).toEqual(400);
+        expect(res.body.code).toEqual(ec.PUD137.code);
     });
 
     test("should delete user", async () => {

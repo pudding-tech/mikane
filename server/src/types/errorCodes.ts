@@ -1282,3 +1282,21 @@ export const PUD135: ErrorCode = {
   status: 500,
   log: true
 };
+
+/**
+ * PUD-136: Users can only edit their own data - you are signed-in as another user (400)
+ */
+export const PUD136: ErrorCode = {
+  code: "PUD-136",
+  message: "Users can only edit their own data - you are signed-in as another user",
+  status: 400
+};
+
+/**
+ * PUD-137: Users can only delete their own account - you are signed-in as another user (400)
+ */
+export const PUD137: ErrorCode = {
+  code: "PUD-137",
+  message: "Users can only delete their own account - you are signed-in as another user",
+  status: 400
+};
