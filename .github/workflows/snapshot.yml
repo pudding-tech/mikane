@@ -15,11 +15,11 @@ jobs:
       backend-artifact: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
       - name: Bump frontend version
         run: |
           cd ./app/mikane/
@@ -81,12 +81,12 @@ jobs:
     needs: snapshot
     uses: ./.github/workflows/frontend-test.yml
     with:
-      node-version: 20.x
+      node-version: 22.x
   test-backend:
     needs: snapshot
     uses: ./.github/workflows/backend-test.yml
     with:
-      node-version: 20.x
+      node-version: 22.x
   deploy-frontend:
     needs: [snapshot, test-frontend]
     uses: ./.github/workflows/frontend-deploy.yml

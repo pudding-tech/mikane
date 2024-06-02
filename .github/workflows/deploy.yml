@@ -18,10 +18,10 @@ on:
         description: "Node version"
         required: true
         type: choice
-        default: 20.x
+        default: 22.x
         options:
-          - 18.x
           - 20.x
+          - 22.x
       dry-run:
         description: "Dry run for testing"
         required: false
@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: mukunku/tag-exists-action@v1.5.0
         id: check-tag
         with:

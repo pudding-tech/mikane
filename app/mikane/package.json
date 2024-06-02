@@ -26,9 +26,9 @@
 		"@angular/router": "^18.0.1",
 		"@angular/service-worker": "^18.0.1",
 		"lodash-es": "^4.17.21",
-		"rxjs": "^7.8.0",
-		"tslib": "^2.5.0",
-		"zone.js": "^0.14.2"
+		"rxjs": "^7.8.1",
+		"tslib": "^2.6.2",
+		"zone.js": "^0.14.6"
 	},
 	"devDependencies": {
 		"@angular-devkit/build-angular": "^18.0.2",
@@ -58,5 +58,11 @@
 		"karma-junit-reporter": "^2.0.1",
 		"ng-mocks": "^14.13.0",
 		"typescript": "^5.4.5"
+	},
+	"optionalDependencies": {
+		"@nx/nx-darwin-arm64": "19.1.1",
+		"@nx/nx-darwin-x64": "19.1.1",
+		"@nx/nx-linux-x64-gnu": "19.1.1",
+		"@nx/nx-win32-x64-msvc": "19.1.1"
 	}
 }
