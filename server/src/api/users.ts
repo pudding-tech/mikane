@@ -317,6 +317,11 @@ router.put("/users/:id", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD016);
     }
 
+    // Users can only edit their own data
+    if (req.session.userId !== userId) {
+      throw new ErrorExt(ec.PUD136);
+    }
+
     const username: string | undefined = req.body.username;
     const firstName: string | undefined = req.body.firstName;
     const lastName: string | undefined = req.body.lastName;
@@ -370,6 +375,11 @@ router.put("/users/:id/preferences", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD016);
     }
 
+    // Users can only edit their own preferences
+    if (req.session.userId !== userId) {
+      throw new ErrorExt(ec.PUD136);
+    }
+
     const publicEmail: boolean | undefined = req.body.publicEmail !== undefined
       ? req.body.publicEmail === true
       : undefined;
@@ -415,6 +425,11 @@ router.delete("/users/:id", authCheck, async (req, res, next) => {
     const valid = await db.verifyDeleteAccountKey(key);
     if (!valid) {
       throw new ErrorExt(ec.PUD106);
+    }
+
+    // Users can only delete their own account
+    if (req.session.userId !== userId) {
+      throw new ErrorExt(ec.PUD137);
     }
 
     const success = await db.deleteUser(userId, key);
