@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Fetch tag ${{ inputs.tag }}
         if: ${{inputs.tag != '' && !inputs.dry-run}}
         run: |
@@ -69,7 +69,7 @@ jobs:
       outcome: ${{ steps.upload.outcome }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Fetch branch if branch event
         if: ${{ github.event_name == 'push' }}
         run: |
@@ -80,12 +80,12 @@ jobs:
           git fetch --tags
           git checkout ${{ inputs.tag }}
       - name: Use Node.js ${{ inputs.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
           cache: "npm"
           cache-dependency-path: ./app/mikane/package-lock.json
-      - run: npm ci
+      - run: npm ci --include=optional
       - name: "Build frontend"
         if: inputs.environment == 'production' || inputs.environment == 'staging'
         run: npm run build --if-present

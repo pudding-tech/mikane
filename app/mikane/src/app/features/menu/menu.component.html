@@ -1,27 +1,34 @@
 <div>
-	<span class="name" *ngIf="(breakpointService.isMobile() | async) === false">
-		{{ user?.username }}
-	</span>
+	@if ((breakpointService.isMobile() | async) === false) {
+		<span class="name">
+			{{ user?.username }}
+		</span>
+	}
 	<app-split-button #splitButton (splitButtonClick)="onProfileClick()">
 		<div button>
-			<img *ngIf="user?.avatarURL" alt="User avatar" [src]="user?.avatarURL" class="avatar" />
+			@if (user?.avatarURL) {
+				<img alt="User avatar" [src]="user?.avatarURL" class="avatar" />
+			}
 		</div>
 		<div dropdown-button>
-			<div *ngIf="breakpointService.isMobile() | async; else dropdownArrow">
-				<img *ngIf="user?.avatarURL" alt="User avatar" [src]="user?.avatarURL" class="avatar" />
-			</div>
-			<ng-template #dropdownArrow>
+			@if (breakpointService.isMobile() | async) {
+				<div>
+					@if (user?.avatarURL) {
+						<img alt="User avatar" [src]="user?.avatarURL" class="avatar" />
+					}
+				</div>
+			} @else {
 				<mat-icon dropdown-button class="dropdown-button">arrow_drop_down</mat-icon>
-			</ng-template>
+			}
 		</div>
-		<ng-container *ngIf="breakpointService.isMobile() | async">
+		@if (breakpointService.isMobile() | async) {
 			<app-split-button-item
 				*appSplitButtonItem
 				(splitButtonClick)="onProfileClick()"
 				icon="person"
 				text="Profile"
 			></app-split-button-item>
-		</ng-container>
+		}
 		<app-split-button-item
 			*appSplitButtonItem
 			(splitButtonClick)="onAccountClick()"

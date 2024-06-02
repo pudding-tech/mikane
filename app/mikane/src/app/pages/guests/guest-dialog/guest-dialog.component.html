@@ -1,35 +1,38 @@
 <h1 mat-dialog-title>
 	@if (data?.edit) {
 		{{ delete ? "Delete " + guest.firstName + (guest.lastName ? " " + guest.lastName : "") + "?" : "Edit guest" }}
-	}
-	@else {
+	} @else {
 		Create guest
 	}
 </h1>
-<div *ngIf="!delete; else deleteContent">
-	<div mat-dialog-content>
-		<mat-form-field appearance="fill">
-			<mat-label>First name</mat-label>
-			<input matInput name="firstName" [(ngModel)]="guest.firstName" required [appEventName]="guest.id" #firstName="ngModel" />
-			<mat-error *ngIf="firstName.errors?.['required']">First name is required</mat-error>
-		</mat-form-field>
-		<mat-form-field appearance="fill">
-			<mat-label>Last Name</mat-label>
-			<input matInput name="lastName" [(ngModel)]="guest.lastName" />
-		</mat-form-field>
-	</div>
-	<div mat-dialog-actions class="dialog-buttons">
-		<div>
-			<button mat-button (click)="onNoClick()">Cancel</button>
-			<button mat-button [disabled]="!isChanged() || firstName!.invalid || firstName!.pending" (click)="onSave()">
-				{{ data?.edit ? "Save" : "Create" }}
-			</button>
+@if (!delete) {
+	<div>
+		<div mat-dialog-content>
+			<mat-form-field appearance="fill">
+				<mat-label>First name</mat-label>
+				<input matInput name="firstName" [(ngModel)]="guest.firstName" required [appEventName]="guest.id" #firstName="ngModel" />
+				@if (firstName.errors?.["required"]) {
+					<mat-error>First name is required</mat-error>
+				}
+			</mat-form-field>
+			<mat-form-field appearance="fill">
+				<mat-label>Last Name</mat-label>
+				<input matInput name="lastName" [(ngModel)]="guest.lastName" />
+			</mat-form-field>
 		</div>
-		<button *ngIf="data?.edit" mat-button color="warn" (click)="openDelete()">Delete</button>
+		<div mat-dialog-actions class="dialog-buttons">
+			<div>
+				<button mat-button (click)="onNoClick()">Cancel</button>
+				<button mat-button [disabled]="!isChanged() || firstName!.invalid || firstName!.pending" (click)="onSave()">
+					{{ data?.edit ? "Save" : "Create" }}
+				</button>
+			</div>
+			@if (data?.edit) {
+				<button mat-button color="warn" (click)="openDelete()">Delete</button>
+			}
+		</div>
 	</div>
-</div>
-
-<ng-template #deleteContent>
+} @else {
 	<div mat-dialog-content>
 		Are you sure you want to delete this guest user? This cannot be undone.
 		<br /><br />
@@ -42,4 +45,4 @@
 			<button mat-button color="warn" (click)="deleteGuest()">Yes, I am sure</button>
 		</div>
 	</div>
-</ng-template>
+}

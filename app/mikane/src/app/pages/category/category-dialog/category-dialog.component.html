@@ -15,12 +15,18 @@
 			>
 				<mat-icon>{{ addCategoryForm.value.selectedIcon }}</mat-icon>
 			</button>
-			<mat-error *ngIf="addCategoryForm?.get('categoryName')?.errors?.['duplicate']">Category already exists</mat-error>
-			<mat-error *ngIf="addCategoryForm?.get('categoryName')?.errors?.['invalid']">Invalid category name</mat-error>
+			@if (addCategoryForm?.get("categoryName")?.errors?.["duplicate"]) {
+				<mat-error>Category already exists</mat-error>
+			}
+			@if (addCategoryForm?.get("categoryName")?.errors?.["invalid"]) {
+				<mat-error>Invalid category name</mat-error>
+			}
 		</mat-form-field>
-		<div *ngIf="!data.name">
-			<mat-checkbox id="weighted" name="weighted" formControlName="weighted">Weighted</mat-checkbox>
-		</div>
+		@if (!data.name) {
+			<div>
+				<mat-checkbox id="weighted" name="weighted" formControlName="weighted">Weighted</mat-checkbox>
+			</div>
+		}
 	</form>
 </div>
 <div mat-dialog-actions class="dialog-buttons">
@@ -38,10 +44,12 @@
 	[cdkConnectedOverlayOpen]="isOpen"
 >
 	<mat-grid-list class="icon-grid" cols="5">
-		<mat-grid-tile [colspan]="1" *ngFor="let icon of categoryIcons | keyvalue">
-			<button mat-icon-button (click)="iconChange(icon.value)">
-				<mat-icon>{{ icon.value }}</mat-icon>
-			</button>
-		</mat-grid-tile>
+		@for (icon of categoryIcons | keyvalue; track icon) {
+			<mat-grid-tile [colspan]="1">
+				<button mat-icon-button (click)="iconChange(icon.value)">
+					<mat-icon>{{ icon.value }}</mat-icon>
+				</button>
+			</mat-grid-tile>
+		}
 	</mat-grid-list>
 </ng-template>

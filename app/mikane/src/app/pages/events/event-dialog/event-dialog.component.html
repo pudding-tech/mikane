@@ -3,9 +3,15 @@
 	<mat-form-field appearance="fill">
 		<mat-label>Event Name</mat-label>
 		<input matInput name="name" [(ngModel)]="event.name" required [appEventName]="event.id" #name="ngModel" />
-		<mat-error *ngIf="name.errors?.['required']">Event name is required</mat-error>
-		<mat-error *ngIf="name.errors?.['duplicate']">Event name already exists</mat-error>
-		<mat-error *ngIf="name.errors?.['invalid']">Invalid event name</mat-error>
+		@if (name.errors?.["required"]) {
+			<mat-error>Event name is required</mat-error>
+		}
+		@if (name.errors?.["duplicate"]) {
+			<mat-error>Event name already exists</mat-error>
+		}
+		@if (name.errors?.["invalid"]) {
+			<mat-error>Invalid event name</mat-error>
+		}
 	</mat-form-field>
 	<mat-form-field appearance="fill">
 		<mat-label>Event Description</mat-label>

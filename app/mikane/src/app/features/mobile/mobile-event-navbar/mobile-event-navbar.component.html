@@ -1,13 +1,14 @@
 <div class="navbar" [ngClass]="{ iOS: contextService.isIos }">
-	<a
-		class="nav-button"
-		*ngFor="let link of mobileLinks()"
-		[routerLink]="link.location"
-		(click)="activeLink = link.location"
-		[ngClass]="{ active: activeLink.includes(link.location), 'nav-back-button': link.location === '/events' }"
-		matRipple
-	>
-		<mat-icon [ngClass]="{ 'back-icon': link.location === '/events' }">{{ link.icon }}</mat-icon>
-		<div>{{ link.name }}</div>
-	</a>
+	@for (link of mobileLinks(); track link) {
+		<a
+			class="nav-button"
+			[routerLink]="link.location"
+			(click)="activeLink = link.location"
+			[ngClass]="{ active: activeLink.includes(link.location), 'nav-back-button': link.location === '/events' }"
+			matRipple
+		>
+			<mat-icon [ngClass]="{ 'back-icon': link.location === '/events' }">{{ link.icon }}</mat-icon>
+			<div>{{ link.name }}</div>
+		</a>
+	}
 </div>

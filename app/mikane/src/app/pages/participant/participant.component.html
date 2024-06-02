@@ -1,212 +1,226 @@
-<div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div
-		*ngIf="(breakpointService.isMobile() | async) === false; else mobileView"
-		[ngClass]="{ 'extra-margin': !inEvent && event?.status.id !== EventStatusType.ACTIVE }"
-	>
-		<div class="add-actions">
-			<button mat-raised-button color="primary" (click)="openDialog()" *ngIf="event?.status.id === EventStatusType.ACTIVE">
-				<mat-icon>person_add</mat-icon>
-				Add users to event
-			</button>
-			<button mat-raised-button color="primary" *ngIf="!inEvent && event?.status.id === EventStatusType.ACTIVE; else joinedEvent" (click)="joinEvent()">
-				Join event
-			</button>
-			<ng-template #joinedEvent>
-				<button mat-stroked-button disabled *ngIf="inEvent">
-					{{ isAdmin ? "You are an admin in this event" : "You are in this event" }}
-					<mat-icon>{{ isAdmin ? "star" : "check" }}</mat-icon>
-				</button>
-			</ng-template>
-		</div>
-
-		<div *ngIf="event?.status.id === EventStatusType.READY_TO_SETTLE" class="ready-to-settle-box" (click)="gotoPayments()">
-			<div class="info">
-				<mat-icon class="info-icon">info</mat-icon>
-				This event is ready for settlement. Go to the payments page to find your pending payments.
+@if ((loading | async) === false) {
+	<div>
+		@if ((breakpointService.isMobile() | async) === false) {
+			<div [ngClass]="{ 'extra-margin': !inEvent && event?.status.id !== EventStatusType.ACTIVE }">
+				<div class="add-actions">
+					@if (event?.status.id === EventStatusType.ACTIVE) {
+						<button mat-raised-button color="primary" (click)="openDialog()">
+							<mat-icon>person_add</mat-icon>
+							Add users to event
+						</button>
+					}
+					@if (!inEvent && event?.status.id === EventStatusType.ACTIVE) {
+						<button mat-raised-button color="primary" (click)="joinEvent()">Join event</button>
+					} @else {
+						@if (inEvent) {
+							<button mat-stroked-button disabled>
+								{{ isAdmin ? "You are an admin in this event" : "You are in this event" }}
+								<mat-icon>{{ isAdmin ? "star" : "check" }}</mat-icon>
+							</button>
+						}
+					}
+				</div>
+				@if (event?.status.id === EventStatusType.READY_TO_SETTLE) {
+					<div class="ready-to-settle-box" (click)="gotoPayments()">
+						<div class="info">
+							<mat-icon class="info-icon">info</mat-icon>
+							This event is ready for settlement. Go to the payments page to find your pending payments.
+						</div>
+					</div>
+				}
+				@if (usersWithBalance.length > 0) {
+					<mat-accordion class="user-list" #accordion>
+						<!-- HEADER ROW -->
+						<table mat-table matSort (matSortChange)="sortData($event)" class="participants-header">
+							<ng-container matColumnDef="icon">
+								<th mat-header-cell *matHeaderCellDef class="header-icon"></th>
+							</ng-container>
+							<ng-container matColumnDef="name">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-name">Name</th>
+							</ng-container>
+							<ng-container matColumnDef="expensesCount">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-count">Number of expenses</th>
+							</ng-container>
+							<ng-container matColumnDef="costs">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-costs align-right">Costs</th>
+							</ng-container>
+							<ng-container matColumnDef="expenses">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-expenses align-right">Expenses</th>
+							</ng-container>
+							<ng-container matColumnDef="balance">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-balance align-right">Balance</th>
+							</ng-container>
+							<tr mat-header-row *matHeaderRowDef="displayedParticipantColumns"></tr>
+						</table>
+						<!-- PARTICIPANT EXPANSION PANELS -->
+						@for (userWithBalance of usersWithBalance$ | async; track userWithBalance; let i = $index) {
+							<mat-expansion-panel (opened)="getExpenses(userWithBalance.user, i)" hideToggle>
+								<mat-expansion-panel-header>
+									<mat-panel-title>
+										<div class="user first">
+											<img [src]="userWithBalance.user.avatarURL" alt="User avatar" class="avatar" />
+											{{ userWithBalance.user.name }}
+										</div>
+										<div class="count" [ngClass]="{ 'no-expenses': userWithBalance.expensesCount === 0 }">
+											{{ userWithBalance.expensesCount }}
+										</div>
+										<div>{{ userWithBalance.spending | currency: "" : "" : "1.2-2" : "no" }} kr</div>
+										<div>{{ userWithBalance.expenses | currency: "" : "" : "1.2-2" : "no" }} kr</div>
+										<div class="amount-color">
+											{{ userWithBalance.balance | currency: "" : "" : "1.2-2" : "no" }} kr
+										</div>
+									</mat-panel-title>
+								</mat-expansion-panel-header>
+								<ng-template matExpansionPanelContent>
+									<!-- Deferred initialization until the panel is open. -->
+									@if (dataSources[i].loading$ | async) {
+										<div class="spinner-container">
+											<mat-spinner class="spinner"></mat-spinner>
+										</div>
+									}
+									@if (dataSources[i].notEmpty | async) {
+										<table mat-table class="expense-table" [dataSource]="dataSources[i]">
+											<caption>
+												Expenses:
+											</caption>
+											<!-- Name Column -->
+											<ng-container matColumnDef="name">
+												<th mat-header-cell *matHeaderCellDef>Name</th>
+												<td mat-cell *matCellDef="let expense">
+													{{ expense.name }}
+												</td>
+											</ng-container>
+											<!-- Amount Column -->
+											<ng-container matColumnDef="amount">
+												<th mat-header-cell *matHeaderCellDef>Amount</th>
+												<td mat-cell class="amount-color" *matCellDef="let expense">
+													{{ expense.amount | currency: "" : "" : "1.2-2" : "no" }} kr
+												</td></ng-container
+											>
+											<!-- Category Column -->
+											<ng-container matColumnDef="category">
+												<th mat-header-cell *matHeaderCellDef>Category</th>
+												<td mat-cell *matCellDef="let expense">
+													{{ expense.categoryInfo.name }}
+												</td></ng-container
+											>
+											<!-- Description Column -->
+											<ng-container matColumnDef="description">
+												<th mat-header-cell *matHeaderCellDef>Description</th>
+												<td mat-cell *matCellDef="let expense">
+													{{ expense.description }}
+												</td>
+											</ng-container>
+											<!-- Action Columnn -->
+											<ng-container matColumnDef="actions">
+												<th mat-header-cell *matHeaderCellDef></th>
+												<td mat-cell *matCellDef="let expense">
+													@if (isAdmin || expense.payer.id === (authService.getCurrentUser() | async)?.id) {
+														<button
+															mat-icon-button
+															type="button"
+															(click)="deleteExpense(expense.id, dataSources[i])"
+														>
+															<mat-icon>delete</mat-icon>
+														</button>
+													}
+												</td>
+											</ng-container>
+											<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+											<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+											<tr class="mat-row" *matNoDataRow>
+												<td class="mat-cell no-expenses" [attr.colspan]="displayedColumns.length">
+													No expenses found
+												</td>
+											</tr>
+										</table>
+									}
+									@if (event?.status.id === EventStatusType.ACTIVE) {
+										<div class="user-actions">
+											<button
+												mat-raised-button
+												color="accent"
+												(click)="createExpenseDialog(userWithBalance.user.id, dataSources[i])"
+											>
+												Add expense
+											</button>
+											@if (userWithBalance.expensesCount === 0) {
+												<button
+													mat-raised-button
+													type="button"
+													color="warn"
+													(click)="deleteUserDialog(userWithBalance.user.id)"
+												>
+													Remove User
+												</button>
+											} @else {
+												<span matTooltip="Cannot remove a user with expenses" style="padding: 8px 0">
+													<button mat-raised-button disabled>Remove User</button>
+												</span>
+											}
+										</div>
+									}
+								</ng-template>
+							</mat-expansion-panel>
+						}
+					</mat-accordion>
+				} @else {
+					<mat-card appearance="outlined"> No participants </mat-card>
+				}
 			</div>
-		</div>
-
-		<mat-accordion class="user-list" *ngIf="usersWithBalance.length > 0; else noUsers" #accordion>
-			<!-- HEADER ROW -->
-			<table mat-table matSort (matSortChange)="sortData($event)" class="participants-header">
-				<ng-container matColumnDef="icon">
-					<th mat-header-cell *matHeaderCellDef class="header-icon"></th>
-				</ng-container>
-				<ng-container matColumnDef="name">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-name">Name</th>
-				</ng-container>
-				<ng-container matColumnDef="expensesCount">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-count">Number of expenses</th>
-				</ng-container>
-				<ng-container matColumnDef="costs">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-costs align-right">Costs</th>
-				</ng-container>
-				<ng-container matColumnDef="expenses">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-expenses align-right">Expenses</th>
-				</ng-container>
-				<ng-container matColumnDef="balance">
-					<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-balance align-right">Balance</th>
-				</ng-container>
-				<tr mat-header-row *matHeaderRowDef="displayedParticipantColumns"></tr>
-			</table>
-			<!-- PARTICIPANT EXPANSION PANELS -->
-			<mat-expansion-panel
-				*ngFor="let userWithBalance of usersWithBalance$ | async; let i = index"
-				(opened)="getExpenses(userWithBalance.user, i)"
-				hideToggle
-			>
-				<mat-expansion-panel-header>
-					<mat-panel-title>
-						<div class="user first">
-							<img [src]="userWithBalance.user.avatarURL" alt="User avatar" class="avatar" />
-							{{ userWithBalance.user.name }}
-						</div>
-						<div class="count" [ngClass]="{ 'no-expenses': userWithBalance.expensesCount === 0 }">
-							{{ userWithBalance.expensesCount }}
-						</div>
-						<div>{{ userWithBalance.spending | currency : "" : "" : "1.2-2" : "no" }} kr</div>
-						<div>{{ userWithBalance.expenses | currency : "" : "" : "1.2-2" : "no" }} kr</div>
-						<div class="amount-color">{{ userWithBalance.balance | currency : "" : "" : "1.2-2" : "no" }} kr</div>
-					</mat-panel-title>
-				</mat-expansion-panel-header>
-				<ng-template matExpansionPanelContent>
-					<!-- Deferred initialization until the panel is open. -->
-					<div class="spinner-container" *ngIf="dataSources[i].loading$ | async">
-						<mat-spinner class="spinner"></mat-spinner>
+		} @else {
+			<div class="header-mobile">
+				@if (inEvent) {
+					<span class="in-event">
+						{{ isAdmin ? "You are an admin in this event" : "You are in this event" }}
+						<mat-icon>{{ isAdmin ? "star" : "check" }}</mat-icon>
+					</span>
+				} @else {
+					<span class="not-in-event">You are not in this event</span>
+				}
+				@if (isAdmin) {
+					<button mat-icon-button (click)="gotoSettings()">
+						<mat-icon>settings</mat-icon>
+					</button>
+				} @else {
+					<button mat-icon-button (click)="gotoInfo()">
+						<mat-icon>info</mat-icon>
+					</button>
+				}
+			</div>
+			@if (event?.status.id === EventStatusType.READY_TO_SETTLE) {
+				<div class="ready-to-settle-box-mobile" (click)="gotoPayments()">
+					<div class="info">
+						<mat-icon class="info-icon">info</mat-icon>
+						This event is ready for settlement. Go to the payments page to find your pending payments.
 					</div>
-					<table mat-table class="expense-table" *ngIf="dataSources[i].notEmpty | async" [dataSource]="dataSources[i]">
-						<caption>
-							Expenses:
-						</caption>
-						<!-- Name Column -->
-						<ng-container matColumnDef="name">
-							<th mat-header-cell *matHeaderCellDef>Name</th>
-							<td mat-cell *matCellDef="let expense">
-								{{ expense.name }}
-							</td>
-						</ng-container>
-
-						<!-- Amount Column -->
-						<ng-container matColumnDef="amount">
-							<th mat-header-cell *matHeaderCellDef>Amount</th>
-							<td mat-cell class="amount-color" *matCellDef="let expense">
-								{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr
-							</td></ng-container
-						>
-
-						<!-- Category Column -->
-						<ng-container matColumnDef="category">
-							<th mat-header-cell *matHeaderCellDef>Category</th>
-							<td mat-cell *matCellDef="let expense">
-								{{ expense.categoryInfo.name }}
-							</td></ng-container
-						>
-
-						<!-- Description Column -->
-						<ng-container matColumnDef="description">
-							<th mat-header-cell *matHeaderCellDef>Description</th>
-							<td mat-cell *matCellDef="let expense">
-								{{ expense.description }}
-							</td>
-						</ng-container>
-
-						<!-- Action Columnn -->
-						<ng-container matColumnDef="actions">
-							<th mat-header-cell *matHeaderCellDef></th>
-							<td mat-cell *matCellDef="let expense">
-								<button
-									mat-icon-button
-									type="button"
-									*ngIf="isAdmin || expense.payer.id === (authService.getCurrentUser() | async)?.id"
-									(click)="deleteExpense(expense.id, dataSources[i])"
-								>
-									<mat-icon>delete</mat-icon>
-								</button>
-							</td>
-						</ng-container>
-
-						<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-						<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-						<tr class="mat-row" *matNoDataRow>
-							<td class="mat-cell no-expenses" [attr.colspan]="displayedColumns.length">No expenses found</td>
-						</tr>
-					</table>
-					<div class="user-actions" *ngIf="event?.status.id === EventStatusType.ACTIVE">
-						<button mat-raised-button color="accent" (click)="createExpenseDialog(userWithBalance.user.id, dataSources[i])">
-							Add expense
-						</button>
-						<button
-							*ngIf="userWithBalance.expensesCount === 0; else noRemoveButton"
-							mat-raised-button
-							type="button"
-							color="warn"
-							(click)="deleteUserDialog(userWithBalance.user.id)"
-						>
-							Remove User
-						</button>
-						<ng-template #noRemoveButton>
-							<span matTooltip="Cannot remove a user with expenses" style="padding: 8px 0">
-								<button mat-raised-button disabled>Remove User</button>
-							</span>
-						</ng-template>
-					</div>
-				</ng-template>
-			</mat-expansion-panel>
-		</mat-accordion>
+				</div>
+			}
+			<mat-nav-list class="userbalances-list-mobile">
+				@for (userWithBalance of usersWithBalance; track userWithBalance; let i = $index) {
+					<app-participant-item
+						[userBalance]="userWithBalance"
+						[eventActive]="event?.status.id === EventStatusType.ACTIVE"
+						(click)="gotoUserExpenses(userWithBalance)"
+						(removeUser)="deleteUserDialog($event.userId)"
+					></app-participant-item>
+				}
+			</mat-nav-list>
+			@if (event?.status.id === EventStatusType.ACTIVE) {
+				<button
+					mat-fab
+					color="primary"
+					class="add-users-button-mobile"
+					(click)="openDialog()"
+					[ngClass]="{ iOS: contextService.isIos, hidden: scrollService.isScrolledToBottom() | async }"
+				>
+					<mat-icon>person_add</mat-icon>
+				</button>
+			}
+		}
 	</div>
-</div>
-
-<ng-template #mobileView>
-	<div class="header-mobile">
-		<span *ngIf="inEvent; else notInEvent" class="in-event">
-			{{ isAdmin ? "You are an admin in this event" : "You are in this event" }}
-			<mat-icon>{{ isAdmin ? "star" : "check" }}</mat-icon>
-		</span>
-		<button mat-icon-button *ngIf="isAdmin; else eventInfoButton" (click)="gotoSettings()">
-			<mat-icon>settings</mat-icon>
-		</button>
-		<ng-template #notInEvent>
-			<span class="not-in-event">You are not in this event</span>
-		</ng-template>
-		<ng-template #eventInfoButton>
-			<button mat-icon-button (click)="gotoInfo()">
-				<mat-icon>info</mat-icon>
-			</button>
-		</ng-template>
-	</div>
-	<div *ngIf="event?.status.id === EventStatusType.READY_TO_SETTLE" class="ready-to-settle-box-mobile" (click)="gotoPayments()">
-		<div class="info">
-			<mat-icon class="info-icon">info</mat-icon>
-			This event is ready for settlement. Go to the payments page to find your pending payments.
-		</div>
-	</div>
-	<mat-nav-list class="userbalances-list-mobile">
-		<app-participant-item
-			*ngFor="let userWithBalance of usersWithBalance; let i = index"
-			[userBalance]="userWithBalance"
-			[eventActive]="event?.status.id === EventStatusType.ACTIVE"
-			(click)="gotoUserExpenses(userWithBalance)"
-			(removeUser)="deleteUserDialog($event.userId)"
-		></app-participant-item>
-	</mat-nav-list>
-	<button
-		*ngIf="event?.status.id === EventStatusType.ACTIVE"
-		mat-fab
-		color="primary"
-		class="add-users-button-mobile"
-		(click)="openDialog()"
-		[ngClass]="{ iOS: contextService.isIos, hidden: scrollService.isScrolledToBottom() | async }"
-	>
-		<mat-icon>person_add</mat-icon>
-	</button>
-</ng-template>
-
-<ng-template #loadingSpinner>
+} @else {
 	<app-loading-spinner></app-loading-spinner>
-</ng-template>
+}
 
 <ng-template #emptyMessage><p>Participant has no expenses</p></ng-template>
-
-<ng-template #noUsers>
-	<mat-card appearance="outlined"> No participants </mat-card>
-</ng-template>

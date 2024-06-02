@@ -1,5 +1,5 @@
 import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
-import { KeyValuePipe, NgFor, NgIf } from '@angular/common';
+import { KeyValuePipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -30,8 +30,6 @@ import { CategoryIcon } from 'src/app/types/enums';
 		CdkConnectedOverlay,
 		MatGridListModule,
 		KeyValuePipe,
-		NgFor,
-		NgIf,
 	],
 })
 export class CategoryDialogComponent implements OnInit {

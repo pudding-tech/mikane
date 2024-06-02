@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,7 +18,6 @@ import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/asy
 		MatInputModule,
 		FormsModule,
 		MatButtonModule,
-		NgIf,
 		EventNameValidatorDirective,
 		MatProgressSpinnerModule,
 	],
@@ -33,7 +31,7 @@ export class GuestDialogComponent {
 
 	constructor(
 		public dialogRef: MatDialogRef<GuestDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: { edit: boolean; guest: User }
+		@Inject(MAT_DIALOG_DATA) public data: { edit: boolean; guest: User },
 	) {
 		if (data?.guest) {
 			this.guest.firstName = data.guest.firstName;
