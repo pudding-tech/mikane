@@ -39,10 +39,13 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean, exclude
       firstName: userObj.first_name,
       lastName: userObj.last_name,
       email: userObj.email,
+      phone: userObj.phone_number,
       created: userObj.created,
       avatarURL: getGravatarURL(userObj.email ?? "", { size: avatarSize ?? 200, default: userObj.guest ? "mp" : "identicon" }),
       guest: userObj.guest,
       superAdmin: userObj.super_admin,
+      publicEmail: userObj.public_email ?? false,
+      publicPhone: userObj.public_phone ?? false,
       eventInfo: withEventData && userObj.event_id && userObj.event_joined_time ? {
         id: userObj.event_id,
         isAdmin: userObj.is_event_admin ?? false,
@@ -130,7 +133,9 @@ export const parseUser = (userObj: UserDB, avatarSize?: number): User => {
     created: userObj.created,
     avatarURL: getGravatarURL(userObj.email ?? "", { size: avatarSize ?? 200, default: userObj.guest ? "mp" : "identicon" }),
     guest: userObj.guest,
-    superAdmin: userObj.super_admin
+    superAdmin: userObj.super_admin,
+    publicEmail: userObj.public_email ?? false,
+    publicPhone: userObj.public_phone ?? false
   };
 };
 

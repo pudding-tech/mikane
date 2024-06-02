@@ -701,6 +701,83 @@
         }
       }
     },
+    "/users/{id}/preferences": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Edit user preferences",
+        "description": "Edit a user's preferences",
+        "operationId": "putUserPreferences",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "User preferences",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditUserPreferencesObject"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/{id}/expenses/{eventId}": {
       "get": {
         "tags": [
@@ -3713,9 +3790,9 @@
             "type": "string",
             "example": "Test"
           },
-          "email": {
+          "phone": {
             "type": "string",
-            "example": "test@user.com"
+            "example": "12131415"
           },
           "created": {
             "type": "date-time",
@@ -3746,9 +3823,9 @@
             "type": "string",
             "example": "Test"
           },
-          "email": {
+          "phone": {
             "type": "string",
-            "example": "test@user.com"
+            "example": "12131415"
           },
           "created": {
             "type": "date-time",
@@ -3830,6 +3907,14 @@
           "superAdmin": {
             "type": "boolean",
             "example": "false"
+          },
+          "publicEmail": {
+            "type": "boolean",
+            "example": "false"
+          },
+          "publicPhone": {
+            "type": "boolean",
+            "example": "true"
           }
         }
       },
@@ -4233,6 +4318,19 @@
           "phone": {
             "type": "string",
             "example": "12131415"
+          }
+        }
+      },
+      "EditUserPreferencesObject": {
+        "type": "object",
+        "properties": {
+          "publicEmail": {
+            "type": "boolean",
+            "example": "false"
+          },
+          "publicPhone": {
+            "type": "boolean",
+            "example": "true"
           }
         }
       },

@@ -19,7 +19,9 @@ returns table (
   created timestamp,
   guest boolean,
   guest_created_by uuid,
-  super_admin boolean
+  super_admin boolean,
+  public_email boolean,
+  public_phone boolean
 ) as
 $$
 declare tmp_user_id uuid;
@@ -57,6 +59,9 @@ begin
     u.guest = true and
     u.deleted = false
   returning u.id into tmp_user_id;
+
+  insert into user_preferences (user_id, public_email, public_phone)
+    values (tmp_user_id, false, true);
 
   return query
   select * from get_user(tmp_user_id, null, false);

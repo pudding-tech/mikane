@@ -7,7 +7,7 @@ import * as ec from "../types/errorCodes";
 
 /**
  * DB interface: Get user information
- * @param userId 
+ * @param userId
  * @param avatarSize Pixel size of user avatar
  * @param username
  * @returns User data
@@ -200,6 +200,33 @@ export const editUser = async (userId: string, data: { username?: string, firstN
         throw new ErrorExt(ec.PUD019, err);
       else
         throw new ErrorExt(ec.PUD028, err);
+    });
+
+  return user;
+};
+
+/**
+ * DB interface: Edit a user's preferences
+ * @param userId User ID to edit
+ * @param data Data object
+ * @returns Edited user
+ */
+export const editUserPreferences = async (userId: string, data: { publicEmail?: boolean, publicPhone?: boolean }) => {
+  const query = {
+    text: "SELECT * FROM edit_user_preferences($1, $2, $3)",
+    values: [userId, data.publicEmail, data.publicPhone]
+  };
+  const user: User = await pool.query(query)
+    .then(data => {
+      return parseUser(data.rows[0]);
+    })
+    .catch(err => {
+      if (err.code === "P0008")
+        throw new ErrorExt(ec.PUD008, err);
+      else if (err.code === "P0134")
+        throw new ErrorExt(ec.PUD134, err);
+      else
+        throw new ErrorExt(ec.PUD135, err);
     });
 
   return user;

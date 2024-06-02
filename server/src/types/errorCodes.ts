@@ -1253,3 +1253,32 @@ export const PUD132: ErrorCode = {
   message: "Username can only contain alphanumeric characters (letters and numbers), hyphens, and underscores. Must be between 3-40 characters. Username cannot begin or end with hyphen/underscore",
   status: 400
 };
+
+/**
+ * PUD-133: Request body must include at least one user preferences property (400)
+ */
+export const PUD133: ErrorCode = {
+  code: "PUD-133",
+  message: "Request body must include at least one user preferences property",
+  status: 400
+};
+
+/**
+ * PUD-134: Something went wrong - user does not have a preferences entry in the database (500)
+ */
+export const PUD134: ErrorCode = {
+  code: "PUD-134",
+  message: "Something went wrong - user does not have a preferences entry in the database",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-135: edit_user_preferences (500)
+ */
+export const PUD135: ErrorCode = {
+  code: "PUD-135",
+  message: "Something went wrong while editing user preferences",
+  status: 500,
+  log: true
+};

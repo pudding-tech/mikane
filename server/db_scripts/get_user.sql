@@ -15,31 +15,23 @@ returns table (
   created timestamp,
   guest boolean,
   guest_created_by uuid,
-  super_admin boolean
+  super_admin boolean,
+  public_email boolean,
+  public_phone boolean
 ) as
 $$
 begin
-  if (ip_user_id is not null) then
-    return query
-    select
-      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created, u.guest, u.guest_created_by, u.super_admin
-    from
-      "user" u
-    where
-      u.id = ip_user_id and
-      u.deleted = false and
-      u.guest = case when ip_allow_guest = true then u.guest else false end;
-  elsif (ip_username is not null) then
-    return query
-    select
-      u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created, u.guest, u.guest_created_by, u.super_admin
-    from
-      "user" u
-    where
-      u.username ilike ip_username and
-      u.deleted = false and
-      u.guest = case when ip_allow_guest = true then u.guest else false end;
-  end if;
+  return query
+  select
+    u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.password, u.created, u.guest, u.guest_created_by, u.super_admin,
+    up.public_email, up.public_phone
+  from
+    "user" u
+    left join user_preferences up on u.id = up.user_id
+  where
+    (u.id = ip_user_id or (ip_user_id is null and u.username ilike ip_username)) and
+    u.deleted = false and
+    u.guest = case when ip_allow_guest = true then u.guest else false end;
 end;
 $$
 language plpgsql;

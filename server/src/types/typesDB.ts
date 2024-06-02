@@ -7,8 +7,10 @@ export type UserDB = {
   phone_number: string,
   created: Date,
   guest: boolean,
-  guest_created_by: string;
+  guest_created_by: string,
   super_admin: boolean,
+  public_email: boolean,
+  public_phone: boolean,
   deleted: boolean,
   event_id?: string,
   is_event_admin?: boolean,
@@ -41,7 +43,7 @@ export type CategoryDB = {
   user_weights: {
     user_id: string,
     guest: boolean,
-    username: string;
+    username: string,
     first_name: string,
     last_name: string,
     email: string,
@@ -57,7 +59,7 @@ export type ExpenseDB = {
   amount: string,
   category_id: string,
   category_name: string,
-  category_icon: string;
+  category_icon: string,
   created: Date,
   payer_id: string,
   payer_first_name: string,
