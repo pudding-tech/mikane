@@ -18,7 +18,9 @@ returns table (
   created timestamp,
   guest boolean,
   guest_created_by uuid,
-  super_admin boolean
+  super_admin boolean,
+  public_email boolean,
+  public_phone boolean
 ) as
 $$
 declare tmp_user_id uuid;
@@ -38,6 +40,9 @@ begin
   insert into "user"(username, first_name, last_name, email, phone_number, "password", created, guest, super_admin, deleted)
     values (ip_username, ip_first_name, nullif(ip_last_name, ''), nullif(ip_email, ''), nullif(ip_phone_number, ''), ip_password, CURRENT_TIMESTAMP, false, false, false)
     returning "user".id into tmp_user_id;
+
+  insert into user_preferences (user_id, public_email, public_phone)
+    values (tmp_user_id, false, true);
 
   return query
   select * from get_user(tmp_user_id, null, false);

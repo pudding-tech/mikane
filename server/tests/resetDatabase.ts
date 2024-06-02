@@ -20,6 +20,7 @@ export const resetDatabase = async () => {
     DROP TABLE "password_reset_key";
     DROP TABLE "category";
     DROP TABLE "event";
+    DROP TABLE "user_preferences";
     DROP TABLE "user";
     DROP TABLE "event_status_type";
   `);

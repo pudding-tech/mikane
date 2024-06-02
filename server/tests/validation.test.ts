@@ -85,7 +85,7 @@ describe("validation", async () => {
       expect(res.body.code).toEqual(ec.PUD109.code);
     });
 
-    test("fail when validating invalid username", async () => {
+    test("fail when validating invalid username - only spaces", async () => {
       const res = await request(app)
         .post("/api/validation/user/username")
         .send({
@@ -94,6 +94,72 @@ describe("validation", async () => {
 
       expect(res.status).toEqual(400);
       expect(res.body.code).toEqual(ec.PUD059.code);
+    });
+
+    test("fail when validating invalid username - shorter than 3 characters", async () => {
+      const res = await request(app)
+        .post("/api/validation/user/username")
+        .send({
+          username: "ab"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
+    });
+
+    test("fail when validating invalid username - longer than 40 characters", async () => {
+      const res = await request(app)
+        .post("/api/validation/user/username")
+        .send({
+          username: "abcdefghijklmnopqrstuvwxyzabcdefghijklmno"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
+    });
+
+    test("fail when validating invalid username - invalid character !", async () => {
+      const res = await request(app)
+        .post("/api/validation/user/username")
+        .send({
+          username: "abc!d"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
+    });
+
+    test("fail when validating invalid username - invalid character &", async () => {
+      const res = await request(app)
+        .post("/api/validation/user/username")
+        .send({
+          username: "abc&d"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
+    });
+
+    test("fail when validating invalid username - starting with hyphen", async () => {
+      const res = await request(app)
+        .post("/api/validation/user/username")
+        .send({
+          username: "-abc"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
+    });
+
+    test("fail when validating invalid username - ending with hyphen", async () => {
+      const res = await request(app)
+        .post("/api/validation/user/username")
+        .send({
+          username: "abc-"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD132.code);
     });
 
     test("fail when validating username with invalid user ID", async () => {

@@ -5,6 +5,7 @@ import { authCheck } from "../middlewares/authCheck";
 import { isEmail } from "../utils/validators/emailValidator";
 import { isUUID } from "../utils/validators/uuidValidator";
 import { ErrorExt } from "../types/errorExt";
+import { isValidUsername } from "../utils/validators/usernameValidator";
 import { isPhoneNumber } from "../utils/validators/phoneValidator";
 const router = express.Router();
 
@@ -23,6 +24,9 @@ router.post("/validation/user/username", async (req, res, next) => {
     }
     if (userId !== undefined && !isUUID(userId)) {
       throw new ErrorExt(ec.PUD016);
+    }
+    if (!isValidUsername(username)) {
+      throw new ErrorExt(ec.PUD132);
     }
 
     const valid = await db.validateUsername(username.trim(), userId);

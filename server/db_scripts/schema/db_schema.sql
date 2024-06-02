@@ -104,6 +104,13 @@ create table password_reset_key (
   expires timestamp not null
 );
 
+create table user_preferences (
+  user_id uuid not null references "user"(id) on delete cascade,
+  public_email boolean not null,
+  public_phone boolean not null,
+  primary key (user_id)
+);
+
 insert into event_status_type (id, name)
   values (1, 'Active'), (2, 'Ready to settle'), (3, 'Archived');
 

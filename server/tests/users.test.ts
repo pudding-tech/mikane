@@ -353,6 +353,73 @@ describe("users", async () => {
     });
   });
 
+  /* -------------------------- */
+  /* PUT /users/:id/preferences */
+  /* -------------------------- */
+  describe("PUT /users/:id/preferences", async () => {
+    test("should get user preferences - by default, email is private and phone is public", async () => {
+      const res = await request(app)
+        .get("/api/users/" + user.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.publicEmail).toEqual(false);
+      expect(res.body.publicPhone).toEqual(true);
+    });
+
+    test("should edit user preferences - email to public", async () => {
+      const res = await request(app)
+        .put(`/api/users/${user.id}/preferences`)
+        .set("Cookie", authToken)
+        .send({
+          publicEmail: true
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.publicEmail).toEqual(true);
+      expect(res.body.publicPhone).toEqual(true);
+    });
+
+    test("should edit user preferences - email to private and phone to private", async () => {
+      const res = await request(app)
+        .put(`/api/users/${user.id}/preferences`)
+        .set("Cookie", authToken)
+        .send({
+          publicEmail: false,
+          publicPhone: false
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.publicEmail).toEqual(false);
+      expect(res.body.publicPhone).toEqual(false);
+    });
+
+    test("should edit user preferences - phone to public", async () => {
+      const res = await request(app)
+        .put(`/api/users/${user.id}/preferences`)
+        .set("Cookie", authToken)
+        .send({
+          publicPhone: true
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.publicEmail).toEqual(false);
+      expect(res.body.publicPhone).toEqual(true);
+    });
+
+    test("fail edit user preferences with wrong property", async () => {
+      const res = await request(app)
+        .put(`/api/users/${user.id}/preferences`)
+        .set("Cookie", authToken)
+        .send({
+          privateEmail: true
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD133.code);
+    });
+  });
+
   /* -------------------------------- */
   /* POST /users/requestdeleteaccount */
   /* -------------------------------- */
