@@ -56,7 +56,7 @@ jobs:
           npm run build:test --if-present
       - name: Upload frontend artifact
         id: upload-artifact-frontend
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
@@ -72,7 +72,7 @@ jobs:
           npm run esbuild --if-present
       - name: Upload backend artifact
         id: upload-artifact-backend
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: ${{ steps.bump-snapshot.outputs.artifact-frontend }}

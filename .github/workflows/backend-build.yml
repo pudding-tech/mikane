@@ -39,7 +39,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Fetch tag ${{ inputs.tag }}
         if: ${{ inputs.tag != '' && !inputs.dry-run }}
@@ -70,7 +70,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Fetch tag ${{ inputs.tag }}
         if: ${{inputs.tag != '' && !inputs.dry-run}}
@@ -79,7 +79,7 @@ jobs:
           git checkout ${{ inputs.tag }}
 
       - name: Setup Node.js ${{ inputs.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
           cache: "npm"
@@ -94,7 +94,7 @@ jobs:
       - name: Upload artifacts
         if: inputs.upload-artifact
         id: upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: ${{ needs.configure.outputs.artifact }}
