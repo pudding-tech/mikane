@@ -19,14 +19,14 @@ jobs:
       run:
         working-directory: ./app/mikane/
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ inputs.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
           cache: "npm"
           cache-dependency-path: ./app/mikane/package-lock.json
-      - run: npm ci
+      - run: npm ci --include=optional
       - run: npm test
       - name: Upload coverage report
         uses: codecov/codecov-action@v3
