@@ -1,6 +1,7 @@
 import express from "express";
 import * as db from "../db/dbEvents";
 import { authCheck, authKeyCheck } from "../middlewares/authCheck";
+import { removeUserInfoFromPayments, removeUserInfoFromUserBalances } from "../parsers/parseUserInfo";
 import { isUUID } from "../utils/validators/uuidValidator";
 import { Event, Payment, UserBalance } from "../types/types";
 import { ErrorExt } from "../types/errorExt";
@@ -79,6 +80,9 @@ router.get("/events/:id/balances", authCheck, async (req, res, next) => {
 
     const usersWithBalance: UserBalance[] = await db.getEventBalances(eventId);
 
+    // Remove sensitive user information
+    removeUserInfoFromUserBalances(usersWithBalance, userId ?? "");
+
     // Put logged in user first in list
     if (userId) {
       const index = usersWithBalance.findIndex(userBalance => userBalance.user.id === userId);
@@ -107,6 +111,9 @@ router.get("/events/:id/payments", authKeyCheck, async (req, res, next) => {
     }
 
     const payments: Payment[] = await db.getEventPayments(eventId);
+
+    // Remove sensitive user information
+    removeUserInfoFromPayments(payments, userId ?? "");
 
     // Put logged in user first in list
     if (userId) {
