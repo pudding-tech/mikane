@@ -75,7 +75,7 @@
 		<div class="add-admin" [ngClass]="{ mobile: breakpointService.isMobile() | async }">
 			<mat-form-field>
 				<mat-select formControlName="guestId" name="guestId" placeholder="Select guest" required>
-					@for (guest of guests; track guest) {
+					@for (guest of guests; track guest.id) {
 						<mat-option [value]="guest.id">
 							<span class="name">
 								<img [src]="guest.avatarURL" alt="Guest user avatar" class="avatar" />

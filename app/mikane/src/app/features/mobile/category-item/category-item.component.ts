@@ -88,5 +88,5 @@ export class CategoryItemComponent {
 
 	gotoExpenses = () => {
 		this.gotoCategoryExpenses.emit({ category: this.category });
-	}
+	};
 }

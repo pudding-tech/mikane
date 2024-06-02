@@ -138,7 +138,7 @@
 <ng-template #adminsContent>
 	<div class="admins-content" [ngClass]="{ 'full-view': (breakpointService.isMobile() | async) === false }">
 		<mat-nav-list>
-			@for (admin of adminsInEvent; track admin) {
+			@for (admin of adminsInEvent; track admin.id) {
 				<mat-list-item class="list-item">
 					<div class="admin">
 						<div class="name">
@@ -156,7 +156,7 @@
 			@if (otherUsersInEvent.length !== 0) {
 				<mat-form-field>
 					<mat-select [formControl]="addAdminForm.get('userId') | formControl" name="userId" placeholder="Add admins" required>
-						@for (user of otherUsersInEvent; track user) {
+						@for (user of otherUsersInEvent; track user.id) {
 							<mat-option [value]="user.id">
 								<span class="name">
 									<img [src]="user.avatarURL" alt="User avatar" class="avatar" />

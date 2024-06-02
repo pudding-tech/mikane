@@ -53,7 +53,7 @@
 							<tr mat-header-row *matHeaderRowDef="displayedParticipantColumns"></tr>
 						</table>
 						<!-- PARTICIPANT EXPANSION PANELS -->
-						@for (userWithBalance of usersWithBalance$ | async; track userWithBalance; let i = $index) {
+						@for (userWithBalance of usersWithBalance$ | async; track userWithBalance.user.id; let i = $index) {
 							<mat-expansion-panel (opened)="getExpenses(userWithBalance.user, i)" hideToggle>
 								<mat-expansion-panel-header>
 									<mat-panel-title>
@@ -197,7 +197,7 @@
 				</div>
 			}
 			<mat-nav-list class="userbalances-list-mobile">
-				@for (userWithBalance of usersWithBalance; track userWithBalance; let i = $index) {
+				@for (userWithBalance of usersWithBalance; track userWithBalance.user.id; let i = $index) {
 					<app-participant-item
 						[userBalance]="userWithBalance"
 						[eventActive]="event?.status.id === EventStatusType.ACTIVE"

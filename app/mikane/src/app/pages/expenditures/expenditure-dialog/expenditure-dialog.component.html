@@ -28,7 +28,7 @@
 				<mat-error> Category is required </mat-error>
 			}
 			<mat-autocomplete #categorySelector="matAutocomplete">
-				@for (category of categories; track category) {
+				@for (category of categories; track category.id) {
 					<mat-option [value]="category.name">
 						<mat-icon matPrefix>{{ category.icon ?? "shopping_cart" }}</mat-icon>
 						{{ category.name }}
@@ -50,7 +50,7 @@
 			<mat-form-field appearance="fill">
 				<mat-label>Payer</mat-label>
 				<mat-select formControlName="payer" required>
-					@for (user of users; track user) {
+					@for (user of users; track user.id) {
 						<mat-option [value]="user.id">
 							<span class="user">
 								<img [src]="user.avatarURL" alt="User avatar" class="avatar" />
@@ -68,7 +68,7 @@
 				<mat-label>Payer</mat-label>
 				<select matNativeControl required [formControl]="addExpenseForm.get('payer') | formControl">
 					<option value="" disabled>Choose payer</option>
-					@for (user of users; track user) {
+					@for (user of users; track user.id) {
 						<option [selected]="user.id === data.userId" [value]="user.id">
 							{{ user.name }}
 						</option>
