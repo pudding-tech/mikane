@@ -18,6 +18,8 @@ export interface User {
 	guest: boolean;
 	guestCreatedBy?: string;
 	superAdmin?: boolean;
+	publicEmail?: boolean;
+	publicPhone?: boolean;
 	avatarURL?: string;
 	eventInfo?: {
 		id: string;
@@ -137,6 +139,20 @@ export class UserService {
 			lastName,
 			email,
 			phone,
+		});
+	}
+
+	/**
+	 * Updates a user's preferences.
+	 * @param userId - The ID of the user to update.
+	 * @param publicEmail - The user's public email property
+	 * @param publicPhone - The user's public phone number property
+	 * @returns An Observable that emits the updated User object.
+	 */
+	editUserPreferences(userId: string, publicEmail: boolean, publicPhone: boolean): Observable<User> {
+		return this.httpClient.put<User>(this.apiUrl + `/${userId}/preferences`, {
+			publicEmail,
+			publicPhone,
 		});
 	}
 

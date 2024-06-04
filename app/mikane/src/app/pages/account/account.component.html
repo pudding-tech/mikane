@@ -14,6 +14,10 @@
 					[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc first'"
 					[user]="user"
 				></app-user-settings>
+				<app-preferences
+					[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"
+					[user]="user">
+				</app-preferences>
 				<app-change-password
 					[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"
 				></app-change-password>

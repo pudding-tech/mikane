@@ -1,0 +1,64 @@
+.title-mobile {
+	display: flex;
+	align-items: center;
+	height: 50px;
+	margin-bottom: 20px;
+	padding-left: 16px;
+	background-color: rgba(24, 24, 24, 1);
+	border-top: 1px solid #333333;
+	stroke: #333333;
+}
+
+.preferences-mobile {
+	margin-left: 10vw;
+	margin-right: 10vw;
+  margin-bottom: 30px;
+}
+
+.preferences {
+	margin-bottom: 30px;
+
+	.toggle-line {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 10px;
+
+		.toggle {
+			display: flex;
+			align-items: center;
+
+			.toggle-icon {
+				margin-right: 10px;
+			}
+		}
+	}
+
+	.text {
+		color: rgba(255, 255, 255, 0.58);
+
+		&.end {
+			margin-bottom: 10px;
+		}
+	}
+}
+
+.mat-spinner::ng-deep circle{
+	stroke: #FFFFFF !important;
+}
+
+.mdc-card__actions {
+	padding: 0px !important;
+}
+
+.mat-mdc-card-content {
+	padding: 0 55px 16px !important;
+}
+
+.mat-mdc-card-header {
+	padding: 16px 16px 0;
+}
+
+mat-card-title {
+	padding-left: 0 !important;
+}

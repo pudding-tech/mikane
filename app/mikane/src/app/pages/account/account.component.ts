@@ -17,6 +17,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { DangerZoneComponent } from './danger-zone/danger-zone.component';
 import { UserSettingsComponent } from './user/user-settings.component';
+import { PreferencesComponent } from './preferences/preferences.component';
 
 @Component({
 	templateUrl: './account.component.html',
@@ -30,6 +31,7 @@ import { UserSettingsComponent } from './user/user-settings.component';
 		RouterLink,
 		MatIconModule,
 		UserSettingsComponent,
+		PreferencesComponent,
 		ChangePasswordComponent,
 		DangerZoneComponent,
 		MenuComponent,
