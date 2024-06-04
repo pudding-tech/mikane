@@ -10,14 +10,6 @@
 			<div>
 				<form [formGroup]="editUserForm" (ngSubmit)="editUser()">
 					<div class="setting-row">
-						@if (!editMode) {
-							<span class="user-padding"> Username: </span>
-						}
-						@if (!editMode) {
-							<span class="user-details">
-								{{ editUserForm.get("username").value }}
-							</span>
-						}
 						@if (editMode) {
 							<mat-form-field appearance="fill" class="input-field">
 								<mat-label>Username</mat-label>
@@ -29,20 +21,18 @@
 									<mat-error>Username already taken</mat-error>
 								}
 								@if (editUserForm.get("username")?.errors?.["invalid"]) {
-									<mat-error>Invalid username</mat-error>
+									<mat-error>Between 3-40 characters - only letters, numbers, hyphens, underscores</mat-error>
 								}
 							</mat-form-field>
 						}
-					</div>
-					<div class="setting-row">
-						@if (!editMode) {
-							<span class="user-padding"> First name: </span>
-						}
-						@if (!editMode) {
+						@else {
+							<span class="user-padding"> Username: </span>
 							<span class="user-details">
-								{{ editUserForm.get("firstName").value }}
+								{{ editUserForm.get("username").value }}
 							</span>
 						}
+					</div>
+					<div class="setting-row">
 						@if (editMode) {
 							<mat-form-field appearance="fill" class="input-field">
 								<mat-label>First Name</mat-label>
@@ -58,16 +48,14 @@
 								}
 							</mat-form-field>
 						}
-					</div>
-					<div class="setting-row">
-						@if (!editMode) {
-							<span class="user-padding"> Last name: </span>
-						}
-						@if (!editMode) {
+						@else {
+							<span class="user-padding"> First name: </span>
 							<span class="user-details">
-								{{ editUserForm.get("lastName").value }}
+								{{ editUserForm.get("firstName").value }}
 							</span>
 						}
+					</div>
+					<div class="setting-row">
 						@if (editMode) {
 							<mat-form-field class="input-field">
 								<mat-label>Last Name</mat-label>
@@ -77,16 +65,14 @@
 								}
 							</mat-form-field>
 						}
-					</div>
-					<div class="setting-row">
-						@if (!editMode) {
-							<span class="user-padding"> Email: </span>
-						}
-						@if (!editMode) {
+						@else {
+							<span class="user-padding"> Last name: </span>
 							<span class="user-details">
-								{{ editUserForm.get("email").value }}
+								{{ editUserForm.get("lastName").value }}
 							</span>
 						}
+					</div>
+					<div class="setting-row">
 						@if (editMode) {
 							<mat-form-field class="input-field">
 								<mat-label>Email</mat-label>
@@ -102,16 +88,14 @@
 								}
 							</mat-form-field>
 						}
-					</div>
-					<div class="setting-row">
-						@if (!editMode) {
-							<span class="user-padding"> Phone number: </span>
-						}
-						@if (!editMode) {
+						@else {
+							<span class="user-padding"> Email: </span>
 							<span class="user-details">
-								{{ editUserForm.get("phone").value }}
+								{{ editUserForm.get("email").value }}
 							</span>
 						}
+					</div>
+					<div class="setting-row">
 						@if (editMode) {
 							<mat-form-field class="input-field">
 								<mat-label>Phone Number</mat-label>
@@ -127,6 +111,12 @@
 								}
 							</mat-form-field>
 						}
+						@else {
+							<span class="user-padding"> Phone number: </span>
+							<span class="user-details">
+								{{ editUserForm.get("phone").value }}
+							</span>
+						}
 					</div>
 					@if (!editMode) {
 						<div class="setting-row">
@@ -138,25 +128,23 @@
 					}
 					<br />
 					<mat-card-actions class="setting-row">
-						@if (!editMode) {
+						@if (editMode) {
+							<div>
+								<button type="button" mat-button color="accent" (click)="toggleEditMode()" class="user-settings-actions">
+									Cancel
+								</button>
+								<button type="submit" mat-raised-button [disabled]="editUserForm.invalid || editUserForm.pending" color="primary">
+									<mat-icon>check_cirle</mat-icon>
+									Save changes
+								</button>
+							</div>
+						}
+						@else {
 							<button type="button" mat-raised-button color="primary" (click)="toggleEditMode()">
 								<mat-icon>edit</mat-icon>
 								Edit
 							</button>
 						}
-						<div>
-							@if (editMode) {
-								<button type="button" mat-button color="accent" (click)="toggleEditMode()" class="user-settings-actions">
-									Cancel
-								</button>
-							}
-							@if (editMode) {
-								<button type="submit" mat-raised-button color="primary">
-									<mat-icon>check_cirle</mat-icon>
-									Save changes
-								</button>
-							}
-						</div>
 					</mat-card-actions>
 				</form>
 			</div>
@@ -167,14 +155,6 @@
 	<div class="user-settings-mobile">
 		<form [formGroup]="editUserForm" (ngSubmit)="editUser()">
 			<div>
-				@if (!editMode) {
-					<span class="user-property-title"> Username: </span>
-				}
-				@if (!editMode) {
-					<span class="user-details">
-						{{ editUserForm.get("username").value }}
-					</span>
-				}
 				@if (editMode) {
 					<mat-form-field appearance="fill" class="input-field">
 						<mat-label>Username</mat-label>
@@ -186,20 +166,18 @@
 							<mat-error>Username already taken</mat-error>
 						}
 						@if (editUserForm.get("username")?.errors?.["invalid"]) {
-							<mat-error>Invalid username</mat-error>
+							<mat-error>Between 3-40 characters - only letters, numbers, hyphens, underscores</mat-error>
 						}
 					</mat-form-field>
 				}
-			</div>
-			<div>
-				@if (!editMode) {
-					<span class="user-property-title"> First name: </span>
-				}
-				@if (!editMode) {
+				@else {
+					<span class="user-property-title"> Username: </span>
 					<span class="user-details">
-						{{ editUserForm.get("firstName").value }}
+						{{ editUserForm.get("username").value }}
 					</span>
 				}
+			</div>
+			<div>
 				@if (editMode) {
 					<mat-form-field appearance="fill" class="input-field">
 						<mat-label>First Name</mat-label>
@@ -209,16 +187,14 @@
 						}
 					</mat-form-field>
 				}
-			</div>
-			<div>
-				@if (!editMode) {
-					<span class="user-property-title"> Last name: </span>
-				}
-				@if (!editMode) {
+				@else {
+					<span class="user-property-title"> First name: </span>
 					<span class="user-details">
-						{{ editUserForm.get("lastName").value }}
+						{{ editUserForm.get("firstName").value }}
 					</span>
 				}
+			</div>
+			<div>
 				@if (editMode) {
 					<mat-form-field class="input-field">
 						<mat-label>Last Name</mat-label>
@@ -228,16 +204,14 @@
 						}
 					</mat-form-field>
 				}
-			</div>
-			<div>
-				@if (!editMode) {
-					<span class="user-property-title"> Email: </span>
-				}
-				@if (!editMode) {
+				@else {
+					<span class="user-property-title"> Last name: </span>
 					<span class="user-details">
-						{{ editUserForm.get("email").value }}
+						{{ editUserForm.get("lastName").value }}
 					</span>
 				}
+			</div>
+			<div>
 				@if (editMode) {
 					<mat-form-field class="input-field">
 						<mat-label>Email</mat-label>
@@ -253,16 +227,14 @@
 						}
 					</mat-form-field>
 				}
-			</div>
-			<div>
-				@if (!editMode) {
-					<span class="user-property-title"> Phone number: </span>
-				}
-				@if (!editMode) {
+				@else {
+					<span class="user-property-title"> Email: </span>
 					<span class="user-details">
-						{{ editUserForm.get("phone").value }}
+						{{ editUserForm.get("email").value }}
 					</span>
 				}
+			</div>
+			<div>
 				@if (editMode) {
 					<mat-form-field class="input-field">
 						<mat-label>Phone Number</mat-label>
@@ -278,6 +250,12 @@
 						}
 					</mat-form-field>
 				}
+				@else {
+					<span class="user-property-title"> Phone number: </span>
+					<span class="user-details">
+						{{ editUserForm.get("phone").value }}
+					</span>
+				}
 			</div>
 			@if (!editMode) {
 				<div>
@@ -288,22 +266,22 @@
 				</div>
 			}
 			<span class="buttons">
-				@if (!editMode) {
-					<button type="button" mat-raised-button color="primary" (click)="toggleEditMode()">
-						<mat-icon>edit</mat-icon>
-						Edit
-					</button>
-				}
 				@if (editMode) {
 					<div>
 						<button type="button" mat-button color="accent" (click)="toggleEditMode()" class="user-settings-actions">
 							Cancel
 						</button>
-						<button type="submit" mat-raised-button color="primary">
+						<button type="submit" mat-raised-button [disabled]="editUserForm.invalid || editUserForm.pending" color="primary">
 							<mat-icon>check_cirle</mat-icon>
 							Save changes
 						</button>
 					</div>
+				}
+				@else {
+					<button type="button" mat-raised-button color="primary" (click)="toggleEditMode()">
+						<mat-icon>edit</mat-icon>
+						Edit
+					</button>
 				}
 			</span>
 		</form>

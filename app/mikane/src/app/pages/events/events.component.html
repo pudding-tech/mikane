@@ -1,5 +1,5 @@
 <mat-toolbar class="events-toolbar" [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
-	<span class="logo-container">
+	<span class="logo-container" [ngClass]="{ 'fullview': (breakpointService.isMobile() | async) === false }">
 		<img src="assets/mikane.svg" alt="Mikane logo" class="logo" />
 	</span>
 	<span>MIKANE</span>

@@ -21,7 +21,7 @@
 </mat-toolbar>
 @if ((breakpointService.isMobile() | async) === false) {
 	<nav class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
-		@for (link of links(); track link) {
+		@for (link of links(); track link.location) {
 			<a
 				mat-tab-link
 				[routerLink]="link.location"
