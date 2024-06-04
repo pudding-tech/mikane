@@ -40,6 +40,10 @@ a.nostyle:visited {
 	height: 26px;
 	padding-right: 14px;
 
+	&.fullview {
+		margin-left: 10px;
+	}
+
 	.logo {
 		height: 26px;
 	}

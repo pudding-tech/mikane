@@ -30,7 +30,7 @@
 
 <ng-template #adminsContent>
 	<div [ngClass]="{ 'info-full-view': breakpointService.isMobile() | async }">
-		If there is anything concerning this event you need to change, contact one of the admins listed below:
+		If you need to change anything regarding this event, please contact one of the admins listed below:
 	</div>
 	<div class="admins-content" [ngClass]="{ 'full-view': (breakpointService.isMobile() | async) === false }">
 		<mat-nav-list>

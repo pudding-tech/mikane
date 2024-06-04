@@ -34,7 +34,6 @@ import { ApiError } from 'src/app/types/apiError.type';
 	],
 })
 export class UserSettingsComponent implements OnInit, OnDestroy {
-	private subscription: Subscription;
 	private editSubscription: Subscription;
 
 	@Input() user: User;
@@ -88,11 +87,11 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	}
 
 	toggleEditMode() {
+		this.editUserForm.patchValue(this.user);
 		this.editMode = !this.editMode;
 	}
 
 	ngOnDestroy(): void {
-		this.subscription?.unsubscribe();
 		this.editSubscription?.unsubscribe();
 	}
 }

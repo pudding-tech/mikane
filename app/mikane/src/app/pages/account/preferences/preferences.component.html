@@ -1,0 +1,74 @@
+@if ((breakpointService.isMobile() | async) === false) {
+	<mat-card>
+		<mat-card-header>
+			<div mat-card-avatar>
+				<mat-icon aria-hidden="false">manage_accounts</mat-icon>
+			</div>
+			<mat-card-title>Preferences</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+			<ng-container *ngTemplateOutlet="preferencesContent"></ng-container>
+		</mat-card-content>
+	</mat-card>
+}
+@else {
+	<div class="title-mobile">Preferences</div>
+	<div class="preferences-mobile">
+		<ng-container *ngTemplateOutlet="preferencesContent"></ng-container>
+	</div>
+}
+
+<ng-template #preferencesContent>
+	<div class="preferences">
+		<div class="toggle-line">
+			<span>Email:</span>
+			<span class="toggle">
+				@if (loadingEmail) {
+					<mat-spinner diameter="20" class="toggle-icon"></mat-spinner>
+				}
+				@else if (updatedEmail) {
+					<mat-icon class="toggle-icon" [@fadeInOutAnimation]>check_cirle</mat-icon>
+				}
+				<mat-button-toggle-group
+					[(ngModel)]="publicEmail"
+					[disabled]="loadingEmail"
+					[hideSingleSelectionIndicator]="true"
+					id="emailToggleGroup"
+					(change)="editUserPreferences('email')"
+				>
+					<mat-button-toggle [value]="true">Public</mat-button-toggle>
+					<mat-button-toggle [value]="false">Private</mat-button-toggle>
+				</mat-button-toggle-group>
+			</span>
+		</div>
+		<div class="text">
+			Choose whether your email is visible to others on your profile.
+		</div>
+	</div>
+	<div class="preferences">
+		<div class="toggle-line">
+			<span>Phone number:</span>
+			<span class="toggle">
+				@if (loadingPhone) {
+					<mat-spinner diameter="20" class="mat-spinner"></mat-spinner>
+				}
+				@else if (updatedPhone) {
+					<mat-icon class="toggle-icon" [@fadeInOutAnimation]>check_cirle</mat-icon>
+				}
+				<mat-button-toggle-group
+					[(ngModel)]="publicPhone"
+					[disabled]="loadingPhone"
+					[hideSingleSelectionIndicator]="true"
+					id="phoneToggleGroup"
+					(change)="editUserPreferences('phone')"
+				>
+					<mat-button-toggle [value]="true">Public</mat-button-toggle>
+					<mat-button-toggle [value]="false">Private</mat-button-toggle>
+				</mat-button-toggle-group>
+			</span>
+		</div>
+		<div class="text end">
+			Choose whether your phone number is visible to others. Making it public will help others contact and/or pay you more easily.
+		</div>
+	</div>
+</ng-template>

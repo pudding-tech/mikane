@@ -1,5 +1,5 @@
 <div class="navbar" [ngClass]="{ iOS: contextService.isIos }">
-	@for (link of mobileLinks(); track link) {
+	@for (link of mobileLinks(); track link.location) {
 		<a
 			class="nav-button"
 			[routerLink]="link.location"
