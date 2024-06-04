@@ -42,6 +42,7 @@ export class CategoryItemComponent {
 	@Output() toggleWeighted = new EventEmitter<{ categoryId: string; weighted: boolean }>();
 	@Output() deleteCategoryDialog = new EventEmitter<{ categoryId: string }>();
 	@Output() gotoCategoryExpenses = new EventEmitter<{ category: Category }>();
+	@Output() gotoUser = new EventEmitter<{ user: { id: string, guest: boolean, username: string } }>();
 
 	dropdownOpen = false;
 	lowerHeight = 0;
@@ -88,5 +89,9 @@ export class CategoryItemComponent {
 
 	gotoExpenses = () => {
 		this.gotoCategoryExpenses.emit({ category: this.category });
+	};
+
+	gotoUserProfile = (user: { id: string, guest: boolean, username: string }) => {
+		this.gotoUser.emit({ user: user });
 	};
 }

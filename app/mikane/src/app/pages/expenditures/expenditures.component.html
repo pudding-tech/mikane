@@ -71,8 +71,10 @@
 								<th mat-header-cell *matHeaderCellDef mat-sort-header>Paid by</th>
 								<td mat-cell *matCellDef="let expense">
 									<div class="payer">
-										<img [src]="expense.payer.avatarURL" alt="User avatar" class="payer-avatar" />
-										{{ expense.payer.name }}
+										<div class="payer" [ngClass]="{ 'clickable': !expense.payer.guest }" (click)="gotoUserProfile(expense.payer)">
+											<img [src]="expense.payer.avatarURL" alt="User avatar" class="payer-avatar" />
+											{{ expense.payer.name }}
+										</div>
 									</div>
 								</td>
 							</ng-container>

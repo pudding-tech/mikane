@@ -47,7 +47,13 @@
 											<ng-container matColumnDef="name">
 												<th mat-header-cell *matHeaderCellDef>Participant</th>
 												<td mat-cell *matCellDef="let user" class="user">
-													<img [src]="user.avatarURL" alt="User avatar" class="avatar" />
+													<img
+														[src]="user.avatarURL"
+														alt="User avatar"
+														class="avatar"
+														[ngClass]="{ 'clickable': !user.guest }"
+														(click)="gotoUserProfile(user)"
+													/>
 													{{ user.name }}
 												</td>
 												<td mat-footer-cell *matFooterCellDef>
@@ -223,7 +229,9 @@
 					<mat-card appearance="outlined" class="no-categories"> No expense categories </mat-card>
 				}
 			</div>
-		} @else {
+		}
+
+		@else {
 			@if (categories.length > 0) {
 				<mat-nav-list class="categories-list-mobile">
 					@for (category of categories; track category.id) {
@@ -234,6 +242,7 @@
 							[filterUsers]="filterUsers"
 							(addUser)="addUser($event.categoryId)"
 							(removeUser)="removeUser($event.categoryId, $event.userId)"
+							(gotoUser)="gotoUserProfile($event.user)"
 							(openWeightEditDialog)="openWeightEditDialog($event.categoryId, $event.userId, $event.weight)"
 							(openEditCategoryDialog)="openEditCategoryDialog(category.id, category.name, category.icon)"
 							(toggleWeighted)="toggleWeighted($event.categoryId, $event.weighted)"

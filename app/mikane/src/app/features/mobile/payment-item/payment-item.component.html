@@ -1,7 +1,13 @@
 <div class="wrapper">
 	<mat-list-item (click)="toggleDropdown()">
 		<div class="upper">
-			<img [src]="sender.sender.avatarURL" alt="Sender avatar" class="avatar" />
+			<img
+				[src]="sender.sender.avatarURL"
+				alt="Sender avatar"
+				class="avatar"
+				[ngClass]="{ 'clickable': !sender.sender.guest }"
+				(click)="gotoUserProfile(sender.sender)"
+			/>
 			<mat-icon matListItemIcon class="dropdown-arrow">
 				{{ dropdownOpen ? "arrow_drop_up" : "arrow_drop_down" }}
 			</mat-icon>
@@ -20,7 +26,13 @@
 			<mat-list-item>
 				<div class="payment">
 					<span class="name">
-						<img [src]="receiver.receiver.avatarURL" alt="Receiver avatar" class="avatar" />
+						<img
+							[src]="receiver.receiver.avatarURL"
+							alt="Receiver avatar"
+							class="avatar"
+							[ngClass]="{ 'clickable': !receiver.receiver.guest }"
+							(click)="gotoUserProfile(receiver.receiver)"
+						/>
 						{{ self && receiver.receiver.id === currentUser.id ? "You" : receiver.receiver.name }}
 					</span>
 					<span class="amount-color"> {{ receiver.amount | currency: "" : "" : "1.2-2" : "no" }} kr </span>

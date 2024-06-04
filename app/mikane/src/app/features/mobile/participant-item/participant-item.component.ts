@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { UserBalance } from 'src/app/services/user/user.service';
+import { User, UserBalance } from 'src/app/services/user/user.service';
 
 @Component({
 	selector: 'app-participant-item',
@@ -15,7 +15,12 @@ import { UserBalance } from 'src/app/services/user/user.service';
 export class ParticipantItemComponent {
 	@Input() userBalance: UserBalance;
 	@Input() eventActive: boolean;
+	@Output() gotoUser = new EventEmitter<{ user: User }>();
 	@Output() removeUser = new EventEmitter<{ userId: string }>();
+
+	gotoUserProfile() {
+		this.gotoUser.emit({ user: this.userBalance.user });
+	}
 
 	removeUserFromEvent() {
 		this.removeUser.emit({ userId: this.userBalance.user.id });
