@@ -340,6 +340,12 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	gotoUserProfile(user: User) {
+		if (!user.guest) {
+			this.router.navigate(['u', user.id]);
+		}
+	}
+
 	applyFilter(event: Event) {
 		const filterValue = (event.target as HTMLInputElement).value;
 		this.filterValue.update(() => {

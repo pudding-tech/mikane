@@ -15,6 +15,8 @@ export interface Category {
 	users: Array<{
 		id: string;
 		name: string;
+		username: string;
+		guest: boolean;
 		avatarURL: string;
 		weight?: number;
 	}>;

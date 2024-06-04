@@ -388,6 +388,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		this.router.navigate(['events', this.event.id, 'settings']);
 	}
 
+	gotoUserProfile(user: User) {
+		if (!user.guest) {
+			this.router.navigate(['u', user.id]);
+		}
+	}
+
 	gotoUserExpenses(user: UserBalance) {
 		if (user.expensesCount < 1) {
 			return;

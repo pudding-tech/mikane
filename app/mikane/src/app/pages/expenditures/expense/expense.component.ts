@@ -180,6 +180,12 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	gotoUserProfile() {
+		if (!this.expense.payer.guest) {
+			this.router.navigate(['u', this.expense.payer.id]);
+		}
+	}
+
 	ngOnDestroy(): void {
 		this.destroy$.next();
 		this.destroy$.complete();

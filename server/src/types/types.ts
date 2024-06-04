@@ -61,7 +61,7 @@ export type Category = {
     id: string,
     name: string,
     guest: boolean,
-    username?: string,
+    username: string,
     firstName?: string,
     lastName?: string,
     avatarURL: string,
