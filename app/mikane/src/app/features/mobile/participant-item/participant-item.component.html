@@ -1,7 +1,7 @@
 <mat-list-item class="wrapper">
 	<div class="upper">
 		<div class="title">
-			<img [src]="userBalance.user.avatarURL" alt="User avatar" class="avatar" />
+			<img [src]="userBalance.user.avatarURL" alt="User avatar" class="avatar" (click)="gotoUserProfile(); $event.stopPropagation()" />
 			<div>
 				<div class="number-of-expenses">Number of expenses: {{ userBalance.expensesCount }}</div>
 				<div class="name">

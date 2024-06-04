@@ -35,7 +35,7 @@
 			<mat-list-item>
 				<div class="user data">
 					<span class="name">
-						<img [src]="user.avatarURL" alt="User avatar" class="avatar" />
+						<img [src]="user.avatarURL" alt="User avatar" class="avatar" (click)="gotoUserProfile(user)" />
 						{{ user.name }}
 					</span>
 					<span>

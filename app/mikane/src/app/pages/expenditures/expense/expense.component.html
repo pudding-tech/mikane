@@ -23,8 +23,10 @@
 			<div class="title">
 				<div class="header">Paid by</div>
 				<div class="payer">
-					<img [src]="expense.payer.avatarURL" alt="User avatar" class="payer-avatar" />
-					<div id="payer-name">{{ expense.payer.name }}</div>
+					<div class="payer-inner" (click)="gotoUserProfile()">
+						<img [src]="expense.payer.avatarURL" alt="User avatar" class="payer-avatar" />
+						<div id="payer-name">{{ expense.payer.name }}</div>
+					</div>
 				</div>
 			</div>
 			@if (expense.description) {

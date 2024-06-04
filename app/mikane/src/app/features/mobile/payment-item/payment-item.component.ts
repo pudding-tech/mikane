@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { Router } from '@angular/router';
 import { User } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 
@@ -42,6 +43,10 @@ export class PaymentItemComponent implements OnInit {
 	dropdownOpen: boolean;
 	lowerHeight: number | string;
 
+	constructor(
+		private router: Router,
+	) {}
+
 	ngOnInit(): void {
 		this.dropdownOpen = this.self ? true : false;
 		this.lowerHeight = this.self ? 'auto' : 0;
@@ -61,4 +66,10 @@ export class PaymentItemComponent implements OnInit {
 			this.lowerHeight = 0;
 		}
 	};
+
+	gotoUserProfile(user: User) {
+		if (!user.guest) {
+			this.router.navigate(['u', user.id]);
+		}
+	}
 }

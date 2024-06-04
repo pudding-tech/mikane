@@ -130,7 +130,7 @@
 					<mat-card-actions class="setting-row">
 						@if (editMode) {
 							<div>
-								<button type="button" mat-button color="accent" (click)="toggleEditMode()" class="user-settings-actions">
+								<button type="button" mat-button color="accent" (click)="cancelEditMode()" class="user-settings-actions">
 									Cancel
 								</button>
 								<button type="submit" mat-raised-button [disabled]="editUserForm.invalid || editUserForm.pending" color="primary">
@@ -268,7 +268,7 @@
 			<span class="buttons">
 				@if (editMode) {
 					<div>
-						<button type="button" mat-button color="accent" (click)="toggleEditMode()" class="user-settings-actions">
+						<button type="button" mat-button color="accent" (click)="cancelEditMode()" class="user-settings-actions">
 							Cancel
 						</button>
 						<button type="submit" mat-raised-button [disabled]="editUserForm.invalid || editUserForm.pending" color="primary">

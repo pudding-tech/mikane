@@ -86,8 +86,12 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 			});
 	}
 
-	toggleEditMode() {
+	cancelEditMode() {
 		this.editUserForm.patchValue(this.user);
+		this.toggleEditMode();
+	}
+
+	toggleEditMode() {
 		this.editMode = !this.editMode;
 	}
 

@@ -58,7 +58,13 @@
 								<mat-expansion-panel-header>
 									<mat-panel-title>
 										<div class="user first">
-											<img [src]="userWithBalance.user.avatarURL" alt="User avatar" class="avatar" />
+											<img
+												[src]="userWithBalance.user.avatarURL"
+												alt="User avatar"
+												class="avatar"
+												[ngClass]="{ 'clickable': !userWithBalance.user.guest }"
+												(click)="gotoUserProfile(userWithBalance.user)"
+											/>
 											{{ userWithBalance.user.name }}
 										</div>
 										<div class="count" [ngClass]="{ 'no-expenses': userWithBalance.expensesCount === 0 }">
@@ -168,7 +174,9 @@
 					<mat-card appearance="outlined"> No participants </mat-card>
 				}
 			</div>
-		} @else {
+		}
+
+		@else {
 			<div class="header-mobile">
 				@if (inEvent) {
 					<span class="in-event">
@@ -202,6 +210,7 @@
 						[userBalance]="userWithBalance"
 						[eventActive]="event?.status.id === EventStatusType.ACTIVE"
 						(click)="gotoUserExpenses(userWithBalance)"
+						(gotoUser)="gotoUserProfile($event.user)"
 						(removeUser)="deleteUserDialog($event.userId)"
 					></app-participant-item>
 				}

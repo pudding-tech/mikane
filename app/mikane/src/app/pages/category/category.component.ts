@@ -406,6 +406,12 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 		});
 	}
 
+	gotoUserProfile(user: { id: string, guest: boolean, username: string }) {
+		if (!user.guest) {
+			this.router.navigate(['u', user.id]);
+		}
+	}
+
 	ngOnDestroy(): void {
 		this.destroy$.next();
 		this.destroy$.complete();

@@ -23,13 +23,23 @@
 						<div class="user-row">
 							<span class="user-padding">
 								<mat-icon class="icon">email</mat-icon>
-								<a [href]="'mailto:' + user?.email">{{ user?.email }} </a>
+								@if (user?.email) {
+									<a [href]="'mailto:' + user?.email">{{ user?.email }} </a>
+								}
+								@else {
+									<i>Private</i>
+								}
 							</span>
 						</div>
 						<div class="user-row">
 							<span class="user-padding">
 								<mat-icon class="icon">phone</mat-icon>
-								{{ user?.phone }}
+								@if (user?.phone) {
+									{{ user?.phone }}
+								}
+								@else {
+									<i>Private</i>
+								}
 							</span>
 						</div>
 					</mat-card-content>
@@ -50,13 +60,23 @@
 					<div class="user-row">
 						<span class="user-padding">
 							<mat-icon class="icon">email</mat-icon>
-							<a [href]="'mailto:' + user?.email">{{ user?.email }} </a>
+							@if (user?.email) {
+								<a [href]="'mailto:' + user?.email">{{ user?.email }} </a>
+							}
+							@else {
+								<i>Private</i>
+							}
 						</span>
 					</div>
 					<div class="user-row">
 						<span class="user-padding">
 							<mat-icon class="icon">phone</mat-icon>
-							{{ user?.phone }}
+							@if (user?.phone) {
+								{{ user?.phone }}
+							}
+							@else {
+								<i>Private</i>
+							}
 						</span>
 					</div>
 				</div>

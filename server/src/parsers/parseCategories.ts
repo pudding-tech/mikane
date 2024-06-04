@@ -46,6 +46,7 @@ export const parseCategories = (catInput: CategoryDB[], target: Target, usersInE
               {
                 id: user.user_id,
                 name: "Deleted user",
+                username: "Deleted user",
                 avatarURL: getGravatarURL("", { size: 50, default: "mp" }),
                 weight: user.weight,
                 guest: user.guest
@@ -53,12 +54,12 @@ export const parseCategories = (catInput: CategoryDB[], target: Target, usersInE
               {
                 id: user.user_id,
                 name: user.first_name,
-                guest: user.guest,
                 username: user.username,
                 firstName: user.first_name,
                 lastName: user.last_name,
                 avatarURL: getGravatarURL(user.email ?? "", { size: 50, default: user.guest ? "mp" : "identicon" }),
-                weight: user.weight
+                weight: user.weight,
+                guest: user.guest
               }
             );
           }
@@ -96,7 +97,6 @@ export const parseCategories = (catInput: CategoryDB[], target: Target, usersInE
       // Set unique names of users where they are shared
       setDisplayNames(category.users, usersInEvent);
       for (const user of category.users) {
-        delete user.username;
         delete user.firstName;
         delete user.lastName;
       }

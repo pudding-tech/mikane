@@ -39,24 +39,27 @@
 
 .payer {
 	display: flex;
-	align-items: center;
 
-	font-size: 1.2em;
-	margin-top: 4px;
+	.payer-inner {
+		display: flex;
+		align-items: center;
+		margin-top: 4px;
+		font-size: 1.2em;
 
-	.payer-avatar {
-		position: relative;
-		width: 24px;
-		height: 24px;
-		margin-right: 6px;
-		border-radius: 50%;
-		object-fit: cover;
-		margin-right: 10px;
-	}
-	
-	.payer-name {
-		position: relative;
-		top: 1px;
+		.payer-avatar {
+			position: relative;
+			width: 24px;
+			height: 24px;
+			margin-right: 6px;
+			border-radius: 50%;
+			object-fit: cover;
+			margin-right: 10px;
+		}
+		
+		.payer-name {
+			position: relative;
+			top: 1px;
+		}
 	}
 }
 
