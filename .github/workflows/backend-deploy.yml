@@ -1,65 +1,65 @@
 name: "~ Deploy backend"
 
 on:
-  workflow_call:
-    inputs:
-      dry-run:
-        required: false
-        default: true
-        type: boolean
-      artifact:
-        required: true
-        type: string
-      environment:
-        required: true
-        type: string
-    secrets:
-      SSH_PRIVATE_KEY:
-        required: true
-      SSH_HOST:
-        required: true
-      SSH_USER:
-        required: true
+    workflow_call:
+        inputs:
+            dry-run:
+                required: false
+                default: true
+                type: boolean
+            artifact:
+                required: true
+                type: string
+            environment:
+                required: true
+                type: string
+        secrets:
+            SSH_PRIVATE_KEY:
+                required: true
+            SSH_HOST:
+                required: true
+            SSH_USER:
+                required: true
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
-    steps:
-      - name: Install SSH Key
-        uses: shimataro/ssh-key-action@v2.7.0
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: "just-a-placeholder-so-we-dont-get-errors"
+    deploy:
+        runs-on: ubuntu-latest
+        environment: ${{ inputs.environment }}
+        steps:
+            - name: Install SSH Key
+              uses: shimataro/ssh-key-action@v2.7.0
+              with:
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  known_hosts: "just-a-placeholder-so-we-dont-get-errors"
 
-      - name: Adding Known Hosts
-        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+            - name: Adding Known Hosts
+              run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Download artifacts
-        id: download
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ inputs.artifact }}
+            - name: Download artifacts
+              id: download
+              uses: actions/download-artifact@v4
+              with:
+                  name: ${{ inputs.artifact }}
 
-      - name: Deploy to ${{ inputs.environment }} with rsync (dry-run)
-        if: inputs.dry-run
-        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.BACKEND_LOCATION }} --delete
+            - name: Deploy to ${{ inputs.environment }} with rsync (dry-run)
+              if: inputs.dry-run
+              run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.BACKEND_LOCATION }} --delete
 
-      - name: Deploy to ${{ inputs.environment }} with rsync
-        if: ${{!inputs.dry-run}}
-        run: |
-          rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.BACKEND_LOCATION }} --delete
+            - name: Deploy to ${{ inputs.environment }} with rsync
+              if: ${{!inputs.dry-run}}
+              run: |
+                  rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.BACKEND_LOCATION }} --delete
 
-      - name: Reload backend ${{ inputs.environment }}
-        if: ${{!inputs.dry-run && inputs.environment == 'production'}}
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            export PATH="$PATH:/home/${{ secrets.SSH_USER }}/.nvm/versions/node/v20.10.0/bin/"
-            cd ${{ vars.BACKEND_LOCATION }}}
-            npm install swagger-ui-express --prefix mikane
-            cp .env ./mikane/.env
-            pm2 reload ecosystem.config.js
+            - name: Reload backend ${{ inputs.environment }}
+              if: ${{ !inputs.dry-run }}
+              uses: appleboy/ssh-action@v1.0.0
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: |
+                      export PATH="$PATH:/home/${{ secrets.SSH_USER }}/.nvm/versions/node/v20.10.0/bin/"
+                      cd ${{ vars.BACKEND_LOCATION }}}
+                      npm install swagger-ui-express --prefix mikane
+                      cp .env ./mikane/.env
+                      pm2 reload ecosystem.config.js
