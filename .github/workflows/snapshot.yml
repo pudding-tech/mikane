@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       frontend-artifact: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
-      backend-artifact: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
+      backend-artifact: ${{ steps.bump-snapshot.outputs.artifact-backend }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
