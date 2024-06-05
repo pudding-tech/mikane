@@ -10,8 +10,7 @@
 			<ng-container *ngTemplateOutlet="preferencesContent"></ng-container>
 		</mat-card-content>
 	</mat-card>
-}
-@else {
+} @else {
 	<div class="title-mobile">Preferences</div>
 	<div class="preferences-mobile">
 		<ng-container *ngTemplateOutlet="preferencesContent"></ng-container>
@@ -21,50 +20,20 @@
 <ng-template #preferencesContent>
 	<div class="preferences">
 		<div class="toggle-line">
-			<span>Email:</span>
+			<span>Show email:</span>
 			<span class="toggle">
-				@if (loadingEmail) {
-					<mat-spinner diameter="20" class="toggle-icon"></mat-spinner>
-				}
-				@else if (updatedEmail) {
-					<mat-icon class="toggle-icon" [@fadeInOutAnimation]>check_cirle</mat-icon>
-				}
-				<mat-button-toggle-group
-					[(ngModel)]="publicEmail"
-					[disabled]="loadingEmail"
-					[hideSingleSelectionIndicator]="true"
-					id="emailToggleGroup"
-					(change)="editUserPreferences('email')"
-				>
-					<mat-button-toggle [value]="true">Public</mat-button-toggle>
-					<mat-button-toggle [value]="false">Private</mat-button-toggle>
-				</mat-button-toggle-group>
+				<mat-slide-toggle id="emailToggle" [(ngModel)]="publicEmail" [disabled]="loadingEmail" (change)="toggleEmail()">
+				</mat-slide-toggle>
 			</span>
 		</div>
-		<div class="text">
-			Choose whether your email is visible to others on your profile.
-		</div>
+		<div class="text">Choose whether your email is visible to others on your profile.</div>
 	</div>
 	<div class="preferences">
 		<div class="toggle-line">
-			<span>Phone number:</span>
+			<span>Show phone number:</span>
 			<span class="toggle">
-				@if (loadingPhone) {
-					<mat-spinner diameter="20" class="mat-spinner"></mat-spinner>
-				}
-				@else if (updatedPhone) {
-					<mat-icon class="toggle-icon" [@fadeInOutAnimation]>check_cirle</mat-icon>
-				}
-				<mat-button-toggle-group
-					[(ngModel)]="publicPhone"
-					[disabled]="loadingPhone"
-					[hideSingleSelectionIndicator]="true"
-					id="phoneToggleGroup"
-					(change)="editUserPreferences('phone')"
-				>
-					<mat-button-toggle [value]="true">Public</mat-button-toggle>
-					<mat-button-toggle [value]="false">Private</mat-button-toggle>
-				</mat-button-toggle-group>
+				<mat-slide-toggle id="phoneToggle" [(ngModel)]="publicPhone" [disabled]="loadingPhone" (change)="togglePhone()">
+				</mat-slide-toggle>
 			</span>
 		</div>
 		<div class="text end">
