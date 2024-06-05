@@ -89,6 +89,8 @@ jobs:
         uses: ./.github/workflows/backend-test.yml
         with:
             node-version: 22.x
+        secrets:
+            codecov_token: ${{ secrets.CODECOV_TOKEN }}
     deploy-frontend:
         needs: [snapshot, test-frontend]
         uses: ./.github/workflows/frontend-deploy.yml

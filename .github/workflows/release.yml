@@ -36,6 +36,8 @@ jobs:
         uses: ./.github/workflows/backend-test.yml
         with:
             node-version: ${{ inputs.node-version }}
+        secrets:
+            codecov_token: ${{ secrets.CODECOV_TOKEN }}
     bump:
         needs: [test-frontend, test-backend]
         uses: ./.github/workflows/bump.yml

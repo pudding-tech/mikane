@@ -1,71 +1,73 @@
 name: "~ Backend tests"
 on:
-  workflow_call:
-    inputs:
-      node-version:
-        required: true
-        default: 20.x
-        type: string
-      upload-coverage:
-        required: false
-        default: true
-        description: Upload code coverage
-        type: boolean
+    workflow_call:
+        inputs:
+            node-version:
+                required: true
+                default: 20.x
+                type: string
+            upload-coverage:
+                required: false
+                default: true
+                description: Upload code coverage
+                type: boolean
+        secrets:
+            codecov_token:
+                required: true
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+    test:
+        runs-on: ubuntu-latest
 
-    env:
-      DB_HOST: localhost
-      DB_PORT: 1433
-      DB_DATABASE: mikanetest
-      DB_USER: mikane_testuser
-      DB_PASSWORD: MikaneTestPassword!123
-
-    defaults:
-      run:
-        working-directory: ./server/
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ inputs.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ inputs.node-version }}
-          cache: "npm"
-          cache-dependency-path: ./server/package-lock.json
-
-      - name: Create DB
-        run: |
-          docker run -d \
-          --name postgresdb \
-          -e ENVIRONMENT=test \
-          -e POSTGRES_DB="${{ env.DB_DATABASE }}" \
-          -e POSTGRES_USER="${{ env.DB_USER }}" \
-          -e POSTGRES_PASSWORD="${{ env.DB_PASSWORD }}" \
-          -e DB_HOST="${{ env.DB_HOST }}" \
-          -e DB_USER="${{ env.DB_USER }}" \
-          -e DB_PASSWORD="${{ env.DB_PASSWORD }}" \
-          -p "${{ env.DB_PORT }}":5432 \
-          -v ${{ github.workspace }}/server/bash_scripts/db_init.sh:/docker-entrypoint-initdb.d/01_db_init.sh \
-          -v ${{ github.workspace }}/server/test_db/master_api_key.sql:/docker-entrypoint-initdb.d/02_master_api_key.sql \
-          -v ${{ github.workspace }}/server/bash_scripts:/bash_scripts \
-          -v ${{ github.workspace }}/server/db_scripts:/db_scripts \
-          postgres:15
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm run test
-
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v4
-        if: inputs.upload-coverage
-        with:
-          files: ./server/coverage/coverage-final.json
         env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+            DB_HOST: localhost
+            DB_PORT: 1433
+            DB_DATABASE: mikanetest
+            DB_USER: mikane_testuser
+            DB_PASSWORD: MikaneTestPassword!123
+
+        defaults:
+            run:
+                working-directory: ./server/
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js ${{ inputs.node-version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ inputs.node-version }}
+                  cache: "npm"
+                  cache-dependency-path: ./server/package-lock.json
+
+            - name: Create DB
+              run: |
+                  docker run -d \
+                  --name postgresdb \
+                  -e ENVIRONMENT=test \
+                  -e POSTGRES_DB="${{ env.DB_DATABASE }}" \
+                  -e POSTGRES_USER="${{ env.DB_USER }}" \
+                  -e POSTGRES_PASSWORD="${{ env.DB_PASSWORD }}" \
+                  -e DB_HOST="${{ env.DB_HOST }}" \
+                  -e DB_USER="${{ env.DB_USER }}" \
+                  -e DB_PASSWORD="${{ env.DB_PASSWORD }}" \
+                  -p "${{ env.DB_PORT }}":5432 \
+                  -v ${{ github.workspace }}/server/bash_scripts/db_init.sh:/docker-entrypoint-initdb.d/01_db_init.sh \
+                  -v ${{ github.workspace }}/server/test_db/master_api_key.sql:/docker-entrypoint-initdb.d/02_master_api_key.sql \
+                  -v ${{ github.workspace }}/server/bash_scripts:/bash_scripts \
+                  -v ${{ github.workspace }}/server/db_scripts:/db_scripts \
+                  postgres:15
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run tests
+              run: npm run test
+
+            - name: Upload coverage report
+              uses: codecov/codecov-action@v4
+              if: inputs.upload-coverage
+              with:
+                  files: ./server/coverage/coverage-final.json
+                  token: ${{ secrets.codecov_token }}
