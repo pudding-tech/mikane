@@ -1,6 +1,6 @@
 {
 	"name": "mikane",
-	"version": "2.2.3-SNAPSHOT.12",
+	"version": "2.2.3-SNAPSHOT.13",
 	"scripts": {
 		"ng": "ng",
 		"start": "ng serve",
