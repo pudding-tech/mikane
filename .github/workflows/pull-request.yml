@@ -1,23 +1,25 @@
 name: Status Checks
 
 on:
-  pull_request:
-    branches: ["develop"]
+    pull_request:
+        branches: ["develop"]
 
 jobs:
-  build-frontend:
-    uses: ./.github/workflows/frontend-build.yml
-    with:
-      node-version: 22.x
-  build-backend:
-    uses: ./.github/workflows/backend-build.yml
-    with:
-      node-version: 22.x
-  test-frontend:
-    uses: ./.github/workflows/frontend-test.yml
-    with:
-      node-version: 22.x
-  test-backend:
-    uses: ./.github/workflows/backend-test.yml
-    with:
-      node-version: 22.x
+    build-frontend:
+        uses: ./.github/workflows/frontend-build.yml
+        with:
+            node-version: 22.x
+    build-backend:
+        uses: ./.github/workflows/backend-build.yml
+        with:
+            node-version: 22.x
+    test-frontend:
+        uses: ./.github/workflows/frontend-test.yml
+        with:
+            node-version: 22.x
+        secrets:
+            codecov_token: ${{ secrets.CODECOV_TOKEN }}
+    test-backend:
+        uses: ./.github/workflows/backend-test.yml
+        with:
+            node-version: 22.x
