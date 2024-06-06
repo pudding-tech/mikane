@@ -30,7 +30,7 @@ import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 })
 export class PaymentItemComponent implements OnInit {
 	@ViewChild('lower') lower: ElementRef;
-	@Input() sender: {
+	@Input() payment: {
 		sender: User;
 		receivers: Array<{
 			receiver: User;

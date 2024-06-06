@@ -19,7 +19,7 @@ import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 
-interface Sender {
+interface SenderPayments {
 	sender: User;
 	receivers: Array<{
 		receiver: User;
@@ -57,9 +57,9 @@ export class PaymentStructureComponent implements OnInit {
 	allExpandedOthers = false;
 
 	payments: Payment[] = [];
-	senders: Sender[] = [];
-	paymentsSelf: Sender[] = [];
-	paymentsOthers: Sender[] = [];
+	senders: SenderPayments[] = [];
+	paymentsSelf: SenderPayments[] = [];
+	paymentsOthers: SenderPayments[] = [];
 	currentUser: User;
 
 	constructor(
