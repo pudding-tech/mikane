@@ -30,7 +30,7 @@ import { User } from 'src/app/services/user/user.service';
 })
 export class PaymentExpansionPanelItemComponent {
 	@ViewChild(MatAccordion) accordion!: MatAccordion;
-	@Input() senders: Array<{
+	@Input() payments: Array<{
 		sender: User;
 		receivers: Array<{
 			receiver: User;
