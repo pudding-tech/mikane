@@ -44,7 +44,7 @@ describe('PaymentItemComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(PaymentItemComponent);
 		component = fixture.componentInstance;
-		component.sender = {
+		component.payment = {
 			sender: { id: '1', name: 'Sender' } as User,
 			receivers: [
 				{ receiver: { id: '2', name: 'Receiver 1' } as User, amount: 50 },
@@ -63,18 +63,18 @@ describe('PaymentItemComponent', () => {
 	it('should display the sender name', () => {
 		const senderNameEl = fixture.debugElement.query(By.css('.upper .name')).nativeElement;
 
-		expect(senderNameEl.textContent).toContain(component.sender.sender.name);
+		expect(senderNameEl.textContent).toContain(component.payment.sender.name);
 	});
 
 	it('should display the correct number of receivers', () => {
 		const receiverEls = fixture.debugElement.queryAll(By.css('.lower .name'));
 
-		expect(receiverEls.length).toEqual(component.sender.receivers.length);
+		expect(receiverEls.length).toEqual(component.payment.receivers.length);
 	});
 
 	it('should display the correct receiver name and amount', () => {
 		const receiverEls = fixture.debugElement.queryAll(By.css('.payment'));
-		component.sender.receivers.forEach((receiver, index) => {
+		component.payment.receivers.forEach((receiver, index) => {
 			const nameEl = receiverEls[index].query(By.css('.name')).nativeElement;
 			const amountEl = receiverEls[index].query(By.css('.amount-color')).nativeElement;
 
