@@ -23,7 +23,8 @@ Mikane is a tool designed for calculating payments to settle shared expenses fro
 ### Prerequisites
 
 - Node.js v22
-- Docker (for database setup in option A)
+- PostgreSQL (for backend setup in option A)
+- Docker (for backend setup in option B)
 
 ### Steps
 
@@ -50,7 +51,7 @@ Mikane is a tool designed for calculating payments to settle shared expenses fro
 #### Backend:
 
 Option A:
-1. Set up a postgreSQL database manually, and run db_schema and all functions against it
+1. Set up a postgreSQL database, then run db_schema.sql and all functions (in db_scripts forlder) against it
 
 2. Create .env file and populate required variables
 
@@ -71,7 +72,7 @@ Option B - use this method if you only want to work with the frontend (database 
      - Choose `POSTGRES_USER` and `POSTGRES_PASSWORD` values for the database setup, and ensure these values are reflected in `DB_USER` and `DB_PASSWORD`, respectively.
      - The remaining database variables should be set as follows: `DB_HOST=db`, `DB_PORT=5432`, and `DB_DATABASE=mikane`.
 
-3. Run backend and automatically create a database ready for use:
+3. Run the backend server, which will automatically create and connect to a ready-to-use database:
     ```bash
     docker compose up
     ```
@@ -95,7 +96,7 @@ npm run test
 
 ### Backend
 
-The backend has integration tests that require a database to function. However, this is automatically set up through the commands below, so no additional actions are needed.
+The backend has integration tests that require a database to function. However, this is automatically set up through Docker with the `npm run db` command below, so no additional actions are needed.
 
 To run backend tests:
 ```bash
