@@ -16,7 +16,7 @@
 						@if (paymentsSelf.length > 0) {
 							<app-payment-expansion-panel-item
 								#paymentsSelfRef
-								[senders]="paymentsSelf"
+								[payments]="paymentsSelf"
 								[self]="true"
 								[currentUser]="currentUser"
 								(allPanelsExpanded)="panelToggled(1, $event)"
@@ -37,7 +37,7 @@
 						@if (paymentsOthers.length > 0) {
 							<app-payment-expansion-panel-item
 								#paymentsOthersRef
-								[senders]="paymentsOthers"
+								[payments]="paymentsOthers"
 								[self]="false"
 								[currentUser]="currentUser"
 								(allPanelsExpanded)="panelToggled(2, $event)"
@@ -66,8 +66,8 @@
 								<div class="title-mobile">Your payments</div>
 							}
 							<mat-nav-list class="payments-list-mobile">
-								@for (sender of paymentsSelf; track sender.sender.id) {
-									<app-payment-item [sender]="sender" [self]="true" [currentUser]="currentUser"> </app-payment-item>
+								@for (payment of paymentsSelf; track payment.sender.id) {
+									<app-payment-item [payment]="payment" [self]="true" [currentUser]="currentUser"> </app-payment-item>
 								}
 							</mat-nav-list>
 						</div>
@@ -78,8 +78,8 @@
 								<div class="title-mobile">Other payments</div>
 							}
 							<mat-nav-list class="payments-list-mobile">
-								@for (sender of paymentsOthers; track sender.sender.id) {
-									<app-payment-item [sender]="sender" [self]="false" [currentUser]="currentUser"> </app-payment-item>
+								@for (payment of paymentsOthers; track payment.sender.id) {
+									<app-payment-item [payment]="payment" [self]="false" [currentUser]="currentUser"> </app-payment-item>
 								}
 							</mat-nav-list>
 						</div>
