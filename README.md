@@ -34,7 +34,7 @@ Mikane is a tool designed for calculating payments to settle shared expenses fro
  cd mikane
  ```
 
-#### Frontend:
+#### Frontend
 
 1. Install dependencies for the frontend:
     ```bash
@@ -48,12 +48,12 @@ Mikane is a tool designed for calculating payments to settle shared expenses fro
     npm run dev
     ```
 
-#### Backend:
+#### Backend
 
 Option A:
-1. Set up a postgreSQL database, then run db_schema.sql and all functions (in db_scripts forlder) against it
+1. Set up a PostgreSQL database, then run `db_schema.sql` and all functions in the `db_scripts` folder against it.
 
-2. Create .env file and populate required variables
+2. Create a `.env` file and populate the required variables.
 
 3. Install dependencies for the backend:
     ```bash
@@ -67,8 +67,8 @@ Option A:
     npm run dev
     ```
 
-Option B - use this method if you only want to work with the frontend (database will be automatically set up, and backend will be non-editable):
-1. Create .env file and populate required variables:
+Option B - use this method if you only want to work with the frontend (a database will be automatically set up, and the backend will be non-editable):
+1. Create a `.env` file and populate the required variables:
      - Choose `POSTGRES_USER` and `POSTGRES_PASSWORD` values for the database setup, and ensure these values are reflected in `DB_USER` and `DB_PASSWORD`, respectively.
      - The remaining database variables should be set as follows: `DB_HOST=db`, `DB_PORT=5432`, and `DB_DATABASE=mikane`.
 
@@ -80,9 +80,10 @@ Option B - use this method if you only want to work with the frontend (database 
 ## Usage
 
 1. Open your browser and navigate to `http://localhost:4200`.
-2. Register a new account at `http://localhost:4200/register/u`, or log in with existing credentials.
+2. Register new accounts at `http://localhost:4200/register/u`, or log in with existing credentials.
 3. Create an event and start adding participants and expenses.
-4. API documentation (using the OpenAPI specification) can be found at `http://localhost:3002`.
+
+The API documentation, following the OpenAPI specification, is available at `http://localhost:3002`.
 
 ## Testing
 
