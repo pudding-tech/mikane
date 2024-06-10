@@ -55,8 +55,9 @@ router.get("/eventbyname", authKeyCheck, async (req, res, next) => {
   try {
     const eventName = req.body.name;
     const userId = req.session.userId;
+    const authIsApiKey = req.authIsApiKey;
 
-    const event = await db.getEventByName(eventName, userId);
+    const event = await db.getEventByName(eventName, userId, authIsApiKey);
     if (!event) {
       throw new ErrorExt(ec.PUD006);
     }
@@ -78,7 +79,7 @@ router.get("/events/:id/balances", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD013);
     }
 
-    const usersWithBalance: UserBalance[] = await db.getEventBalances(eventId);
+    const usersWithBalance: UserBalance[] = await db.getEventBalances(eventId, userId);
 
     // Remove sensitive user information
     removeUserInfoFromUserBalances(usersWithBalance, userId ?? "");
@@ -110,7 +111,7 @@ router.get("/events/:id/payments", authKeyCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD013);
     }
 
-    const payments: Payment[] = await db.getEventPayments(eventId);
+    const payments: Payment[] = await db.getEventPayments(eventId, userId);
 
     // Remove sensitive user information
     removeUserInfoFromPayments(payments, userId ?? "");
@@ -147,13 +148,13 @@ router.post("/events", authCheck, async (req, res, next) => {
     if (name.trim() === "") {
       throw new ErrorExt(ec.PUD053);
     }
-    const userId = req.session.userId;
-    if (!userId) {
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
       throw new ErrorExt(ec.PUD055);
     }
 
-    const createdEvent: Event = await db.createEvent(name.trim(), userId, req.body.private, req.body.description);
-    const event = await db.getEvent(createdEvent.id, userId);
+    const createdEvent: Event = await db.createEvent(name.trim(), activeUserId, req.body.private, req.body.description);
+    const event = await db.getEvent(createdEvent.id, activeUserId);
     res.status(200).send(event);
   }
   catch (err) {
@@ -172,7 +173,12 @@ router.post("/events/:id/user/:userId", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD015);
     }
 
-    const event: Event = await db.addUserToEvent(eventId, userId);
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const event: Event = await db.addUserToEvent(eventId, userId, activeUserId);
     res.send(event);
   }
   catch (err) {
@@ -190,12 +196,12 @@ router.post("/events/:id/admin/:userId", authCheck, async (req, res, next) => {
     if (!isUUID(eventId) || !isUUID(userId)) {
       throw new ErrorExt(ec.PUD015);
     }
-    const byUserId = req.session.userId;
-    if (!byUserId) {
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
       throw new ErrorExt(ec.PUD055);
     }
 
-    const event: Event = await db.addUserAsEventAdmin(eventId, userId, byUserId);
+    const event: Event = await db.addUserAsEventAdmin(eventId, userId, activeUserId);
     res.send(event);
   }
   catch (err) {
@@ -272,7 +278,12 @@ router.delete("/events/:id/user/:userId", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD015);
     }
 
-    const event: Event = await db.removeUserFromEvent(eventId, userId);
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const event: Event = await db.removeUserFromEvent(eventId, userId, activeUserId);
     res.status(200).send(event);
   }
   catch (err) {
@@ -290,12 +301,12 @@ router.delete("/events/:id/admin/:userId", authCheck, async (req, res, next) => 
     if (!isUUID(eventId) || !isUUID(userId)) {
       throw new ErrorExt(ec.PUD015);
     }
-    const byUserId = req.session.userId;
-    if (!byUserId) {
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
       throw new ErrorExt(ec.PUD055);
     }
 
-    const event: Event = await db.removeUserAsEventAdmin(eventId, userId, byUserId);
+    const event: Event = await db.removeUserAsEventAdmin(eventId, userId, activeUserId);
     res.status(200).send(event);
   }
   catch (err) {

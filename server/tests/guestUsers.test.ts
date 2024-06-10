@@ -1,9 +1,13 @@
-import { describe, test, expect, beforeAll } from "vitest";
+import { describe, test, expect, beforeAll, vi } from "vitest";
 import request from "supertest";
+import nodemailerMock from "nodemailer-mock";
 import app from "../src/server";
 import { pool } from "../src/db";
 import * as ec from "../src/types/errorCodes";
 import { Guest, User } from "../src/types/types";
+
+// Mock nodemailer
+vi.mock("nodemailer", () => nodemailerMock);
 
 describe("guest", async () => {
 
@@ -13,6 +17,8 @@ describe("guest", async () => {
   let user1: User;
   let user2: User;
   let guest: Guest;
+  let guest2: Guest;
+  let inviteKey: string;
 
   /*
    * Create user, then log in
@@ -101,6 +107,20 @@ describe("guest", async () => {
       guest = res.body;
     });
 
+    test("should create another new guest user", async () => {
+      const res = await request(app)
+        .post("/api/guests")
+        .set("Cookie", authToken1)
+        .send({
+          firstName: "Guest 2",
+          lastName: "Last 2"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body).toBeDefined();
+      guest2 = res.body;
+    });
+
     test("fail create guest with no first name", async () => {
       const res = await request(app)
         .post("/api/guests")
@@ -124,8 +144,9 @@ describe("guest", async () => {
         .set("Cookie", authToken1);
 
       expect(res.status).toEqual(200);
-      expect(res.body.length).toEqual(1);
+      expect(res.body.length).toEqual(2);
       expect(res.body[0].guest).toEqual(true);
+      expect(res.body[1].guest).toEqual(true);
     });
   });
 
@@ -262,7 +283,7 @@ describe("guest", async () => {
         .set("Cookie", authToken1);
 
       expect(res.status).toEqual(200);
-      expect(res.body.length).toEqual(0);
+      expect(res.body.length).toEqual(1);
     });
 
     test("should create guest user again", async () => {
@@ -294,7 +315,74 @@ describe("guest", async () => {
         .set("Cookie", authToken2);
 
       expect(res.status).toEqual(200);
+      expect(res.body.length).toEqual(1);
+    });
+  });
+
+  /* ------------------ */
+  /* POST /users/invite */
+  /* ------------------ */
+  describe("POST /users/invite", async () => {
+    test("should send email to invited user linked to guest2", async () => {
+      const res = await request(app)
+        .post("/api/users/invite")
+        .set("Cookie", authToken1)
+        .send({
+          email: "a@mikane.no",
+          guestId: guest2.id
+        });
+
+      const sentEmail = nodemailerMock.mock.getSentMail();
+      const html = sentEmail[0].html as string;
+      const keyStart = html.indexOf("/register/") + "/register/".length;
+      const keyEnd = html.indexOf("\"", keyStart);
+      inviteKey = html.substring(keyStart, keyEnd);
+
+      expect(res.status).toEqual(200);
+      expect(sentEmail.length).toEqual(1);
+      expect(sentEmail[0].to).toEqual("a@mikane.no");
+      expect(sentEmail[0].subject).toEqual("You've been invited to Mikane");
+    });
+  });
+
+  /* ----------- */
+  /* POST /users */
+  /* ----------- */
+  describe("POST /users", async () => {
+    test("create new user from guest2", async () => {
+      const res = await request(app)
+        .post("/api/users")
+        .send({
+          username: "userfromguest",
+          firstName: "FromGuest",
+          lastName: "User",
+          email: "guest@user.com",
+          phone: "55555555",
+          password: "secret",
+          key: inviteKey
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.id).toEqual(guest2.id);
+      expect(res.body.guest).toEqual(false);
+    });
+
+    test("confirm guest2 is not a guest anymore", async () => {
+      const res = await request(app)
+        .get("/api/guests")
+        .set("Cookie", authToken1);
+
+      expect(res.status).toEqual(200);
       expect(res.body.length).toEqual(0);
+    });
+
+    test("confirm guest2 is now a user", async () => {
+      const res = await request(app)
+        .get("/api/users")
+        .set("Cookie", authToken1);
+
+      expect(res.body.length).toEqual(4);
+      expect(res.body).toContainEqual(expect.objectContaining({ id: guest2.id }));
     });
   });
 });

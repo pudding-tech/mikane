@@ -37,7 +37,7 @@ begin
     returning "event".id into tmp_event_id;
 
   return query
-  select * from add_user_to_event(tmp_event_id, ip_user_id, true);
+  select * from add_user_to_event(tmp_event_id, ip_user_id, true, ip_user_id, true);
 end;
 $$
 language plpgsql;

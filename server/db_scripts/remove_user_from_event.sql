@@ -1,7 +1,8 @@
 drop function if exists remove_user_from_event;
 create or replace function remove_user_from_event(
   ip_event_id uuid,
-  ip_user_id uuid
+  ip_user_id uuid,
+  ip_by_user_id uuid
 )
 returns table (
   id uuid,
@@ -27,6 +28,16 @@ begin
 
   if not exists (select 1 from "user" u where u.id = ip_user_id) then
     raise exception 'User not found' using errcode = 'P0008';
+  end if;
+
+  if not exists (
+    select 1 from "event" e
+      left join user_event ue on e.id = ue.event_id and ue.user_id = ip_by_user_id
+    where
+      e.id = ip_event_id and
+      (e.private = false or (e.private = true and ue.user_id = ip_by_user_id))
+  ) then
+    raise exception 'Cannot access private event' using errcode = 'P0138';
   end if;
 
   if exists (select 1 from "event" e where e.id = ip_event_id and e.status != 1) then
@@ -60,7 +71,7 @@ begin
   );
 
   return query
-  select * from get_events(ip_event_id, null, false);
+  select * from get_events(ip_event_id, ip_by_user_id, false, false);
 
 end;
 $$

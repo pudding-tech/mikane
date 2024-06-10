@@ -54,14 +54,15 @@ export const getUserID = async (email: string) => {
 
 /**
  * DB interface: Get all users, optionally filtered
+ * @param activeUserId ID of signed-in user
  * @param filter Object containing filters (event ID, user ID to exclude)
  * @returns List of users
  */
-export const getUsers = async (filter?: { eventId?: string, excludeGuests?: boolean, excludeUserId?: string }) => {
+export const getUsers = async (activeUserId: string, filter?: { eventId?: string, excludeGuests?: boolean, excludeUserId?: string }) => {
   const withDeleted = filter?.eventId ? null : false;
   const query = {
-    text: "SELECT * FROM get_users($1, $2, $3)",
-    values: [filter?.eventId, filter?.excludeUserId, withDeleted]
+    text: "SELECT * FROM get_users($1, $2, $3, $4)",
+    values: [filter?.eventId, filter?.excludeUserId, withDeleted, activeUserId]
   };
   const users: User[] = await pool.query(query)
     .then(data => {
@@ -308,13 +309,14 @@ export const newRegisterAccountKey = async (email: string, key: string, guestId?
 /**
  * DB interface: Verify that a register account key is valid (not used and not expired)
  * @param key 
+ * @returns Information about key, if it exists
  */
 export const verifyRegisterAccountKey = async (key: string) => {
   const query = {
     text: "SELECT * FROM verify_register_account_key($1);",
     values: [key]
   };
-  const email = await pool.query(query)
+  const keyInfo = await pool.query(query)
     .then(data => {
       return {
         email: data.rows[0]?.email as string | null,
@@ -328,7 +330,7 @@ export const verifyRegisterAccountKey = async (key: string) => {
       throw new ErrorExt(ec.PUD100, err);
     });
 
-  return email;
+  return keyInfo;
 };
 
 /**

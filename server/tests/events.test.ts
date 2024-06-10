@@ -65,7 +65,7 @@ describe("events", async () => {
   /* POST /events */
   /* ------------ */
   describe("POST /events", async () => {
-    test("create 2 events", async () => {
+    test("create 2 events - one public and one private", async () => {
       const res1 = await request(app)
         .post("/api/events")
         .set("Cookie", authToken)
@@ -80,7 +80,7 @@ describe("events", async () => {
         .set("Cookie", authToken)
         .send({
           name: "Another event",
-          private: false
+          private: true
         });
 
       expect(res1.status).toEqual(200);
@@ -110,13 +110,27 @@ describe("events", async () => {
   /* GET /events */
   /* ----------- */
   describe("GET /events", async () => {
-    test("should get events", async () => {
+    test("should get 2 events as user1", async () => {
       const res = await request(app)
         .get("/api/events")
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(200);
       expect(res.body.length).toEqual(2);
+      expect(res.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ name: "Another event" })
+        ])
+      );
+    });
+
+    test("should get 1 event as user2", async () => {
+      const res = await request(app)
+        .get("/api/events")
+        .set("Cookie", authToken2);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.length).toEqual(1);
       expect(res.body).toEqual(
         expect.arrayContaining([
           expect.objectContaining({ name: "Example event" })
@@ -207,6 +221,15 @@ describe("events", async () => {
       expect(res.status).toEqual(404);
       expect(res.body.code).toEqual(ec.PUD006.code);
     });
+
+    test("fail get private event when user is not in event", async () => {
+      const res = await request(app)
+        .get("/api/events/" + event2.id)
+        .set("Cookie", authToken2);
+
+      expect(res.status).toEqual(403);
+      expect(res.body.code).toEqual(ec.PUD138.code);
+    });
   });
 
   /* --------------- */
@@ -235,6 +258,18 @@ describe("events", async () => {
 
       expect(res.status).toEqual(403);
       expect(res.body.code).toEqual(ec.PUD087.code);
+    });
+
+    test("fail edit private event when logged in user is not in private event", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event2.id)
+        .set("Cookie", authToken2)
+        .send({
+          name: "Wrong"
+        });
+
+      expect(res.status).toEqual(403);
+      expect(res.body.code).toEqual(ec.PUD138.code);
     });
 
     test("fail edit event with empty name", async () => {
@@ -371,7 +406,7 @@ describe("events", async () => {
     });
 
     // Add user2 to event
-    test("should add user to event", async () => {
+    test("should add user2 to event", async () => {
       const res = await request(app)
         .post(`/api/events/${event.id}/user/${user2.id}`)
         .set("Cookie", authToken);
@@ -496,6 +531,15 @@ describe("events", async () => {
         ])
       );
     });
+
+    test("fail get balance information for private event", async () => {
+      const res = await request(app)
+        .get(`/api/events/${event2.id}/balances`)
+        .set("Cookie", authToken2);
+
+      expect(res.status).toEqual(403);
+      expect(res.body.code).toEqual(ec.PUD138.code);
+    });
   });
 
   /* ------------------------ */
@@ -509,6 +553,15 @@ describe("events", async () => {
 
       expect(res.status).toEqual(200);
       expect(res.body.length).toEqual(0);
+    });
+
+    test("fail get payments information for private event", async () => {
+      const res = await request(app)
+        .get(`/api/events/${event2.id}/payments`)
+        .set("Cookie", authToken2);
+
+        expect(res.status).toEqual(403);
+        expect(res.body.code).toEqual(ec.PUD138.code);
     });
   });
 
@@ -636,12 +689,30 @@ describe("events", async () => {
       expect(res.status).toEqual(400);
       expect(res.body.code).toEqual(ec.PUD098.code);
     });
+
+    test("fail removal of user1 in private event by user2 (who is not in event)", async () => {
+      const res = await request(app)
+        .delete(`/api/events/${event2.id}/user/${user.id}`)
+        .set("Cookie", authToken2);
+
+      expect(res.status).toEqual(403);
+      expect(res.body.code).toEqual(ec.PUD138.code);
+    });
   });
 
   /* ------------------ */
   /* DELETE /events/:id */
   /* ------------------ */
   describe("DELETE /events/:id", async () => {
+    test("fail delete private event when logged in user is not in event", async () => {
+      const res = await request(app)
+        .delete("/api/events/" + event2.id)
+        .set("Cookie", authToken2);
+
+      expect(res.status).toEqual(403);
+      expect(res.body.code).toEqual(ec.PUD138.code);
+    });
+
     test("should delete event", async () => {
       const res = await request(app)
         .delete("/api/events/" + event2.id)
