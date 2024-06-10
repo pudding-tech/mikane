@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
 import { BehaviorSubject, NEVER, Subscription, combineLatest, filter, switchMap } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
@@ -35,6 +36,7 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 		MatListModule,
 		MatInputModule,
 		MatSelectModule,
+		MatSlideToggleModule,
 		MatFormFieldModule,
 		FormsModule,
 		ReactiveFormsModule,
@@ -47,7 +49,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-	eventData: { id?: string; name: string; description: string } = { name: '', description: '' };
+	eventData: { id?: string; name: string; description: string, private: boolean } = { name: '', description: '', private: false };
 	adminsInEvent: User[];
 	otherUsersInEvent: User[];
 	currentUser: User;
@@ -80,6 +82,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 					this.eventData.id = event.id;
 					this.eventData.name = event.name;
 					this.eventData.description = event.description;
+					this.eventData.private = event.private;
 					return combineLatest([this.userService.loadUsersByEvent(event.id, true), this.authService.getCurrentUser()]);
 				}),
 			)
@@ -99,7 +102,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	}
 
 	editEvent() {
-		this.eventService.editEvent({ id: this.event.id, name: this.eventData.name, description: this.eventData.description }).subscribe({
+		this.eventService.editEvent({ id: this.event.id, name: this.eventData.name, description: this.eventData.description, privateEvent: this.eventData.private }).subscribe({
 			next: (event) => {
 				this.event = event;
 				this.messageService.showSuccess('Event successfully edited');

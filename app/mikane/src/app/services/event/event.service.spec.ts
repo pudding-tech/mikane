@@ -156,7 +156,7 @@ describe('EventService', () => {
 
 	describe('#editEvent', () => {
 		it('should edit event', () => {
-			service.editEvent({ id: 'eventId', name: 'name', description: 'description', status: EventStatusType.ACTIVE }).subscribe({
+			service.editEvent({ id: 'eventId', name: 'name', description: 'description', privateEvent: false, status: EventStatusType.ACTIVE }).subscribe({
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual(mockEvent);
 				},
@@ -166,7 +166,7 @@ describe('EventService', () => {
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId');
 
 			expect(req.request.method).toEqual('PUT');
-			expect(req.request.body).toEqual({ name: 'name', description: 'description', status: EventStatusType.ACTIVE });
+			expect(req.request.body).toEqual({ name: 'name', description: 'description', private: false, status: EventStatusType.ACTIVE });
 
 			req.flush(mockEvent);
 		});
