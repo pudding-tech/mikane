@@ -30,12 +30,15 @@ begin
     raise exception 'User not found' using errcode = 'P0008';
   end if;
 
-  if (ip_event_newly_created is not true and ip_user_id != ip_by_user_id) and not exists (
-    select 1 from
-      "event" e
+  if (ip_event_newly_created is not true) and not exists (
+    select 1 from "event" e
+      left join user_event ue on e.id = ue.event_id and ue.user_id = ip_by_user_id
     where
       e.id = ip_event_id and
-      e.private = false
+      (
+        e.private = false or
+        (e.private = true and ue.user_id = ip_by_user_id)
+      )
   ) then
     raise exception 'Cannot access private event' using errcode = 'P0138';
   end if;
