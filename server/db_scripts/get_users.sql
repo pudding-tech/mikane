@@ -2,7 +2,8 @@ drop function if exists get_users;
 create or replace function get_users(
   ip_event_id uuid,
   ip_exclude_user_id uuid,
-  ip_deleted boolean
+  ip_deleted boolean,
+  ip_by_user_id uuid
 )
 returns table (
   id uuid,
@@ -51,6 +52,16 @@ begin
 
     if not exists (select 1 from "event" e where e.id = ip_event_id) then
       raise exception 'Event not found' using errcode = 'P0006';
+    end if;
+
+    if (ip_by_user_id is not null) and not exists (
+      select 1 from "event" e
+        left join user_event ue on e.id = ue.event_id and ue.user_id = ip_by_user_id
+      where
+        e.id = ip_event_id and
+        (e.private = false or (e.private = true and ue.user_id = ip_by_user_id))
+    ) then
+      raise exception 'Cannot access private event' using errcode = 'P0138';
     end if;
 
     return query

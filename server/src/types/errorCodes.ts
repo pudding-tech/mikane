@@ -1300,3 +1300,12 @@ export const PUD137: ErrorCode = {
   message: "Users can only delete their own account - you are signed-in as another user",
   status: 400
 };
+
+/**
+ * PUD-138: Cannot access private event (403)
+ */
+export const PUD138: ErrorCode = {
+  code: "PUD-138",
+  message: "Cannot access private event",
+  status: 403
+};

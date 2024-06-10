@@ -40,7 +40,12 @@ router.get("/users", authCheck, async (req, res, next) => {
       filter.excludeUserId = req.session.userId;
     }
 
-    const users: User[] = await db.getUsers(filter);
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const users: User[] = await db.getUsers(activeUserId, filter);
 
     // Remove sensitive information if users are not signed in user
     removeUserInfo(users, req.session.userId ?? "");

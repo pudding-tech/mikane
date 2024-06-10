@@ -55,6 +55,16 @@ begin
     if not exists (select 1 from "user" u where u.id = ip_user_id) then
       raise exception 'User not found' using errcode = 'P0008';
     end if;
+
+    if not exists (
+      select 1 from "event" e
+        left join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
+      where
+        e.id = ip_event_id and
+        (e.private = false or (e.private = true and ue.user_id = ip_user_id))
+    ) then
+      raise exception 'Cannot access private event' using errcode = 'P0138';
+    end if;
     
     return query
     select
@@ -77,6 +87,18 @@ begin
   begin
     if not exists (select 1 from expense ex where ex.id = ip_expense_id) then
       raise exception 'Expense not found' using errcode = 'P0084';
+    end if;
+
+    if (ip_user_id is not null) and not exists (
+      select 1 from expense ex
+        inner join category c on ex.category_id = c.id
+        inner join "event" e on c.event_id = e.id
+        left join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
+      where
+        ex.id = ip_expense_id and
+        (e.private = false or (e.private = true and ue.user_id = ip_user_id))
+    ) then
+      raise exception 'Cannot access private event' using errcode = 'P0138';
     end if;
 
     return query

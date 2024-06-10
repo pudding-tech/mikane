@@ -2,7 +2,8 @@ drop function if exists get_events;
 create or replace function get_events(
   ip_event_id uuid,
   ip_user_id uuid,
-  ip_active_only boolean
+  ip_active_only boolean,
+  ip_is_api_key boolean
 )
 returns table (
   id uuid,
@@ -42,6 +43,7 @@ begin
         inner join event_status_type est on e.status = est.id
       where
         e.id = coalesce(ip_event_id, e.id) and
+        (ip_is_api_key = true or e.private = false) and
         e.status = case when ip_active_only = true then 1 else e.status end
       order by
         e.created desc;
@@ -51,6 +53,22 @@ begin
     begin
       if not exists (select 1 from "user" u where u.id = ip_user_id and u.deleted = false) then
         raise exception 'User not found' using errcode = 'P0008';
+      end if;
+
+      if (ip_event_id is not null) then
+        if not exists (select 1 from "event" e where e.id = ip_event_id) then
+          raise exception 'Event not found' using errcode = 'P0006';
+        end if;
+
+        if not exists (
+          select 1 from "event" e
+            left join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
+          where
+            e.id = ip_event_id and
+            (e.private = false or (e.private = true and ue.user_id = ip_user_id))
+        ) then
+          raise exception 'Cannot access private event' using errcode = 'P0138';
+        end if;
       end if;
 
       return query
@@ -82,6 +100,7 @@ begin
         left join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
       where
         e.id = coalesce(ip_event_id, e.id) and
+        (e.private = false or (e.private = true and ue.user_id = ip_user_id)) and
         e.status = case when ip_active_only = true then 1 else e.status end
       order by
         e.created desc;

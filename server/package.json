@@ -20,7 +20,7 @@
     "express-session": "^1.18.0",
     "helmet": "^7.1.0",
     "nodemailer": "^6.9.13",
-    "pg": "^8.11.5",
+    "pg": "^8.12.0",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
@@ -37,12 +37,12 @@
     "@vitest/coverage-v8": "^1.6.0",
     "concurrently": "^8.2.2",
     "copyfiles": "^2.4.1",
-    "esbuild": "^0.21.4",
+    "esbuild": "^0.21.5",
     "eslint": "^8.57.0",
     "nodemailer-mock": "^2.0.6",
     "rimraf": "^5.0.7",
     "supertest": "^7.0.0",
-    "tsx": "^4.11.0",
+    "tsx": "^4.15.1",
     "typescript": "^5.4.5",
     "vitest": "^1.6.0"
   },

@@ -135,7 +135,7 @@ export class PaymentStructureComponent implements OnInit {
 			error: (err: ApiError) => {
 				this.loading.next(false);
 				this.messageService.showError('Error loading payments');
-				console.error('something went wrong whikle loading payments', err?.error?.message);
+				console.error('something went wrong while loading payments', err?.error?.message);
 			},
 		});
 	}

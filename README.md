@@ -14,6 +14,7 @@ Mikane is a tool designed for calculating payments to settle shared expenses fro
 - **Event Management**: Create and manage events, view a summary of all expenses.
 - **Expense Tracking**: Add, edit, and delete expenses; categorize and attribute them to categories.
 - **User Management**: Invite users to join events, create and manage guests for people without users.
+- **Optimized Payments**: Dynamically calculates minimal transactions to settle expenses efficiently.
 - **Mobile Support**: Full mobile support with a responsive design and PWA capabilities for a seamless experience on any device.
 - **Authentication**: Secure login and registration of users.
 - **Invitations**: Send personalized email invitations to users to join events and activities.
@@ -22,9 +23,9 @@ Mikane is a tool designed for calculating payments to settle shared expenses fro
 
 ### Prerequisites
 
-- Node.js v22
-- PostgreSQL (for backend setup in option A)
-- Docker (for backend setup in option B)
+- Node.js 22.x
+- PostgreSQL 15 (backend setup - option A)
+- Docker (backend setup - option B)
 
 ### Steps
 
@@ -67,7 +68,10 @@ Option A:
     npm run dev
     ```
 
-Option B - use this method if you only want to work with the frontend (a database will be automatically set up, and the backend will be non-editable):
+Option B:
+
+Use this method if you only want to work with the frontend (a database will be automatically set up, and the backend will be non-editable).
+
 1. Create a `.env` file and populate the required variables:
      - Choose `POSTGRES_USER` and `POSTGRES_PASSWORD` values for the database setup, and ensure these values are reflected in `DB_USER` and `DB_PASSWORD`, respectively.
      - The remaining database variables should be set as follows: `DB_HOST=db`, `DB_PORT=5432`, and `DB_DATABASE=mikane`.
