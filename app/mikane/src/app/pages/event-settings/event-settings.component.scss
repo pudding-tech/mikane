@@ -55,6 +55,30 @@
 	.save-button-mobile {
 		max-width: 100%;
 	}
+
+	.private {
+		margin-bottom: 20px;
+
+		.toggle-line {
+			display: flex;
+			align-items: center;
+			margin-bottom: 6px;
+
+			.toggle {
+				display: flex;
+				align-items: center;
+				margin-left: 10px;
+			}
+		}
+	
+		.subtext {
+			color: rgba(255, 255, 255, 0.58);
+		}
+
+		.disabled {
+			color: rgba(255, 255, 255, 0.44);
+		}
+	}
 }
 
 .admins-content {

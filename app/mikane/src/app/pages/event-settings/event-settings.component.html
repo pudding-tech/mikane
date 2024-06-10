@@ -12,7 +12,7 @@
 					<mat-card-content>
 						<div class="header">Edit event</div>
 						<div>
-							<ng-container *ngTemplateOutlet="formContent"></ng-container>
+							<ng-container *ngTemplateOutlet="editContent"></ng-container>
 						</div>
 						<div class="header">Change status</div>
 						<div class="event-settings-content archive">
@@ -31,7 +31,7 @@
 			</div>
 		} @else {
 			<div class="header-mobile">Edit event</div>
-			<ng-container *ngTemplateOutlet="formContent"></ng-container>
+			<ng-container *ngTemplateOutlet="editContent"></ng-container>
 			<div class="header-mobile">Change status</div>
 			<div class="event-settings-content archive">
 				<ng-container *ngTemplateOutlet="statusContent"></ng-container>
@@ -50,7 +50,7 @@
 	<app-loading-spinner></app-loading-spinner>
 }
 
-<ng-template #formContent>
+<ng-template #editContent>
 	<form (ngSubmit)="editEvent()" class="event-settings-content form">
 		@if (event.status.id !== EventStatusType.ACTIVE) {
 			<div class="only-active-edit">Only active events can be edited</div>
@@ -85,6 +85,16 @@
 				[disabled]="event.status.id !== EventStatusType.ACTIVE"
 			/>
 		</mat-form-field>
+		<div class="private">
+			<div class="toggle-line">
+				<span [ngClass]="{ 'disabled': event.status.id !== EventStatusType.ACTIVE }">Private event:</span>
+				<span class="toggle">
+					<mat-slide-toggle id="privateToggle" name="private" [(ngModel)]="eventData.private" [disabled]="event.status.id !== EventStatusType.ACTIVE">
+					</mat-slide-toggle>
+				</span>
+			</div>
+			<div [ngClass]="{ 'disabled': event.status.id !== EventStatusType.ACTIVE }" class="subtext">Private events are only visible to participants in the event.</div>
+		</div>
 		<button
 			mat-raised-button
 			color="primary"

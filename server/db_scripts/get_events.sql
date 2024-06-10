@@ -62,7 +62,7 @@ begin
 
         if not exists (
           select 1 from "event" e
-            inner join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
+            left join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
           where
             e.id = ip_event_id and
             (e.private = false or (e.private = true and ue.user_id = ip_user_id))
