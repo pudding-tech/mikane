@@ -5,7 +5,8 @@ create or replace function edit_expense(
   ip_description varchar(255),
   ip_amount numeric(16, 2),
   ip_category_id uuid,
-  ip_payer_id uuid
+  ip_payer_id uuid,
+  ip_by_user_id uuid
 )
 returns table (
   id uuid,
@@ -31,11 +32,34 @@ begin
     raise exception 'Expense not found' using errcode = 'P0084';
   end if;
 
-  if ip_category_id is not null and not exists (select 1 from category c where c.id = ip_category_id) then
+  if (ip_category_id is not null) and not exists (select 1 from category c where c.id = ip_category_id) then
     raise exception 'Category not found' using errcode = 'P0007';
   end if;
 
-  if ip_payer_id is not null and not exists (select 1 from "user" u where u.id = ip_payer_id and u.deleted = false) then
+  if not exists (
+    select 1 from expense ex
+      inner join category c on ex.category_id = c.id
+      inner join "event" e on c.event_id = e.id
+      left join user_event ue on e.id = ue.event_id and ue.user_id = ip_by_user_id
+    where
+      ex.id = ip_expense_id and
+      (e.private = false or (e.private = true and ue.user_id = ip_by_user_id))
+  ) then
+    raise exception 'Cannot access private event' using errcode = 'P0138';
+  end if;
+
+  if (ip_category_id is not null) and not exists (
+    select 1 from category c
+      inner join "event" e on c.event_id = e.id
+      left join user_event ue on e.id = ue.event_id and ue.user_id = ip_by_user_id
+    where
+      c.id = ip_category_id and
+      (e.private = false or (e.private = true and ue.user_id = ip_by_user_id))
+  ) then
+    raise exception 'Cannot access private event' using errcode = 'P0138';
+  end if;
+
+  if (ip_payer_id is not null) and not exists (select 1 from "user" u where u.id = ip_payer_id and u.deleted = false) then
     raise exception 'User not found' using errcode = 'P0008';
   end if;
 
@@ -43,7 +67,7 @@ begin
     raise exception 'Only active events can be edited' using errcode = 'P0118';
   end if;
 
-  if ip_payer_id is not null and not exists (select ue.user_id from user_event ue inner join category c on ue.event_id = c.event_id where c.id = coalesce(ip_category_id, c.id) and ue.user_id = ip_payer_id) then
+  if (ip_payer_id is not null) and not exists (select ue.user_id from user_event ue inner join category c on ue.event_id = c.event_id where c.id = coalesce(ip_category_id, c.id) and ue.user_id = ip_payer_id) then
     raise exception 'User cannot pay for expense as user is not in event' using errcode = 'P0062';
   end if;
 

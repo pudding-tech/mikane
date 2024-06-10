@@ -106,6 +106,11 @@ router.put("/expenses/:id", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD056);
     }
 
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
     const name: string | undefined = req.body.name;
     const description: string | undefined = req.body.description;
     const amount: number | undefined = req.body.amount !== undefined ? Number(req.body.amount) : undefined;
@@ -139,7 +144,7 @@ router.put("/expenses/:id", authCheck, async (req, res, next) => {
       payerId: payerId
     };
 
-    const expense = await db.editExpense(expenseId, data);
+    const expense = await db.editExpense(expenseId, activeUserId, data);
     if (!expense) {
       throw new ErrorExt(ec.PUD084);
     }

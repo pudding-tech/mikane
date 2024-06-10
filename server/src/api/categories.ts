@@ -18,11 +18,16 @@ const router = express.Router();
 router.get("/categories", authCheck, async (req, res, next) => {
   try {
     const eventId = req.query.eventId as string;
+    const userId = req.session.userId;
+
     if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
+    if (!userId) {
+      throw new ErrorExt(ec.PUD055);
+    }
 
-    const categories: Category[] = await db.getCategories(eventId);
+    const categories: Category[] = await db.getCategories(eventId, userId);
     res.send(categories);
   }
   catch (err) {
@@ -36,11 +41,16 @@ router.get("/categories", authCheck, async (req, res, next) => {
 router.get("/categories/:id", authCheck, async (req, res, next) => {
   try {
     const id = req.params.id;
+    const userId = req.session.userId;
+
     if (!isUUID(id)) {
       throw new ErrorExt(ec.PUD045);
     }
+    if (!userId) {
+      throw new ErrorExt(ec.PUD055);
+    }
 
-    const category = await db.getCategory(id);
+    const category = await db.getCategory(id, userId);
     if (!category) {
       throw new ErrorExt(ec.PUD007);
     }
@@ -71,13 +81,17 @@ router.post("/categories", authCheck, async (req, res, next) => {
     if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
+    const userId = req.session.userId;
+    if (!userId) {
+      throw new ErrorExt(ec.PUD055);
+    }
 
     const icon: CategoryIcon = req.body.icon;
     if (icon && !Object.values(CategoryIcon).includes(icon)) {
       throw new ErrorExt(ec.PUD096);
     }
     
-    const category: Category = await db.createCategory(name.trim(), eventId, Boolean(req.body.weighted), icon);
+    const category: Category = await db.createCategory(name.trim(), eventId, Boolean(req.body.weighted), userId, icon);
     res.status(200).json(category);
   }
   catch (err) {
@@ -104,7 +118,12 @@ router.post("/categories/:id/user/:userId", authCheck, async (req, res, next) =>
       throw new ErrorExt(ec.PUD049);
     }
 
-    const category: Category = await db.addUserToCategory(catId, userId, weight);
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const category: Category = await db.addUserToCategory(catId, userId, activeUserId, weight);
     res.send(category);
   }
   catch (err) {
@@ -138,12 +157,17 @@ router.put("/categories/:id", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD096);
     }
 
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
     const data = {
       name: name,
       icon: icon
     };
 
-    const category = await db.editCategory(catId, data);
+    const category = await db.editCategory(catId, activeUserId, data);
     if (!category) {
       throw new ErrorExt(ec.PUD007);
     }
@@ -167,7 +191,12 @@ router.put("/categories/:id/weighted", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD051);
     }
 
-    const category: Category = await db.editWeightStatus(catId, Boolean(req.body.weighted));
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const category: Category = await db.editWeightStatus(catId, Boolean(req.body.weighted), activeUserId);
     res.status(200).send(category);
   }
   catch (err) {
@@ -194,7 +223,12 @@ router.put("/categories/:id/user/:userId", authCheck, async (req, res, next) => 
       throw new ErrorExt(ec.PUD049);
     }
 
-    const category: Category = await db.editUserWeight(catId, userId, weight);
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const category: Category = await db.editUserWeight(catId, userId, weight, activeUserId);
     res.status(200).send(category);
   }
   catch (err) {
@@ -216,7 +250,12 @@ router.delete("/categories/:id", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD045);
     }
 
-    const success = await db.deleteCategory(catId);
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const success = await db.deleteCategory(catId, activeUserId);
     res.status(200).send({ success: success });
   }
   catch (err) {
@@ -235,7 +274,12 @@ router.delete("/categories/:id/user/:userId", authCheck, async (req, res, next) 
       throw new ErrorExt(ec.PUD047);
     }
 
-    const category: Category = await db.removeUserFromCategory(catId, userId);
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const category: Category = await db.removeUserFromCategory(catId, userId, activeUserId);
     res.status(200).send(category);
   }
   catch (err) {

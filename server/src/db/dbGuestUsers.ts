@@ -10,7 +10,7 @@ import * as ec from "../types/errorCodes";
  */
 export const getGuestUsers = async () => {
   const query = {
-    text: "SELECT * FROM get_users(null, null, false)"
+    text: "SELECT * FROM get_users(null, null, false, null)"
   };
   const users: Guest[] = await pool.query(query)
     .then(data => {

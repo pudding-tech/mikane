@@ -342,6 +342,29 @@ describe("expenses", async () => {
     });
   });
 
+  /* -------------------------------- */
+  /* GET /users/:id/expenses/:eventId */
+  /* -------------------------------- */
+  describe("GET /users/:id/expenses/:eventId", async () => {
+    test("should get list of user's expenses within an event", async () => {
+      const res = await request(app)
+        .get(`/api/users/${user.id}/expenses/${event.id}`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.length).toEqual(1);
+      expect(res.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expense.id,
+            categoryInfo: expect.objectContaining({ id: category.id }),
+            payer: expect.objectContaining({ id: user.id })
+          })
+        ])
+      );
+    });
+  });
+
   /* ----------------- */
   /* PUT /expenses/:id */
   /* ----------------- */

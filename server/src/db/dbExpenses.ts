@@ -30,6 +30,8 @@ export const getExpenses = async (eventId: string) => {
         throw new ErrorExt(ec.PUD008);
       else if (err.code === "P0084")
         throw new ErrorExt(ec.PUD084);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD032, err);
     });
@@ -105,13 +107,14 @@ export const createExpense = async (name: string, amount: number, categoryId: st
 /**
  * DB interface: Edit an expense
  * @param userId Expense ID to edit
+ * @param activeUserId ID of signed-in user
  * @param data Data object
  * @returns Edited expense
  */
-export const editExpense = async (expenseId: string, data: { name?: string, description?: string, amount?: number, categoryId?: string, payerId?: string }) => {
+export const editExpense = async (expenseId: string, activeUserId: string, data: { name?: string, description?: string, amount?: number, categoryId?: string, payerId?: string }) => {
   const query = {
-    text: "SELECT * FROM edit_expense($1, $2, $3, $4, $5, $6)",
-    values: [expenseId, data.name, data.description, data.amount, data.categoryId, data.payerId]
+    text: "SELECT * FROM edit_expense($1, $2, $3, $4, $5, $6, $7)",
+    values: [expenseId, data.name, data.description, data.amount, data.categoryId, data.payerId, activeUserId]
   };
   const expense: Expense[] = await pool.query(query)
     .then(data => {
@@ -128,6 +131,8 @@ export const editExpense = async (expenseId: string, data: { name?: string, desc
         throw new ErrorExt(ec.PUD062, err);
       else if (err.code === "P0118")
         throw new ErrorExt(ec.PUD118, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD117, err);
     });
@@ -156,6 +161,8 @@ export const deleteExpense = async (expenseId: string, userId: string) => {
         throw new ErrorExt(ec.PUD086, err);
       else if (err.code === "P0118")
         throw new ErrorExt(ec.PUD118, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD024, err);
     });

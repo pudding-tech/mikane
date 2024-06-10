@@ -16,7 +16,7 @@ import * as ec from "../types/errorCodes";
  */
 export const getEvents = async (userId?: string) => {
   const query = {
-    text: "SELECT * FROM get_events(null, $1, false);",
+    text: "SELECT * FROM get_events(null, $1, false, false);",
     values: [userId]
   };
   const events: Event[] = await pool.query(query)
@@ -41,7 +41,7 @@ export const getEvents = async (userId?: string) => {
  */
 export const getEvent = async (eventId: string, userId?: string) => {
   const query = {
-    text: "SELECT * FROM get_events($1, $2, false);",
+    text: "SELECT * FROM get_events($1, $2, false, false);",
     values: [eventId, userId]
   };
   const events: Event[] = await pool.query(query)
@@ -49,8 +49,12 @@ export const getEvent = async (eventId: string, userId?: string) => {
       return parseEvents(data.rows);
     })
     .catch(err => {
-      if (err.code === "P0008")
+      if (err.code === "P0006")
+        throw new ErrorExt(ec.PUD006, err);
+      else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD031, err);
     });
@@ -65,12 +69,13 @@ export const getEvent = async (eventId: string, userId?: string) => {
  * DB interface: Get specific event by name
  * @param eventId Event name
  * @param userId Get user specific information about event (optional)
+ * @param authIsApiKey True if auth uses an API key instead of signing in
  * @returns Event
  */
-export const getEventByName = async (eventName: string, userId?: string) => {
+export const getEventByName = async (eventName: string, userId?: string, authIsApiKey?: boolean) => {
   const query = {
-    text: "SELECT * FROM get_event_by_name($1, $2);",
-    values: [eventName, userId]
+    text: "SELECT * FROM get_event_by_name($1, $2, $3);",
+    values: [eventName, userId, authIsApiKey]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {
@@ -79,8 +84,10 @@ export const getEventByName = async (eventName: string, userId?: string) => {
     .catch(err => {
       if (err.code === "P0006")
         throw new ErrorExt(ec.PUD006, err);
-      if (err.code === "P0008")
+      else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD031, err);
     });
@@ -94,20 +101,21 @@ export const getEventByName = async (eventName: string, userId?: string) => {
 /**
  * DB interface: Get an event balance information for all users
  * @param eventId Event ID
+ * @param userId ID of signed-in user
  * @returns List of user balances for an event
  */
-export const getEventBalances = async (eventId: string) => {
+export const getEventBalances = async (eventId: string, userId?: string) => {
   const queryUsers = {
     text: `
-      SELECT * FROM get_users($1, null, null);
+      SELECT * FROM get_users($1, null, null, $2);
     `,
-    values: [eventId]
+    values: [eventId, userId]
   };
   const queryCategories = {
     text: `
-      SELECT * FROM get_categories($1, null);
+      SELECT * FROM get_categories($1, null, $2);
     `,
-    values: [eventId]
+    values: [eventId, userId]
   };
   const queryExpenses = {
     text: `
@@ -140,6 +148,8 @@ export const getEventBalances = async (eventId: string) => {
       throw new ErrorExt(ec.PUD008, err);
     else if (err.code === "P0084")
       throw new ErrorExt(ec.PUD084, err);
+    else if (err.code === "P0138")
+      throw new ErrorExt(ec.PUD138, err);
     else
       throw new ErrorExt(ec.PUD061, err);
   }
@@ -148,20 +158,21 @@ export const getEventBalances = async (eventId: string) => {
 /**
  * DB interface: Get an event payments information
  * @param eventId Event ID
+ * @param userId ID of signed-in user
  * @returns List of payments for an event
  */
-export const getEventPayments = async (eventId: string) => {
+export const getEventPayments = async (eventId: string, userId?: string) => {
   const queryUsers = {
     text: `
-      SELECT * FROM get_users($1, null, null);
+      SELECT * FROM get_users($1, null, null, $2);
     `,
-    values: [eventId]
+    values: [eventId, userId]
   };
   const queryCategories = {
     text: `
-      SELECT * FROM get_categories($1, null);
+      SELECT * FROM get_categories($1, null, $2);
     `,
-    values: [eventId]
+    values: [eventId, userId]
   };
   const queryExpenses = {
     text: `
@@ -193,6 +204,8 @@ export const getEventPayments = async (eventId: string) => {
       throw new ErrorExt(ec.PUD008, err);
     else if (err.code === "P0084")
       throw new ErrorExt(ec.PUD084, err);
+    else if (err.code === "P0138")
+      throw new ErrorExt(ec.PUD138, err);
     else
       throw new ErrorExt(ec.PUD061, err);
   }
@@ -201,15 +214,15 @@ export const getEventPayments = async (eventId: string) => {
 /**
  * DB interface: Add a new event to the database
  * @param name Name of event
- * @param userId ID of user creating event
+ * @param activeUserId ID of user creating event
  * @param private Whether event should be open for all or invite only
  * @param description Description of event (optional)
  * @returns Newly created event
  */
-export const createEvent = async (name: string, userId: string, privateEvent: boolean, description?: string) => {
+export const createEvent = async (name: string, activeUserId: string, privateEvent: boolean, description?: string) => {
   const query = {
     text: "SELECT * FROM new_event($1, $2, $3, $4, $5, $6);",
-    values: [name, description, userId, privateEvent, EventStatusType.ACTIVE, false]
+    values: [name, description, activeUserId, privateEvent, EventStatusType.ACTIVE, false]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {
@@ -220,6 +233,8 @@ export const createEvent = async (name: string, userId: string, privateEvent: bo
         throw new ErrorExt(ec.PUD005, err);
       else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD037, err);
     });
@@ -248,6 +263,8 @@ export const deleteEvent = async (id: string, userId: string) => {
         throw new ErrorExt(ec.PUD085, err);
       else if (err.code === "P0119")
         throw new ErrorExt(ec.PUD119, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD023, err);
     });
@@ -259,12 +276,13 @@ export const deleteEvent = async (id: string, userId: string) => {
  * DB interface: Add user to an event
  * @param eventId 
  * @param userId 
+ * @param activeUserId ID of signed-in user
  * @returns Affected event
  */
-export const addUserToEvent = async (eventId: string, userId: string) => {
+export const addUserToEvent = async (eventId: string, userId: string, activeUserId: string) => {
   const query = {
-    text: "SELECT * FROM add_user_to_event($1, $2, $3);",
-    values: [eventId, userId, false]
+    text: "SELECT * FROM add_user_to_event($1, $2, $3, $4, false);",
+    values: [eventId, userId, false, activeUserId]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {
@@ -279,6 +297,8 @@ export const addUserToEvent = async (eventId: string, userId: string) => {
         throw new ErrorExt(ec.PUD009, err);
       else if (err.code === "P0118")
         throw new ErrorExt(ec.PUD118, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD021, err);
     });
@@ -290,12 +310,13 @@ export const addUserToEvent = async (eventId: string, userId: string) => {
  * DB interface: Remove a user from an event
  * @param eventId  
  * @param userId 
+ * @param activeUserId ID of signed-in user
  * @returns Affected event
  */
-export const removeUserFromEvent = async (eventId: string, userId: string) => {
+export const removeUserFromEvent = async (eventId: string, userId: string, activeUserId: string) => {
   const query = {
-    text: "SELECT * FROM remove_user_from_event($1, $2);",
-    values: [eventId, userId]
+    text: "SELECT * FROM remove_user_from_event($1, $2, $3);",
+    values: [eventId, userId, activeUserId]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {
@@ -312,6 +333,8 @@ export const removeUserFromEvent = async (eventId: string, userId: string) => {
         throw new ErrorExt(ec.PUD114, err);
       else if (err.code === "P0118")
         throw new ErrorExt(ec.PUD118, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD040, err);
     });
@@ -323,13 +346,13 @@ export const removeUserFromEvent = async (eventId: string, userId: string) => {
  * DB interface: Add user to as admin for an event
  * @param eventId 
  * @param userId 
- * @param byUserId UserId of user performing the action
+ * @param activeUserId User ID of user performing the action
  * @returns Affected event
  */
-export const addUserAsEventAdmin = async (eventId: string, userId: string, byUserId: string) => {
+export const addUserAsEventAdmin = async (eventId: string, userId: string, activeUserId: string) => {
   const query = {
     text: "SELECT * FROM add_user_as_event_admin($1, $2, $3);",
-    values: [eventId, userId, byUserId]
+    values: [eventId, userId, activeUserId]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {
@@ -346,6 +369,8 @@ export const addUserAsEventAdmin = async (eventId: string, userId: string, byUse
         throw new ErrorExt(ec.PUD091, err);
       else if (err.code === "P0126")
         throw new ErrorExt(ec.PUD126, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD094, err);
     });
@@ -357,13 +382,13 @@ export const addUserAsEventAdmin = async (eventId: string, userId: string, byUse
  * DB interface: Remove user as admin for an event
  * @param eventId
  * @param userId
- * @param byUserId UserId of user performing the action
+ * @param activeUserId User ID of user performing the action
  * @returns Affected event
  */
-export const removeUserAsEventAdmin = async (eventId: string, userId: string, byUserId: string) => {
+export const removeUserAsEventAdmin = async (eventId: string, userId: string, activeUserId: string) => {
   const query = {
     text: "SELECT * FROM remove_user_as_event_admin($1, $2, $3);",
-    values: [eventId, userId, byUserId]
+    values: [eventId, userId, activeUserId]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {
@@ -378,6 +403,8 @@ export const removeUserAsEventAdmin = async (eventId: string, userId: string, by
         throw new ErrorExt(ec.PUD092, err);
       else if (err.code === "P0093")
         throw new ErrorExt(ec.PUD093, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD095, err);
     });
@@ -415,6 +442,8 @@ export const editEvent = async (eventId: string, userId: string, name?: string, 
         throw new ErrorExt(ec.PUD118, err);
       else if (err.code === "P0128")
         throw new ErrorExt(ec.PUD128, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD044, err);
     });

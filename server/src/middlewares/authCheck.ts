@@ -51,6 +51,8 @@ export const authKeyCheck = async (req: Request, res: Response, next: NextFuncti
     if (!isAuthenticated.valid && isAuthenticated.reason) {
       throw new ErrorExt(isAuthenticated.reason);
     }
+
+    req.authIsApiKey = true;
     next();
   }
   catch (err) {
@@ -77,6 +79,8 @@ export const masterKeyCheck = async (req: Request, res: Response, next: NextFunc
     if (!isAuthenticated.valid && isAuthenticated.reason) {
       throw new ErrorExt(isAuthenticated.reason);
     }
+
+    req.authIsApiKey = true;
     next();
   }
   catch (err) {
