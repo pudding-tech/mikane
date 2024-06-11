@@ -62,7 +62,7 @@
 												[src]="userWithBalance.user.avatarURL"
 												alt="User avatar"
 												class="avatar"
-												[ngClass]="{ 'clickable': !userWithBalance.user.guest }"
+												[ngClass]="{ clickable: !userWithBalance.user.guest }"
 												(click)="gotoUserProfile(userWithBalance.user)"
 											/>
 											{{ userWithBalance.user.name }}
@@ -174,9 +174,8 @@
 					<mat-card appearance="outlined"> No participants </mat-card>
 				}
 			</div>
-		}
 
-		@else {
+		} @else {
 			<div class="header-mobile">
 				@if (inEvent) {
 					<span class="in-event">
@@ -197,7 +196,7 @@
 				}
 			</div>
 			@if (event?.status.id === EventStatusType.READY_TO_SETTLE) {
-				<div class="ready-to-settle-box-mobile" (click)="gotoPayments()">
+				<div class="ready-to-settle-box mobile" (click)="gotoPayments()">
 					<div class="info">
 						<mat-icon class="info-icon">info</mat-icon>
 						This event is ready for settlement. Go to the payments page to find your pending payments.
