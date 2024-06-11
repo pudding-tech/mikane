@@ -54,18 +54,8 @@
 }
 
 .header-mobile {
-	display: flex;
-	align-items: center;
 	height: 50px;
 	margin-bottom: 20px;
-	padding-left: 16px;
-	background-color: rgba(24, 24, 24, 1);
-	border-top: 1px solid #333333;
-	stroke: #333333;
-
-	&.admins {
-		margin-bottom: 0;
-	}
 }
 
 .event-settings-text {
