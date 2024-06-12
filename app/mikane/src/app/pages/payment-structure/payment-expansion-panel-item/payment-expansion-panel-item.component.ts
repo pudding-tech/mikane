@@ -65,7 +65,7 @@ export class PaymentExpansionPanelItemComponent {
 
 	gotoUserProfile(user: User) {
 		if (!user.guest) {
-			this.router.navigate(['u', user.id]);
+			this.router.navigate(['u', user.username]);
 		}
 	}
 }

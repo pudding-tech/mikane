@@ -83,17 +83,17 @@ describe('MenuComponent', () => {
 	});
 
 	it('should navigate to profile page when onProfileClick is called', () => {
-		const user: User = { id: '1', name: 'Test User' } as User;
+		const user: User = { id: '1', username: 'testuser', name: 'Test User' } as User;
 		component.user = user;
 		component.onProfileClick();
 
-		expect(routerSpy.navigate).toHaveBeenCalledWith(['/u', user.id]);
+		expect(routerSpy.navigate).toHaveBeenCalledWith(['/u', user.username]);
 	});
 
 	it('should not navigate to profile page when onProfileClick is called and already on profile page', () => {
-		const user: User = { id: '1', name: 'Test User' } as User;
+		const user: User = { id: '1', username: 'testuser', name: 'Test User' } as User;
 		component.user = user;
-		spyPropertyGetter(routerSpy, 'url').and.returnValue(`/u/${user.id}`);
+		spyPropertyGetter(routerSpy, 'url').and.returnValue(`/u/${user.username}`);
 		component.onProfileClick();
 
 		expect(routerSpy.navigate).not.toHaveBeenCalled();

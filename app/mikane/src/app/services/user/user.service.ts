@@ -94,6 +94,15 @@ export class UserService {
 	}
 
 	/**
+	 * Loads a user by their username.
+	 * @param username The username of the user to load.
+	 * @returns An Observable that emits the loaded User object.
+	 */
+	loadUserByUsername(username: string) {
+		return this.httpClient.get<User>(this.apiUrl + `/username/${username}`);
+	}
+
+	/**
 	 * Creates a new user with the given name and event ID.
 	 * @param eventId The ID of the event the user is associated with.
 	 * @param name The name of the user.
