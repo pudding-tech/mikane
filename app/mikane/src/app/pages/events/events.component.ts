@@ -149,11 +149,14 @@ export class EventsComponent implements OnInit, OnDestroy {
 	openDialog() {
 		const dialogRef = this.dialog.open(EventDialogComponent, {
 			width: '350px',
+			data: {
+				edit: false
+			}
 		});
 
-		dialogRef.afterClosed().subscribe((event: { name: string; description: string }) => {
+		dialogRef.afterClosed().subscribe((event: { name: string; description: string, private: boolean }) => {
 			if (event) {
-				this.eventService.createEvent(event).subscribe({
+				this.eventService.createEvent({ name: event.name, description: event.description, privateEvent: event.private }).subscribe({
 					next: (newEvent) => {
 						this.events.update((events) => {
 							events.unshift(newEvent);

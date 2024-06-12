@@ -182,7 +182,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 
 	gotoUserProfile() {
 		if (!this.expense.payer.guest) {
-			this.router.navigate(['u', this.expense.payer.id]);
+			this.router.navigate(['u', this.expense.payer.username]);
 		}
 	}
 

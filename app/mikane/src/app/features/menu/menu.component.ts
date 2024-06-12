@@ -50,11 +50,11 @@ export class MenuComponent implements OnInit {
 	}
 
 	onProfileClick() {
-		if (this.router.url === '/u/' + this.user.id) {
+		if (this.router.url === '/u/' + this.user.username) {
 			this.splitButton.toggled = false;
 			return;
 		}
-		this.router.navigate(['/u', this.user.id]);
+		this.router.navigate(['/u', this.user.username]);
 	}
 
 	logout() {

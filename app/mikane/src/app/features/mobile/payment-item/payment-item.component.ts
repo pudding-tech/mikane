@@ -69,7 +69,7 @@ export class PaymentItemComponent implements OnInit {
 
 	gotoUserProfile(user: User) {
 		if (!user.guest) {
-			this.router.navigate(['u', user.id]);
+			this.router.navigate(['u', user.username]);
 		}
 	}
 }
