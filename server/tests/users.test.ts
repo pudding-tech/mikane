@@ -365,6 +365,49 @@ describe("users", async () => {
     });
   });
 
+  /* ------------------------------- */
+  /* GET /users/username/:usernameId */
+  /* ------------------------------- */
+  describe("GET /users/username/:usernameId", async () => {
+    test("should get user by username", async () => {
+      const res = await request(app)
+        .get("/api/users/username/" + user.username)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.headers["content-type"]).toEqual(expect.stringContaining("json"));
+      expect(res.body.username).toEqual("testuser");
+    });
+
+    test("should get user by ID", async () => {
+      const res = await request(app)
+        .get("/api/users/username/" + user.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.headers["content-type"]).toEqual(expect.stringContaining("json"));
+      expect(res.body.username).toEqual("testuser");
+    });
+
+    test("should not find user with unknown username", async () => {
+      const res = await request(app)
+        .get("/api/users/username/unknownuser")
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(404);
+      expect(res.body.code).toEqual(ec.PUD008.code);
+    });
+
+    test("should not find user with unknown user ID", async () => {
+      const res = await request(app)
+        .get("/api/users/username/5c756c8d-1ad1-47ba-8a24-3091911f3a35")
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(404);
+      expect(res.body.code).toEqual(ec.PUD008.code);
+    });
+  });
+
   /* -------------------------- */
   /* PUT /users/:id/preferences */
   /* -------------------------- */

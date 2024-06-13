@@ -50,11 +50,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		this.subscription = this.route.paramMap
 			.pipe(
 				map((params) => {
-					return params.get('username');
+					return params.get('usernameOrId');
 				}),
-				switchMap((username) => {
-					if (username) {
-						return this.userService.loadUserByUsername(username);
+				switchMap((usernameOrId) => {
+					if (usernameOrId) {
+						return this.userService.loadUserByUsernameOrId(usernameOrId);
 					} else {
 						// Username not in URL, showing logged in user profile page
 						return this.authService.getCurrentUser().pipe(switchMap((user) => this.userService.loadUserById(user.id)));

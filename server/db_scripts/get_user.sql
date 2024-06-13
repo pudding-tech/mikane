@@ -29,9 +29,12 @@ begin
     "user" u
     left join user_preferences up on u.id = up.user_id
   where
-    (u.id = ip_user_id or (ip_user_id is null and u.username ilike ip_username)) and
+    (u.id = ip_user_id or u.username ilike ip_username) and
     u.deleted = false and
-    u.guest = case when ip_allow_guest = true then u.guest else false end;
+    u.guest = case when ip_allow_guest = true then u.guest else false end
+  order by
+    u.id = ip_user_id desc, u.username ilike ip_username desc
+  limit 1;
 end;
 $$
 language plpgsql;
