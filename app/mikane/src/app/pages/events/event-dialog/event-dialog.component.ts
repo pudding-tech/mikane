@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PuddingEvent } from 'src/app/services/event/event.service';
 import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
@@ -19,11 +20,12 @@ import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/asy
 		FormsModule,
 		MatButtonModule,
 		EventNameValidatorDirective,
+		MatSlideToggleModule,
 		MatProgressSpinnerModule,
 	],
 })
 export class EventDialogComponent {
-	event: { id?: string; name: string; description: string } = { name: '', description: '' };
+	event: { id?: string; name: string; description: string, private: boolean } = { name: '', description: '', private: false };
 	edit: boolean;
 	currentName: string;
 	currentDescription: string;
@@ -33,9 +35,10 @@ export class EventDialogComponent {
 		@Inject(MAT_DIALOG_DATA) public data: { edit: boolean; event: PuddingEvent },
 	) {
 		if (data?.event) {
+			this.event.id = data.event.id;
 			this.event.name = data.event.name;
 			this.event.description = data.event.description;
-			this.event.id = data.event.id;
+			this.event.private = data.event.private;
 			this.currentName = data.event.name;
 			this.currentDescription = data.event.description;
 		}

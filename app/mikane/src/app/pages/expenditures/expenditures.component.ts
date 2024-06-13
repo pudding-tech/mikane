@@ -342,7 +342,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 
 	gotoUserProfile(user: User) {
 		if (!user.guest) {
-			this.router.navigate(['u', user.id]);
+			this.router.navigate(['u', user.username]);
 		}
 	}
 

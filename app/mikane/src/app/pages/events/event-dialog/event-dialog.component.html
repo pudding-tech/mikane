@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{ data?.edit ? "Edit event" : "Create event" }}</h1>
+<h1 mat-dialog-title>{{ data?.edit ? "Change event name" : "Create event" }}</h1>
 <div mat-dialog-content>
 	<mat-form-field appearance="fill">
 		<mat-label>Event Name</mat-label>
@@ -17,6 +17,18 @@
 		<mat-label>Event Description</mat-label>
 		<input matInput name="description" [(ngModel)]="event.description" />
 	</mat-form-field>
+	@if (data?.edit === false) {
+		<div class="private">
+			<div class="toggle-line">
+				<span>Private:</span>
+				<span class="toggle">
+					<mat-slide-toggle id="privateToggle" name="private" [(ngModel)]="event.private">
+					</mat-slide-toggle>
+				</span>
+			</div>
+			<div class="subtext">Private events are only visible to participants in the event.</div>
+		</div>
+	}
 </div>
 <div mat-dialog-actions class="dialog-buttons">
 	<button mat-button (click)="onNoClick()">Cancel</button>

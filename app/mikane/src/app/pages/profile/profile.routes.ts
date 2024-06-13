@@ -3,5 +3,5 @@ import { ProfileComponent } from './profile.component';
 
 export default [
 	{ path: '', component: ProfileComponent },
-	{ path: ':id', component: ProfileComponent },
+	{ path: ':usernameOrId', component: ProfileComponent },
 ] as Route[];

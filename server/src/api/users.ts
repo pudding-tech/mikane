@@ -87,6 +87,39 @@ router.get("/users/:id", authCheck, async (req, res, next) => {
 });
 
 /*
+* Get a specific user by username (also accepts ID)
+*/
+router.get("/users/username/:usernameOrUserId", authCheck, async (req, res, next) => {
+  try {
+    const usernameOrUserId = req.params.usernameOrUserId;
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD054);
+    }
+
+    let user: User | null;
+    if (isUUID(usernameOrUserId)) {
+      user = await db.getUser(usernameOrUserId, 280);
+    }
+    else {
+      user = await db.getUser(null, 280, usernameOrUserId);
+    }
+
+    if (!user) {
+      throw new ErrorExt(ec.PUD008);
+    }
+
+    // Remove sensitive information if user is not signed in user
+    removeUserInfo([user], activeUserId);
+
+    res.status(200).send(user);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
+/*
 * Get a list of a user's expenses
 */
 router.get("/users/:id/expenses/:eventId", authCheck, async (req, res, next) => {

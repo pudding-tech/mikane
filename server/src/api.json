@@ -858,6 +858,73 @@
         }
       }
     },
+    "/users/username/{usernameId}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user by username (also accepts ID)",
+        "description": "Get information about a specific user by username (also accepts user ID). If the requester is not the signed-in user, some sensitive information may be excluded.",
+        "operationId": "getUserByUsernameId",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "usernameId",
+            "in": "path",
+            "description": "Username or user ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "myUsername"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/changepassword": {
       "post": {
         "tags": [

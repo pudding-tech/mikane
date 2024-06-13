@@ -22,7 +22,9 @@
 								<span class="event-name">
 									<span class="name-text">{{ event.name }}</span>
 									@if (event.private) {
-										<mat-icon>passkey</mat-icon>
+										<mat-icon	matTooltip="This event is private" [matTooltipShowDelay]="200" class="joined-icon">
+											passkey
+										</mat-icon>
 									} @else if (event.userInfo.inEvent) {
 										<mat-icon matTooltip="You are in this event" [matTooltipShowDelay]="200" class="joined-icon">
 											how_to_reg
@@ -66,7 +68,9 @@
 								<span class="event-name">
 									<span class="name-text">{{ event.name }}</span>
 									@if (event.private) {
-										<mat-icon>passkey</mat-icon>
+										<mat-icon	matTooltip="This event is private" [matTooltipShowDelay]="200" class="joined-icon">
+											passkey
+										</mat-icon>
 									} @else if (event.userInfo.inEvent) {
 										<mat-icon matTooltip="You are in this event" [matTooltipShowDelay]="200" class="joined-icon">
 											how_to_reg

@@ -138,7 +138,7 @@ describe('EventService', () => {
 
 	describe('#createEvent', () => {
 		it('should create event', () => {
-			service.createEvent({ name: 'name', description: 'description' }).subscribe({
+			service.createEvent({ name: 'name', description: 'description', privateEvent: false }).subscribe({
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual(mockEvent);
 				},

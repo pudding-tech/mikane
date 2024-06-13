@@ -408,7 +408,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 
 	gotoUserProfile(user: { id: string, guest: boolean, username: string }) {
 		if (!user.guest) {
-			this.router.navigate(['u', user.id]);
+			this.router.navigate(['u', user.username]);
 		}
 	}
 
