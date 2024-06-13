@@ -87,17 +87,24 @@ router.get("/users/:id", authCheck, async (req, res, next) => {
 });
 
 /*
-* Get a specific user by username
+* Get a specific user by username (also accepts ID)
 */
-router.get("/users/username/:username", authCheck, async (req, res, next) => {
+router.get("/users/username/:usernameOrUserId", authCheck, async (req, res, next) => {
   try {
-    const username = req.params.username;
+    const usernameOrUserId = req.params.usernameOrUserId;
     const activeUserId = req.session.userId;
     if (!activeUserId) {
       throw new ErrorExt(ec.PUD054);
     }
 
-    const user = await db.getUser(null, 280, username);
+    let user: User | null;
+    if (isUUID(usernameOrUserId)) {
+      user = await db.getUser(usernameOrUserId, 280);
+    }
+    else {
+      user = await db.getUser(null, 280, usernameOrUserId);
+    }
+
     if (!user) {
       throw new ErrorExt(ec.PUD008);
     }

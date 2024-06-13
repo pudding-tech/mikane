@@ -110,14 +110,26 @@ describe('UserService', () => {
 		});
 	});
 
-	describe('loadUserByUsername', () => {
-		it('should return a user', () => {
+	describe('loadUserByUsernameOrId', () => {
+		it('should return a user by username', () => {
 			const mockUser: User = { id: '1', username: 'user1', name: 'User 1' } as User;
 			const username = 'user1';
-			service.loadUserByUsername(username).subscribe((user) => {
+			service.loadUserByUsernameOrId(username).subscribe((user) => {
 				expect(user).toEqual(mockUser);
 			});
 			const req = httpMock.expectOne(apiUrl + `users/username/${username}`);
+
+			expect(req.request.method).toBe('GET');
+			req.flush(mockUser);
+		});
+
+		it('should return a user by ID', () => {
+			const mockUser: User = { id: '1', username: 'user1', name: 'User 1' } as User;
+			const userId = '1';
+			service.loadUserByUsernameOrId(userId).subscribe((user) => {
+				expect(user).toEqual(mockUser);
+			});
+			const req = httpMock.expectOne(apiUrl + `users/username/${userId}`);
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUser);

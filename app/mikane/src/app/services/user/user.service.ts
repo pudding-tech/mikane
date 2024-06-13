@@ -94,12 +94,12 @@ export class UserService {
 	}
 
 	/**
-	 * Loads a user by their username.
-	 * @param username The username of the user to load.
+	 * Loads a user by their username or ID.
+	 * @param usernameId The username or ID of the user to load.
 	 * @returns An Observable that emits the loaded User object.
 	 */
-	loadUserByUsername(username: string) {
-		return this.httpClient.get<User>(this.apiUrl + `/username/${username}`);
+	loadUserByUsernameOrId(usernameId: string) {
+		return this.httpClient.get<User>(this.apiUrl + `/username/${usernameId}`);
 	}
 
 	/**
