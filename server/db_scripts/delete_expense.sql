@@ -1,7 +1,7 @@
 drop function if exists delete_expense;
 create or replace function delete_expense(
   ip_expense_id uuid,
-  ip_user_id uuid
+  ip_by_user_id uuid
 )
 returns void as
 $$
@@ -15,10 +15,10 @@ begin
     select 1 from expense ex
       inner join category c on ex.category_id = c.id
       inner join "event" e on c.event_id = e.id
-      left join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
+      left join user_event ue on e.id = ue.event_id and ue.user_id = ip_by_user_id
     where
       ex.id = ip_expense_id and
-      (e.private = false or (e.private = true and ue.user_id = ip_user_id))
+      (e.private = false or (e.private = true and ue.user_id = ip_by_user_id))
   ) then
     raise exception 'Cannot access private event' using errcode = 'P0138';
   end if;
@@ -31,8 +31,8 @@ begin
                   inner join category c on c.id = ex.category_id
                   inner join user_event ue on ue.event_id = c.event_id
                 where ex.id = ip_expense_id and
-                      ue.user_id = ip_user_id and
-                      (ex.payer_id = ip_user_id or ue."admin" = true))
+                      ue.user_id = ip_by_user_id and
+                      (ex.payer_id = ip_by_user_id or ue."admin" = true))
   then
     raise exception 'You can only delete your own expenses (unless event admin)' using errcode = 'P0086';
   end if;

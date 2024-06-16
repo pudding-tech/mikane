@@ -17,7 +17,7 @@ export const getCategories = async (eventId: string, activeUserId: string) => {
     values: [eventId, activeUserId]
   };
   const query2 = {
-    text: "SELECT * FROM get_users_name($1, null)",
+    text: "SELECT * FROM get_users_name($1, null);",
     values: [eventId]
   };
 
@@ -119,7 +119,7 @@ export const addUserToCategory = async (categoryId: string, userId: string, acti
     values: [categoryId, userId, weight, activeUserId]
   };
   const query2 = {
-    text: "SELECT * FROM get_users_name(null, $1)",
+    text: "SELECT * FROM get_users_name(null, $1);",
     values: [categoryId]
   };
 
@@ -222,7 +222,7 @@ export const editWeightStatus = async (categoryId: string, weighted: boolean, ac
     values: [categoryId, weighted, activeUserId]
   };
   const query2 = {
-    text: "SELECT * FROM get_users_name(null, $1)",
+    text: "SELECT * FROM get_users_name(null, $1);",
     values: [categoryId]
   };
 
@@ -288,7 +288,7 @@ export const removeUserFromCategory = async (categoryId: string, userId: string,
     values: [categoryId, userId, activeUserId]
   };
   const query2 = {
-    text: "SELECT * FROM get_users_name(null, $1)",
+    text: "SELECT * FROM get_users_name(null, $1);",
     values: [categoryId]
   };
 

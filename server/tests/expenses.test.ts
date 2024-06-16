@@ -11,12 +11,15 @@ describe("expenses", async () => {
   let authToken2: string;
   let user: User;
   let user2: User;
-  let event: Event;
-  let category: Category;
-  let expense: Expense;
+  let event1: Event;
+  let event2: Event;
+  let category1: Category;
+  let category2: Category;
+  let expense1: Expense;
+  let expense2: Expense;
 
   /*
-   * Create 2 users, log in as both, create event, create category, then add user1 category
+   * Create 2 users, log in as both, create 2 events, create 2 categories, then add user1 to categories
    */
   beforeAll(async () => {
     const resUser1 = await request(app)
@@ -70,7 +73,18 @@ describe("expenses", async () => {
         private: false
       });
 
-    event = resEvent.body;
+    event1 = resEvent.body;
+
+    const resEvent2 = await request(app)
+      .post("/api/events")
+      .set("Cookie", authToken)
+      .send({
+        name: "Example event 2",
+        description: "Example description",
+        private: false
+      });
+
+    event2 = resEvent2.body;
 
     const resCategory = await request(app)
       .post("/api/categories")
@@ -79,13 +93,29 @@ describe("expenses", async () => {
         name: "Test category",
         icon: "shopping_cart",
         weighted: false,
-        eventId: event.id
+        eventId: event1.id
       });
 
-    category = resCategory.body;
+    category1 = resCategory.body;
+
+    const resCategory2 = await request(app)
+      .post("/api/categories")
+      .set("Cookie", authToken)
+      .send({
+        name: "Test category 2",
+        icon: "shopping_cart",
+        weighted: false,
+        eventId: event2.id
+      });
+
+    category2 = resCategory2.body;
 
     await request(app)
-      .post(`/api/categories/${category.id}/user/${user.id}`)
+      .post(`/api/categories/${category1.id}/user/${user.id}`)
+      .set("Cookie", authToken);
+
+    await request(app)
+      .post(`/api/categories/${category2.id}/user/${user.id}`)
       .set("Cookie", authToken);
   });
 
@@ -101,7 +131,7 @@ describe("expenses", async () => {
           name: "Test expense 1",
           description: "This is test",
           amount: "a33",
-          categoryId: category.id,
+          categoryId: category1.id,
           payerId: user.id
         });
 
@@ -117,7 +147,7 @@ describe("expenses", async () => {
           name: "Test expense 1",
           description: "This is test",
           amount: -1,
-          categoryId: category.id,
+          categoryId: category1.id,
           payerId: user.id
         });
 
@@ -149,7 +179,7 @@ describe("expenses", async () => {
           name: " ",
           description: "This is test",
           amount: 100,
-          categoryId: category.id,
+          categoryId: category1.id,
           payerId: user.id
         });
 
@@ -157,7 +187,7 @@ describe("expenses", async () => {
       expect(res.body.code).toEqual(ec.PUD059.code);
     });
 
-    test("should create expense", async () => {
+    test("should create expense in event1", async () => {
       const res = await request(app)
         .post("/api/expenses")
         .set("Cookie", authToken)
@@ -165,14 +195,32 @@ describe("expenses", async () => {
           name: "Test expense 1",
           description: "This is test",
           amount: 100,
-          categoryId: category.id,
+          categoryId: category1.id,
           payerId: user.id
         });
 
       expect(res.status).toEqual(200);
       expect(res.body.name).toEqual("Test expense 1");
       expect(res.body.payer.id).toEqual(user.id);
-      expense = res.body;
+      expense1 = res.body;
+    });
+
+    test("should create expense in event2", async () => {
+      const res = await request(app)
+        .post("/api/expenses")
+        .set("Cookie", authToken)
+        .send({
+          name: "Test expense 2",
+          description: "This is test",
+          amount: 100,
+          categoryId: category2.id,
+          payerId: user.id
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.name).toEqual("Test expense 2");
+      expect(res.body.payer.id).toEqual(user.id);
+      expense2 = res.body;
     });
 
     test("fail create expense as user is not in event", async () => {
@@ -182,7 +230,7 @@ describe("expenses", async () => {
         .send({
           name: "Test expense 2",
           amount: 10,
-          categoryId: category.id,
+          categoryId: category1.id,
           payerId: user2.id
         });
 
@@ -192,7 +240,7 @@ describe("expenses", async () => {
 
     test("should set event as ready to settle", async () => {
       const res = await request(app)
-        .put("/api/events/" + event.id)
+        .put("/api/events/" + event1.id)
         .set("Cookie", authToken)
         .send({
           status: EventStatusType.READY_TO_SETTLE
@@ -210,7 +258,7 @@ describe("expenses", async () => {
           name: "Test expense 2",
           description: "This is test",
           amount: 200,
-          categoryId: category.id,
+          categoryId: category1.id,
           payerId: user.id
         });
 
@@ -220,7 +268,7 @@ describe("expenses", async () => {
 
     test("should set event as active", async () => {
       const res = await request(app)
-        .put("/api/events/" + event.id)
+        .put("/api/events/" + event1.id)
         .set("Cookie", authToken)
         .send({
           status: EventStatusType.ACTIVE
@@ -235,17 +283,32 @@ describe("expenses", async () => {
   /* GET /expenses */
   /* ------------- */
   describe("GET /expenses", async () => {
-    test("should get expenses", async () => {
+    test("should get expenses in event1", async () => {
       const res = await request(app)
         .get("/api/expenses")
-        .query("eventId=" + event.id)
+        .query("eventId=" + event1.id)
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(200);
       expect(res.body.length).toEqual(1);
       expect(res.body).toEqual(
         expect.arrayContaining([
-          expect.objectContaining({ id: expense.id })
+          expect.objectContaining({ id: expense1.id })
+        ])
+      );
+    });
+
+    test("should get expenses in event2", async () => {
+      const res = await request(app)
+        .get("/api/expenses")
+        .query("eventId=" + event2.id)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.length).toEqual(1);
+      expect(res.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: expense2.id })
         ])
       );
     });
@@ -267,11 +330,11 @@ describe("expenses", async () => {
   describe("GET /expenses/:id", async () => {
     test("should get expense", async () => {
       const res = await request(app)
-        .get("/api/expenses/" + expense.id)
+        .get("/api/expenses/" + expense1.id)
         .set("Cookie", authToken);
       
       expect(res.status).toEqual(200);
-      expect(res.body.id).toEqual(expense.id);
+      expect(res.body.id).toEqual(expense1.id);
     });
 
     test("fail finding expense", async () => {
@@ -291,7 +354,7 @@ describe("expenses", async () => {
     // Add user2 to event
     test("should add user2 to event", async () => {
       const res = await request(app)
-        .post(`/api/events/${event.id}/user/${user2.id}`)
+        .post(`/api/events/${event1.id}/user/${user2.id}`)
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(200);
@@ -300,7 +363,7 @@ describe("expenses", async () => {
     // Add user2 to category
     test("should add user2 to category", async () => {
       const res = await request(app)
-        .post(`/api/categories/${category.id}/user/${user2.id}`)
+        .post(`/api/categories/${category1.id}/user/${user2.id}`)
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(200);
@@ -309,7 +372,7 @@ describe("expenses", async () => {
 
     test("should get correct balance information for previous expense", async () => {
       const res = await request(app)
-        .get(`/api/events/${event.id}/balances`)
+        .get(`/api/events/${event1.id}/balances`)
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(200);
@@ -332,7 +395,7 @@ describe("expenses", async () => {
   describe("GET /events/:id/payments", async () => {
     test("should get correct payments information for previous expense", async () => {
       const res = await request(app)
-        .get(`/api/events/${event.id}/payments`)
+        .get(`/api/events/${event1.id}/payments`)
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(200);
@@ -342,13 +405,37 @@ describe("expenses", async () => {
     });
   });
 
-  /* -------------------------------- */
-  /* GET /users/:id/expenses/:eventId */
-  /* -------------------------------- */
-  describe("GET /users/:id/expenses/:eventId", async () => {
+  /* ----------------------- */
+  /* GET /users/:id/expenses */
+  /* ----------------------- */
+  describe("GET /users/:id/expenses", async () => {
+    test("should get list of user's expenses", async () => {
+      const res = await request(app)
+        .get(`/api/users/${user.id}/expenses`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.length).toEqual(2);
+      expect(res.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expense1.id,
+            categoryInfo: expect.objectContaining({ id: category1.id }),
+            payer: expect.objectContaining({ id: user.id })
+          }),
+          expect.objectContaining({
+            id: expense2.id,
+            categoryInfo: expect.objectContaining({ id: category2.id }),
+            payer: expect.objectContaining({ id: user.id })
+          })
+        ])
+      );
+    });
+
     test("should get list of user's expenses within an event", async () => {
       const res = await request(app)
-        .get(`/api/users/${user.id}/expenses/${event.id}`)
+        .get(`/api/users/${user.id}/expenses`)
+        .query("eventId=" + event1.id)
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(200);
@@ -356,8 +443,8 @@ describe("expenses", async () => {
       expect(res.body).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            id: expense.id,
-            categoryInfo: expect.objectContaining({ id: category.id }),
+            id: expense1.id,
+            categoryInfo: expect.objectContaining({ id: category1.id }),
             payer: expect.objectContaining({ id: user.id })
           })
         ])
@@ -371,7 +458,7 @@ describe("expenses", async () => {
   describe("PUT /expenses/:id", async () => {
     test("fail editing expense - no properties provided", async () => {
       const res = await request(app)
-        .put("/api/expenses/" + expense.id)
+        .put("/api/expenses/" + expense1.id)
         .set("Cookie", authToken)
         .send({});
 
@@ -381,7 +468,7 @@ describe("expenses", async () => {
 
     test("fail editing expense amount - not a number", async () => {
       const res = await request(app)
-        .put("/api/expenses/" + expense.id)
+        .put("/api/expenses/" + expense1.id)
         .set("Cookie", authToken)
         .send({
           amount: "expenseAmount"
@@ -393,7 +480,7 @@ describe("expenses", async () => {
 
     test("fail editing expense amount - negative number", async () => {
       const res = await request(app)
-        .put("/api/expenses/" + expense.id)
+        .put("/api/expenses/" + expense1.id)
         .set("Cookie", authToken)
         .send({
           amount: -1
@@ -405,7 +492,7 @@ describe("expenses", async () => {
 
     test("fail editing expense categoryId - invalid UUID", async () => {
       const res = await request(app)
-        .put("/api/expenses/" + expense.id)
+        .put("/api/expenses/" + expense1.id)
         .set("Cookie", authToken)
         .send({
           categoryId: "nb3hgi"
@@ -417,7 +504,7 @@ describe("expenses", async () => {
 
     test("fail editing expense name - empty string", async () => {
       const res = await request(app)
-        .put("/api/expenses/" + expense.id)
+        .put("/api/expenses/" + expense1.id)
         .set("Cookie", authToken)
         .send({
           name: " "
@@ -442,7 +529,7 @@ describe("expenses", async () => {
       expect(user3.id).toBeDefined();
 
       const res = await request(app)
-        .put("/api/expenses/" + expense.id)
+        .put("/api/expenses/" + expense1.id)
         .set("Cookie", authToken)
         .send({
           payerId: user3.id
@@ -454,7 +541,7 @@ describe("expenses", async () => {
 
     test("should edit expense amount", async () => {
       const res = await request(app)
-        .put("/api/expenses/" + expense.id)
+        .put("/api/expenses/" + expense1.id)
         .set("Cookie", authToken)
         .send({
           name: "Edited expense",
@@ -474,7 +561,7 @@ describe("expenses", async () => {
   describe("DELETE /expenses/:id", async () => {
     test("fail deleting expense - user is not expense payer or event admin", async () => {
       const res = await request(app)
-        .delete("/api/expenses/" + expense.id)
+        .delete("/api/expenses/" + expense1.id)
         .set("Cookie", authToken2);
 
       expect(res.status).toEqual(403);
@@ -483,7 +570,7 @@ describe("expenses", async () => {
 
     test("should delete expense", async () => {
       const res = await request(app)
-        .delete("/api/expenses/" + expense.id)
+        .delete("/api/expenses/" + expense1.id)
         .set("Cookie", authToken);
 
       expect(res.status).toEqual(200);

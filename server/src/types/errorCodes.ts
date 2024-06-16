@@ -1309,3 +1309,13 @@ export const PUD138: ErrorCode = {
   message: "Cannot access private event",
   status: 403
 };
+
+/**
+ * PUD-139: get_events_for_user (500)
+ */
+export const PUD139: ErrorCode = {
+  code: "PUD-139",
+  message: "Something went wrong while getting events for user",
+  status: 500,
+  log: true
+};

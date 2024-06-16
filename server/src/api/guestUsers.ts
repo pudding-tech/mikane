@@ -38,8 +38,8 @@ router.post("/guests", authCheck, async (req, res, next) => {
     const lastName: string = req.body.lastName;
     const id = randomUUID();
 
-    const byUserId = req.session.userId;
-    if (!byUserId) {
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
       throw new ErrorExt(ec.PUD055);
     }
 
@@ -47,7 +47,7 @@ router.post("/guests", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD121);
     }
 
-    const guestUser: Guest = await db.createGuestUser(id, firstName, lastName, byUserId);
+    const guestUser: Guest = await db.createGuestUser(id, firstName, lastName, activeUserId);
     res.status(200).json(guestUser);
   }
   catch (err) {
@@ -68,8 +68,8 @@ router.put("/guests/:id", authCheck, async (req, res, next) => {
     if (!isUUID(guestId)) {
       throw new ErrorExt(ec.PUD016);
     }
-    const byUserId = req.session.userId;
-    if (!byUserId) {
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
       throw new ErrorExt(ec.PUD055);
     }
 
@@ -88,7 +88,7 @@ router.put("/guests/:id", authCheck, async (req, res, next) => {
       lastName: lastName
     };
 
-    const guestUser = await db.editGuestUser(guestId, data, byUserId);
+    const guestUser = await db.editGuestUser(guestId, data, activeUserId);
     if (!guestUser) {
       throw new ErrorExt(ec.PUD122);
     }
@@ -112,12 +112,12 @@ router.delete("/guests/:id", authCheck, async (req, res, next) => {
     if (!isUUID(guestId)) {
       throw new ErrorExt(ec.PUD016);
     }
-    const byUserId = req.session.userId;
-    if (!byUserId) {
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
       throw new ErrorExt(ec.PUD055);
     }
 
-    const success = await db.deleteGuestUser(guestId, byUserId);
+    const success = await db.deleteGuestUser(guestId, activeUserId);
     res.status(200).send({ success: success });
   }
   catch (err) {

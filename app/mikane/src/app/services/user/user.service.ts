@@ -1,10 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { Expense } from '../expense/expense.service';
+import { PuddingEvent } from '../event/event.service';
 
 export interface User {
 	id: string;
@@ -113,13 +114,49 @@ export class UserService {
 	}
 
 	/**
-	 * Loads the expenses for a given user and event.
+	 * Loads the events for a given user.
+	 * @param userId The ID of the user whose events to load.
+	 * @param limit (Optional) A limit for the number of events that should be loaded (newest first).
+	 * @param offset (Optional) An offset for the number of events that should be loaded (newest first).
+	 * @returns An Observable that emits an array of Event objects.
+	 */
+	loadUserEvents(userId: string, limit?: number, offset?: number): Observable<PuddingEvent[]> {
+		const url = `${this.apiUrl}/${userId}/events`;
+		let params = new HttpParams();
+
+		if (limit) {
+			params = params.set('limit', limit.toString());
+		}
+		if (offset) {
+			params = params.set('offset', offset.toString());
+		}
+
+		return this.httpClient.get<PuddingEvent[]>(url, { params });
+	}
+
+	/**
+	 * Loads the expenses for a given user.
 	 * @param userId The ID of the user whose expenses to load.
-	 * @param eventId The ID of the event for which to load expenses.
+	 * @param eventId (Optional) The ID of the event for which to load expenses.
+	 * @param limit (Optional) A limit for the number of expenses that should be loaded (newest first).
+	 * @param offset (Optional) An offset for the number of expenses that should be loaded (newest first).
 	 * @returns An Observable that emits an array of Expense objects.
 	 */
-	loadUserExpenses(userId: string, eventId: string): Observable<Expense[]> {
-		return this.httpClient.get<Expense[]>(this.apiUrl + `/${userId}/expenses/${eventId}`);
+	loadUserExpenses(userId: string, eventId?: string, limit?: number, offset?: number): Observable<Expense[]> {
+		const url = `${this.apiUrl}/${userId}/expenses`;
+		let params = new HttpParams();
+
+		if (eventId) {
+			params = params.set('eventId', eventId);
+		}
+		if (limit !== undefined) {
+			params = params.set('limit', limit.toString());
+		}
+		if (offset !== undefined) {
+			params = params.set('offset', offset.toString());
+		}
+
+		return this.httpClient.get<Expense[]>(url, { params });
 	}
 
 	/**

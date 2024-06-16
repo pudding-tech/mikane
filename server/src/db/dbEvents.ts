@@ -101,27 +101,27 @@ export const getEventByName = async (eventName: string, userId?: string, authIsA
 /**
  * DB interface: Get an event balance information for all users
  * @param eventId Event ID
- * @param userId ID of signed-in user
+ * @param activeUserId ID of signed-in user
  * @returns List of user balances for an event
  */
-export const getEventBalances = async (eventId: string, userId?: string) => {
+export const getEventBalances = async (eventId: string, activeUserId?: string) => {
   const queryUsers = {
     text: `
       SELECT * FROM get_users($1, null, null, $2);
     `,
-    values: [eventId, userId]
+    values: [eventId, activeUserId]
   };
   const queryCategories = {
     text: `
       SELECT * FROM get_categories($1, null, $2);
     `,
-    values: [eventId, userId]
+    values: [eventId, activeUserId]
   };
   const queryExpenses = {
     text: `
-      SELECT * FROM get_expenses($1, null, null);
+      SELECT * FROM get_expenses($1, null, null, $2);
     `,
-    values: [eventId]
+    values: [eventId, activeUserId]
   };
 
   try {
@@ -158,27 +158,27 @@ export const getEventBalances = async (eventId: string, userId?: string) => {
 /**
  * DB interface: Get an event payments information
  * @param eventId Event ID
- * @param userId ID of signed-in user
+ * @param activeUserId ID of signed-in user
  * @returns List of payments for an event
  */
-export const getEventPayments = async (eventId: string, userId?: string) => {
+export const getEventPayments = async (eventId: string, activeUserId?: string) => {
   const queryUsers = {
     text: `
       SELECT * FROM get_users($1, null, null, $2);
     `,
-    values: [eventId, userId]
+    values: [eventId, activeUserId]
   };
   const queryCategories = {
     text: `
       SELECT * FROM get_categories($1, null, $2);
     `,
-    values: [eventId, userId]
+    values: [eventId, activeUserId]
   };
   const queryExpenses = {
     text: `
-      SELECT * FROM get_expenses($1, null, null);
+      SELECT * FROM get_expenses($1, null, null, $2);
     `,
-    values: [eventId]
+    values: [eventId, activeUserId]
   };
 
   try {
@@ -247,10 +247,10 @@ export const createEvent = async (name: string, activeUserId: string, privateEve
  * @param id Event ID
  * @returns True if successful
  */
-export const deleteEvent = async (id: string, userId: string) => {
+export const deleteEvent = async (id: string, activeUserId: string) => {
   const query = {
     text: "SELECT * FROM delete_event($1, $2);",
-    values: [id, userId]
+    values: [id, activeUserId]
   };
   const success = await pool.query(query)
     .then(() => {
@@ -415,17 +415,17 @@ export const removeUserAsEventAdmin = async (eventId: string, userId: string, ac
 /**
  * DB interface: Edit event
  * @param eventId ID of event to edit
- * @param userId ID of user performing edit
+ * @param activeUserId ID of user performing edit
  * @param name New name
  * @param description New description
  * @param privateEvent Whether event should be open for all or invite only
  * @param status Event status
  * @returns Edited event
  */
-export const editEvent = async (eventId: string, userId: string, name?: string, description?: string, privateEvent?: boolean, status?: number) => {
+export const editEvent = async (eventId: string, activeUserId: string, name?: string, description?: string, privateEvent?: boolean, status?: number) => {
   const query = {
     text: "SELECT * FROM edit_event($1, $2, $3, $4, $5, $6);",
-    values: [eventId, userId, name, description, privateEvent, status]
+    values: [eventId, activeUserId, name, description, privateEvent, status]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {

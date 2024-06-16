@@ -18,16 +18,16 @@ const router = express.Router();
 router.get("/categories", authCheck, async (req, res, next) => {
   try {
     const eventId = req.query.eventId as string;
-    const userId = req.session.userId;
+    const activeUserId = req.session.userId;
 
     if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
-    if (!userId) {
+    if (!activeUserId) {
       throw new ErrorExt(ec.PUD055);
     }
 
-    const categories: Category[] = await db.getCategories(eventId, userId);
+    const categories: Category[] = await db.getCategories(eventId, activeUserId);
     res.send(categories);
   }
   catch (err) {
@@ -41,16 +41,16 @@ router.get("/categories", authCheck, async (req, res, next) => {
 router.get("/categories/:id", authCheck, async (req, res, next) => {
   try {
     const id = req.params.id;
-    const userId = req.session.userId;
+    const activeUserId = req.session.userId;
 
     if (!isUUID(id)) {
       throw new ErrorExt(ec.PUD045);
     }
-    if (!userId) {
+    if (!activeUserId) {
       throw new ErrorExt(ec.PUD055);
     }
 
-    const category = await db.getCategory(id, userId);
+    const category = await db.getCategory(id, activeUserId);
     if (!category) {
       throw new ErrorExt(ec.PUD007);
     }
@@ -81,8 +81,8 @@ router.post("/categories", authCheck, async (req, res, next) => {
     if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
-    const userId = req.session.userId;
-    if (!userId) {
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
       throw new ErrorExt(ec.PUD055);
     }
 
@@ -91,7 +91,7 @@ router.post("/categories", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD096);
     }
     
-    const category: Category = await db.createCategory(name.trim(), eventId, Boolean(req.body.weighted), userId, icon);
+    const category: Category = await db.createCategory(name.trim(), eventId, Boolean(req.body.weighted), activeUserId, icon);
     res.status(200).json(category);
   }
   catch (err) {

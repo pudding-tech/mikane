@@ -17,8 +17,8 @@ const router = express.Router();
 */
 router.get("/events", authCheck, async (req, res, next) => {
   try {
-    const userId = req.session.userId;
-    const events: Event[] = await db.getEvents(userId);
+    const activeUserId = req.session.userId;
+    const events: Event[] = await db.getEvents(activeUserId);
     res.status(200).send(events);
   }
   catch (err) {
@@ -32,12 +32,12 @@ router.get("/events", authCheck, async (req, res, next) => {
 router.get("/events/:id", authCheck, async (req, res, next) => {
   try {
     const eventId = req.params.id;
-    const userId = req.session.userId;
+    const activeUserId = req.session.userId;
     if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
-    const event = await db.getEvent(eventId, userId);
+    const event = await db.getEvent(eventId, activeUserId);
     if (!event) {
       throw new ErrorExt(ec.PUD006);
     }
@@ -54,10 +54,10 @@ router.get("/events/:id", authCheck, async (req, res, next) => {
 router.get("/eventbyname", authKeyCheck, async (req, res, next) => {
   try {
     const eventName = req.body.name;
-    const userId = req.session.userId;
+    const activeUserId = req.session.userId;
     const authIsApiKey = req.authIsApiKey;
 
-    const event = await db.getEventByName(eventName, userId, authIsApiKey);
+    const event = await db.getEventByName(eventName, activeUserId, authIsApiKey);
     if (!event) {
       throw new ErrorExt(ec.PUD006);
     }
@@ -74,19 +74,19 @@ router.get("/eventbyname", authKeyCheck, async (req, res, next) => {
 router.get("/events/:id/balances", authCheck, async (req, res, next) => {
   try {
     const eventId = req.params.id;
-    const userId = req.session.userId;
+    const activeUserId = req.session.userId;
     if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
-    const usersWithBalance: UserBalance[] = await db.getEventBalances(eventId, userId);
+    const usersWithBalance: UserBalance[] = await db.getEventBalances(eventId, activeUserId);
 
     // Remove sensitive user information
-    removeUserInfoFromUserBalances(usersWithBalance, userId ?? "");
+    removeUserInfoFromUserBalances(usersWithBalance, activeUserId ?? "");
 
     // Put logged in user first in list
-    if (userId) {
-      const index = usersWithBalance.findIndex(userBalance => userBalance.user.id === userId);
+    if (activeUserId) {
+      const index = usersWithBalance.findIndex(userBalance => userBalance.user.id === activeUserId);
       if (index !== -1) {
         const userBalance = usersWithBalance.splice(index, 1)[0];
         usersWithBalance.unshift(userBalance);
@@ -106,19 +106,19 @@ router.get("/events/:id/balances", authCheck, async (req, res, next) => {
 router.get("/events/:id/payments", authKeyCheck, async (req, res, next) => {
   try {
     const eventId = req.params.id;
-    const userId = req.session.userId;
+    const activeUserId = req.session.userId;
     if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
-    const payments: Payment[] = await db.getEventPayments(eventId, userId);
+    const payments: Payment[] = await db.getEventPayments(eventId, activeUserId);
 
     // Remove sensitive user information
-    removeUserInfoFromPayments(payments, userId ?? "");
+    removeUserInfoFromPayments(payments, activeUserId ?? "");
 
     // Put logged in user first in list
-    if (userId) {
-      const index = payments.findIndex(payment => payment.sender.id === userId);
+    if (activeUserId) {
+      const index = payments.findIndex(payment => payment.sender.id === activeUserId);
       if (index !== -1) {
         const user = payments.splice(index, 1)[0];
         payments.unshift(user);
@@ -225,12 +225,12 @@ router.put("/events/:id", authCheck, async (req, res, next) => {
     if (![undefined, null].includes(req.body.name) && req.body.name.trim() === "") {
       throw new ErrorExt(ec.PUD053);
     }
-    const userId = req.session.userId;
-    if (!userId) {
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
       throw new ErrorExt(ec.PUD055);
     }
 
-    const event = await db.editEvent(eventId, userId, req.body.name, req.body.description, req.body.private, req.body.status);
+    const event = await db.editEvent(eventId, activeUserId, req.body.name, req.body.description, req.body.private, req.body.status);
     if (!event) {
       throw new ErrorExt(ec.PUD006);
     }
@@ -254,12 +254,12 @@ router.delete("/events/:id", authCheck, async (req, res, next) => {
     if (!isUUID(eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
-    const userId = req.session.userId;
-    if (!userId) {
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
       throw new ErrorExt(ec.PUD055);
     }
 
-    const success = await db.deleteEvent(eventId, userId);
+    const success = await db.deleteEvent(eventId, activeUserId);
     res.status(200).send({ success: success });
   }
   catch (err) {
