@@ -1,31 +1,40 @@
-<mat-toolbar *ngIf="(breakpointService.isMobile() | async) === false">
-	<span class="logo-container">
-		<img src="assets/mikane.svg" alt="Mikane logo" class="logo" />
-	</span>
-	<span>MIKANE</span>
-</mat-toolbar>
-<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="login-section">
-	<mat-card class="login-content">
-		<mat-card-header class="card-header">
-			<div mat-card-avatar>
-				<mat-icon aria-hidden="false">account_circle</mat-icon>
-			</div>
-			<mat-card-title>
-				<div *ngIf="!resetPasswordView; else resetPasswordTitle">Login</div>
-				<ng-template #resetPasswordTitle>
-					<div>Reset password</div>
-				</ng-template>
-			</mat-card-title>
-		</mat-card-header>
-		<mat-card-content class="card-content">
-			<div *ngIf="!resetPasswordView; else resetPasswordContent">
-				<ng-container *ngTemplateOutlet="loginContent"></ng-container>
-			</div>
-		</mat-card-content>
-	</mat-card>
-</div>
-
-<ng-template #mobileView>
+@if ((breakpointService.isMobile() | async) === false) {
+	<mat-toolbar>
+		<span class="logo-container">
+			<img src="assets/mikane.svg" alt="Mikane logo" class="logo" />
+		</span>
+		<span>MIKANE</span>
+	</mat-toolbar>
+}
+@if ((breakpointService.isMobile() | async) === false) {
+	<div class="login-section">
+		<mat-card class="login-content">
+			<mat-card-header class="card-header">
+				<div mat-card-avatar>
+					<mat-icon aria-hidden="false">account_circle</mat-icon>
+				</div>
+				<mat-card-title>
+					@if (!resetPasswordView) {
+						<div>Login</div>
+					}
+					@else {
+						<div>Reset password</div>
+					}
+				</mat-card-title>
+			</mat-card-header>
+			<mat-card-content class="card-content">
+				@if (!resetPasswordView) {
+					<ng-container *ngTemplateOutlet="loginContent"></ng-container>
+				}
+				@else {
+					<ng-container *ngTemplateOutlet="resetPasswordContent"></ng-container>
+				}
+			</mat-card-content>
+		</mat-card>
+	</div>
+}
+<!-- Mobile -->
+@else {
 	<div class="bg">
 		<div class="mobile-view">
 			<h1 class="mobile-title">
@@ -34,13 +43,16 @@
 				</span>
 				<span class="logo-text"> MIKANE </span>
 			</h1>
-			<h2 *ngIf="resetPasswordView" class="reset-password-title">Reset password</h2>
-			<div *ngIf="!resetPasswordView; else resetPasswordContent">
+			@if (!resetPasswordView) {
 				<ng-container *ngTemplateOutlet="loginContent"></ng-container>
-			</div>
+			}
+			@else {
+				<h2 class="reset-password-title">Reset password</h2>
+				<ng-container *ngTemplateOutlet="resetPasswordContent"></ng-container>
+			}
 		</div>
 	</div>
-</ng-template>
+}
 
 <ng-template #loginContent>
 	<form [formGroup]="loginForm" (ngSubmit)="login()" id="login-form">
@@ -68,13 +80,15 @@
 			</mat-form-field>
 		</div>
 		<button type="submit" mat-raised-button color="primary" id="login-button" class="login-input button">
-			<ng-container matButtonIcon *ngIf="!loading; else loadingSpinner">
-				<mat-icon aria-hidden="false">login</mat-icon>
-				<span>Log in</span>
-			</ng-container>
-			<ng-template #loadingSpinner>
+			@if (!loading) {
+				<ng-container matButtonIcon>
+					<mat-icon aria-hidden="false">login</mat-icon>
+					<span>Log in</span>
+				</ng-container>
+			}
+			@else {
 				<mat-spinner diameter="20" class="mat-spinner"></mat-spinner>
-			</ng-template>
+			}
 		</button>
 		<div class="forgot-password">
 			<button type="button" class="forgot-password-button" (click)="toggleForgotPassword()">Forgot password?</button>
@@ -88,24 +102,32 @@
 		<mat-form-field appearance="fill" class="login-input">
 			<mat-label>Email</mat-label>
 			<input type="email" id="email-input" matInput placeholder="Email" formControlName="email" />
-			<mat-error *ngIf="resetPasswordForm.get('email')?.invalid"> Invalid email </mat-error>
+			@if (resetPasswordForm.get('email')?.invalid) {
+				<mat-error> Invalid email </mat-error>
+			}
 		</mat-form-field>
 		<button type="submit" id="password-button" mat-raised-button color="primary" class="login-input button">
-			<ng-container matButtonIcon *ngIf="!loading; else loadingSpinner">
-				<mat-icon aria-hidden="false">email</mat-icon>
-				<span>Send instructions</span>
-			</ng-container>
-			<ng-template #loadingSpinner>
+			@if (!loading) {
+				<ng-container matButtonIcon>
+					<mat-icon aria-hidden="false">email</mat-icon>
+					<span>Send instructions</span>
+				</ng-container>
+			}
+			@else {
 				<mat-spinner diameter="20" class="mat-spinner"></mat-spinner>
-			</ng-template>
+			}
 		</button>
-		<div *ngIf="resetPasswordRequestSent" class="info-text">
-			Your password reset request has been received and is being processed. You will receive an email with password reset instructions
-			shortly.
-		</div>
-		<div *ngIf="errorResponse" class="info-text error-text">
-			{{ errorResponse }}
-		</div>
+		@if (resetPasswordRequestSent) {
+			<div class="info-text">
+				Your password reset request has been received and is being processed. You will receive an email with password reset instructions
+				shortly.
+			</div>
+		}
+		@if (errorResponse) {
+			<div class="info-text error-text">
+				{{ errorResponse }}
+			</div>
+		}
 		<div class="forgot-password">
 			<button type="button" class="forgot-password-button" (click)="toggleForgotPassword(); resetText()">Back</button>
 		</div>

@@ -148,7 +148,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 				switchMap((event): Observable<[Expense[], string[]] | []> => {
 					if (event.id) {
 						if (event.status.id === EventStatusType.ACTIVE) {
-							this.displayedColumns.push(...['edit', 'delete']);
+							this.displayedColumns.push(...['edit']);
 						}
 						this.event = event;
 						return combineLatest([
@@ -420,7 +420,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		if (!sort.active || sort.direction === '') {
 			return [
 				...expenses.sort((a, b) => {
-					return this.compare(a.created, b.created, false);
+					return this.compare(a.created as number, b.created as number, false);
 				}),
 			];
 		}

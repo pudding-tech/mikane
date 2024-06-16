@@ -8,81 +8,199 @@
 </mat-toolbar>
 
 @if (loading === false) {
-	<div>
-		@if ((breakpointService.isMobile() | async) === false) {
-			<div class="profile-page">
-				<mat-card class="profile-content">
-					<mat-card-header>
-						@if (user?.avatarURL) {
-							<img mat-card-avatar [src]="user?.avatarURL" alt="User avatar" class="avatar" />
-						}
-						<mat-card-title>{{ user?.firstName + " " + user?.lastName }}</mat-card-title>
-						<mat-card-subtitle>{{ user?.username }}</mat-card-subtitle>
-					</mat-card-header>
-					<mat-card-content>
-						<div class="user-row">
-							<span class="user-padding">
-								<mat-icon class="icon">email</mat-icon>
+	@if ((breakpointService.isMobile() | async) === false) {
+		<div class="profile-page">
+			<mat-card class="profile-content">
+				<mat-card-content class="profile">
+					<div class="left">
+						<div>
+							<button mat-icon-button (click)="copyProfileLink()" matTooltip="Copy permanent link to profile" class="copy-button">
+								<mat-icon>content_copy</mat-icon>
+							</button>
+							@if (user?.avatarURL) {
+								<img [src]="user?.avatarURL" alt="User avatar" class="avatar" />
+							}
+							<div id="name">{{ user?.firstName + " " + user?.lastName }}</div>
+							<div id="username">{{ user?.username }}</div>
+						</div>
+						<div class="user-info">
+							<span class="user-info-row">
+								<mat-icon class="profile-info-icon">email</mat-icon>
 								@if (user?.email) {
-									<a [href]="'mailto:' + user?.email">{{ user?.email }} </a>
+									<a [href]="'mailto:' + user?.email" class="email-link">{{ user?.email }} </a>
+									@if (user?.publicEmail === false) {
+										<mat-icon matTooltip="Your email is private and only visible to you" class="help-icon">help</mat-icon>
+									}
 								}
 								@else {
 									<i>Private</i>
 								}
 							</span>
-						</div>
-						<div class="user-row">
-							<span class="user-padding">
-								<mat-icon class="icon">phone</mat-icon>
+							<span class="user-info-row">
+								<mat-icon class="profile-info-icon">phone</mat-icon>
 								@if (user?.phone) {
-									{{ user?.phone }}
+									{{ user.phone.slice(0, 2) + ' ' + user.phone.slice(2, 4) + ' ' + user.phone.slice(4, 6) + ' ' + user.phone.slice(6) }}
+									@if (user?.publicPhone === false) {
+										<mat-icon matTooltip="Your phone number is private and only visible to you" class="help-icon">help</mat-icon>
+									}
 								}
 								@else {
 									<i>Private</i>
 								}
 							</span>
 						</div>
-					</mat-card-content>
-				</mat-card>
-			</div>
-		} @else {
-			<div class="mobile-view">
-				<div class="header">
-					@if (user?.avatarURL) {
-						<img [src]="user?.avatarURL" alt="User avatar" class="avatar" />
-					}
-					<div>
-						<div id="name">{{ user?.firstName + " " + user?.lastName }}</div>
-						<div id="username">{{ user?.username }}</div>
 					</div>
-				</div>
-				<div class="details">
-					<div class="user-row">
-						<span class="user-padding">
-							<mat-icon class="icon">email</mat-icon>
-							@if (user?.email) {
-								<a [href]="'mailto:' + user?.email">{{ user?.email }} </a>
-							}
-							@else {
-								<i>Private</i>
-							}
-						</span>
+					<div class="right">
+						<ng-container *ngTemplateOutlet="userEvents"></ng-container>
+						<ng-container *ngTemplateOutlet="latestExpenses"></ng-container>
 					</div>
-					<div class="user-row">
-						<span class="user-padding">
-							<mat-icon class="icon">phone</mat-icon>
-							@if (user?.phone) {
-								{{ user?.phone }}
-							}
-							@else {
-								<i>Private</i>
-							}
-						</span>
-					</div>
+				</mat-card-content>
+			</mat-card>
+		</div>
+	}
+	<!-- Mobile -->
+	@else {
+		<div class="profile-mobile">
+			<div class="header">
+				@if (user?.avatarURL) {
+					<img [src]="user?.avatarURL" alt="User avatar" class="avatar" />
+				}
+				<div>
+					<div id="name">{{ user?.firstName + " " + user?.lastName }}</div>
+					<div id="username">{{ user?.username }}</div>
 				</div>
 			</div>
-		}
-	</div>
+			<div class="details">
+				<div>
+					<span class="user-info-row">
+						<mat-icon class="profile-info-icon">email</mat-icon>
+						@if (user?.email) {
+							<a [href]="'mailto:' + user?.email" class="email-link">{{ user?.email }} </a>
+							@if (user?.publicEmail === false) {
+								<mat-icon #tooltip="matTooltip" matTooltip="Your email is private and only visible to you" (click)="tooltip.show()" class="help-icon">help</mat-icon>
+							}
+						}
+						@else {
+							<i>Private</i>
+						}
+					</span>
+					<span class="user-info-row">
+						<mat-icon class="profile-info-icon">phone</mat-icon>
+						@if (user?.phone) {
+							{{ user.phone.slice(0, 2) + ' ' + user.phone.slice(2, 4) + ' ' + user.phone.slice(4, 6) + ' ' + user.phone.slice(6) }}
+							@if (user?.publicPhone === false) {
+								<mat-icon #tooltip="matTooltip" matTooltip="Your phone number is private and only visible to you" (click)="tooltip.show()" class="help-icon">help</mat-icon>
+							}
+						}
+						@else {
+							<i>Private</i>
+						}
+					</span>
+				</div>
+				<button mat-icon-button (click)="copyProfileLink()" matTooltip="Copy permanent link to profile" class="copy-button">
+					<mat-icon>content_copy</mat-icon>
+				</button>
+			</div>
+			<ng-container *ngTemplateOutlet="userEvents"></ng-container>
+			<ng-container *ngTemplateOutlet="latestExpenses"></ng-container>
+		</div>
+	}
 } @else {
 	<app-loading-spinner></app-loading-spinner>
 }
+
+<ng-template #userEvents>
+	<div class="profile-events">
+		<h3 class="title">Participating in events</h3>
+		@for (event of events; track event.id) {
+			<div matRipple (click)="gotoEvent(event.id)" [ngClass]="{ isMobile: breakpointService.isMobile() | async }" class="event">
+				<div class="event-left">
+					@if (event.adminIds.includes(user.id)) {
+						<mat-icon [matTooltip]="user.name + ' is an admin for this event'" [matTooltipShowDelay]="100" class="event-icon">shield_person</mat-icon>
+					}
+					@else {
+						<mat-icon class="event-icon">event</mat-icon>
+					}
+					<div>
+						<div class="name overflow">{{ event.name }}</div>
+						<div class="subtext overflow">{{ event.description }}</div>
+					</div>
+				</div>
+				<div class="event-right">
+					@if (event.status.id === EventStatusType.READY_TO_SETTLE) {
+						<mat-icon matTooltip="This event is ready to be settled" [matTooltipShowDelay]="100" class="right-side-icon">
+							pending
+						</mat-icon>
+					}
+					@else if (event.status.id === EventStatusType.ARCHIVED) {
+						<mat-icon matTooltip="This event is archived" [matTooltipShowDelay]="100" class="right-side-icon">
+							check_circle
+						</mat-icon>
+					}
+					@if (event.userInfo.inEvent) {
+						<mat-icon [matTooltip]="event.private ? 'You are also in this private event' : 'You are also in this event'" [matTooltipShowDelay]="100" class="right-side-icon">
+							{{ event.private ? 'passkey' : 'how_to_reg' }}
+						</mat-icon>
+					}
+				</div>
+			</div>
+		}
+		@empty {
+			<div class="no-payments">
+				This user is not participating in any events.
+			</div>
+		}
+		@if (events.length >= 5 && showMoreEvents) {
+			<button mat-button (click)="loadMoreEvents()" [disabled]="loadingEvents || !showMoreEvents" class="show-more-button">
+				<span class="text">Show more</span>
+			</button>
+		}
+		@else if (events.length >=5) {
+			<div class="no-more-text" [ngClass]="{ hide: hideEventsText }">No more events</div>
+		}
+	</div>
+</ng-template>
+
+<ng-template #latestExpenses>
+	<div class="profile-expenses">
+		<h3 class="title">Latest expenses</h3>
+		@for (expense of expenses; track expense.id) {
+			<div class="expense">
+				<div class="expense-left">
+					<div class="circle-container">
+						<div class="circle">
+							<mat-icon matListItemIcon class="expense-icon">{{ expense.categoryInfo.icon || 'shopping_cart' }}</mat-icon>
+						</div>
+					</div>
+					<div class="">
+						<div class="overflow">
+							{{ expense.name }}
+							<span class="amount">
+								{{ expense.amount | currency: "" : "" : "1.2-2" : "no" }} kr
+							</span>
+						</div>
+						<div class="subtext overflow">
+							{{ expense.eventInfo.name + ' - ' + (expense.created | date:'mediumDate') }}
+						</div>
+					</div>
+				</div>
+				<button mat-icon-button (click)="gotoExpenses(expense)" class="expense-right">
+					<mat-icon>keyboard_double_arrow_right</mat-icon>
+				</button>
+			</div>
+		}
+		@empty {
+			<div class="no-payments">
+				This user has no expenses.
+			</div>
+		}
+		@if (expenses.length >= 5 && showMoreExpenses) {
+			<button mat-button (click)="loadMoreExpenses()" [disabled]="loadingExpenses || !showMoreExpenses" class="show-more-button">
+				<span class="text">Show more</span>
+			</button>
+		}
+		@else if (expenses.length >= 5) {
+			<div class="no-more-text no-more-expenses" [ngClass]="{ hide: hideExpensesText }">No more expenses</div>
+		}
+	</div>
+</ng-template>
