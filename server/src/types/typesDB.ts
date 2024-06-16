@@ -67,7 +67,10 @@ export type ExpenseDB = {
   payer_username: string,
   payer_email: string,
   payer_guest: boolean,
-  payer_deleted: boolean
+  payer_deleted: boolean,
+  event_id: string,
+  event_name: string,
+  event_private: boolean
 };
 
 export type APIKeyDB = {

@@ -7,15 +7,16 @@ import * as ec from "../types/errorCodes";
 /**
  * DB interface: Get all expenses in a given event
  * @param eventId 
+ * @param activeUserId ID of signed-in user
  * @returns List of expenses
  */
-export const getExpenses = async (eventId: string) => {
+export const getExpenses = async (eventId: string, activeUserId: string) => {
   const query = {
-    text: "SELECT * FROM get_expenses($1, null, null);",
-    values: [eventId]
+    text: "SELECT * FROM get_expenses($1, null, null, $2);",
+    values: [eventId, activeUserId]
   };
   const query2 = {
-    text: "SELECT * FROM get_users_name($1, null)",
+    text: "SELECT * FROM get_users_name($1, null);",
     values: [eventId]
   };
 
@@ -25,11 +26,11 @@ export const getExpenses = async (eventId: string) => {
     })
     .catch(err => {
       if (err.code === "P0006")
-        throw new ErrorExt(ec.PUD006);
+        throw new ErrorExt(ec.PUD006, err);
       else if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008);
+        throw new ErrorExt(ec.PUD008, err);
       else if (err.code === "P0084")
-        throw new ErrorExt(ec.PUD084);
+        throw new ErrorExt(ec.PUD084, err);
       else if (err.code === "P0138")
         throw new ErrorExt(ec.PUD138, err);
       else
@@ -42,12 +43,13 @@ export const getExpenses = async (eventId: string) => {
 /**
  * DB interface: Get a specific expense
  * @param expenseId 
+ * @param activeUserId ID of signed-in user
  * @returns Expense object
  */
-export const getExpense = async (expenseId: string) => {
+export const getExpense = async (expenseId: string, activeUserId: string) => {
   const query = {
-    text: "SELECT * FROM get_expenses(null, null, $1);",
-    values: [expenseId]
+    text: "SELECT * FROM get_expenses(null, null, $1, $2);",
+    values: [expenseId, activeUserId]
   };
   const expenses: Expense[] = await pool.query(query)
     .then(data => {
@@ -55,11 +57,13 @@ export const getExpense = async (expenseId: string) => {
     })
     .catch(err => {
       if (err.code === "P0006")
-        throw new ErrorExt(ec.PUD006);
+        throw new ErrorExt(ec.PUD006, err);
       else if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008);
+        throw new ErrorExt(ec.PUD008, err);
       else if (err.code === "P0084")
-        throw new ErrorExt(ec.PUD084);
+        throw new ErrorExt(ec.PUD084, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD032, err);
     });
@@ -72,6 +76,7 @@ export const getExpense = async (expenseId: string) => {
 
 /**
  * DB interface: Add a new expense to the database
+ * @param activeUserId ID of signed-in user
  * @param name 
  * @param amount 
  * @param categoryId 
@@ -79,10 +84,10 @@ export const getExpense = async (expenseId: string) => {
  * @param description 
  * @returns Newly created expense
  */
-export const createExpense = async (name: string, amount: number, categoryId: string, payerId: string, description?: string) => {
+export const createExpense = async (activeUserId: string, name: string, amount: number, categoryId: string, payerId: string, description?: string) => {
   const query = {
-    text: "SELECT * FROM new_expense($1, $2, $3, $4, $5);",
-    values: [name, description, amount, categoryId, payerId]
+    text: "SELECT * FROM new_expense($1, $2, $3, $4, $5, $6);",
+    values: [name, description, amount, categoryId, payerId, activeUserId]
   };
   const expenses: Expense[] = await pool.query(query)
     .then(data => {
@@ -97,6 +102,8 @@ export const createExpense = async (name: string, amount: number, categoryId: st
         throw new ErrorExt(ec.PUD062, err);
       else if (err.code === "P0118")
         throw new ErrorExt(ec.PUD118, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD043, err);
     });
@@ -113,7 +120,7 @@ export const createExpense = async (name: string, amount: number, categoryId: st
  */
 export const editExpense = async (expenseId: string, activeUserId: string, data: { name?: string, description?: string, amount?: number, categoryId?: string, payerId?: string }) => {
   const query = {
-    text: "SELECT * FROM edit_expense($1, $2, $3, $4, $5, $6, $7)",
+    text: "SELECT * FROM edit_expense($1, $2, $3, $4, $5, $6, $7);",
     values: [expenseId, data.name, data.description, data.amount, data.categoryId, data.payerId, activeUserId]
   };
   const expense: Expense[] = await pool.query(query)
@@ -143,12 +150,13 @@ export const editExpense = async (expenseId: string, activeUserId: string, data:
 /**
  * DB interface: Delete an expense
  * @param expenseId 
+ * @param activeUserId ID of signed-in user
  * @returns True if successful
  */
-export const deleteExpense = async (expenseId: string, userId: string) => {
+export const deleteExpense = async (expenseId: string, activeUserId: string) => {
   const query = {
     text: "SELECT * FROM delete_expense($1, $2);",
-    values: [expenseId, userId]
+    values: [expenseId, activeUserId]
   };
   const success = await pool.query(query)
     .then(() => {

@@ -80,6 +80,11 @@ export type Expense = {
     name: string,
     icon: CategoryIcon
   },
+  eventInfo: {
+    id: string,
+    name: string,
+    private: boolean
+  },
   payer: User
 };
 

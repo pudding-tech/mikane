@@ -1,7 +1,7 @@
 drop function if exists edit_event;
 create or replace function edit_event(
   ip_event_id uuid,
-  ip_user_id uuid,
+  ip_by_user_id uuid,
   ip_name varchar(255),
   ip_description varchar(400),
   ip_private boolean,
@@ -29,17 +29,17 @@ begin
 
   if not exists (
     select 1 from "event" e
-      left join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
+      left join user_event ue on e.id = ue.event_id and ue.user_id = ip_by_user_id
     where
       e.id = ip_event_id and
-      (e.private = false or (e.private = true and ue.user_id = ip_user_id))
+      (e.private = false or (e.private = true and ue.user_id = ip_by_user_id))
   ) then
     raise exception 'Cannot access private event' using errcode = 'P0138';
   end if;
 
   if not exists (select 1 from "event" e
                   inner join user_event ue on e.id = ue.event_id
-                  where e.id = ip_event_id and ue.user_id = ip_user_id and ue."admin" = true)
+                  where e.id = ip_event_id and ue.user_id = ip_by_user_id and ue."admin" = true)
   then
     raise exception 'Only event admins can edit event' using errcode = 'P0087';
   end if;
@@ -69,7 +69,7 @@ begin
     e.id = ip_event_id;
 
   return query
-  select * from get_events(ip_event_id, ip_user_id, false, false);
+  select * from get_events(ip_event_id, ip_by_user_id, false, false);
 
 end;
 $$

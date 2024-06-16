@@ -21,7 +21,12 @@ router.get("/expenses", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD013);
     }
 
-    const expenses: Expense[] = await db.getExpenses(eventId);
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const expenses: Expense[] = await db.getExpenses(eventId, activeUserId);
     res.status(200).send(expenses);
   }
   catch (err) {
@@ -39,7 +44,12 @@ router.get("/expenses/:id", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD056);
     }
 
-    const expense: Expense | null = await db.getExpense(expenseId);
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const expense: Expense | null = await db.getExpense(expenseId, activeUserId);
     if (!expense) {
       throw new ErrorExt(ec.PUD084);
     }
@@ -63,6 +73,11 @@ router.post("/expenses", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD057);
     }
 
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
     const name: string = req.body.name;
     const description: string | undefined = req.body.description;
     const categoryId = req.body.categoryId as string;
@@ -84,7 +99,7 @@ router.post("/expenses", authCheck, async (req, res, next) => {
       throw new ErrorExt(ec.PUD059);
     }
 
-    const expense: Expense = await db.createExpense(name, amount, categoryId, payerId, description);
+    const expense: Expense = await db.createExpense(activeUserId, name, amount, categoryId, payerId, description);
     res.status(200).send(expense);
   }
   catch (err) {
@@ -168,12 +183,12 @@ router.delete("/expenses/:id", authCheck, async (req, res, next) => {
     if (!isUUID(expenseId)) {
       throw new ErrorExt(ec.PUD056);
     }
-    const userId = req.session.userId;
-    if (!userId) {
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
       throw new ErrorExt(ec.PUD055);
     }
 
-    const success = await db.deleteExpense(expenseId, userId);
+    const success = await db.deleteExpense(expenseId, activeUserId);
     res.status(200).send({ success: success });
   }
   catch (err) {

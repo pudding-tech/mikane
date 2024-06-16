@@ -1,7 +1,7 @@
 drop function if exists get_events;
 create or replace function get_events(
   ip_event_id uuid,
-  ip_user_id uuid,
+  ip_by_user_id uuid,
   ip_active_only boolean,
   ip_is_api_key boolean
 )
@@ -21,7 +21,7 @@ returns table (
 $$
 begin
 
-  if (ip_user_id is null) then
+  if (ip_by_user_id is null) then
     begin
       return query
       select
@@ -51,7 +51,7 @@ begin
 
   else
     begin
-      if not exists (select 1 from "user" u where u.id = ip_user_id and u.deleted = false) then
+      if not exists (select 1 from "user" u where u.id = ip_by_user_id and u.deleted = false) then
         raise exception 'User not found' using errcode = 'P0008';
       end if;
 
@@ -62,10 +62,10 @@ begin
 
         if not exists (
           select 1 from "event" e
-            left join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
+            left join user_event ue on e.id = ue.event_id and ue.user_id = ip_by_user_id
           where
             e.id = ip_event_id and
-            (e.private = false or (e.private = true and ue.user_id = ip_user_id))
+            (e.private = false or (e.private = true and ue.user_id = ip_by_user_id))
         ) then
           raise exception 'Cannot access private event' using errcode = 'P0138';
         end if;
@@ -83,7 +83,7 @@ begin
             ue.event_id = e.id and
             ue.admin = true
         ) as admin_ids,
-        ip_user_id as user_id,
+        ip_by_user_id as user_id,
         case
           when exists (select 1 where ue.user_id is not null)
             then true
@@ -97,10 +97,10 @@ begin
       from
         "event" e
         inner join event_status_type est on e.status = est.id
-        left join user_event ue on e.id = ue.event_id and ue.user_id = ip_user_id
+        left join user_event ue on e.id = ue.event_id and ue.user_id = ip_by_user_id
       where
         e.id = coalesce(ip_event_id, e.id) and
-        (e.private = false or (e.private = true and ue.user_id = ip_user_id)) and
+        (e.private = false or (e.private = true and ue.user_id = ip_by_user_id)) and
         e.status = case when ip_active_only = true then 1 else e.status end
       order by
         e.created desc;

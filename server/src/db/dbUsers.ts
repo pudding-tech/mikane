@@ -1,7 +1,8 @@
 import { pool } from "../db";
+import { parseEvents } from "../parsers/parseEvents";
 import { parseExpenses } from "../parsers/parseExpenses";
 import { parseUser, parseUsers } from "../parsers/parseUsers";
-import { Expense, User } from "../types/types";
+import { Event, Expense, User } from "../types/types";
 import { ErrorExt } from "../types/errorExt";
 import * as ec from "../types/errorCodes";
 
@@ -14,7 +15,7 @@ import * as ec from "../types/errorCodes";
  */
 export const getUser = async (userId: string | null, avatarSize?: number, username?: string | null) => {
   const query = {
-    text: "SELECT * FROM get_user($1, $2, false)",
+    text: "SELECT * FROM get_user($1, $2, false);",
     values: [userId, username]
   };
   const user: User | null = await pool.query(query)
@@ -38,7 +39,7 @@ export const getUser = async (userId: string | null, avatarSize?: number, userna
  */
 export const getUserID = async (email: string) => {
   const query = {
-    text: "SELECT * FROM get_user_id($1)",
+    text: "SELECT * FROM get_user_id($1);",
     values: [email]
   };
   const userId: string | null = await pool.query(query)
@@ -61,7 +62,7 @@ export const getUserID = async (email: string) => {
 export const getUsers = async (activeUserId: string, filter?: { eventId?: string, excludeGuests?: boolean, excludeUserId?: string }) => {
   const withDeleted = filter?.eventId ? null : false;
   const query = {
-    text: "SELECT * FROM get_users($1, $2, $3, $4)",
+    text: "SELECT * FROM get_users($1, $2, $3, $4);",
     values: [filter?.eventId, filter?.excludeUserId, withDeleted, activeUserId]
   };
   const users: User[] = await pool.query(query)
@@ -79,15 +80,42 @@ export const getUsers = async (activeUserId: string, filter?: { eventId?: string
 };
 
 /**
+ * DB interface: Get list of a user's events
+ * @param userId ID of user to retrieve events for
+ * @param activeUserId ID of signed-in user
+ * @param filter Object containing filters (limit and offset - used for the number of events to retrieve)
+ * @returns List of events
+ */
+export const getUserEvents = async (userId: string, activeUserId: string, filter?: { limit?: number, offset?: number }) => {
+  const query = {
+    text: "SELECT * FROM get_events_for_user($1, $2) LIMIT $3 OFFSET $4;",
+    values: [userId, activeUserId, filter?.limit, filter?.offset]
+  };
+  const events: Event[] = await pool.query(query)
+    .then(data => {
+      return parseEvents(data.rows);
+    })
+    .catch(err => {
+      if (err.code === "P0008")
+        throw new ErrorExt(ec.PUD008, err);
+      else
+        throw new ErrorExt(ec.PUD139, err);
+    });
+
+  return events;
+};
+
+/**
  * DB interface: Get list of a user's expenses in an event
- * @param userId 
- * @param eventId 
+ * @param userId ID of user to retrieve expenses for
+ * @param activeUserId ID of signed-in user
+ * @param filter Object containing filters (event ID, limit and offset - the latter two used for the number of expenses to retrieve)
  * @returns List of expenses
  */
-export const getUserExpenses = async (userId: string, eventId: string) => {
+export const getUserExpenses = async (userId: string, activeUserId: string, filter?: { eventId?: string, limit?: number, offset?: number }) => {
   const query = {
-    text: "SELECT * FROM get_expenses($1, $2, null)",
-    values: [eventId, userId]
+    text: "SELECT * FROM get_expenses($1, $2, null, $3) LIMIT $4 OFFSET $5;",
+    values: [filter?.eventId, userId, activeUserId, filter?.limit, filter?.offset]
   };
   const expenses: Expense[] = await pool.query(query)
     .then(data => {
@@ -98,8 +126,8 @@ export const getUserExpenses = async (userId: string, eventId: string) => {
         throw new ErrorExt(ec.PUD006, err);
       else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
-      else if (err.code === "P0084")
-        throw new ErrorExt(ec.PUD084, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD032, err);
     });
@@ -119,7 +147,7 @@ export const getUserExpenses = async (userId: string, eventId: string) => {
  */
 export const createUser = async (username: string, firstName: string, lastName: string, email: string, phone: string, hash: string) => {
   const query = {
-    text: "SELECT * FROM new_user($1, $2, $3, $4, $5, $6)",
+    text: "SELECT * FROM new_user($1, $2, $3, $4, $5, $6);",
     values: [username, firstName, lastName, email, phone, hash]
   };
   const user: User = await pool.query(query)
@@ -152,7 +180,7 @@ export const createUser = async (username: string, firstName: string, lastName: 
  */
 export const convertGuestToUser = async (fromGuestId: string, username: string, firstName: string, lastName: string, email: string, phone: string, hash: string) => {
   const query = {
-    text: "SELECT * FROM convert_guest_to_user($1, $2, $3, $4, $5, $6, $7)",
+    text: "SELECT * FROM convert_guest_to_user($1, $2, $3, $4, $5, $6, $7);",
     values: [fromGuestId, username, firstName, lastName, email, phone, hash]
   };
   const user: User = await pool.query(query)
@@ -183,7 +211,7 @@ export const convertGuestToUser = async (fromGuestId: string, username: string, 
  */
 export const editUser = async (userId: string, data: { username?: string, firstName?: string, lastName?: string, email?: string, phone?: string }) => {
   const query = {
-    text: "SELECT * FROM edit_user($1, $2, $3, $4, $5, $6)",
+    text: "SELECT * FROM edit_user($1, $2, $3, $4, $5, $6);",
     values: [userId, data.username, data.firstName, data.lastName, data.email, data.phone]
   };
   const user: User = await pool.query(query)
@@ -214,7 +242,7 @@ export const editUser = async (userId: string, data: { username?: string, firstN
  */
 export const editUserPreferences = async (userId: string, data: { publicEmail?: boolean, publicPhone?: boolean }) => {
   const query = {
-    text: "SELECT * FROM edit_user_preferences($1, $2, $3)",
+    text: "SELECT * FROM edit_user_preferences($1, $2, $3);",
     values: [userId, data.publicEmail, data.publicPhone]
   };
   const user: User = await pool.query(query)
@@ -241,7 +269,7 @@ export const editUserPreferences = async (userId: string, data: { publicEmail?: 
  */
 export const deleteUser = async (userId: string, key: string) => {
   const query = {
-    text: "SELECT * FROM delete_user($1, $2)",
+    text: "SELECT * FROM delete_user($1, $2);",
     values: [userId, key]
   };
   const success = await pool.query(query)
@@ -270,7 +298,7 @@ export const deleteUser = async (userId: string, key: string) => {
  */
 export const changePassword = async (userId: string, hash: string) => {
   const query = {
-    text: "SELECT * FROM change_password($1, $2)",
+    text: "SELECT * FROM change_password($1, $2);",
     values: [userId, hash]
   };
   const success = await pool.query(query)
