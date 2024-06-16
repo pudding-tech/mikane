@@ -2,17 +2,61 @@
 	flex: 1 1 auto;
 }
 
-.user-row {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-.user-padding {
+.user-info-row {
 	display: flex;
 	height: 38px;
 	align-items: center;
 	color: rgba(255, 255, 255, 0.58);
+}
+
+.profile-info-icon {
+	margin-right: 10px;
+}
+
+.email-link {
+	color: inherit;
+	text-decoration: none;
+
+	&:hover {
+		color: rgba(255, 255, 255, 0.8);
+	}
+}
+
+.help-icon {
+	font-size: 20px;
+	width: 20px;
+	height: 20px;
+	margin-left: 8px;
+}
+
+.subtext {
+	color: rgba(255, 255, 255, 0.58);
+}
+
+.overflow {
+	white-space: normal;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
+
+.no-more-text {
+	position: absolute;
+	color: #c5c5c5;
+	opacity: 1;
+	user-select: none;
+	transition: opacity 1s ease-in;
+	font-weight: 500;
+	letter-spacing: 0.0892857143em;
+
+	&.no-more-expenses {
+		margin-top: 10px;
+	}
+
+	&.hide {
+		opacity: 0;
+	}
 }
 
 .profile-page {
@@ -22,29 +66,217 @@
 
 	.profile-content {
 		margin: 1em 2em;
-		width: 40em;
-		min-width: 30em;
+		min-width: 74em;
+		max-width: 80em;
 		margin-top: 2em;
 		margin-bottom: 2em;
-	}
 
-	.icon {
-		margin-right: 10px;
+		.profile {
+			display: flex;
+
+			.left {
+				max-width: 50%;
+				padding-right: 30px;
+				padding-top: 10px;
+				border-right: medium solid rgba(255, 255, 255, 0.1);
+
+				.avatar {
+					position: relative;
+					width: 280px;
+					height: 280px;
+					margin-bottom: 20px;
+					border-radius: 50%;
+					object-fit: cover;
+				}
+
+				.copy-button {
+					position: absolute;
+					margin-top: 244px;
+					margin-left: 244px;
+					color: rgba(255, 255, 255, 0.58);
+				}
+
+				#name {
+					font-size: 28px;
+					font-weight: 500;
+					line-height: 1;
+					margin-bottom: 8px;
+				}
+
+				#username {
+					font-size: 20px;
+					color: rgba(255, 255, 255, 0.58);
+				}
+
+				.user-info {
+					margin-top: 20px;
+				}
+			}
+
+			.right {
+				width: 100%;
+				margin-left: 30px;
+			}
+		}
 	}
 
 	.mat-mdc-card-content {
-		padding: 0 55px 16px !important;
-	}
-
-	.mat-mdc-card-header {
-		padding: 16px 16px 0;
+		padding: 50px 55px !important;
 	}
 }
 
-.mobile-view {
-	margin-top: 30px;
-	margin-left: 6vw;
-	margin-right: 6vw;
+.profile-events {
+	padding: 10px 0;
+	width: 100%;
+
+	.event {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 10px;
+		padding: 10px;
+		background-color: #3f3f3f;
+		border: 3px solid rgba(181, 181, 181, 0.1);
+		border-radius: 8px;
+		height: 40px;
+		transition: background-color 0.08s ease-in;
+
+		&.isMobile {
+			background-color: #292929;
+		}
+
+		&:hover {
+			cursor: pointer;
+			background-color: #494949;
+		}
+
+		.event-left {
+			display: flex;
+			align-items: center;
+
+			.event-icon {
+				margin-right: 10px;
+				color: #777777;
+			}
+
+			.name {
+				font-size: 15px;
+			}
+
+			.admin {
+				margin-left: 10px;
+			}
+		}
+
+		.event-right {
+			display: flex;
+			align-items: center;
+
+			.right-side-icon {
+				color: #adadad;
+				margin-left: 6px;
+			}
+		}
+	}
+
+	.show-more-button {
+		color: #c5c5c5;
+	}
+}
+
+.profile-expenses {
+	margin-top: 20px;
+	margin-bottom: 10px;
+	padding: 10px 0;
+	width: 100%;
+
+	.title {
+		margin-bottom: 10px;
+	}
+
+	.expense {
+		display: flex;
+		justify-content: space-between;
+		padding: 12px 10px;
+
+		&:hover {
+			.expense-left .circle-container .circle .expense-icon {
+				color: #bdbdbd;
+			}
+		}
+
+		.expense-left {
+			display: flex;
+			align-items: center;
+		
+			.circle-container {
+				position: relative;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-right: 10px;
+
+				&::before,
+				&::after {
+					content: '';
+					position: absolute;
+					width: 2px;
+					height: 56px;
+					background-color: rgb(85, 85, 85);
+					z-index: 0;
+				}
+
+				&::before {
+					top: 0;
+				}
+
+				&::after {
+					bottom: 0;
+				}
+
+				.circle {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+
+					width: 40px;
+					height: 40px;
+					background-color: rgb(85, 85, 85);
+					border-radius: 50%;
+
+					.expense-icon {
+						color: #8a8b8c;
+						z-index: 1;
+						transition: color 0.08s ease-in;
+					}
+				}
+			}
+
+			.amount {
+				padding: 2px 6px;
+				color: rgb(255, 133, 182);
+				background-color: rgba(255, 133, 182, 0.088);
+				border-radius: 6px;
+			}
+		}
+
+		.expense-right {
+			color: #adadad;
+		}
+	}
+
+	.no-payments {
+		color: rgba(255, 255, 255, 0.58);
+	}
+
+	.show-more-button {
+		margin-top: 20px;
+		color: #c5c5c5;
+	}
+}
+
+.profile-mobile {
+	margin: 30px 6vw 40px;
 
 	.header {
 		display: flex;
@@ -62,7 +294,8 @@
 		#name {
 			font-size: 24px;
 			font-weight: 500;
-			margin-bottom: 6px;
+			line-height: 1;
+			margin-bottom: 3px;
 		}
 
 		#username {
@@ -73,9 +306,13 @@
 
 	.details {
 		margin-top: 20px;
+		margin-bottom: 20px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 
-		.icon {
-			margin-right: 10px;
+		.copy-button {
+			color: rgba(255, 255, 255, 0.58);
 		}
 	}
 }

@@ -10,11 +10,16 @@ export interface Expense {
 	name: string;
 	description: string;
 	amount: number;
-	created: number;
+	created: Date | number;
 	categoryInfo: {
 		id: string;
 		name: string;
 		icon: string;
+	};
+	eventInfo: {
+		id: string;
+		name: string;
+		private: boolean;
 	};
 	payer: User;
 }

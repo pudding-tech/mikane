@@ -1,7 +1,7 @@
 @if ((breakpointService.isMobile() | async) === false && event?.status.id === EventStatusType.ACTIVE) {
 	<div class="add-button">
 		<button mat-raised-button color="primary" (click)="openDialog()">
-			<mat-icon>add_shopping_cart</mat-icon>
+			<mat-icon>add_card</mat-icon>
 			Add expense
 		</button>
 	</div>
@@ -78,7 +78,7 @@
 									</div>
 								</td>
 							</ng-container>
-							<!-- Expense Category -->
+							<!-- Expense Category Column -->
 							<ng-container matColumnDef="categoryName">
 								<th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
 								<td mat-cell *matCellDef="let expense">
@@ -99,7 +99,7 @@
 									{{ expense.description }}
 								</td>
 							</ng-container>
-							<!-- Edit Column -->
+							<!-- Edit and Delete Column -->
 							<ng-container matColumnDef="edit">
 								<th mat-header-cell *matHeaderCellDef></th>
 								<td mat-cell *matCellDef="let expense">
@@ -107,14 +107,6 @@
 										<button mat-icon-button type="button" (click)="editExpense(expense.id)">
 											<mat-icon>edit</mat-icon>
 										</button>
-									}
-								</td>
-							</ng-container>
-							<!-- Delete Column -->
-							<ng-container matColumnDef="delete">
-								<th mat-header-cell *matHeaderCellDef></th>
-								<td mat-cell *matCellDef="let expense">
-									@if (expense.payer.id === currentUserId || event?.userInfo?.isAdmin) {
 										<button mat-icon-button type="button" (click)="removeExpense(expense.id)">
 											<mat-icon>delete</mat-icon>
 										</button>
@@ -207,7 +199,7 @@
 					(click)="openDialog()"
 					[ngClass]="{ iOS: contextService.isIos, hidden: scrollService.isScrolledToBottom() | async }"
 				>
-					<mat-icon>add_shopping_cart</mat-icon>
+					<mat-icon>add_card</mat-icon>
 				</button>
 			}
 		}

@@ -5,6 +5,7 @@ import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { Expense } from '../expense/expense.service';
 import { User, UserBalance, UserService } from './user.service';
+import { PuddingEvent } from '../event/event.service';
 
 describe('UserService', () => {
 	let service: UserService;
@@ -161,6 +162,23 @@ describe('UserService', () => {
 		});
 	});
 
+	describe('loadUserEvents', () => {
+		it('should return an array of events', () => {
+			const mockEvents: PuddingEvent[] = [
+				{ id: '1', name: 'Event 1' },
+				{ id: '2', name: 'Event 2' },
+			] as PuddingEvent[];
+			const userId = '1';
+			service.loadUserEvents(userId).subscribe((events) => {
+				expect(events).toEqual(mockEvents);
+			});
+			const req = httpMock.expectOne(apiUrl + `users/${userId}/events`);
+
+			expect(req.request.method).toBe('GET');
+			req.flush(mockEvents);
+		});
+	});
+
 	describe('loadUserExpenses', () => {
 		it('should return an array of expenses', () => {
 			const mockExpenses: Expense[] = [
@@ -172,7 +190,7 @@ describe('UserService', () => {
 			service.loadUserExpenses(userId, eventId).subscribe((expenses) => {
 				expect(expenses).toEqual(mockExpenses);
 			});
-			const req = httpMock.expectOne(apiUrl + `users/${userId}/expenses/${eventId}`);
+			const req = httpMock.expectOne(apiUrl + `users/${userId}/expenses?eventId=${eventId}`);
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockExpenses);
