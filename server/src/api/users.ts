@@ -13,7 +13,7 @@ import { isValidUsername } from "../utils/validators/usernameValidator";
 import { removeUserInfo } from "../parsers/parseUserInfo";
 import { sendRegisterAccountEmail } from "../email-services/registerAccount";
 import { sendDeleteAccountEmail } from "../email-services/deleteAccount";
-import { Expense, User } from "../types/types";
+import { Event, Expense, User } from "../types/types";
 import { ErrorExt } from "../types/errorExt";
 const router = express.Router();
 
@@ -31,7 +31,7 @@ router.get("/users", authCheck, async (req, res, next) => {
       excludeGuests: req.query.excludeGuests === "true"
     };
 
-    if (filter.eventId && !isUUID(filter.eventId)) {
+    if (filter.eventId !== undefined && !isUUID(filter.eventId)) {
       throw new ErrorExt(ec.PUD013);
     }
 
@@ -120,17 +120,59 @@ router.get("/users/username/:usernameOrUserId", authCheck, async (req, res, next
 });
 
 /*
-* Get a list of a user's expenses
+* Get a list of a user's events
 */
-router.get("/users/:id/expenses/:eventId", authCheck, async (req, res, next) => {
+router.get("/users/:id/events", authCheck, async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const eventId = req.params.eventId;
-    if (!isUUID(userId) || !isUUID(eventId)) {
-      throw new ErrorExt(ec.PUD015);
+    if (!isUUID(userId)) {
+      throw new ErrorExt(ec.PUD016);
     }
 
-    const expenses: Expense[] = await db.getUserExpenses(userId, eventId);
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const filter: { limit?: number, offset?: number } = {
+      limit: req.query.limit ? Number(req.query.limit) : undefined,
+      offset: req.query.offset ? Number(req.query.offset) : undefined
+    };
+
+    const events: Event[] = await db.getUserEvents(userId, activeUserId, filter);
+    res.status(200).send(events);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
+/*
+* Get a list of a user's expenses, optionally in an event
+*/
+router.get("/users/:id/expenses", authCheck, async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    if (!isUUID(userId)) {
+      throw new ErrorExt(ec.PUD016);
+    }
+
+    const activeUserId = req.session.userId;
+    if (!activeUserId) {
+      throw new ErrorExt(ec.PUD055);
+    }
+
+    const filter: { eventId?: string, limit?: number, offset?: number } = {
+      eventId: req.query.eventId as string,
+      limit: req.query.limit ? Number(req.query.limit) : undefined,
+      offset: req.query.offset ? Number(req.query.offset) : undefined
+    };
+
+    if (filter.eventId !== undefined && !isUUID(filter.eventId)) {
+      throw new ErrorExt(ec.PUD013);
+    }
+
+    const expenses: Expense[] = await db.getUserExpenses(userId, activeUserId, filter);
     res.status(200).send(expenses);
   }
   catch (err) {

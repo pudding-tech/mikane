@@ -98,7 +98,7 @@ export const validateEventName = async (name: string, eventId?: string) => {
  * DB interface: Check if a category name is available within an event
  * @param name
  * @param eventId
- * @param userId Provide category ID if checking against a specific category
+ * @param categoryId Provide category ID if checking against a specific category
  * @returns True if category name is available
  */
 export const validateCategoryName = async (name: string, eventId: string, categoryId?: string) => {

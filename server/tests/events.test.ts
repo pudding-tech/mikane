@@ -357,6 +357,39 @@ describe("events", async () => {
     });
   });
 
+  /* ----------------------- */
+  /* GET /users/:id/events */
+  /* ----------------------- */
+  describe("GET /users/:id/events", async () => {
+    test("should get list of user1's events", async () => {
+      const res = await request(app)
+        .get(`/api/users/${user.id}/events`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.length).toEqual(2);
+      expect(res.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: event.id
+          }),
+          expect.objectContaining({
+            id: event2.id
+          })
+        ])
+      );
+    });
+
+    test("should get list of user2's events", async () => {
+      const res = await request(app)
+        .get(`/api/users/${user2.id}/events`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(200);
+      expect(res.body.length).toEqual(0);
+    });
+  });
+
   /* ----------------------------- */
   /* POST /events/:id/user/:userId */
   /* ----------------------------- */

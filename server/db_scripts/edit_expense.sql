@@ -23,7 +23,10 @@ returns table (
   payer_username varchar(255),
   payer_email varchar(255),
   payer_guest boolean,
-  payer_deleted boolean
+  payer_deleted boolean,
+  event_id uuid,
+  event_name varchar(255),
+  event_private boolean
 ) as
 $$
 begin
@@ -83,7 +86,7 @@ begin
     e.id = ip_expense_id;
   
   return query
-  select * from get_expenses(null, null, ip_expense_id);
+  select * from get_expenses(null, null, ip_expense_id, ip_by_user_id);
 
 end;
 $$

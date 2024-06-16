@@ -10,7 +10,7 @@ import * as ec from "../types/errorCodes";
  */
 export const getGuestUsers = async () => {
   const query = {
-    text: "SELECT * FROM get_users(null, null, false, null)"
+    text: "SELECT * FROM get_users(null, null, false, null);"
   };
   const users: Guest[] = await pool.query(query)
     .then(data => {
@@ -31,13 +31,13 @@ export const getGuestUsers = async () => {
  * @param id 
  * @param firstName 
  * @param lastName 
- * @param byUserId ID of user performing action
+ * @param activeUserId ID of signed-in user
  * @returns Newly created guest user
  */
-export const createGuestUser = async (id: string, firstName: string, lastName: string, byUserId: string) => {
+export const createGuestUser = async (id: string, firstName: string, lastName: string, activeUserId: string) => {
   const query = {
-    text: "SELECT * FROM new_guest_user($1, $2, $3, $4)",
-    values: [id, firstName, lastName, byUserId]
+    text: "SELECT * FROM new_guest_user($1, $2, $3, $4);",
+    values: [id, firstName, lastName, activeUserId]
   };
   const guestUser: Guest = await pool.query(query)
     .then(data => {
@@ -57,13 +57,13 @@ export const createGuestUser = async (id: string, firstName: string, lastName: s
  * DB interface: Edit a guest user
  * @param guestId Guest ID to edit
  * @param data Data object
- * @param byUserId ID of user performing the action
+ * @param activeUserId ID of signed-in user
  * @returns Edited user
  */
-export const editGuestUser = async (guestId: string, data: { firstName?: string, lastName?: string }, byUserId: string) => {
+export const editGuestUser = async (guestId: string, data: { firstName?: string, lastName?: string }, activeUserId: string) => {
   const query = {
-    text: "SELECT * FROM edit_guest_user($1, $2, $3, $4)",
-    values: [guestId, data.firstName, data.lastName, byUserId]
+    text: "SELECT * FROM edit_guest_user($1, $2, $3, $4);",
+    values: [guestId, data.firstName, data.lastName, activeUserId]
   };
   const guestUser: Guest = await pool.query(query)
     .then(data => {
@@ -84,13 +84,13 @@ export const editGuestUser = async (guestId: string, data: { firstName?: string,
 /**
  * DB interface: Delete a guest user
  * @param guestId 
- * @param byUserId ID of user performing the action
+ * @param activeUserId ID of signed-in user
  * @returns True if successful
  */
-export const deleteGuestUser = async (guestId: string, byUserId: string) => {
+export const deleteGuestUser = async (guestId: string, activeUserId: string) => {
   const query = {
-    text: "SELECT * FROM delete_guest_user($1, $2)",
-    values: [guestId, byUserId]
+    text: "SELECT * FROM delete_guest_user($1, $2);",
+    values: [guestId, activeUserId]
   };
   const success = await pool.query(query)
     .then(() => {
