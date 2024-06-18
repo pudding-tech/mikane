@@ -47,16 +47,16 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 export class EventsComponent implements OnInit, OnDestroy {
 	events = signal<PuddingEvent[]>([]);
 	eventsActive = computed(() => {
-		return this.events().filter((event) => event.status.id !== EventStatusType.ARCHIVED);
+		return this.events().filter((event) => event.status.id !== EventStatusType.SETTLED);
 	});
-	eventsArchived = computed(() => {
-		return this.events().filter((event) => event.status.id === EventStatusType.ARCHIVED);
+	eventsSettled = computed(() => {
+		return this.events().filter((event) => event.status.id === EventStatusType.SETTLED);
 	});
 	pagedEventsActive = computed(() => {
 		return this.eventsActive().slice(this.startIndexActive(), this.endIndexActive());
 	});
-	pagedEventsArchived = computed(() => {
-		return this.eventsArchived().slice(this.startIndexArchived(), this.endIndexArchived());
+	pagedEventsSettled = computed(() => {
+		return this.eventsSettled().slice(this.startIndexSettled(), this.endIndexSettled());
 	});
 
 	selectedEvent!: PuddingEvent;
@@ -68,15 +68,15 @@ export class EventsComponent implements OnInit, OnDestroy {
 	lengthActive = computed(() => {
 		return this.eventsActive().length;
 	});
-	lengthArchived = computed(() => {
-		return this.eventsArchived().length;
+	lengthSettled = computed(() => {
+		return this.eventsSettled().length;
 	});
 	pageSizeActive = signal(10);
-	pageSizeArchived = signal(10);
+	pageSizeSettled = signal(10);
 	startIndexActive = signal(0);
-	startIndexArchived = signal(0);
+	startIndexSettled = signal(0);
 	endIndexActive = signal(this.pageSizeActive());
-	endIndexArchived = signal(this.pageSizeArchived());
+	endIndexSettled = signal(this.pageSizeSettled());
 	pageSizeOptions: number[] = [5, 10, 20];
 
 	constructor(
@@ -174,7 +174,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	onPageChange(pageEvent: PageEvent, type: 'active' | 'archived') {
+	onPageChange(pageEvent: PageEvent, type: 'active' | 'settled') {
 		const startIndex = pageEvent.pageIndex * pageEvent.pageSize;
 		let endIndex = startIndex + pageEvent.pageSize;
 		if (type === 'active') {
@@ -184,13 +184,13 @@ export class EventsComponent implements OnInit, OnDestroy {
 			this.startIndexActive.set(startIndex);
 			this.endIndexActive.set(endIndex);
 			this.pageSizeActive.set(pageEvent.pageSize);
-		} else if (type === 'archived') {
-			if (endIndex > this.lengthArchived()) {
-				endIndex = this.lengthArchived();
+		} else if (type === 'settled') {
+			if (endIndex > this.lengthSettled()) {
+				endIndex = this.lengthSettled();
 			}
-			this.startIndexArchived.set(startIndex);
-			this.endIndexArchived.set(endIndex);
-			this.pageSizeArchived.set(pageEvent.pageSize);
+			this.startIndexSettled.set(startIndex);
+			this.endIndexSettled.set(endIndex);
+			this.pageSizeSettled.set(pageEvent.pageSize);
 		}
 	}
 

@@ -128,8 +128,8 @@ describe('CategoryComponent', () => {
 			$event: of({
 				id: '1',
 				status: {
-					id: EventStatusType.ARCHIVED,
-					name: 'Archived',
+					id: EventStatusType.SETTLED,
+					name: 'Settled',
 				},
 			} as PuddingEvent),
 		});

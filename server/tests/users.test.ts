@@ -527,7 +527,7 @@ describe("users", async () => {
     let event1: Event;
     let event2: Event;
 
-    test("create 2 events, add users to both, create category/expense, then archive one event", async () => {
+    test("create 2 events, add users to both, create category/expense, then settle one event", async () => {
       event1 = (await request(app)
         .post("/api/events")
         .set("Cookie", authToken)
@@ -608,7 +608,7 @@ describe("users", async () => {
         .put("/api/events/" + event1.id)
         .set("Cookie", authToken)
         .send({
-          status: EventStatusType.ARCHIVED
+          status: EventStatusType.SETTLED
         });
 
       const finalEvent1: Event = (await request(app)
@@ -618,7 +618,7 @@ describe("users", async () => {
         .get("/api/events/" + event2.id)
         .set("Cookie", authToken2)).body;
 
-      expect(finalEvent1.status.id).toEqual(EventStatusType.ARCHIVED);
+      expect(finalEvent1.status.id).toEqual(EventStatusType.SETTLED);
       expect(finalEvent1.userInfo?.inEvent).toEqual(true);
 
       expect(finalEvent2.status.id).toEqual(EventStatusType.ACTIVE);
@@ -689,7 +689,7 @@ describe("users", async () => {
       expect(res.body).not.toContainEqual(expect.objectContaining({ id: user2.id }));
     });
 
-    test("confirm user2 (as deleted user) is still in archived event", async () => {
+    test("confirm user2 (as deleted user) is still in settled event", async () => {
       const res = await request(app)
         .get("/api/users")
         .set("Cookie", authToken)

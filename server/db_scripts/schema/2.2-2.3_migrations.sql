@@ -4,3 +4,5 @@ create table user_preferences (
   public_phone boolean not null,
   primary key (user_id)
 );
+
+update event_status_type set name = 'Settled' where id = 3;

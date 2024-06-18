@@ -150,7 +150,17 @@
 											>
 												Add expense
 											</button>
-											@if (userWithBalance.expensesCount === 0) {
+											@if (usersWithBalance.length === 1) {
+												<span matTooltip="Cannot remove the sole participant from an event" style="padding: 8px 0">
+													<button mat-raised-button disabled>Remove User</button>
+												</span>
+											}
+											@else if (userWithBalance.expensesCount > 0) {
+												<span matTooltip="Cannot remove a user with expenses" style="padding: 8px 0">
+													<button mat-raised-button disabled>Remove User</button>
+												</span>
+											}
+											@else {
 												<button
 													mat-raised-button
 													type="button"
@@ -159,10 +169,6 @@
 												>
 													Remove User
 												</button>
-											} @else {
-												<span matTooltip="Cannot remove a user with expenses" style="padding: 8px 0">
-													<button mat-raised-button disabled>Remove User</button>
-												</span>
 											}
 										</div>
 									}

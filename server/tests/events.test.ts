@@ -308,19 +308,19 @@ describe("events", async () => {
       expect(res.body.code).toEqual(ec.PUD118.code);
     });
 
-    test("should set event as archived", async () => {
+    test("should set event as settled", async () => {
       const res = await request(app)
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          status: EventStatusType.ARCHIVED
+          status: EventStatusType.SETTLED
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.status.id).toEqual(EventStatusType.ARCHIVED);
+      expect(res.body.status.id).toEqual(EventStatusType.SETTLED);
     });
 
-    test("fail editing archived event", async () => {
+    test("fail editing settled event", async () => {
       const res = await request(app)
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
@@ -474,20 +474,20 @@ describe("events", async () => {
       expect(res.body.adminIds[0]).toEqual(user.id);
     });
 
-    test("should set event as archived", async () => {
+    test("should set event as settled", async () => {
       const res = await request(app)
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          status: EventStatusType.ARCHIVED
+          status: EventStatusType.SETTLED
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.status.id).toEqual(EventStatusType.ARCHIVED);
+      expect(res.body.status.id).toEqual(EventStatusType.SETTLED);
     });
 
     // Add user2 as admin of event
-    test("should add user2 as event admin, even if archived", async () => {
+    test("should add user2 as event admin, even if settled", async () => {
       const res = await request(app)
         .post(`/api/events/${event.id}/admin/${user2.id}`)
         .set("Cookie", authToken);
@@ -660,19 +660,19 @@ describe("events", async () => {
       expect(res.body.length).toEqual(2);
     });
 
-    test("should set event as archived", async () => {
+    test("should set event as settled", async () => {
       const res = await request(app)
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          status: EventStatusType.ARCHIVED
+          status: EventStatusType.SETTLED
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.status.id).toEqual(EventStatusType.ARCHIVED);
+      expect(res.body.status.id).toEqual(EventStatusType.SETTLED);
     });
 
-    test("fail removal of user2 in archived event", async () => {
+    test("fail removal of user2 in settled event", async () => {
       const res = await request(app)
         .delete(`/api/events/${event.id}/user/${user2.id}`)
         .set("Cookie", authToken);
@@ -764,19 +764,19 @@ describe("events", async () => {
       expect(res.body.code).toEqual(ec.PUD085.code);
     });
 
-    test("should set event as archived", async () => {
+    test("should set event as settled", async () => {
       const res = await request(app)
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
-          status: EventStatusType.ARCHIVED
+          status: EventStatusType.SETTLED
         });
 
       expect(res.status).toEqual(200);
-      expect(res.body.status.id).toEqual(EventStatusType.ARCHIVED);
+      expect(res.body.status.id).toEqual(EventStatusType.SETTLED);
     });
 
-    test("fail delete archived event", async () => {
+    test("fail delete settled event", async () => {
       const res = await request(app)
         .delete("/api/events/" + event.id)
         .set("Cookie", authToken);
