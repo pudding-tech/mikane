@@ -15,7 +15,7 @@
 					<div class="left">
 						<div>
 							<button mat-icon-button (click)="copyProfileLink()" matTooltip="Copy permanent link to profile" class="copy-button">
-								<mat-icon>content_copy</mat-icon>
+								<mat-icon>share</mat-icon>
 							</button>
 							@if (user?.avatarURL) {
 								<img [src]="user?.avatarURL" alt="User avatar" class="avatar" />
@@ -98,7 +98,7 @@
 					</span>
 				</div>
 				<button mat-icon-button (click)="copyProfileLink()" matTooltip="Copy permanent link to profile" class="copy-button">
-					<mat-icon>content_copy</mat-icon>
+					<mat-icon>share</mat-icon>
 				</button>
 			</div>
 			<ng-container *ngTemplateOutlet="userEvents"></ng-container>
@@ -127,19 +127,24 @@
 					</div>
 				</div>
 				<div class="event-right">
-					@if (event.status.id === EventStatusType.READY_TO_SETTLE) {
+					@if (event.userInfo.inEvent) {
+						<mat-icon [matTooltip]="event.private ? 'You are also in this private event' : 'You are also in this event'" [matTooltipShowDelay]="100" class="right-side-icon">
+							{{ event.private ? 'passkey' : 'how_to_reg' }}
+						</mat-icon>
+					}
+					@if (event.status.id === EventStatusType.ACTIVE) {
+						<mat-icon matTooltip="This event is active" [matTooltipShowDelay]="100" class="right-side-icon">
+							circle
+						</mat-icon>
+					}
+					@else if (event.status.id === EventStatusType.READY_TO_SETTLE) {
 						<mat-icon matTooltip="This event is ready to be settled" [matTooltipShowDelay]="100" class="right-side-icon">
 							pending
 						</mat-icon>
 					}
-					@else if (event.status.id === EventStatusType.ARCHIVED) {
-						<mat-icon matTooltip="This event is archived" [matTooltipShowDelay]="100" class="right-side-icon">
+					@else if (event.status.id === EventStatusType.SETTLED) {
+						<mat-icon matTooltip="This event is settled" [matTooltipShowDelay]="100" class="right-side-icon">
 							check_circle
-						</mat-icon>
-					}
-					@if (event.userInfo.inEvent) {
-						<mat-icon [matTooltip]="event.private ? 'You are also in this private event' : 'You are also in this event'" [matTooltipShowDelay]="100" class="right-side-icon">
-							{{ event.private ? 'passkey' : 'how_to_reg' }}
 						</mat-icon>
 					}
 				</div>
@@ -180,7 +185,7 @@
 							</span>
 						</div>
 						<div class="subtext overflow">
-							{{ expense.eventInfo.name + ' - ' + (expense.created | date:'mediumDate') }}
+							{{ expense.eventInfo.name + ' - ' + (expense.created | date: 'mediumDate') }}
 						</div>
 					</div>
 				</div>
@@ -191,7 +196,7 @@
 		}
 		@empty {
 			<div class="no-payments">
-				This user has no expenses.
+				{{ user.name }} has no expenses.
 			</div>
 		}
 		@if (expenses.length >= 5 && showMoreExpenses) {

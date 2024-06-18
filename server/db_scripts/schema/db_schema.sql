@@ -112,6 +112,6 @@ create table user_preferences (
 );
 
 insert into event_status_type (id, name)
-  values (1, 'Active'), (2, 'Ready to settle'), (3, 'Archived');
+  values (1, 'Active'), (2, 'Ready to settle'), (3, 'Settled');
 
 create extension if not exists pgcrypto;

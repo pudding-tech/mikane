@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Subscription, combineLatest, filter, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -49,6 +50,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 	private eventSubscription: Subscription;
 
 	constructor(
+		private router: Router,
 		private userService: UserService,
 		private authService: AuthService,
 		public breakpointService: BreakpointService,
@@ -77,6 +79,12 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 					console.error('Something went wrong while loading event settings data', err?.error?.message);
 				},
 			});
+	}
+
+	gotoUserProfile(user: User) {
+		if (!user.guest) {
+			this.router.navigate(['u', user.username]);
+		}
 	}
 
 	ngOnDestroy(): void {

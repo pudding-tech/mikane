@@ -15,7 +15,7 @@
 							<ng-container *ngTemplateOutlet="editContent"></ng-container>
 						</div>
 						<div class="header">Change status</div>
-						<div class="event-settings-content archive">
+						<div class="event-settings-content settle">
 							<ng-container *ngTemplateOutlet="statusContent"></ng-container>
 						</div>
 						<div class="header">Manage admins</div>
@@ -33,7 +33,7 @@
 			<div class="header-mobile">Edit event</div>
 			<ng-container *ngTemplateOutlet="editContent"></ng-container>
 			<div class="header-mobile">Change status</div>
-			<div class="event-settings-content archive">
+			<div class="event-settings-content settle">
 				<ng-container *ngTemplateOutlet="statusContent"></ng-container>
 			</div>
 			<div class="header-mobile admins">Manage admins</div>
@@ -111,8 +111,7 @@
 	@if (event?.status.id === EventStatusType.ACTIVE) {
 		<div>
 			<div class="event-settings-text">
-				This event is currently <b>active</b>. By setting the event as 'ready to settle' any further editing by any participants
-				will not be possible, and participants will be urged to settle their payments.
+				This event is currently <b>active</b>. Setting it as 'ready to settle' will prevent further edits and prompt participants to settle their payments.
 			</div>
 			<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.READY_TO_SETTLE)">
 				Set event as ready to settle
@@ -122,26 +121,20 @@
 		@if (event?.status.id === EventStatusType.READY_TO_SETTLE) {
 			<div>
 				<div class="event-settings-text">
-					This event is currently <b>ready to settle</b>. When all participants have settled their payments the event should be
-					archived. Should any changes be neccessary, set the event as active again.
+					This event is currently <b>ready to settle</b>. Once all participants have settled their payments, the event should be
+					set as settled. Should any changes be neccessary, set the event as active again.
 				</div>
-				<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.ARCHIVED)" class="status-button">
-					Archive event
+				<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.SETTLED)" class="status-button">
+					Set event as settled
 				</button>
-				<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)">Set event as active</button>
+				<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)" class="status-button">Set event as active</button>
 			</div>
 		} @else {
 			<div class="event-settings-text">
-				This event is currently <b>archived</b>. By setting this event as active participants can start editing the event again.
+				This event is currently <b>settled</b>. Set it to active to allow participants to edit it again.
 			</div>
 			<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)">Set event as active</button>
 		}
-		<ng-template #archived>
-			<div class="event-settings-text">
-				This event is currently <b>archived</b>. By setting this event as active participants can start editing the event again.
-			</div>
-			<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)">Set event as active</button>
-		</ng-template>
 	}
 </ng-template>
 
@@ -152,7 +145,13 @@
 				<mat-list-item class="list-item">
 					<div class="admin">
 						<div class="name">
-							<img [src]="admin.avatarURL" alt="User avatar" class="avatar" />
+							<img
+								[src]="admin.avatarURL"
+								alt="User avatar"
+								class="avatar"
+								[ngClass]="{ clickable: !admin.guest }"
+								(click)="gotoUserProfile(admin)"
+							/>
 							{{ admin.name }}
 						</div>
 						<button mat-icon-button (click)="removeAdmin(admin.id)" [disabled]="adminsInEvent.length < 2">
@@ -198,6 +197,6 @@
 		irreversible.
 	</div>
 	<button mat-raised-button color="warn" (click)="deleteEvent()" [disabled]="event.status.id !== EventStatusType.ACTIVE">
-		{{ event.status.id === EventStatusType.ACTIVE ? "Delete event" : "Archived events cannot be deleted" }}
+		{{ event.status.id === EventStatusType.ACTIVE ? "Delete event" : "Only active events can be deleted" }}
 	</button>
 </ng-template>

@@ -22,8 +22,8 @@
 	padding-left: 16px;
 	padding-right: 16px;
 
-	&.archive {
-		margin-bottom: 40px;
+	&.settle {
+		margin-bottom: 30px;
 	}
 
 	&.admins {
@@ -130,6 +130,15 @@
 		margin-right: 16px;
 		border-radius: 50%;
 		object-fit: cover;
+
+		&.clickable {
+			transition: filter 0.2s;
+			cursor: pointer;
+
+			&:hover {
+				filter: brightness(1.2);
+			}
+		}
 	}
 }
 
@@ -144,6 +153,7 @@
 
 .status-button {
 	margin-right: 20px;
+	margin-bottom: 10px;
 }
 
 .list-item {

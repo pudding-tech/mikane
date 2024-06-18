@@ -124,10 +124,10 @@ export class UserService {
 		const url = `${this.apiUrl}/${userId}/events`;
 		let params = new HttpParams();
 
-		if (limit) {
+		if (limit !== undefined) {
 			params = params.set('limit', limit.toString());
 		}
-		if (offset) {
+		if (offset !== undefined) {
 			params = params.set('offset', offset.toString());
 		}
 

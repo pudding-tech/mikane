@@ -10,7 +10,7 @@ mat-toolbar button {
 	margin-left: 1em;
 }
 
-.archived-events {
+.settled-events {
 	margin-top: 30px;
 }
 
@@ -49,7 +49,7 @@ mat-toolbar button {
 	margin-bottom: 0.4em;
 
 	.clickable {
-		transition: all 0.08s ease-in;
+		transition: background-color 0.08s ease-in;
 		cursor: pointer;
 	}
 

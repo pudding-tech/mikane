@@ -129,8 +129,8 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				else if (status === EventStatusType.READY_TO_SETTLE) {
 					this.messageService.showSuccess('Event successfully ready to be settled');
 				}
-				else if (status === EventStatusType.ARCHIVED) {
-					this.messageService.showSuccess('Event successfully archived');
+				else if (status === EventStatusType.SETTLED) {
+					this.messageService.showSuccess('Event successfully settled');
 				}
 
 				// Reload to refresh event
@@ -249,6 +249,12 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 					console.error('Something went wrong while removing admin from event', err?.error?.message);
 				},
 			});
+		}
+	}
+
+	gotoUserProfile(user: User) {
+		if (!user.guest) {
+			this.router.navigate(['u', user.username]);
 		}
 	}
 
