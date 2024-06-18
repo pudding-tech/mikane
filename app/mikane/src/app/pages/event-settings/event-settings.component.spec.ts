@@ -268,7 +268,7 @@ describe('EventSettingsComponent', () => {
 			]);
 		}));
 
-		it('should archive event', fakeAsync(() => {
+		it('should settle event', fakeAsync(() => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
 				status: {
@@ -286,12 +286,12 @@ describe('EventSettingsComponent', () => {
 			);
 			tick();
 			fixture.detectChanges();
-			component.setStatus(EventStatusType.ARCHIVED);
+			component.setStatus(EventStatusType.SETTLED);
 
 			tick();
 
 			expect(component.event).toEqual({ id: '10' } as PuddingEvent);
-			expect(messageService.showSuccess).toHaveBeenCalledWith('Event successfully archived');
+			expect(messageService.showSuccess).toHaveBeenCalledWith('Event successfully settled');
 			expect((fixture.point.injector.get(Router) as jasmine.SpyObj<Router>).navigate).toHaveBeenCalledWith([
 				'events',
 				'10',
@@ -303,8 +303,8 @@ describe('EventSettingsComponent', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
 				status: {
-					id: EventStatusType.ARCHIVED,
-					name: 'Archived',
+					id: EventStatusType.SETTLED,
+					name: 'Settled',
 				},
 			} as PuddingEvent);
 
@@ -355,7 +355,7 @@ describe('EventSettingsComponent', () => {
 			expect(messageService.showError).toHaveBeenCalledWith('Failed to change event status');
 		});
 
-		it('should show error message if archiving event fails', () => {
+		it('should show error message if settling event fails', () => {
 			const $event = new BehaviorSubject<PuddingEvent>({
 				id: '1',
 				status: {},
@@ -375,7 +375,7 @@ describe('EventSettingsComponent', () => {
 				})
 			);
 			fixture.detectChanges();
-			component.setStatus(EventStatusType.ARCHIVED);
+			component.setStatus(EventStatusType.SETTLED);
 
 			expect(messageService.showError).toHaveBeenCalledWith('Failed to change event status');
 		});

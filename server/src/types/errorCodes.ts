@@ -1124,20 +1124,20 @@ export const PUD118: ErrorCode = {
 };
 
 /**
- * PUD-119: Archived events cannot be deleted
+ * PUD-119: Settled events cannot be deleted
  */
 export const PUD119: ErrorCode = {
   code: "PUD-119",
-  message: "Archived events cannot be deleted",
+  message: "Settled events cannot be deleted",
   status: 400
 };
 
 /**
- * PUD-120: Cannot delete user from archived event (500)
+ * PUD-120: Cannot delete user from settled event (500)
  */
 export const PUD120: ErrorCode = {
   code: "PUD-120",
-  message: "Cannot delete user from archived event",
+  message: "Cannot delete user from settled event",
   status: 500,
   log: true
 };

@@ -38,7 +38,13 @@
 				<mat-list-item class="list-item">
 					<div class="admin">
 						<div class="name">
-							<img [src]="admin.avatarURL" alt="User avatar" class="avatar" />
+							<img
+								[src]="admin.avatarURL"
+								alt="User avatar"
+								class="avatar"
+								[ngClass]="{ clickable: !admin.guest }"
+								(click)="gotoUserProfile(admin)"
+							/>
 							{{ admin.name }}
 						</div>
 					</div>

@@ -50,6 +50,15 @@
 		margin-right: 16px;
 		border-radius: 50%;
 		object-fit: cover;
+
+		&.clickable {
+			transition: filter 0.2s;
+			cursor: pointer;
+
+			&:hover {
+				filter: brightness(1.2);
+			}
+		}
 	}
 }
 
