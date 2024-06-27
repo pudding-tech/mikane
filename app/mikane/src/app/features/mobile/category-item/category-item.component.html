@@ -2,24 +2,24 @@
 	<mat-list-item (click)="toggleDropdown()">
 		<div class="upper">
 			<div class="leftside">
-				<mat-icon matListItemIcon class="category-icon">{{ category.icon ?? "shopping_cart" }}</mat-icon>
+				<mat-icon matListItemIcon class="category-icon">{{ category().icon ?? "shopping_cart" }}</mat-icon>
 				<mat-icon matListItemIcon class="dropdown-arrow">
 					{{ dropdownOpen ? "arrow_drop_up" : "arrow_drop_down" }}
 				</mat-icon>
 				<div>
-					<div class="number-of-participants">Number of participants: {{ category.users.length }}</div>
+					<div class="number-of-participants">Number of participants: {{ category().users.length }}</div>
 					<div class="name">
-						{{ category.name }}
+						{{ category().name }}
 					</div>
 				</div>
 			</div>
 			<button
 				mat-icon-button
 				class="expenses-button"
-				[disabled]="category.numberOfExpenses === 0"
+				[disabled]="category().numberOfExpenses === 0"
 				(click)="gotoExpenses(); $event.stopPropagation()"
 			>
-				<div class="count">{{ category.numberOfExpenses }}</div>
+				<div class="count">{{ category().numberOfExpenses }}</div>
 				<mat-icon class="icon">payment</mat-icon>
 			</button>
 		</div>
@@ -28,10 +28,10 @@
 		<div class="user header">
 			<span class="name"> User </span>
 			<span>
-				{{ category.weighted ? "Weight" : "" }}
+				{{ category().weighted ? "Weight" : "" }}
 			</span>
 		</div>
-		@for (user of category.users; track user.id) {
+		@for (user of category().users; track user.id) {
 			<mat-list-item>
 				<div class="user data">
 					<span class="name">
@@ -39,18 +39,18 @@
 						{{ user.name }}
 					</span>
 					<span>
-						{{ category.weighted ? user.weight : "" }}
+						{{ category().weighted ? user.weight : "" }}
 					</span>
-					@if (category.weighted && eventActive) {
-						<button mat-icon-button (click)="openEditWeight(category.id, user.id, user.weight)" class="button">
+					@if (category().weighted && eventActive()) {
+						<button mat-icon-button (click)="openEditWeight(category().id, user.id, user.weight)" class="button">
 							<mat-icon>edit</mat-icon>
 						</button>
 					}
-					@if (eventActive) {
+					@if (eventActive()) {
 						<button
 							mat-icon-button
-							(click)="removeUserFromCategory(category.id, user.id)"
-							[ngClass]="{ button: !category.weighted }"
+							(click)="removeUserFromCategory(category().id, user.id)"
+							[ngClass]="{ button: !category().weighted }"
 						>
 							<mat-icon>remove</mat-icon>
 						</button>
@@ -58,26 +58,26 @@
 				</div>
 			</mat-list-item>
 		}
-		@if (eventActive) {
-			@if (filterUsers(category.id).length !== 0) {
-				<form [formGroup]="addUserForm" class="new-user">
+		@if (eventActive()) {
+			@if (filterUsers()(category().id).length !== 0) {
+				<form [formGroup]="addUserForm()" class="new-user">
 					<div class="inputs">
-						<mat-form-field subscriptSizing="dynamic" [ngClass]="{ 'user-input-weighted': !category.weighted }">
+						<mat-form-field subscriptSizing="dynamic" [ngClass]="{ 'user-input-weighted': !category().weighted }">
 							<select
 								matNativeControl
-								[formControl]="addUserForm.get('participantName') | formControl"
+								[formControl]="addUserForm().get('participantName') | formControl"
 								name="participantName"
 								required
 							>
 								<option value="" disabled selected>Add participant</option>
-								@for (user of filterUsers(category.id); track user.id) {
+								@for (user of filterUsers()(category().id); track user.id) {
 									<option [value]="user.id">
 										{{ user.name }}
 									</option>
 								}
 							</select>
 						</mat-form-field>
-						@if (category.weighted) {
+						@if (category().weighted) {
 							<mat-form-field subscriptSizing="dynamic" class="weight-input">
 								<input
 									matInput
@@ -91,15 +91,15 @@
 							</mat-form-field>
 						}
 					</div>
-					@if (eventActive) {
+					@if (eventActive()) {
 						<button
 							mat-icon-button
 							type="button"
-							(click)="addUserToCategory(category.id)"
+							(click)="addUserToCategory(category().id)"
 							[disabled]="
-								addUserForm.get('participantName')?.invalid ||
-								!addUserForm.get('participantName')?.dirty ||
-								(category.weighted && addUserForm.get('weight')?.invalid)
+								addUserForm().get('participantName')?.invalid ||
+								!addUserForm().get('participantName')?.dirty ||
+								(category().weighted && addUserForm().get('weight')?.invalid)
 							"
 							class="add-user"
 						>
@@ -111,16 +111,16 @@
 				<div class="all-users-in-category">No more participants to add</div>
 			}
 		}
-		@if (eventActive) {
+		@if (eventActive()) {
 			<div class="sub-buttons">
-				<button mat-stroked-button color="accent" (click)="toggleWeightedCategory(category.id, category.weighted)">
+				<button mat-stroked-button color="accent" (click)="toggleWeightedCategory(category().id, category().weighted)">
 					Toggle weighted
 				</button>
 				<div>
-					<button mat-icon-button (click)="openEdit(category.id, category.name, category.icon)">
+					<button mat-icon-button (click)="openEdit(category().id, category().name, category().icon)">
 						<mat-icon>edit</mat-icon>
 					</button>
-					<button mat-icon-button [disabled]="category.numberOfExpenses !== 0" color="warn" (click)="deleteCategory(category.id)">
+					<button mat-icon-button [disabled]="category().numberOfExpenses !== 0" color="warn" (click)="deleteCategory(category().id)">
 						<mat-icon>delete</mat-icon>
 					</button>
 				</div>

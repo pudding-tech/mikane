@@ -22,6 +22,7 @@
 	white-space: nowrap;
 	word-wrap: normal;
 	direction: ltr;
+	font-feature-settings: "liga";
 	-webkit-font-feature-settings: "liga";
 	-webkit-font-smoothing: antialiased;
 }
@@ -231,10 +232,11 @@ a.nostyle:visited {
 	border-top: 1px solid #333333;
 	stroke: #333333;
 	padding-left: 16px;
+}
 
-	&.admins {
-		margin-bottom: 0;
-	}
+.event-info-marker {
+	margin-bottom: 14px !important;
+	background-color: rgba(49, 33, 40, 0.2) !important;
 }
 
 // Hide background of autocompleted inputs

@@ -25,8 +25,8 @@
 			<a
 				mat-tab-link
 				[routerLink]="link.location"
-				(click)="activeLink = link.location"
-				[active]="activeLink.includes(link.location)"
+				(click)="activeLink.set(link.location)"
+				[active]="activeLink().includes(link.location)"
 				[ngClass]="{ 'settings-tab': link.name === 'Settings' || link.name === 'Info' }"
 			>
 				@if (link.name === "Settings" || link.name === "Info") {
@@ -41,7 +41,7 @@
 		}
 	</nav>
 } @else {
-	<app-mobile-event-navbar [activeLink]="activeLink" [links]="links()"></app-mobile-event-navbar>
+	<app-mobile-event-navbar [activeLink]="activeLink()" [links]="links()"></app-mobile-event-navbar>
 }
 <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
 <div

@@ -27,7 +27,7 @@ describe('MobileEventNavbarComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(MobileEventNavbarComponent);
 		component = fixture.componentInstance;
-		component.activeLink = '/events';
+		fixture.componentRef.setInput('activeLink', '/events');
 		fixture.componentRef.setInput('links', [
 			{ name: 'Link 1', icon: 'icon1', location: '/link1' },
 			{ name: 'Link 2', icon: 'icon2', location: '/link2' },
@@ -54,6 +54,6 @@ describe('MobileEventNavbarComponent', () => {
 	it('should set the active class on the active link', () => {
 		const activeLinkEl = fixture.debugElement.query(By.css('.active')).nativeElement;
 
-		expect(activeLinkEl.getAttribute('href')).toEqual(component.activeLink);
+		expect(activeLinkEl.getAttribute('href')).toEqual(component.activeLink());
 	});
 });

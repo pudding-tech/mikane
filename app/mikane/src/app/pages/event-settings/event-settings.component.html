@@ -18,7 +18,7 @@
 						<div class="event-settings-content settle">
 							<ng-container *ngTemplateOutlet="statusContent"></ng-container>
 						</div>
-						<div class="header">Manage admins</div>
+						<div class="header">Manage administrators</div>
 						<div class="event-settings-content admins">
 							<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
 						</div>
@@ -29,15 +29,17 @@
 					</mat-card-content>
 				</mat-card>
 			</div>
-		} @else {
+		} 
+		<!-- Mobile -->
+		@else {
 			<div class="header-mobile">Edit event</div>
 			<ng-container *ngTemplateOutlet="editContent"></ng-container>
 			<div class="header-mobile">Change status</div>
 			<div class="event-settings-content settle">
 				<ng-container *ngTemplateOutlet="statusContent"></ng-container>
 			</div>
-			<div class="header-mobile admins">Manage admins</div>
-			<div class="admins">
+			<div class="header-mobile admins">Manage administrators</div>
+			<div>
 				<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
 			</div>
 			<div class="header-mobile">Delete event</div>
@@ -108,20 +110,28 @@
 </ng-template>
 
 <ng-template #statusContent>
-	@if (event?.status.id === EventStatusType.ACTIVE) {
-		<div>
-			<div class="event-settings-text">
-				This event is currently <b>active</b>. Setting it as 'ready to settle' will prevent further edits and prompt participants to settle their payments.
-			</div>
-			<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.READY_TO_SETTLE)">
-				Set event as ready to settle
-			</button>
-		</div>
-	} @else {
-		@if (event?.status.id === EventStatusType.READY_TO_SETTLE) {
+	<button
+		mat-stroked-button
+		disabled
+		class="event-info-marker"
+	>
+		{{ event?.status.name }}
+	</button>
+	@switch (event?.status.id) {
+		@case (EventStatusType.ACTIVE) {
 			<div>
 				<div class="event-settings-text">
-					This event is currently <b>ready to settle</b>. Once all participants have settled their payments, the event should be
+					This event is currently <b>active</b>. Setting it as 'ready to settle' will prevent further edits and prompt participants to settle their payments.
+				</div>
+				<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.READY_TO_SETTLE)" class="status-button">
+					Set event as ready to settle
+				</button>
+			</div>
+		}
+		@case (EventStatusType.READY_TO_SETTLE) {
+			<div>
+				<div class="event-settings-text">
+					This event is currently <b>ready to settled</b>. Once all participants have settled their payments, the event should be
 					set as settled. Should any changes be neccessary, set the event as active again.
 				</div>
 				<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.SETTLED)" class="status-button">
@@ -129,11 +139,12 @@
 				</button>
 				<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)" class="status-button">Set event as active</button>
 			</div>
-		} @else {
+		}
+		@case (EventStatusType.SETTLED) {
 			<div class="event-settings-text">
 				This event is currently <b>settled</b>. Set it to active to allow participants to edit it again.
 			</div>
-			<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)">Set event as active</button>
+			<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)" class="status-button">Set event as active</button>
 		}
 	}
 </ng-template>
@@ -164,7 +175,7 @@
 		<div class="add-admin" [ngClass]="{ mobile: breakpointService.isMobile() | async }">
 			@if (otherUsersInEvent.length !== 0) {
 				<mat-form-field>
-					<mat-select [formControl]="addAdminForm.get('userId') | formControl" name="userId" placeholder="Add admins" required>
+					<mat-select [formControl]="addAdminForm.get('userId') | formControl" name="userId" placeholder="Add admin" required>
 						@for (user of otherUsersInEvent; track user.id) {
 							<mat-option [value]="user.id">
 								<span class="name">

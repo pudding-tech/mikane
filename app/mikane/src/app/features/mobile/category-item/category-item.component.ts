@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, output, Renderer2, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -31,18 +31,18 @@ import { CategoryIcon } from 'src/app/types/enums';
 })
 export class CategoryItemComponent {
 	@ViewChild('lower') lower: ElementRef;
-	@Input() eventActive: boolean;
-	@Input() category: Category;
-	@Input() addUserForm: FormGroup;
-	@Input() filterUsers: (categoryId: string) => User[];
-	@Output() addUser = new EventEmitter<{ categoryId: string }>();
-	@Output() removeUser = new EventEmitter<{ categoryId: string; userId: string }>();
-	@Output() openEditCategoryDialog = new EventEmitter<{ categoryId: string; name: string; icon: CategoryIcon }>();
-	@Output() openWeightEditDialog = new EventEmitter<{ categoryId: string; userId: string; weight: number }>();
-	@Output() toggleWeighted = new EventEmitter<{ categoryId: string; weighted: boolean }>();
-	@Output() deleteCategoryDialog = new EventEmitter<{ categoryId: string }>();
-	@Output() gotoCategoryExpenses = new EventEmitter<{ category: Category }>();
-	@Output() gotoUser = new EventEmitter<{ user: { id: string, guest: boolean, username: string } }>();
+	category = input.required<Category>();
+	eventActive = input.required<boolean>();
+	addUserForm = input.required<FormGroup>();
+	filterUsers = input.required<(categoryId: string) => User[]>();
+	addUser = output<{ categoryId: string }>();
+	removeUser = output<{ categoryId: string; userId: string }>();
+	openEditCategoryDialog = output<{ categoryId: string; name: string; icon: CategoryIcon }>();
+	openWeightEditDialog = output<{ categoryId: string; userId: string; weight: number }>();
+	toggleWeighted = output<{ categoryId: string; weighted: boolean }>();
+	deleteCategoryDialog = output<{ categoryId: string }>();
+	gotoCategoryExpenses = output<{ category: Category }>();
+	gotoUser = output<{ user: { id: string, guest: boolean, username: string } }>();
 
 	dropdownOpen = false;
 	lowerHeight = 0;
@@ -88,7 +88,7 @@ export class CategoryItemComponent {
 	};
 
 	gotoExpenses = () => {
-		this.gotoCategoryExpenses.emit({ category: this.category });
+		this.gotoCategoryExpenses.emit({ category: this.category() });
 	};
 
 	gotoUserProfile = (user: { id: string, guest: boolean, username: string }) => {

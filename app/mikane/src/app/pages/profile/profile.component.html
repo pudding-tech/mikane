@@ -128,18 +128,22 @@
 				</div>
 				<div class="event-right">
 					@if (event.userInfo.inEvent) {
-						<mat-icon [matTooltip]="event.private ? 'You are also in this private event' : 'You are also in this event'" [matTooltipShowDelay]="100" class="right-side-icon">
+						<mat-icon
+							[matTooltip]="'You are ' + ( user.id === event.userInfo.id ? '' : 'also ' ) + 'in this ' + ( event.private ? 'private ': '') + 'event'"
+							[matTooltipShowDelay]="100"
+							class="right-side-icon"
+						>
 							{{ event.private ? 'passkey' : 'how_to_reg' }}
 						</mat-icon>
 					}
 					@if (event.status.id === EventStatusType.ACTIVE) {
 						<mat-icon matTooltip="This event is active" [matTooltipShowDelay]="100" class="right-side-icon">
-							circle
+							schedule
 						</mat-icon>
 					}
 					@else if (event.status.id === EventStatusType.READY_TO_SETTLE) {
 						<mat-icon matTooltip="This event is ready to be settled" [matTooltipShowDelay]="100" class="right-side-icon">
-							pending
+							paid
 						</mat-icon>
 					}
 					@else if (event.status.id === EventStatusType.SETTLED) {

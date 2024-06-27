@@ -144,76 +144,6 @@ describe('PaymentStructureComponent', () => {
 
 		it('should load payments', () => {
 			expect(eventService.loadPayments).toHaveBeenCalledWith('1');
-			expect(component.payments).toEqual([
-				{
-					sender: {
-						id: '1',
-						name: 'test',
-						email: '',
-					},
-					receiver: {
-						id: '2',
-						name: 'test2',
-						email: '',
-					},
-					amount: 1,
-				},
-				{
-					sender: {
-						id: '1',
-						name: 'test',
-						email: '',
-					},
-					receiver: {
-						id: '3',
-						name: 'test3',
-						email: '',
-					},
-					amount: 2,
-				},
-				{
-					sender: {
-						id: '2',
-						name: 'test2',
-						email: '',
-					},
-					receiver: {
-						id: '1',
-						name: 'test',
-						email: '',
-					},
-					amount: 3,
-				},
-				{
-					sender: {
-						id: '2',
-						name: 'test2',
-						email: '',
-					},
-					receiver: {
-						id: '3',
-						name: 'test3',
-						email: '',
-					},
-					amount: 4,
-				},
-				{
-					sender: {
-						id: '3',
-						name: 'test3',
-						email: '',
-					},
-					receiver: {
-						id: '2',
-						name: 'test2',
-						email: '',
-					},
-					amount: 6,
-				},
-			] as Payment[]);
-		});
-
-		it('should add receivers to senders', () => {
 			expect(component.senders).toEqual([
 				{
 					sender: {
@@ -449,7 +379,6 @@ describe('PaymentStructureComponent', () => {
 		}));
 
 		it('should not have any payments', () => {
-			expect(component.payments).toEqual([]);
 			expect(component.senders).toEqual([]);
 			expect(component.paymentsSelf).toEqual([]);
 			expect(component.paymentsOthers).toEqual([]);

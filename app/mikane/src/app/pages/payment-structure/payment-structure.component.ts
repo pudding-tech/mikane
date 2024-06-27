@@ -13,7 +13,7 @@ import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payme
 import { PaymentExpansionPanelItemComponent } from 'src/app/pages/payment-structure/payment-expansion-panel-item/payment-expansion-panel-item.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { EventService, Payment } from 'src/app/services/event/event.service';
+import { EventService } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -56,7 +56,6 @@ export class PaymentStructureComponent implements OnInit {
 	allExpandedSelf = true;
 	allExpandedOthers = false;
 
-	payments: Payment[] = [];
 	senders: SenderPayments[] = [];
 	paymentsSelf: SenderPayments[] = [];
 	paymentsOthers: SenderPayments[] = [];
@@ -90,8 +89,6 @@ export class PaymentStructureComponent implements OnInit {
 		this.loading.next(true);
 		this.eventService.loadPayments(this.eventId).subscribe({
 			next: (payments) => {
-				this.payments = payments;
-
 				map(payments, (payment) => {
 					if (
 						this.senders.find((sender) => {
@@ -119,7 +116,7 @@ export class PaymentStructureComponent implements OnInit {
 					);
 				});
 
-				this.senders.map((sender) => {
+				this.senders.forEach((sender) => {
 					if (
 						sender.sender.id === this.currentUser?.id ||
 						sender.receivers.find((receiver) => receiver.receiver.id === this.currentUser?.id)

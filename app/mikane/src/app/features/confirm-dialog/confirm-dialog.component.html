@@ -1,6 +1,9 @@
 <h1 mat-dialog-title>{{ data?.title }}</h1>
 <div mat-dialog-content>
 	<p>{{ data?.content }}</p>
+	@if (data?.extraContent) {
+		<p>{{ data.extraContent }}</p>
+	}
 </div>
 <div mat-dialog-actions class="dialog-buttons">
 	<button mat-button (click)="onNoClick()">Cancel</button>

@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,15 +30,15 @@ import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 })
 export class PaymentItemComponent implements OnInit {
 	@ViewChild('lower') lower: ElementRef;
-	@Input() payment: {
+	payment = input.required<{
 		sender: User;
 		receivers: Array<{
 			receiver: User;
 			amount: number;
 		}>;
-	};
-	@Input() self: boolean;
-	@Input() currentUser: User;
+	}>();
+	self = input.required<boolean>();
+	currentUser = input.required<User>();
 
 	dropdownOpen: boolean;
 	lowerHeight: number | string;
@@ -48,8 +48,8 @@ export class PaymentItemComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.dropdownOpen = this.self ? true : false;
-		this.lowerHeight = this.self ? 'auto' : 0;
+		this.dropdownOpen = this.self() ? true : false;
+		this.lowerHeight = this.self() ? 'auto' : 0;
 		if (this.lowerHeight === 'auto') {
 			setTimeout(() => {
 				this.lowerHeight = this.lower.nativeElement.scrollHeight;
