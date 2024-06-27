@@ -39,7 +39,7 @@
 				<ng-container *ngTemplateOutlet="statusContent"></ng-container>
 			</div>
 			<div class="header-mobile admins">Manage administrators</div>
-			<div class="admins22222222">
+			<div>
 				<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
 			</div>
 			<div class="header-mobile">Delete event</div>
@@ -117,31 +117,35 @@
 	>
 		{{ event?.status.name }}
 	</button>
-	@if (event?.status.id === EventStatusType.ACTIVE) {
-		<div>
-			<div class="event-settings-text">
-				This event is currently <b>active</b>. Setting it as 'ready to settle' will prevent further edits and prompt participants to settle their payments.
+	@switch (event?.status.id) {
+		@case (EventStatusType.ACTIVE) {
+			<div>
+				<div class="event-settings-text">
+					This event is currently <b>active</b>. Setting it as 'ready to settle' will prevent further edits and prompt participants to settle their payments.
+				</div>
+				<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.READY_TO_SETTLE)" class="status-button">
+					Set event as ready to settle
+				</button>
 			</div>
-			<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.READY_TO_SETTLE)" class="status-button">
-				Set event as ready to settle
-			</button>
-		</div>
-	} @else if (event?.status.id === EventStatusType.READY_TO_SETTLE) {
-		<div>
-			<div class="event-settings-text">
-				This event is currently <b>ready to settled</b>. Once all participants have settled their payments, the event should be
-				set as settled. Should any changes be neccessary, set the event as active again.
+		}
+		@case (EventStatusType.READY_TO_SETTLE) {
+			<div>
+				<div class="event-settings-text">
+					This event is currently <b>ready to settled</b>. Once all participants have settled their payments, the event should be
+					set as settled. Should any changes be neccessary, set the event as active again.
+				</div>
+				<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.SETTLED)" class="status-button">
+					Set event as settled
+				</button>
+				<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)" class="status-button">Set event as active</button>
 			</div>
-			<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.SETTLED)" class="status-button">
-				Set event as settled
-			</button>
+		}
+		@case (EventStatusType.SETTLED) {
+			<div class="event-settings-text">
+				This event is currently <b>settled</b>. Set it to active to allow participants to edit it again.
+			</div>
 			<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)" class="status-button">Set event as active</button>
-		</div>
-	} @else {
-		<div class="event-settings-text">
-			This event is currently <b>settled</b>. Set it to active to allow participants to edit it again.
-		</div>
-		<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)" class="status-button">Set event as active</button>
+		}
 	}
 </ng-template>
 

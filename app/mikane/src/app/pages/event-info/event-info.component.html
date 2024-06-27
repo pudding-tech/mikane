@@ -55,14 +55,16 @@
 		{{ event?.status.name }}
 	</button>
 	<div>
-		@if (event?.status.id === EventStatusType.ACTIVE) {
-			This event is currently <b>active</b>, allowing participants to add to or modify it as needed. Once the event is ready for settlement, it will transition to 'ready to settle' status.
-		}
-		@else if (event?.status.id === EventStatusType.READY_TO_SETTLE) {
-			This event is currently <b>ready to settle</b>. Once all participants have completed their payments, the event will be marked as settled.
-		}
-		@else {
-			This event is currently marked as <b>settled</b>, indicating that all participants have completed their payments, and the event has been finalized.
+		@switch (event?.status.id) {
+			@case (EventStatusType.ACTIVE) {
+				This event is currently <b>active</b>, allowing participants to add to or modify it as needed. Once the event is ready for settlement, it will transition to 'ready to settle' status.
+			}
+			@case (EventStatusType.READY_TO_SETTLE) {
+				This event is currently <b>ready to settle</b>. Once all participants have completed their payments, the event will be marked as settled.
+			}
+			@case (EventStatusType.SETTLED) {
+				This event is currently marked as <b>settled</b>, indicating that all participants have completed their payments, and the event has been finalized.
+			}
 		}
 	</div>
 </ng-template>
