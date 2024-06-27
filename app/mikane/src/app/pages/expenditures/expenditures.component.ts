@@ -254,7 +254,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 						expenses.unshift(expense);
 						return [...expenses];
 					});
-					this.messageService.showSuccess('New expense created');
+					this.messageService.showSuccess('Expense created');
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to create expense');

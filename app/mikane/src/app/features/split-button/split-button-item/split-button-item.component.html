@@ -1,4 +1,4 @@
 <a (keyup)="onEnter($event)" tabindex="0" (click)="onClick()" matRipple>
-	<mat-icon aria-hidden="true" class="icon">{{ icon }}</mat-icon>
-	<span class="text">{{ text }}</span>
+	<mat-icon aria-hidden="true" class="icon">{{ icon() }}</mat-icon>
+	<span class="text">{{ text() }}</span>
 </a>

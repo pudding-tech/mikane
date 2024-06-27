@@ -2,27 +2,27 @@
 	<mat-list-item (click)="toggleDropdown()">
 		<div class="upper">
 			<img
-				[src]="payment.sender.avatarURL"
+				[src]="payment().sender.avatarURL"
 				alt="Sender avatar"
 				class="avatar"
-				[ngClass]="{ 'clickable': !payment.sender.guest }"
-				(click)="gotoUserProfile(payment.sender)"
+				[ngClass]="{ 'clickable': !payment().sender.guest }"
+				(click)="gotoUserProfile(payment().sender)"
 			/>
 			<mat-icon matListItemIcon class="dropdown-arrow">
 				{{ dropdownOpen ? "arrow_drop_up" : "arrow_drop_down" }}
 			</mat-icon>
 			<div>
 				<div class="name">
-					{{ self && payment.sender.id === currentUser.id ? "You" : payment.sender.name }}
+					{{ self() && payment().sender.id === currentUser().id ? "You" : payment().sender.name }}
 				</div>
 				<div class="subtext">
-					{{ self && payment.sender.id === currentUser.id ? "Owe money to..." : "Owes money to..." }}
+					{{ self() && payment().sender.id === currentUser().id ? "Owe money to..." : "Owes money to..." }}
 				</div>
 			</div>
 		</div>
 	</mat-list-item>
 	<div #lower class="lower" [style.height.px]="lowerHeight">
-		@for (receiver of payment.receivers; track receiver.receiver.id) {
+		@for (receiver of payment().receivers; track receiver.receiver.id) {
 			<mat-list-item>
 				<div class="payment">
 					<span class="name">
@@ -34,8 +34,8 @@
 							(click)="gotoUserProfile(receiver.receiver)"
 						/>
 						<div>
-							{{ self && receiver.receiver.id === currentUser.id ? "You" : receiver.receiver.name }}
-							@if (self && payment.sender.id === currentUser.id && receiver.receiver.phone) {
+							{{ self() && receiver.receiver.id === currentUser().id ? "You" : receiver.receiver.name }}
+							@if (self() && payment().sender.id === currentUser().id && receiver.receiver.phone) {
 								<div class="phone-number">
 									{{ receiver.receiver.phone.slice(0, 2) + ' ' + receiver.receiver.phone.slice(2, 4) + ' ' + receiver.receiver.phone.slice(4, 6) + ' ' + receiver.receiver.phone.slice(6) }}
 								</div>

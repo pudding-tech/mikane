@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, Input, input } from '@angular/core';
+import { Component, computed, input, model } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterOutlet } from '@angular/router';
@@ -19,7 +19,7 @@ interface Route {
 	imports: [CommonModule, RouterLink, RouterOutlet, MatIconModule, MatRippleModule],
 })
 export class MobileEventNavbarComponent {
-	@Input() activeLink: string;
+	activeLink = model.required<string>();
 	links = input.required<Route[]>();
 
 	mobileLinks = computed(() => {

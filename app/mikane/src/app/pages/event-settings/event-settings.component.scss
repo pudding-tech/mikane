@@ -7,6 +7,7 @@
 	.card {
 		width: 40vw;
 		min-width: 40em;
+		max-width: 57em;
 
 		.header {
 			padding: 12px 16px;
@@ -145,6 +146,10 @@
 .header-mobile {
 	height: 50px;
 	margin-bottom: 20px;
+
+	&.admins {
+		margin-bottom: 0 !important;
+	}
 }
 
 .event-settings-text {

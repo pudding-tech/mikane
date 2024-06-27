@@ -44,15 +44,15 @@ describe('PaymentItemComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(PaymentItemComponent);
 		component = fixture.componentInstance;
-		component.payment = {
+		fixture.componentRef.setInput('payment', {
 			sender: { id: '1', name: 'Sender' } as User,
 			receivers: [
 				{ receiver: { id: '2', name: 'Receiver 1' } as User, amount: 50 },
 				{ receiver: { id: '3', name: 'Receiver 2' } as User, amount: 50 },
 			],
-		};
-		component.self = false;
-		component.currentUser = { id: '1', name: 'Sender' } as User;
+		});
+		fixture.componentRef.setInput('self', false);
+		fixture.componentRef.setInput('currentUser', { id: '1', name: 'Sender' } as User);
 		fixture.detectChanges();
 	});
 
@@ -63,18 +63,18 @@ describe('PaymentItemComponent', () => {
 	it('should display the sender name', () => {
 		const senderNameEl = fixture.debugElement.query(By.css('.upper .name')).nativeElement;
 
-		expect(senderNameEl.textContent).toContain(component.payment.sender.name);
+		expect(senderNameEl.textContent).toContain(component.payment().sender.name);
 	});
 
 	it('should display the correct number of receivers', () => {
 		const receiverEls = fixture.debugElement.queryAll(By.css('.lower .name'));
 
-		expect(receiverEls.length).toEqual(component.payment.receivers.length);
+		expect(receiverEls.length).toEqual(component.payment().receivers.length);
 	});
 
 	it('should display the correct receiver name and amount', () => {
 		const receiverEls = fixture.debugElement.queryAll(By.css('.payment'));
-		component.payment.receivers.forEach((receiver, index) => {
+		component.payment().receivers.forEach((receiver, index) => {
 			const nameEl = receiverEls[index].query(By.css('.name')).nativeElement;
 			const amountEl = receiverEls[index].query(By.css('.amount-color')).nativeElement;
 
@@ -109,7 +109,7 @@ describe('PaymentItemComponent', () => {
 	});
 
 	it('should set lowerHeight to scrollHeight when self is true', fakeAsync(() => {
-		component.self = true;
+		fixture.componentRef.setInput('self', true);
 		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
 		component.ngOnInit();
 		fixture.detectChanges();

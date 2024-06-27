@@ -1,5 +1,6 @@
 import { ElementRef } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Category } from 'src/app/services/category/category.service';
 import { User } from 'src/app/services/user/user.service';
@@ -31,7 +32,10 @@ describe('CategoryItemComponent', () => {
 			numberOfExpenses: 0,
 			created: new Date(),
 		} as Category;
-		component.category = category;
+		fixture.componentRef.setInput('category', category);
+		fixture.componentRef.setInput('eventActive', true);
+		fixture.componentRef.setInput('addUserForm', {} as FormGroup);
+		fixture.componentRef.setInput('filterUsers', () => ([] as User[]));
 		fixture.detectChanges();
 	});
 

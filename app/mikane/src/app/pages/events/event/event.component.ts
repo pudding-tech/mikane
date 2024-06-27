@@ -43,7 +43,7 @@ export class EventComponent implements OnInit {
 	$event: BehaviorSubject<PuddingEvent> = new BehaviorSubject<PuddingEvent>(undefined);
 	readonly EventStatusType = EventStatusType;
 
-	activeLink = '';
+	activeLink = signal('');
 	isMobile = toSignal(this.breakpointService.isMobile());
 	isEventAdmin = signal(false);
 	links = computed(() => {
@@ -118,11 +118,11 @@ export class EventComponent implements OnInit {
 
 	ngOnInit() {
 		// Set active link based on current URL
-		this.activeLink = this.getActiveLinkFromUrl(window.location.href);
+		this.activeLink.set(this.getActiveLinkFromUrl(window.location.href));
 
 		this.router.events.subscribe((event) => {
 			if (event instanceof NavigationEnd) {
-				this.activeLink = './' + window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+				this.activeLink.set('./' + window.location.href.substring(window.location.href.lastIndexOf('/') + 1));
 			}
 		});
 

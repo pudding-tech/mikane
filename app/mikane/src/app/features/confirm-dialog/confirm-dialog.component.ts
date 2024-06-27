@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class ConfirmDialogComponent {
 	constructor(
 		public dialogRef: MatDialogRef<ConfirmDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: { title: string; content: string; confirm: string }
+		@Inject(MAT_DIALOG_DATA) public data: { title: string; content: string; extraContent?: string; confirm: string }
 	) {
 		if (!data || !data.title || !data.content || !data.confirm) {
 			throw 'Something is missing in confirm dialog data';

@@ -46,7 +46,7 @@ describe('ExpenseItemComponent', () => {
 				icon: 'shopping',
 			},
 		} as Expense;
-		component.expense = expense;
+		fixture.componentRef.setInput('expense', expense);
 		fixture.detectChanges();
 	});
 
@@ -85,7 +85,7 @@ describe('ExpenseItemComponent', () => {
 	});
 
 	it('should show shopping cart icon if category is not set', () => {
-		component.expense.categoryInfo = null;
+		component.expense().categoryInfo = null;
 		fixture.detectChanges();
 		const iconEl = fixture.debugElement.query(By.css('.expense-icon')).nativeElement;
 

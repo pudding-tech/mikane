@@ -75,6 +75,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 	cancel$: Subject<void> = new Subject();
 
 	event: PuddingEvent;
+	currentUser: User;
 	usersWithBalance: UserBalance[] = [];
 	usersWithBalance$ = new BehaviorSubject<UserBalance[]>([]);
 
@@ -129,6 +130,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		this.userSubscription = combineLatest([this.eventService.loadBalances(this.event.id), this.authService.getCurrentUser()])
 			.pipe(
 				map(([usersWithBalance, currentUser]): UserBalance[] => {
+					this.currentUser = currentUser;
 					this.inEvent =
 						usersWithBalance.filter((userWithBalance) => {
 							return userWithBalance?.user?.id === currentUser?.id;
@@ -245,11 +247,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 	}
 
 	deleteUserDialog(userId: string) {
+		const privateInfo = `Please note: This is a private event.
+			${userId === this.currentUser.id
+				? 'If you leave, you will not be able to rejoin on your own.'
+				: 'If you remove this user, they will lose all access to the event.'}`;
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-			width: '380px',
+			width: '430px',
 			data: {
-				title: 'Remove User',
-				content: 'Are you sure you want to remove this user?',
+				title: userId === this.currentUser.id ? 'Leave event' : 'Remove user',
+				content: `Are you sure you want to ${userId === this.currentUser.id ? 'leave this event?' : 'remove this user?'}`,
+				extraContent: this.event.private ? privateInfo : undefined,
 				confirm: 'I am sure',
 			},
 		});
@@ -264,9 +271,15 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 	removeUser(userId: string) {
 		this.eventService.removeUser(this.event.id, userId).subscribe({
 			next: () => {
-				// Reload users and balances
-				this.loadUsers();
-				this.messageService.showSuccess('User removed!');
+				if (this.event.private && userId === this.currentUser.id) {
+					this.router.navigate(['events']);
+					this.messageService.showSuccess(`You no longer have access to ${this.event.name}`);
+				}
+				else {
+					// Reload users and balances
+					this.loadUsers();
+					this.messageService.showSuccess(userId === this.currentUser.id ? 'You have left the event' : 'User removed!');
+				}
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to remove user');
@@ -324,7 +337,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 					if (expense?.payer?.id === expandedUserId) {
 						dataSource.addExpense(expense);
 					}
-					this.messageService.showSuccess('New expense created');
+					this.messageService.showSuccess('Expense created');
 				},
 				error: () => {
 					this.messageService.showError('Failed to create expense');

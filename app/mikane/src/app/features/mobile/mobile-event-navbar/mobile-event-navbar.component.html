@@ -3,8 +3,8 @@
 		<a
 			class="nav-button"
 			[routerLink]="link.location"
-			(click)="activeLink = link.location"
-			[ngClass]="{ active: activeLink.includes(link.location), 'nav-back-button': link.location === '/events' }"
+			(click)="activeLink.set(link.location)"
+			[ngClass]="{ active: activeLink().includes(link.location), 'nav-back-button': link.location === '/events' }"
 			matRipple
 		>
 			<mat-icon [ngClass]="{ 'back-icon': link.location === '/events' }">{{ link.icon }}</mat-icon>

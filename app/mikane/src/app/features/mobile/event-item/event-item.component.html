@@ -1,16 +1,16 @@
-<mat-list-item class="wrapper" [ngClass]="{ 'ready-to-settle': event.status.id === EventStatusType.READY_TO_SETTLE }">
+<mat-list-item class="wrapper" [ngClass]="{ 'ready-to-settle': event().status.id === EventStatusType.READY_TO_SETTLE }">
 	<div class="event-title">
-		<span class="title-text">{{ event.name }}</span>
-		@if (event.private) {
+		<span class="title-text">{{ event().name }}</span>
+		@if (event().private) {
 			<mat-icon	matTooltip="This event is private" [matTooltipShowDelay]="200" class="joined-icon">	passkey	</mat-icon>
-		} @else if (event.userInfo.inEvent) {
+		} @else if (event().userInfo.inEvent) {
 			<mat-icon matTooltip="You are in this event" [matTooltipShowDelay]="200" class="joined-icon"> how_to_reg </mat-icon>
 		}
-		@if (event.userInfo.isAdmin) {
+		@if (event().userInfo.isAdmin) {
 			<span matTooltip="You are an admin for this event" [matTooltipShowDelay]="200" class="admin-icon"> A </span>
 		}
 	</div>
 	<div class="description">
-		{{ event.status.id === EventStatusType.READY_TO_SETTLE ? "READY TO SETTLE" : event.description }}
+		{{ event().status.id === EventStatusType.READY_TO_SETTLE ? "READY TO SETTLE" : event().description }}
 	</div>
 </mat-list-item>
