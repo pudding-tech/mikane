@@ -152,12 +152,23 @@
 											</button>
 											@if (usersWithBalance.length === 1) {
 												<span matTooltip="Cannot remove the sole participant from an event" style="padding: 8px 0">
-													<button mat-raised-button disabled>Remove User</button>
+													<button mat-raised-button disabled>
+														{{ userWithBalance.user.id === currentUser.id ? 'Leave event' : 'Remove user' }}
+													</button>
 												</span>
 											}
 											@else if (userWithBalance.expensesCount > 0) {
 												<span matTooltip="Cannot remove a user with expenses" style="padding: 8px 0">
-													<button mat-raised-button disabled>Remove User</button>
+													<button mat-raised-button disabled>
+														{{ userWithBalance.user.id === currentUser.id ? 'Leave event' : 'Remove user' }}
+													</button>
+												</span>
+											}
+											@else if (event.adminIds.length === 1 && userWithBalance.user.eventInfo.isAdmin) {
+												<span matTooltip="Cannot remove the sole event admin from an event" style="padding: 8px 0">
+													<button mat-raised-button disabled>
+														{{ userWithBalance.user.id === currentUser.id ? 'Leave event' : 'Remove user' }}
+													</button>
 												</span>
 											}
 											@else {
@@ -167,7 +178,7 @@
 													color="warn"
 													(click)="deleteUserDialog(userWithBalance.user.id)"
 												>
-													Remove User
+													{{ userWithBalance.user.id === currentUser.id ? 'Leave event' : 'Remove user' }}
 												</button>
 											}
 										</div>
@@ -189,7 +200,10 @@
 						<mat-icon>{{ isAdmin ? "star" : "check" }}</mat-icon>
 					</span>
 				} @else {
-					<span class="not-in-event">You are not in this event</span>
+					<div class="not-in-event">
+						<span>You are not in this event</span>
+						<button mat-flat-button color="accent2" (click)="joinEvent()">Join</button>
+					</div>
 				}
 				@if (isAdmin) {
 					<button mat-icon-button (click)="gotoSettings()">
@@ -214,6 +228,8 @@
 					<app-participant-item
 						[userBalance]="userWithBalance"
 						[eventActive]="event?.status.id === EventStatusType.ACTIVE"
+						[numberOfParticipants]="usersWithBalance.length"
+						[numberOfAdmins]="event?.adminIds.length"
 						(click)="gotoUserExpenses(userWithBalance)"
 						(gotoUser)="gotoUserProfile($event.user)"
 						(removeUser)="deleteUserDialog($event.userId)"

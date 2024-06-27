@@ -1,6 +1,6 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, ContentChildren, ElementRef, EventEmitter, HostListener, Output, QueryList } from '@angular/core';
+import { Component, ContentChildren, ElementRef, HostListener, output, QueryList } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -20,7 +20,7 @@ import { SplitButtonItemDirective } from './split-button-item/split-button-item.
 	imports: [CommonModule, MatButtonToggleModule, MatIconModule],
 })
 export class SplitButtonComponent {
-	@Output() splitButtonClick = new EventEmitter();
+	splitButtonClick = output();
 	@ContentChildren(SplitButtonItemDirective) items: QueryList<SplitButtonItemDirective>;
 	@HostListener('document:click', ['$event.target']) outsideClick(target: HTMLElement) {
 		if (!this.toggled) {

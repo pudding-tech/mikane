@@ -62,13 +62,16 @@ describe('ParticipantComponent', () => {
 		fixture = MockRender(ParticipantComponent, {
 			$event: of({
 				id: '1',
+				private: false,
 				status: {
 					id: EventStatusType.ACTIVE,
 					name: 'Active',
-				}
+				},
+				adminIds: []
 			} as PuddingEvent),
 		});
 		component = fixture.point.componentInstance;
+		component.currentUser = { id: '000' } as User;
 		fixture.detectChanges();
 	}
 
@@ -81,7 +84,7 @@ describe('ParticipantComponent', () => {
 	it('should load event', () => {
 		createComponent();
 
-		expect(component.event).toEqual({ id: '1', status: { id: EventStatusType.ACTIVE, name: 'Active' } } as PuddingEvent);
+		expect(component.event).toEqual({ id: '1', private: false, status: { id: EventStatusType.ACTIVE, name: 'Active' }, adminIds: [] } as PuddingEvent);
 		expect(component.displayedColumns).toContain('actions');
 	});
 
@@ -397,10 +400,11 @@ describe('ParticipantComponent', () => {
 				component.deleteUserDialog('1');
 
 				expect(dialogStub.open).toHaveBeenCalledWith(ConfirmDialogComponent, {
-					width: '380px',
+					width: '430px',
 					data: {
-						title: 'Remove User',
+						title: 'Remove user',
 						content: 'Are you sure you want to remove this user?',
+						extraContent: undefined,
 						confirm: 'I am sure',
 					},
 				});
@@ -584,7 +588,7 @@ describe('ParticipantComponent', () => {
 
 			component.createExpenseDialog('1', jasmine.createSpyObj('ExpenseDataSource', ['addExpense']));
 
-			expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('New expense created');
+			expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('Expense created');
 		});
 
 		it('should cancel if no expense is returned from dialog', () => {

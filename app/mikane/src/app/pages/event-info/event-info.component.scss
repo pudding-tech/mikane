@@ -5,8 +5,9 @@
 	margin-top: 2em;
 
 	.card {
-		width: 30vw;
+		width: 40vw;
 		min-width: 40em;
+		max-width: 50em;
 
 		.header {
 			padding: 12px 16px;
@@ -21,10 +22,15 @@
 .event-info-content {
 	padding-left: 16px;
 	padding-right: 16px;
+	margin-bottom: 30px;
 }
 
-.info-full-view {
-	margin: 20px 14px 10px;
+.event-admins-content-mobile {
+	margin-bottom: 90px;
+}
+
+.info-mobile {
+	margin: 20px 14px 6px;
 }
 
 .admins-content {

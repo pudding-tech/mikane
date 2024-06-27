@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Subscription, combineLatest, filter, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { PuddingEvent } from 'src/app/services/event/event.service';
+import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
@@ -48,6 +48,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 	currentUser: User;
 
 	private eventSubscription: Subscription;
+	readonly EventStatusType = EventStatusType;
 
 	constructor(
 		private router: Router,

@@ -1,16 +1,16 @@
 <mat-list-item class="wrapper" (click)="gotoExpense()">
-	<mat-icon matListItemIcon class="expense-icon">{{ expense.categoryInfo?.icon ?? "shopping_cart" }}</mat-icon>
+	<mat-icon matListItemIcon class="expense-icon">{{ expense().categoryInfo?.icon ?? "shopping_cart" }}</mat-icon>
 	<div class="price-category">
-		<span class="amount-color-darker">{{ expense.amount | currency : "" : "" : "1.2-2" : "no" }} kr</span>
-		<span class="category"> / {{ expense.categoryInfo?.name }} </span>
+		<span class="amount-color-darker">{{ expense().amount | currency : "" : "" : "1.2-2" : "no" }} kr</span>
+		<span class="category"> / {{ expense().categoryInfo?.name }} </span>
 	</div>
 	<div class="title">
-		{{ expense.name }}
+		{{ expense().name }}
 	</div>
 	<div class="payer">
-		<img [src]="expense.payer?.avatarURL" alt="User avatar" class="payer-avatar" />
+		<img [src]="expense().payer?.avatarURL" alt="User avatar" class="payer-avatar" />
 		<span class="payer-name">
-			{{ expense.payer?.name }}
+			{{ expense().payer?.name }}
 		</span>
 	</div>
 </mat-list-item>

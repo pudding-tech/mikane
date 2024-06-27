@@ -18,6 +18,8 @@ describe('SplitButtonItemComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(SplitButtonItemComponent);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('icon', 'test-icon');
+		fixture.componentRef.setInput('text', 'test-text');
 		fixture.detectChanges();
 	});
 
@@ -42,16 +44,12 @@ describe('SplitButtonItemComponent', () => {
 	});
 
 	it('should display the correct icon', () => {
-		component.icon = 'test-icon';
-		fixture.detectChanges();
 		const iconEl = fixture.debugElement.query(By.css('.icon')).nativeElement;
 
 		expect(iconEl.textContent).toContain('test-icon');
 	});
 
 	it('should display the correct text', () => {
-		component.text = 'test-text';
-		fixture.detectChanges();
 		const textEl = fixture.debugElement.query(By.css('.text')).nativeElement;
 
 		expect(textEl.textContent).toContain('test-text');

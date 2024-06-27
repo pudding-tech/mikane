@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -10,9 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 	imports: [MatIconModule, MatRippleModule],
 })
 export class SplitButtonItemComponent {
-	@Output() splitButtonClick = new EventEmitter();
-	@Input() icon = '';
-	@Input() text = '';
+	splitButtonClick = output();
+	icon = input.required<string>();
+	text = input.required<string>();
 
 	onEnter($event?: KeyboardEvent) {
 		if ($event.key === 'Enter' || $event.key === ' ') {
