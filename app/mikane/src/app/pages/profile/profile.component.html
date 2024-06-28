@@ -115,7 +115,7 @@
 		@for (event of events; track event.id) {
 			<div matRipple (click)="gotoEvent(event.id)" [ngClass]="{ isMobile: breakpointService.isMobile() | async }" class="event">
 				<div class="event-left">
-					@if (event.adminIds.includes(user.id)) {
+					@if (event.adminIds.includes(user?.id)) {
 						<mat-icon [matTooltip]="user.name + ' is an admin for this event'" [matTooltipShowDelay]="100" class="event-icon">shield_person</mat-icon>
 					}
 					@else {
@@ -128,13 +128,23 @@
 				</div>
 				<div class="event-right">
 					@if (event.userInfo.inEvent) {
-						<mat-icon
-							[matTooltip]="'You are ' + ( user.id === event.userInfo.id ? '' : 'also ' ) + 'in this ' + ( event.private ? 'private ': '') + 'event'"
-							[matTooltipShowDelay]="100"
-							class="right-side-icon"
-						>
-							{{ event.private ? 'passkey' : 'how_to_reg' }}
-						</mat-icon>
+						@if (event.private) {
+							<mat-icon
+								svgIcon="passkey_outlined"
+								[matTooltip]="'You are ' + ( user?.id === event.userInfo.id ? '' : 'also ' ) + 'in this private event'"
+								[matTooltipShowDelay]="100"
+								class="right-side-icon custom-svg"
+							/>
+						}
+						@else {
+							<mat-icon
+								[matTooltip]="'You are ' + ( user?.id === event.userInfo.id ? '' : 'also ' ) + 'in this event'"
+								[matTooltipShowDelay]="100"
+								class="right-side-icon"
+							>
+								how_to_reg
+							</mat-icon>
+						}
 					}
 					@if (event.status.id === EventStatusType.ACTIVE) {
 						<mat-icon matTooltip="This event is active" [matTooltipShowDelay]="100" class="right-side-icon">
@@ -200,7 +210,7 @@
 		}
 		@empty {
 			<div class="no-payments">
-				{{ user.name }} has no expenses.
+				{{ user?.name }} has no expenses.
 			</div>
 		}
 		@if (expenses.length >= 5 && showMoreExpenses) {
