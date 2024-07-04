@@ -16,11 +16,16 @@ describe('ExpenseDataSource', () => {
 					name: 'expenseName',
 					description: 'expenseDescription',
 					amount: 100,
-					created: 1234567890,
+					created: new Date('2024-05-01'),
 					categoryInfo: {
 						id: 'categoryId',
 						name: 'categoryName',
 						icon: 'categoryIcon',
+					},
+					eventInfo: {
+						id: 'eventId',
+						name: 'eventName',
+						private: false,
 					},
 					payer: {
 						id: 'payerId',
@@ -67,11 +72,16 @@ describe('ExpenseDataSource', () => {
 					name: 'expenseName',
 					description: 'expenseDescription',
 					amount: 100,
-					created: 1234567890,
+					created: new Date('2024-05-01'),
 					categoryInfo: {
 						id: 'categoryId',
 						name: 'categoryName',
 						icon: 'categoryIcon',
+					},
+					eventInfo: {
+						id: 'eventId',
+						name: 'eventName',
+						private: false,
 					},
 					payer: {
 						id: 'payerId',

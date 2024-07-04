@@ -80,7 +80,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 	usersWithBalance$ = new BehaviorSubject<UserBalance[]>([]);
 
 	displayedParticipantColumns = ['icon', 'name', 'expensesCount', 'costs', 'expenses', 'balance'];
-	displayedColumns: string[] = ['name', 'amount', 'category', 'description'];
+	displayedColumns: string[] = ['name', 'amount', 'category', 'description', 'expenseDate'];
 	dataSources: ExpenseDataSource[] = [];
 
 	inEvent = false;
@@ -307,6 +307,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			description: string;
 			amount: number;
 			payerId: string;
+			expenseDate: Date;
 		};
 		dialogRef
 			.afterClosed()
@@ -329,6 +330,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 						newExpense?.amount,
 						category?.id,
 						newExpense?.payerId,
+						newExpense?.expenseDate,
 					);
 				}),
 			)

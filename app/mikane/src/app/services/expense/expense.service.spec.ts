@@ -14,11 +14,16 @@ describe('ExpenseService', () => {
 		name: 'name',
 		description: 'description',
 		amount: 1,
-		created: 1,
+		created: new Date('2024-05-01'),
 		categoryInfo: {
 			id: 'id',
 			name: 'name',
 			icon: 'icon',
+		},
+		eventInfo: {
+			id: 'eventId',
+			name: 'eventName',
+			private: false,
 		},
 		payer: {
 			id: 'id',
@@ -85,7 +90,7 @@ describe('ExpenseService', () => {
 
 	describe('#createExpense', () => {
 		it('should create expense', () => {
-			service.createExpense('expenseName', 'expenseDescription', 1, 'categoryId', 'payerId').subscribe({
+			service.createExpense('expenseName', 'expenseDescription', 1, 'categoryId', 'payerId', undefined).subscribe({
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual(mockExpense);
 				},
@@ -101,6 +106,7 @@ describe('ExpenseService', () => {
 				amount: 1,
 				categoryId: 'categoryId',
 				payerId: 'payerId',
+				expenseDate: undefined,
 			});
 
 			req.flush(mockExpense);
@@ -109,7 +115,7 @@ describe('ExpenseService', () => {
 
 	describe('#editExpense', () => {
 		it('should edit expense', () => {
-			service.editExpense('expenseId', 'name', 'description', 1, 'categoryId', 'payerId').subscribe({
+			service.editExpense('expenseId', 'name', 'description', 1, 'categoryId', 'payerId', undefined).subscribe({
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual(mockExpense);
 				},
@@ -125,6 +131,7 @@ describe('ExpenseService', () => {
 				amount: 1,
 				categoryId: 'categoryId',
 				payerId: 'payerId',
+				expenseDate: undefined,
 			});
 
 			req.flush(mockExpense);
