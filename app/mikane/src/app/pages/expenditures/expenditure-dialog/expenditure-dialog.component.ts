@@ -3,13 +3,14 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
+import { MatOptionModule, provideNativeDateAdapter } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { ContextService } from 'src/app/services/context/context.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { Expense } from 'src/app/services/expense/expense.service';
 import { User, UserService } from 'src/app/services/user/user.service';
@@ -20,12 +21,14 @@ import { CategoryIcon } from 'src/app/types/enums';
 	templateUrl: 'expenditure-dialog.component.html',
 	styleUrls: ['expenditure-dialog.component.scss'],
 	standalone: true,
+	providers: [provideNativeDateAdapter()],
 	imports: [
 		MatDialogModule,
 		FormsModule,
 		ReactiveFormsModule,
 		MatFormFieldModule,
 		MatInputModule,
+		MatDatepickerModule,
 		MatAutocompleteModule,
 		MatOptionModule,
 		MatButtonModule,
@@ -49,7 +52,8 @@ export class ExpenditureDialogComponent implements OnInit {
 		category: new FormControl('', [Validators.required]),
 		selectedIcon: new FormControl(CategoryIcon.SHOPPING),
 		amount: new FormControl(0, [Validators.required, Validators.min(0)]),
-		payer: new FormControl(this.data.userId, [Validators.required]),
+		payerId: new FormControl(this.data.userId, [Validators.required]),
+		expenseDate: new FormControl(null),
 	});
 
 	constructor(
@@ -62,7 +66,7 @@ export class ExpenditureDialogComponent implements OnInit {
 		},
 		private categoryService: CategoryService,
 		private userService: UserService,
-		public breakpointService: BreakpointService,
+		public contextService: ContextService,
 	) {}
 
 	ngOnInit() {
@@ -82,7 +86,8 @@ export class ExpenditureDialogComponent implements OnInit {
 			this.addExpenseForm.get('category').patchValue(this.data.expense.categoryInfo.name);
 			this.addExpenseForm.get('selectedIcon').patchValue(this.data.expense.categoryInfo.icon as CategoryIcon);
 			this.addExpenseForm.get('amount').patchValue(this.data.expense.amount);
-			this.addExpenseForm.get('payer').patchValue(this.data.expense.payer.id);
+			this.addExpenseForm.get('payerId').patchValue(this.data.expense.payer.id);
+			this.addExpenseForm.get('expenseDate').patchValue(this.data.expense.expenseDate);
 
 			this.addExpenseForm.markAsDirty();
 		}
@@ -92,11 +97,12 @@ export class ExpenditureDialogComponent implements OnInit {
 		this.dialogRef.close();
 	}
 
-	iconChange(icon: CategoryIcon) {
-		this.addExpenseForm.value.selectedIcon = icon;
-	}
-
 	findCategory(categoryName: string) {
 		return this.categories.find((c) => c.name === categoryName);
+	}
+
+	clearDate(event: MouseEvent) {
+		this.addExpenseForm.get('expenseDate').patchValue(null);
+		event.stopPropagation();
 	}
 }

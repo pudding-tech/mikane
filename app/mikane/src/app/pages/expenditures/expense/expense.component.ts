@@ -129,6 +129,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 						newExpense.amount,
 						category.id,
 						newExpense.payer as unknown as string,
+						newExpense.expenseDate,
 					);
 				}),
 				takeUntil(this.destroy$),

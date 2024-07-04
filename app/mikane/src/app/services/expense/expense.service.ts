@@ -10,7 +10,8 @@ export interface Expense {
 	name: string;
 	description: string;
 	amount: number;
-	created: Date | number;
+	expenseDate?: Date;
+	created: Date;
 	categoryInfo: {
 		id: string;
 		name: string;
@@ -45,7 +46,8 @@ export class ExpenseService {
 		expenseDescription: string,
 		amount: number,
 		categoryId: string,
-		payerId: string
+		payerId: string,
+		expenseDate: Date
 	): Observable<Expense> {
 		return this.httpClient.post<Expense>(this.apiUrl, {
 			name: expenseName,
@@ -53,6 +55,7 @@ export class ExpenseService {
 			amount: amount,
 			categoryId: categoryId,
 			payerId: payerId,
+			expenseDate: expenseDate,
 		});
 	}
 
@@ -62,7 +65,8 @@ export class ExpenseService {
 		description: string,
 		amount: number,
 		categoryId: string,
-		payerId: string
+		payerId: string,
+		expenseDate: Date
 	): Observable<Expense> {
 		return this.httpClient.put<Expense>(this.apiUrl + `/${expenseId}`, {
 			name,
@@ -70,6 +74,7 @@ export class ExpenseService {
 			amount,
 			categoryId,
 			payerId,
+			expenseDate,
 		});
 	}
 

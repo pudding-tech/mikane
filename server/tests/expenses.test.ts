@@ -205,7 +205,7 @@ describe("expenses", async () => {
       expense1 = res.body;
     });
 
-    test("should create expense in event2", async () => {
+    test("should create expense in event2, with expense date", async () => {
       const res = await request(app)
         .post("/api/expenses")
         .set("Cookie", authToken)
@@ -214,12 +214,14 @@ describe("expenses", async () => {
           description: "This is test",
           amount: 100,
           categoryId: category2.id,
-          payerId: user.id
+          payerId: user.id,
+          expenseDate: new Date("2024-06-05")
         });
 
       expect(res.status).toEqual(200);
       expect(res.body.name).toEqual("Test expense 2");
       expect(res.body.payer.id).toEqual(user.id);
+      expect(res.body.expenseDate).toEqual(new Date("2024-06-05").toISOString());
       expense2 = res.body;
     });
 

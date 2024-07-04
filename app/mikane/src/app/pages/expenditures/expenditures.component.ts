@@ -22,6 +22,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, filter, map, of, skip, switchMap, take, takeUntil } from 'rxjs';
 import { ExpenseItemComponent } from 'src/app/features/mobile/expense-item/expense-item.component';
@@ -56,6 +57,7 @@ import { ExpenseBottomSheetComponent } from './expense-bottom-sheet/expense-bott
 		MatDialogModule,
 		MatListModule,
 		MatSortModule,
+		MatTooltipModule,
 		MatFormFieldModule,
 		MatInputModule,
 		MatChipsModule,
@@ -109,7 +111,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	destroy$: Subject<void> = new Subject();
 	readonly EventStatusType = EventStatusType;
 
-	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description'];
+	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description', 'expenseDate'];
 	currentUserId: string;
 
 	constructor(
@@ -222,7 +224,8 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			name: string;
 			description?: string;
 			amount: number;
-			payer: string;
+			payerId: string;
+			expenseDate?: Date;
 		};
 		dialogRef
 			.afterClosed()
@@ -243,7 +246,8 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 						newExpense.description,
 						newExpense.amount,
 						category.id,
-						newExpense.payer,
+						newExpense.payerId,
+						newExpense.expenseDate,
 					);
 				}),
 				takeUntil(this.destroy$),
@@ -296,6 +300,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 						editExpense.amount,
 						category.id,
 						editExpense.payer as unknown as string,
+						editExpense.expenseDate,
 					);
 				}),
 				takeUntil(this.destroy$),
@@ -420,7 +425,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 		if (!sort.active || sort.direction === '') {
 			return [
 				...expenses.sort((a, b) => {
-					return this.compare(a.created as number, b.created as number, false);
+					return this.compare(new Date(a.created).getTime(), new Date(b.created).getTime(), false);
 				}),
 			];
 		}
@@ -439,6 +444,12 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 						return this.compare(a.amount, b.amount, isAsc);
 					case 'description':
 						return this.compare(a.description, b.description, isAsc);
+					case 'expenseDate':
+						return this.compare(
+							a.expenseDate ? new Date(a.expenseDate).getTime() : new Date(a.created).getTime(),
+							b.expenseDate ? new Date(b.expenseDate).getTime() : new Date(b.created).getTime(),
+							isAsc
+						);
 					default:
 						return 0;
 				}

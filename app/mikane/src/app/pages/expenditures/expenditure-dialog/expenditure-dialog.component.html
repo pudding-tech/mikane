@@ -46,10 +46,10 @@
 				<mat-error> Amount must be positive </mat-error>
 			}
 		</mat-form-field>
-		@if ((breakpointService.isMobile() | async) === false) {
+		@if (contextService.isMobileDevice === false) {
 			<mat-form-field appearance="fill">
 				<mat-label>Payer</mat-label>
-				<mat-select formControlName="payer" required>
+				<mat-select formControlName="payerId" required>
 					@for (user of users; track user.id) {
 						<mat-option [value]="user.id">
 							<span class="user">
@@ -59,14 +59,14 @@
 						</mat-option>
 					}
 				</mat-select>
-				@if (addExpenseForm.get("payer")?.errors?.["required"]) {
+				@if (addExpenseForm.get("payerId")?.errors?.["required"]) {
 					<mat-error> Payer is required </mat-error>
 				}
 			</mat-form-field>
 		} @else {
 			<mat-form-field appearance="fill">
 				<mat-label>Payer</mat-label>
-				<select matNativeControl required [formControl]="addExpenseForm.get('payer') | formControl">
+				<select matNativeControl required [formControl]="addExpenseForm.get('payerId') | formControl">
 					<option value="" disabled>Choose payer</option>
 					@for (user of users; track user.id) {
 						<option [selected]="user.id === data.userId" [value]="user.id">
@@ -74,6 +74,23 @@
 						</option>
 					}
 				</select>
+			</mat-form-field>
+		}
+		@if (contextService.isMobileDevice === false) {
+			<mat-form-field>
+				<mat-label>Expense Date</mat-label>
+				<input matInput readonly [matDatepicker]="picker" formControlName="expenseDate" (click)="picker.open()" class="mat-datepicker-input">
+				<mat-icon matDatepickerToggleIcon (click)="clearDate($event)" class="clear-icon">clear</mat-icon>
+				<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+				<mat-datepicker #picker></mat-datepicker>
+			</mat-form-field>
+		} @else {
+			<mat-form-field>
+				<mat-label>Expense Date</mat-label>
+				<input matInput readonly [matDatepicker]="picker" formControlName="expenseDate" (click)="picker.open()" class="mat-datepicker-input">
+				<mat-icon matDatepickerToggleIcon (click)="clearDate($event)" class="clear-icon">clear</mat-icon>
+				<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+				<mat-datepicker touchUi #picker></mat-datepicker>
 			</mat-form-field>
 		}
 	</form>
