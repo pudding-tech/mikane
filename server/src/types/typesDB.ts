@@ -60,6 +60,7 @@ export type ExpenseDB = {
   category_id: string,
   category_name: string,
   category_icon: string,
+  expense_date: Date,
   created: Date,
   payer_id: string,
   payer_first_name: string,

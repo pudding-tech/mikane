@@ -82,12 +82,13 @@ export const getExpense = async (expenseId: string, activeUserId: string) => {
  * @param categoryId 
  * @param payerId 
  * @param description 
+ * @param expenseDate 
  * @returns Newly created expense
  */
-export const createExpense = async (activeUserId: string, name: string, amount: number, categoryId: string, payerId: string, description?: string) => {
+export const createExpense = async (activeUserId: string, name: string, amount: number, categoryId: string, payerId: string, description?: string, expenseDate?: Date) => {
   const query = {
-    text: "SELECT * FROM new_expense($1, $2, $3, $4, $5, $6);",
-    values: [name, description, amount, categoryId, payerId, activeUserId]
+    text: "SELECT * FROM new_expense($1, $2, $3, $4, $5, $6, $7);",
+    values: [name, description, amount, categoryId, payerId, expenseDate, activeUserId]
   };
   const expenses: Expense[] = await pool.query(query)
     .then(data => {
@@ -112,16 +113,52 @@ export const createExpense = async (activeUserId: string, name: string, amount: 
 };
 
 /**
- * DB interface: Edit an expense
- * @param userId Expense ID to edit
+ * DB interface: Edit (replace) an expense
+ * @param expenseId Expense ID to edit
  * @param activeUserId ID of signed-in user
  * @param data Data object
  * @returns Edited expense
  */
-export const editExpense = async (expenseId: string, activeUserId: string, data: { name?: string, description?: string, amount?: number, categoryId?: string, payerId?: string }) => {
+export const editExpense = async (expenseId: string, activeUserId: string, data: { name: string, description?: string, amount: number, categoryId: string, payerId: string, expenseDate?: Date }) => {
   const query = {
-    text: "SELECT * FROM edit_expense($1, $2, $3, $4, $5, $6, $7);",
-    values: [expenseId, data.name, data.description, data.amount, data.categoryId, data.payerId, activeUserId]
+    text: "SELECT * FROM edit_expense(true, $1, $2, $3, $4, $5, $6, $7, $8);",
+    values: [expenseId, data.name, data.description, data.amount, data.categoryId, data.payerId, data.expenseDate, activeUserId]
+  };
+  const expense: Expense[] = await pool.query(query)
+    .then(data => {
+      return parseExpenses(data.rows);
+    })
+    .catch(err => {
+      if (err.code === "P0084")
+        throw new ErrorExt(ec.PUD084, err);
+      else if (err.code === "P0007")
+        throw new ErrorExt(ec.PUD007, err);
+      else if (err.code === "P0008")
+        throw new ErrorExt(ec.PUD008, err);
+      else if (err.code === "P0062")
+        throw new ErrorExt(ec.PUD062, err);
+      else if (err.code === "P0118")
+        throw new ErrorExt(ec.PUD118, err);
+      else if (err.code === "P0138")
+        throw new ErrorExt(ec.PUD138, err);
+      else
+        throw new ErrorExt(ec.PUD117, err);
+    });
+
+  return expense[0];
+};
+
+/**
+ * DB interface: Edit (patch) an expense
+ * @param expenseId Expense ID to edit
+ * @param activeUserId ID of signed-in user
+ * @param data Data object
+ * @returns Edited expense
+ */
+export const patchExpense = async (expenseId: string, activeUserId: string, data: { name?: string, description?: string, amount?: number, categoryId?: string, payerId?: string, expenseDate?: Date }) => {
+  const query = {
+    text: "SELECT * FROM edit_expense(false, $1, $2, $3, $4, $5, $6, $7, $8);",
+    values: [expenseId, data.name, data.description, data.amount, data.categoryId, data.payerId, data.expenseDate, activeUserId]
   };
   const expense: Expense[] = await pool.query(query)
     .then(data => {

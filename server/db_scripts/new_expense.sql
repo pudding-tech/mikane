@@ -5,6 +5,7 @@ create or replace function new_expense(
   ip_amount numeric(16, 2),
   ip_category_id uuid,
   ip_payer_id uuid,
+  ip_expense_date date,
   ip_by_user_id uuid
 )
 returns table (
@@ -12,6 +13,7 @@ returns table (
   name varchar(255),
   description varchar(255),
   amount numeric(16, 2),
+  expense_date date,
   created timestamp,
   category_id uuid,
   category_name varchar(255),
@@ -59,8 +61,8 @@ begin
     raise exception 'Cannot access private event' using errcode = 'P0138';
   end if;
 
-  insert into expense("name", "description", amount, category_id, payer_id, created)
-    values (ip_name, nullif(trim(ip_description), ''), ip_amount, ip_category_id, ip_payer_id, CURRENT_TIMESTAMP)
+  insert into expense("name", "description", amount, category_id, payer_id, expense_date, created)
+    values (ip_name, nullif(trim(ip_description), ''), ip_amount, ip_category_id, ip_payer_id, ip_expense_date, CURRENT_TIMESTAMP)
     returning expense.id into tmp_expense_id;
 
   return query

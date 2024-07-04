@@ -62,6 +62,7 @@ create table expense (
   amount numeric(16, 2) not null,
   category_id uuid not null references category(id) on delete cascade,
   payer_id uuid references "user"(id) on delete cascade,
+  expense_date date,
   created timestamp not null
 );
 create index idx_expense_created on expense(created);
