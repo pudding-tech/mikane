@@ -168,6 +168,7 @@ router.post("/requestpasswordreset", async (req, res, next) => {
 
     const userId = await dbUsers.getUserID(email);
     if (!userId) {
+      // If the user does not exist, randomize the response time to simulate the delay of sending an email, thereby preventing any indication to the end user about the user's existence
       const delay = Math.floor((Math.random() * 1500) + 1500);
       await new Promise(resolve => setTimeout(() => {
         const response = res.status(200).json({ message: "Email successfully sent" });

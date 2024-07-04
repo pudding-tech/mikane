@@ -1,11 +1,13 @@
 drop function if exists edit_expense;
 create or replace function edit_expense(
+  ip_replace boolean,
   ip_expense_id uuid,
   ip_name varchar(255),
   ip_description varchar(255),
   ip_amount numeric(16, 2),
   ip_category_id uuid,
   ip_payer_id uuid,
+  ip_expense_date date,
   ip_by_user_id uuid
 )
 returns table (
@@ -13,6 +15,7 @@ returns table (
   name varchar(255),
   description varchar(255),
   amount numeric(16, 2),
+  expense_date date,
   created timestamp,
   category_id uuid,
   category_name varchar(255),
@@ -74,16 +77,31 @@ begin
     raise exception 'User cannot pay for expense as user is not in event' using errcode = 'P0062';
   end if;
 
-  update
-    expense e
-  set
-    name = coalesce(ip_name, e.name),
-    description = nullif(trim(coalesce(ip_description, e.description)), ''),
-    amount = coalesce(ip_amount, e.amount),
-    category_id = coalesce(ip_category_id, e.category_id),
-    payer_id = coalesce(ip_payer_id, e.payer_id)
-  where
-    e.id = ip_expense_id;
+  if ip_replace is true then
+    update
+      expense e
+    set
+      name = ip_name,
+      description = nullif(trim(ip_description), ''),
+      amount = ip_amount,
+      category_id = ip_category_id,
+      payer_id = ip_payer_id,
+      expense_date = ip_expense_date
+    where
+      e.id = ip_expense_id;
+  else
+    update
+      expense e
+    set
+      name = coalesce(ip_name, e.name),
+      description = nullif(trim(coalesce(ip_description, e.description)), ''),
+      amount = coalesce(ip_amount, e.amount),
+      category_id = coalesce(ip_category_id, e.category_id),
+      payer_id = coalesce(ip_payer_id, e.payer_id),
+      expense_date = coalesce(ip_expense_date, e.expense_date)
+    where
+      e.id = ip_expense_id;
+  end if;
   
   return query
   select * from get_expenses(null, null, ip_expense_id, ip_by_user_id);

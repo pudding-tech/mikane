@@ -24,7 +24,8 @@ export const parseExpenses = (expInput: ExpenseDB[], usersInEventInput?: UserNam
       name: expObj.name,
       description: expObj.description,
       amount: parseFloat(expObj.amount),
-      created: expObj.created.getTime(),
+      expenseDate: new Date(expObj.expense_date + "Z"),
+      created: new Date(expObj.created + "Z"),
       categoryInfo: {
         id: expObj.category_id,
         name: expObj.category_name,

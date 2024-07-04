@@ -74,7 +74,8 @@ export type Expense = {
   name: string,
   description: string,
   amount: number,
-  created: number,
+  expenseDate?: Date,
+  created: Date,
   categoryInfo: {
     id: string,
     name: string,
