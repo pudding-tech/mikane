@@ -6,3 +6,6 @@ create table user_preferences (
 );
 
 update event_status_type set name = 'Settled' where id = 3;
+
+ALTER TABLE expense
+ADD expense_date date;

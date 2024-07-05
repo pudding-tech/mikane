@@ -26,7 +26,7 @@ export const parseCategories = (catInput: CategoryDB[], target: Target, usersInE
       name: catObj.name,
       icon: icon,
       weighted: catObj.weighted,
-      created: catObj.created,
+      created: new Date(catObj.created + "Z"),
       numberOfExpenses: catObj.number_of_expenses
     };
 

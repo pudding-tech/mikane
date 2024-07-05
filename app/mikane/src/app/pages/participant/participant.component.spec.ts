@@ -571,7 +571,7 @@ describe('ParticipantComponent', () => {
 
 			component.createExpenseDialog('1', jasmine.createSpyObj('ExpenseDataSource', ['addExpense']));
 
-			expect(expenseServiceStub.createExpense).toHaveBeenCalledWith('test', 'test', 0, '1', '1');
+			expect(expenseServiceStub.createExpense).toHaveBeenCalledWith('test', 'test', 0, '1', '1', undefined);
 		});
 
 		it('should add expense to data source', () => {

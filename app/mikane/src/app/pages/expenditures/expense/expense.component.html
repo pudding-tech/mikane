@@ -29,6 +29,17 @@
 					</div>
 				</div>
 			</div>
+			<div class="title">
+				<div class="header">Date</div>
+				<span [ngClass]="{ 'expense-created-date': !expense.expenseDate }">
+					{{ (expense.expenseDate ?? expense.created) | date: 'mediumDate' : null : 'en' }}
+				</span>
+				@if (!expense.expenseDate) {
+					<div class="expense-created-date date-explanation">
+						Expense date not set - displaying date created instead
+					</div>
+				}
+			</div>
 			@if (expense.description) {
 				<div class="title">
 					<div class="header">Description</div>

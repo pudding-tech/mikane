@@ -13,7 +13,7 @@ export const parseEvents = (eventsInput: EventDB[]) => {
       id: eventObj.id,
       name: eventObj.name,
       description: eventObj.description,
-      created: eventObj.created,
+      created: new Date(eventObj.created + "Z"),
       adminIds: eventObj.admin_ids.map(admin => admin.user_id),
       private: eventObj.private,
       status: {

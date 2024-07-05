@@ -3115,6 +3115,10 @@
                   "payerId": {
                     "type": "string",
                     "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  },
+                  "expenseDate": {
+                    "type": "date",
+                    "example": "2023-01-20"
                   }
                 }
               }
@@ -3235,7 +3239,7 @@
         "tags": [
           "Expenses"
         ],
-        "summary": "Edit expense",
+        "summary": "Edit (replace) expense",
         "description": "Edit an expense",
         "operationId": "putExpense",
         "security": [
@@ -3279,6 +3283,95 @@
                   "payerId": {
                     "type": "string",
                     "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  },
+                  "expenseDate": {
+                    "type": "date",
+                    "example": "2023-01-20"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Expense not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "Edit (patch) expense",
+        "description": "Edit any property of an expense (does not support unsetting properties)",
+        "operationId": "patchExpense",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Expense ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Expense details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "New expense name"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 120
                   }
                 }
               }
@@ -4271,6 +4364,10 @@
           "amount": {
             "type": "number",
             "example": 100
+          },
+          "expenseDate": {
+            "type": "date",
+            "example": "2023-01-20"
           },
           "created": {
             "type": "date-time",

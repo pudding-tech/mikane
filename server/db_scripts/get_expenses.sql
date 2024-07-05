@@ -10,6 +10,7 @@ returns table (
   name varchar(255),
   description varchar(255),
   amount numeric(16, 2),
+  expense_date date,
   created timestamp,
   category_id uuid,
   category_name varchar(255),
@@ -48,7 +49,7 @@ begin
 
     return query
     select
-      ex.id, ex.name, ex.description, ex.amount, ex.created,
+      ex.id, ex.name, ex.description, ex.amount, ex.expense_date, ex.created,
       c.id as category_id, c.name as category_name, c.icon as category_icon,
       u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email, u.guest as payer_guest, u.deleted as payer_deleted,
       ev.id as event_id, ev.name as event_name, ev.private as event_private
@@ -81,7 +82,7 @@ begin
 
     return query
     select
-      ex.id, ex.name, ex.description, ex.amount, ex.created,
+      ex.id, ex.name, ex.description, ex.amount, ex.expense_date, ex.created,
       c.id as category_id, c.name as category_name, c.icon as category_icon,
       u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email, u.guest as payer_guest, u.deleted as payer_deleted,
       ev.id as event_id, ev.name as event_name, ev.private as event_private
@@ -104,7 +105,7 @@ begin
 
     return query
     select
-      ex.id, ex.name, ex.description, ex.amount, ex.created,
+      ex.id, ex.name, ex.description, ex.amount, ex.expense_date, ex.created,
       c.id as category_id, c.name as category_name, c.icon as category_icon,
       u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email, u.guest as payer_guest, u.deleted as payer_deleted,
       ev.id as event_id, ev.name as event_name, ev.private as event_private
@@ -143,7 +144,7 @@ begin
 
     return query
     select
-      ex.id, ex.name, ex.description, ex.amount, ex.created,
+      ex.id, ex.name, ex.description, ex.amount, ex.expense_date, ex.created,
       c.id as category_id, c.name as category_name, c.icon as category_icon,
       u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email, u.guest as payer_guest, u.deleted as payer_deleted,
       ev.id as event_id, ev.name as event_name, ev.private as event_private

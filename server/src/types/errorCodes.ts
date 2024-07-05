@@ -1319,3 +1319,30 @@ export const PUD139: ErrorCode = {
   status: 500,
   log: true
 };
+
+/**
+ * PUD-140: Cannot send 'ready-to-settle' notification email for event that's not ready to settle (400)
+ */
+export const PUD140: ErrorCode = {
+  code: "PUD-140",
+  message: "Cannot send 'ready-to-settle' notification email for event that's not ready to settle",
+  status: 400
+};
+
+/**
+ * PUD-141: Invalid date format (400)
+ */
+export const PUD141: ErrorCode = {
+  code: "PUD-141",
+  message: "Invalid date format",
+  status: 400
+};
+
+/**
+ * PUD-142: Request body must include name, amount, category ID, and payer ID (400)
+ */
+export const PUD142: ErrorCode = {
+  code: "PUD-142",
+  message: "Request body must include name, amount, category ID, and payer ID",
+  status: 400
+};
