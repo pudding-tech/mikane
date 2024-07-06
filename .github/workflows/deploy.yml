@@ -50,7 +50,7 @@ jobs:
     if: needs.check-tag.outputs.tag-exists == 'true'
     uses: ./.github/workflows/frontend-build.yml
     with:
-      tag: ${{ inputs.release }}
+      tag: v${{ inputs.release }}
       node-version: ${{ inputs.node-version }}
       dry-run: ${{ inputs.dry-run }}
       environment: ${{ inputs.environment }}
@@ -60,7 +60,7 @@ jobs:
     if: needs.check-tag.outputs.tag-exists == 'true'
     uses: ./.github/workflows/backend-build.yml
     with:
-      tag: ${{ inputs.release }}
+      tag: v${{ inputs.release }}
       node-version: ${{ inputs.node-version }}
       dry-run: ${{ inputs.dry-run }}
       upload-artifact: true
