@@ -128,8 +128,11 @@
 								{{ hide ? "visibility_off" : "visibility" }}
 							</mat-icon>
 						</button>
-						@if (registerUserForm.get("passwordGroup").get("password")?.invalid) {
-							<mat-error> Invalid password </mat-error>
+						@if (registerUserForm.get('passwordGroup').get('password')?.errors?.["required"]) {
+							<mat-error>Password is required</mat-error>
+						}
+						@if (registerUserForm.get('passwordGroup').get('password')?.errors?.["minlength"]) {
+							<mat-error>Password must be at least 3 characters long</mat-error>
 						}
 					</mat-form-field>
 				</div>
@@ -156,8 +159,14 @@
 								{{ hide ? "visibility_off" : "visibility" }}
 							</mat-icon>
 						</button>
-						@if (registerUserForm.get("passwordGroup").get("passwordRetype")?.invalid) {
-							<mat-error> Password does not match </mat-error>
+						@if (registerUserForm.get('passwordGroup').get('passwordRetype')?.errors?.["required"]) {
+							<mat-error>Password is required</mat-error>
+						}
+						@if (registerUserForm.get('passwordGroup').get('passwordRetype')?.errors?.["minlength"]) {
+							<mat-error>Password must be at least 3 characters long</mat-error>
+						}
+						@if (registerUserForm.get('passwordGroup').get('passwordRetype')?.errors?.["match_error"]) {
+							<mat-error>Passwords do not match</mat-error>
 						}
 					</mat-form-field>
 				</div>

@@ -4010,6 +4010,9 @@
         "summary": "Send 'ready-to-settle' email to all payers in an event",
         "description": "Send a 'ready-to-settle' email to all participants that should send payments in an event",
         "operationId": "postReadyToSettleEmail",
+        "security": [
+          { "cookieAuth": [] }
+        ],
         "parameters": [
           {
             "name": "id",
