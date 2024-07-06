@@ -54,7 +54,7 @@ jobs:
         run: |
           version=$(cat package.json | jq -r '.version')
           echo "version=$version" >> $GITHUB_OUTPUT
-          echo "artifact=mikane-dist-$version" >> $GITHUB_OUTPUT
+          echo "artifact=mikane-dist-v$version" >> $GITHUB_OUTPUT
       - name: Build setup
         run: |
           echo Version ${{ steps.vars.outputs.version }} >> $GITHUB_STEP_SUMMARY
