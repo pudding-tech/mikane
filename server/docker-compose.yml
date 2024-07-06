@@ -1,11 +1,10 @@
-version: "3.8"
 services:
   server:
     build:
       context: ./
       args:
-        SERVER_URL: 
-        SERVER_DESCRIPTION: 
+        SERVER_URL:
+        SERVER_DESCRIPTION:
     image: mikane:latest
     container_name: api
     ports:

@@ -10,7 +10,7 @@
 		<div mat-dialog-content>
 			<mat-form-field appearance="fill">
 				<mat-label>First name</mat-label>
-				<input matInput name="firstName" [(ngModel)]="guest.firstName" required [appEventName]="guest.id" #firstName="ngModel" />
+				<input matInput name="firstName" [(ngModel)]="guest.firstName" required #firstName="ngModel" />
 				@if (firstName.errors?.["required"]) {
 					<mat-error>First name is required</mat-error>
 				}
@@ -36,7 +36,8 @@
 	<div mat-dialog-content>
 		Are you sure you want to delete this guest user? This cannot be undone.
 		<br /><br />
-		The guest user will be removed from all active events. For settled events, the guest user's contributions will be anonymized to maintain event integrity.
+		The guest user will be removed from all active events. For settled events, the guest user's contributions will be anonymized to
+		maintain event integrity.
 	</div>
 	<div mat-dialog-actions class="dialog-buttons">
 		<div>
