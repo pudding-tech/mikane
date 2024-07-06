@@ -36,8 +36,8 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 
 	changePasswordForm = new FormGroup({
 		currentPassword: new FormControl<string>('', [Validators.required]),
-		newPassword: new FormControl<string>('', [Validators.required]),
-		newPasswordRetype: new FormControl<string>('', [Validators.required]),
+		newPassword: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
+		newPasswordRetype: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
 	});
 
 	constructor(

@@ -61,10 +61,10 @@ describe("validation", async () => {
     category = resCategory.body;
   });
 
-  /* ----------------------------- */
-  /* GET /validation/user/username */
-  /* ----------------------------- */
-  describe("GET /validation/user/username", async () => {
+  /* ------------------------------ */
+  /* POST /validation/user/username */
+  /* ------------------------------ */
+  describe("POST /validation/user/username", async () => {
     test("fail when validating username already in use", async () => {
       const res = await request(app)
         .post("/api/validation/user/username")
@@ -199,10 +199,10 @@ describe("validation", async () => {
     });
   });
 
-  /* -------------------------- */
-  /* GET /validation/user/email */
-  /* -------------------------- */
-  describe("GET /validation/user/email", async () => {
+  /* --------------------------- */
+  /* POST /validation/user/email */
+  /* --------------------------- */
+  describe("POST /validation/user/email", async () => {
     test("fail when validating email already in use", async () => {
       const res = await request(app)
         .post("/api/validation/user/email")
@@ -287,10 +287,10 @@ describe("validation", async () => {
     });
   });
 
-  /* -------------------------- */
-  /* GET /validation/user/phone */
-  /* -------------------------- */
-  describe("GET /validation/user/phone", async () => {
+  /* --------------------------- */
+  /* POST /validation/user/phone */
+  /* --------------------------- */
+  describe("POST /validation/user/phone", async () => {
     test("fail when validating phone number already in use", async () => {
       const res = await request(app)
         .post("/api/validation/user/phone")
@@ -363,10 +363,10 @@ describe("validation", async () => {
     });
   });
 
-  /* -------------------------- */
-  /* GET /validation/event/name */
-  /* -------------------------- */
-  describe("GET /validation/event/name", async () => {
+  /* --------------------------- */
+  /* POST /validation/event/name */
+  /* --------------------------- */
+  describe("POST /validation/event/name", async () => {
     test("fail when validating event name already in use", async () => {
       const res = await request(app)
         .post("/api/validation/event/name")
@@ -440,10 +440,10 @@ describe("validation", async () => {
     });
   });
 
-  /* ----------------------------- */
-  /* GET /validation/category/name */
-  /* ----------------------------- */
-  describe("GET /validation/category/name", async () => {
+  /* ------------------------------ */
+  /* POST /validation/category/name */
+  /* ------------------------------ */
+  describe("POST /validation/category/name", async () => {
     test("fail when validating category name already in use within event", async () => {
       const res = await request(app)
         .post("/api/validation/category/name")

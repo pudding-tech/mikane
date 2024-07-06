@@ -18,13 +18,13 @@ export class ParticipantItemComponent {
 	numberOfParticipants = input.required<number>();
 	numberOfAdmins = input.required<number>();
 	gotoUser = output<{ user: User}>();
-	removeUser = output<{ userId: string }>();
+	removeUser = output<{ user: User }>();
 
 	gotoUserProfile() {
 		this.gotoUser.emit({ user: this.userBalance().user });
 	}
 
 	removeUserFromEvent() {
-		this.removeUser.emit({ userId: this.userBalance().user.id });
+		this.removeUser.emit({ user: this.userBalance().user });
 	}
 }

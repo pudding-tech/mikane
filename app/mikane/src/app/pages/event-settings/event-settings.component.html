@@ -15,12 +15,16 @@
 							<ng-container *ngTemplateOutlet="editContent"></ng-container>
 						</div>
 						<div class="header">Change status</div>
-						<div class="event-settings-content settle">
+						<div class="event-settings-content status">
 							<ng-container *ngTemplateOutlet="statusContent"></ng-container>
 						</div>
 						<div class="header">Manage administrators</div>
 						<div class="event-settings-content admins">
 							<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
+						</div>
+						<div class="header">Notifications</div>
+						<div class="event-settings-content notifications">
+							<ng-container *ngTemplateOutlet="notificationsContent"></ng-container>
 						</div>
 						<div class="header">Delete event</div>
 						<div class="event-settings-content delete">
@@ -35,12 +39,16 @@
 			<div class="header-mobile">Edit event</div>
 			<ng-container *ngTemplateOutlet="editContent"></ng-container>
 			<div class="header-mobile">Change status</div>
-			<div class="event-settings-content settle">
+			<div class="event-settings-content status">
 				<ng-container *ngTemplateOutlet="statusContent"></ng-container>
 			</div>
 			<div class="header-mobile admins">Manage administrators</div>
 			<div>
 				<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
+			</div>
+			<div class="header-mobile">Notifications</div>
+			<div class="event-settings-content notifications">
+				<ng-container *ngTemplateOutlet="notificationsContent"></ng-container>
 			</div>
 			<div class="header-mobile">Delete event</div>
 			<div class="event-settings-content delete-mobile">
@@ -200,6 +208,23 @@
 			</button>
 		</div>
 	</div>
+</ng-template>
+
+<ng-template #notificationsContent>
+	@if (event?.status.id === EventStatusType.READY_TO_SETTLE) {
+	 <div class="event-settings-text">
+		As the event is ready to be settled, you can email all payers to inform them of their expenses, how much they owe, and who to pay.
+	 </div>
+	}
+	@else {
+		<div class="event-settings-text">
+			Only events that are ready to be settled can send emails
+		</div>
+	}
+	<button mat-raised-button color="primary" [disabled]="event?.status.id !== EventStatusType.READY_TO_SETTLE || emailSentLoading" [class.spinner]="emailSentLoading" (click)="sendReadyToSettleEmails()">
+		<mat-icon>email</mat-icon>
+		Send 'ready to settle' email
+	</button>
 </ng-template>
 
 <ng-template #deleteContent>

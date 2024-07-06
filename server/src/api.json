@@ -4001,6 +4001,43 @@
           }
         }
       }
+    },
+    "/notifications/{eventId}/settle": {
+      "post": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Send 'ready-to-settle' email to all payers in an event",
+        "description": "Send a 'ready-to-settle' email to all participants that should send payments in an event",
+        "operationId": "postReadyToSettleEmail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Emails successfully sent"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
