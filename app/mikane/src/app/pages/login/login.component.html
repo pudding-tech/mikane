@@ -16,8 +16,7 @@
 				<mat-card-title>
 					@if (!resetPasswordView) {
 						<div>Login</div>
-					}
-					@else {
+					} @else {
 						<div>Reset password</div>
 					}
 				</mat-card-title>
@@ -25,8 +24,7 @@
 			<mat-card-content class="card-content">
 				@if (!resetPasswordView) {
 					<ng-container *ngTemplateOutlet="loginContent"></ng-container>
-				}
-				@else {
+				} @else {
 					<ng-container *ngTemplateOutlet="resetPasswordContent"></ng-container>
 				}
 			</mat-card-content>
@@ -45,8 +43,7 @@
 			</h1>
 			@if (!resetPasswordView) {
 				<ng-container *ngTemplateOutlet="loginContent"></ng-container>
-			}
-			@else {
+			} @else {
 				<h2 class="reset-password-title">Reset password</h2>
 				<ng-container *ngTemplateOutlet="resetPasswordContent"></ng-container>
 			}
@@ -79,14 +76,13 @@
 				</button>
 			</mat-form-field>
 		</div>
-		<button type="submit" mat-raised-button color="primary" id="login-button" class="login-input button">
+		<button type="submit" [disabled]="loading" mat-raised-button color="primary" id="login-button" class="login-input button">
 			@if (!loading) {
 				<ng-container matButtonIcon>
 					<mat-icon aria-hidden="false">login</mat-icon>
 					<span>Log in</span>
 				</ng-container>
-			}
-			@else {
+			} @else {
 				<mat-spinner diameter="20" class="mat-spinner"></mat-spinner>
 			}
 		</button>
@@ -102,7 +98,7 @@
 		<mat-form-field appearance="fill" class="login-input">
 			<mat-label>Email</mat-label>
 			<input type="email" id="email-input" matInput placeholder="Email" formControlName="email" />
-			@if (resetPasswordForm.get('email')?.invalid) {
+			@if (resetPasswordForm.get("email")?.invalid) {
 				<mat-error> Invalid email </mat-error>
 			}
 		</mat-form-field>
@@ -112,15 +108,14 @@
 					<mat-icon aria-hidden="false">email</mat-icon>
 					<span>Send instructions</span>
 				</ng-container>
-			}
-			@else {
+			} @else {
 				<mat-spinner diameter="20" class="mat-spinner"></mat-spinner>
 			}
 		</button>
 		@if (resetPasswordRequestSent) {
 			<div class="info-text">
-				Your password reset request has been received and is being processed. You will receive an email with password reset instructions
-				shortly.
+				Your password reset request has been received and is being processed. You will receive an email with password reset
+				instructions shortly.
 			</div>
 		}
 		@if (errorResponse) {
