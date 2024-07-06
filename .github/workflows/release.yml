@@ -46,4 +46,4 @@ jobs:
       node-version: ${{ inputs.node-version }}
       dry-run: ${{ inputs.dry-run }}
     secrets:
-      github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      commit-key: ${{ secrets.COMMIT_KEY }}

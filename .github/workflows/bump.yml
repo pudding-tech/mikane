@@ -13,7 +13,7 @@ on:
         default: false
         type: boolean
     secrets:
-      github-token:
+      commit-key:
         required: true
     outputs:
       tag:
@@ -27,6 +27,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.commit-key }}
 
       - name: Setup Node ${{ inputs.node-version }}
         uses: actions/setup-node@v4
@@ -60,12 +62,9 @@ jobs:
 
       - name: Push changes to repository
         if: ${{ !inputs.dry-run }}
-        uses: CasperWA/push-protected@v2
-        with:
-          token: ${{ secrets.github-token }}
-          branch: ${{ github.ref_name }}
-          tags: true
-          force: true
+        run: |
+          git push origin ${{ github.ref_name }}
+          git push origin tag ${{ env.NEW_VERSION }}
 
       - name: Summary
         id: summary
