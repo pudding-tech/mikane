@@ -17,14 +17,14 @@ Mikane is a tool designed for calculating payments to settle shared expenses fro
 - **Optimized Payments**: Dynamically calculates minimal transactions to settle expenses efficiently.
 - **Mobile Support**: Full mobile support with a responsive design and PWA capabilities for a seamless experience on any device.
 - **Authentication**: Secure login and registration of users.
-- **Invitations**: Send personalized email invitations to users to join events and activities.
+- **Notifications**: Send email notifications for event activities and updates.
 
 ## Installation
 
 ### Prerequisites
 
 - Node.js 22.x
-- PostgreSQL 15 (backend setup - option A)
+- PostgreSQL 15+ (backend setup - option A)
 - Docker (backend setup - option B)
 
 ### Steps
