@@ -53,6 +53,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	adminsInEvent: User[];
 	otherUsersInEvent: User[];
 	currentUser: User;
+	emailSentLoading = false;
 
 	addAdminForm = new FormGroup({
 		userId: new FormControl('', [Validators.required]),
@@ -61,6 +62,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	readonly EventStatusType = EventStatusType;
 	private eventSubscription: Subscription;
 	private deleteSubscription: Subscription;
+	private emailSubscription: Subscription;
 
 	constructor(
 		private router: Router,
@@ -258,8 +260,43 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 		}
 	}
 
+	sendReadyToSettleEmails() {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '420px',
+			data: {
+				title: 'Send \'ready to settle\' email',
+				content: 'Are you sure you want to send the \'ready to settle\' email? Emails will be sent to all payers in the event.',
+				confirm: 'Yes, I am sure',
+			},
+		});
+
+		this.emailSubscription = dialogRef
+			.afterClosed()
+			.pipe(
+				switchMap((confirm) => {
+					if (confirm) {
+						this.emailSentLoading = true;
+						return this.eventService.sendReadyToSettleEmails(this.event.id);
+					} else {
+						return NEVER;
+					}
+				}),
+			)
+			.subscribe({
+				next: () => {
+					this.emailSentLoading = false;
+					this.messageService.showSuccess('Emails successfully sent');
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to send emails');
+					console.error('Something went wrong while sending emails', err?.error?.message);
+				},
+			});
+	}
+
 	ngOnDestroy(): void {
 		this.eventSubscription?.unsubscribe();
 		this.deleteSubscription?.unsubscribe();
+		this.emailSubscription?.unsubscribe();
 	}
 }

@@ -7,6 +7,7 @@ import { authenticate, createHash, generateApiKey } from "../utils/auth";
 import { generateKey } from "../utils/generateKey";
 import { User } from "../types/types";
 import { masterKeyCheck } from "../middlewares/authCheck";
+import { isValidPassword } from "../utils/validators/passwordValidator";
 import { sendPasswordResetEmail } from "../email-services/passwordReset";
 import { ErrorExt } from "../types/errorExt";
 const router = express.Router();
@@ -199,7 +200,7 @@ router.post("/resetpassword", async (req, res, next) => {
     }
 
     const password: string = req.body.password;
-    if (!password || password.trim() === "") {
+    if (!isValidPassword(password)) {
       throw new ErrorExt(ec.PUD079);
     }
 

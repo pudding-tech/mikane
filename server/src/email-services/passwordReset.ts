@@ -28,8 +28,8 @@ const passwordResetEmailHTML = (key: string) => {
               <br>
               <a href="${url + key}" style="display: inline-block; padding: 10px 20px; background-color: #c2185b; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">Reset password</a>
               <br><br>
-              <div>This link will stay active for 1 hour.</div>
-              <div>Didn't request a password reset? You can safely delete this email.</div>
+              <div>This link will remain active for 1 hour.</div>
+              <div>Didn't request a password reset? You can safely ignore this email.</div>
             </body>
           </html>`;
 };

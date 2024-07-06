@@ -246,16 +246,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	deleteUserDialog(userId: string) {
+	deleteUserDialog(user: User) {
 		const privateInfo = `Please note: This is a private event.
-			${userId === this.currentUser.id
+			${user.id === this.currentUser.id
 				? 'If you leave, you will not be able to rejoin on your own.'
 				: 'If you remove this user, they will lose all access to the event.'}`;
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
 			width: '430px',
 			data: {
-				title: userId === this.currentUser.id ? 'Leave event' : 'Remove user',
-				content: `Are you sure you want to ${userId === this.currentUser.id ? 'leave this event?' : 'remove this user?'}`,
+				title: user.id === this.currentUser.id ? `Leave ${this.event.name}` : `Remove ${user.name} from ${this.event.name}`,
+				content: `Are you sure you want to ${user.id === this.currentUser.id ? 'leave this event?' : 'remove this user?'}`,
 				extraContent: this.event.private ? privateInfo : undefined,
 				confirm: 'I am sure',
 			},
@@ -263,7 +263,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
 		dialogRef.afterClosed().subscribe((confirm) => {
 			if (confirm) {
-				this.removeUser(userId);
+				this.removeUser(user.id);
 			}
 		});
 	}

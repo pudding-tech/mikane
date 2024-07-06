@@ -86,4 +86,8 @@ export class EventService {
 	removeUserAsAdmin(eventId: string, userId: string): Observable<PuddingEvent> {
 		return this.httpClient.delete<PuddingEvent>(this.apiUrl + `/${eventId}/admin/${userId}`);
 	}
+
+	sendReadyToSettleEmails(eventId: string): Observable<void> {
+		return this.httpClient.post<void>(this.env.apiUrl + `/notifications/${eventId}/settle`, {});
+	}
 }

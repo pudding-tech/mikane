@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   mikane_test_db:
     image: postgres:15

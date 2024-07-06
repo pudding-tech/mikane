@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeAll, vi } from "vitest";
+import { describe, test, expect, beforeAll, afterEach, vi } from "vitest";
 import request from "supertest";
 import nodemailerMock from "nodemailer-mock";
 import app from "../src/server";
@@ -87,6 +87,10 @@ describe("guest", async () => {
         password: "secret"
       });
     authToken3 = resLogin3.headers["set-cookie"][0];
+  });
+
+  afterEach(async () => {
+    nodemailerMock.mock.reset();
   });
 
   /* ------------ */

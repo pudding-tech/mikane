@@ -189,7 +189,7 @@
 													mat-raised-button
 													type="button"
 													color="warn"
-													(click)="deleteUserDialog(userWithBalance.user.id)"
+													(click)="deleteUserDialog(userWithBalance.user)"
 												>
 													{{ userWithBalance.user.id === currentUser.id ? 'Leave event' : 'Remove user' }}
 												</button>
@@ -215,7 +215,9 @@
 				} @else {
 					<div class="not-in-event">
 						<span>You are not in this event</span>
-						<button mat-flat-button color="accent2" (click)="joinEvent()">Join</button>
+						@if (event?.status.id === EventStatusType.ACTIVE) {
+							<button mat-flat-button (click)="joinEvent()">Join</button>
+						}
 					</div>
 				}
 				@if (isAdmin) {
@@ -245,7 +247,7 @@
 						[numberOfAdmins]="event?.adminIds.length"
 						(click)="gotoUserExpenses(userWithBalance)"
 						(gotoUser)="gotoUserProfile($event.user)"
-						(removeUser)="deleteUserDialog($event.userId)"
+						(removeUser)="deleteUserDialog($event.user)"
 					></app-participant-item>
 				}
 			</mat-nav-list>

@@ -9,7 +9,7 @@ else {
 }
 
 interface EnvVariables {
-  NODE_ENV: "dev" | "production" | "staging" | "test";
+  NODE_ENV: EnvType;
   IN_PROD: boolean;
   DEPLOYED: boolean;
   PORT: number;
@@ -27,6 +27,12 @@ interface EnvVariables {
   MIKANE_EMAIL?: string;
   MIKANE_EMAIL_PASSWORD?: string;
 }
+
+type EnvType = "dev" | "production" | "staging" | "test";
+
+const isEnvType = (environement: any): environement is EnvType => {
+  return ["dev", "production", "staging", "test"].includes(environement);
+};
 
 const validateEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
 
@@ -55,7 +61,7 @@ const validateEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
   }
 
   return {
-    NODE_ENV: (env.NODE_ENV === "dev" || env.NODE_ENV === "production" || env.NODE_ENV === "staging" || env.NODE_ENV === "test") ? env.NODE_ENV : "dev",
+    NODE_ENV: isEnvType(env.NODE_ENV) ? env.NODE_ENV : "dev",
     IN_PROD: env.NODE_ENV === "production",
     DEPLOYED: env.DEPLOYED === "true",
     PORT: parseInt(env.PORT ?? "") || 3002,

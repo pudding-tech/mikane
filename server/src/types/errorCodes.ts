@@ -752,11 +752,11 @@ export const PUD078: ErrorCode = {
 };
 
 /**
- * PUD-079: Password cannot be empty (400)
+ * PUD-079: Password needs to be at least 3 characters (400)
  */
 export const PUD079: ErrorCode = {
   code: "PUD-079",
-  message: "Password cannot be empty",
+  message: "Password needs to be at least 3 characters",
   status: 400
 };
 

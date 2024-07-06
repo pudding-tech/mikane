@@ -62,6 +62,7 @@ describe('ParticipantComponent', () => {
 		fixture = MockRender(ParticipantComponent, {
 			$event: of({
 				id: '1',
+				name: 'Test Event',
 				private: false,
 				status: {
 					id: EventStatusType.ACTIVE,
@@ -84,7 +85,7 @@ describe('ParticipantComponent', () => {
 	it('should load event', () => {
 		createComponent();
 
-		expect(component.event).toEqual({ id: '1', private: false, status: { id: EventStatusType.ACTIVE, name: 'Active' }, adminIds: [] } as PuddingEvent);
+		expect(component.event).toEqual({ id: '1', name: 'Test Event', private: false, status: { id: EventStatusType.ACTIVE, name: 'Active' }, adminIds: [] } as PuddingEvent);
 		expect(component.displayedColumns).toContain('actions');
 	});
 
@@ -397,12 +398,13 @@ describe('ParticipantComponent', () => {
 			it('should open user deletion dialog', () => {
 				createComponent();
 
-				component.deleteUserDialog('1');
+				const user = { id: '1', name: 'user1' } as User;
+				component.deleteUserDialog(user);
 
 				expect(dialogStub.open).toHaveBeenCalledWith(ConfirmDialogComponent, {
 					width: '430px',
 					data: {
-						title: 'Remove user',
+						title: `Remove ${user.name} from ${component.event.name}`,
 						content: 'Are you sure you want to remove this user?',
 						extraContent: undefined,
 						confirm: 'I am sure',
@@ -413,7 +415,7 @@ describe('ParticipantComponent', () => {
 			it('should delete user', () => {
 				createComponent();
 
-				component.deleteUserDialog('1');
+				component.deleteUserDialog({ id: '1', name: 'user1' } as User);
 
 				expect(eventServiceStub.removeUser).toHaveBeenCalledWith('1', '1');
 			});
@@ -421,7 +423,7 @@ describe('ParticipantComponent', () => {
 			it('should show delete user success message', () => {
 				createComponent();
 
-				component.deleteUserDialog('1');
+				component.deleteUserDialog({ id: '1', name: 'user1' } as User);
 
 				expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('User removed!');
 			});
@@ -429,7 +431,7 @@ describe('ParticipantComponent', () => {
 			it('should load users after deleting user', () => {
 				createComponent();
 
-				component.deleteUserDialog('1');
+				component.deleteUserDialog({ id: '1', name: 'user1' } as User);
 
 				expect(eventServiceStub.loadBalances).toHaveBeenCalledWith(component.event.id);
 			});
@@ -446,7 +448,7 @@ describe('ParticipantComponent', () => {
 			it('should not delete user', () => {
 				createComponent();
 
-				component.deleteUserDialog('1');
+				component.deleteUserDialog({ id: '1', name: 'user1' } as User);
 
 				expect(eventServiceStub.removeUser).not.toHaveBeenCalled();
 			});
