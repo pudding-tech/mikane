@@ -52,7 +52,7 @@ jobs:
         run: |
           version=$(cat package.json | jq -r '.version')
           echo "version=$version" >> $GITHUB_OUTPUT
-          echo "artifact=mikane-backend-$version" >> $GITHUB_OUTPUT
+          echo "artifact=mikane-backend-v$version" >> $GITHUB_OUTPUT
 
       - name: Build setup
         run: |

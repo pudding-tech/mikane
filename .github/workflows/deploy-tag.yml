@@ -15,7 +15,7 @@ jobs:
         id: vars
         run: |
           echo "frontend-artifact=mikane-dist-${{ github.ref_name }}" >> $GITHUB_OUTPUT
-          echo "backend-artifact=backend-${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "backend-artifact=mikane-backend-${{ github.ref_name }}" >> $GITHUB_OUTPUT
   build-frontend:
     needs: setup
     uses: ./.github/workflows/frontend-build.yml
