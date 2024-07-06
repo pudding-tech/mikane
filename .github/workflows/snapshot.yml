@@ -1,115 +1,114 @@
 name: Post Merge Snapshot
 
 on:
-    pull_request:
-        types:
-            - closed
-        branches:
-            - develop
+  pull_request:
+    types:
+      - closed
+    branches:
+      - develop
 
 jobs:
-    snapshot:
-        runs-on: ubuntu-latest
-        outputs:
-            frontend-artifact: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
-            backend-artifact: ${{ steps.bump-snapshot.outputs.artifact-backend }}
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - name: Setup node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-            - name: Bump frontend version
-              run: |
-                  cd ./app/mikane/
-                  npm --no-git-tag-version version prerelease --preid "SNAPSHOT"
-            - name: Bump backend version
-              run: |
-                  cd ./server/
-                  npm --no-git-tag-version version prerelease --preid "SNAPSHOT"
-            - name: Commit and push
-              id: bump-snapshot
-              run: |
-                  git config --global user.name "${GITHUB_ACTOR}"
-                  git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
-                  git add "./app/mikane/package.json"
-                  git add "./server/package.json"
-                  version=$(cat ./server/package.json | jq -r '.version')
-                  echo "artifact-frontend=frontend-$version" >> $GITHUB_OUTPUT
-                  echo "artifact-backend=backend-$version" >> $GITHUB_OUTPUT
-                  git commit -m "chore: bump $version"
-            - name: Push changes to repository
-              uses: CasperWA/push-protected@v2
-              with:
-                  token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-                  branch: develop
-                  force: true
+  snapshot:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend-artifact: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
+      backend-artifact: ${{ steps.bump-snapshot.outputs.artifact-backend }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.COMMIT_KEY }}
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - name: Bump frontend version
+        run: |
+          cd ./app/mikane/
+          npm --no-git-tag-version version prerelease --preid "SNAPSHOT"
+      - name: Bump backend version
+        run: |
+          cd ./server/
+          npm --no-git-tag-version version prerelease --preid "SNAPSHOT"
+      - name: Commit and push
+        id: bump-snapshot
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+          git add "./app/mikane/package.json"
+          git add "./server/package.json"
+          version=$(cat ./server/package.json | jq -r '.version')
+          echo "artifact-frontend=frontend-$version" >> $GITHUB_OUTPUT
+          echo "artifact-backend=backend-$version" >> $GITHUB_OUTPUT
+          git commit -m "chore: bump $version"
+      - name: Push changes to repository
+        run: |
+          git push origin develop
 
-            - name: Install frontend dependencies
-              run: |
-                  cd ./app/mikane/
-                  npm ci
-            - name: Build frontend snapshot
-              run: |
-                  cd ./app/mikane/
-                  npm run build:test --if-present
-            - name: Upload frontend artifact
-              id: upload-artifact-frontend
-              uses: actions/upload-artifact@v4
-              with:
-                  if-no-files-found: error
-                  name: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
-                  path: ./app/mikane/dist/mikane/browser/
+      - name: Install frontend dependencies
+        run: |
+          cd ./app/mikane/
+          npm ci
+      - name: Build frontend snapshot
+        run: |
+          cd ./app/mikane/
+          npm run build:test --if-present
+      - name: Upload frontend artifact
+        id: upload-artifact-frontend
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: error
+          name: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
+          path: ./app/mikane/dist/mikane/browser/
 
-            - name: Install backend dependencies
-              run: |
-                  cd ./server/
-                  npm ci
-            - name: Build backend snapshot
-              run: |
-                  cd ./server/
-                  npm run esbuild --if-present
-            - name: Upload backend artifact
-              id: upload-artifact-backend
-              uses: actions/upload-artifact@v4
-              with:
-                  if-no-files-found: error
-                  name: ${{ steps.bump-snapshot.outputs.artifact-backend }}
-                  path: ./server/build/
-    test-frontend:
-        needs: snapshot
-        uses: ./.github/workflows/frontend-test.yml
+      - name: Install backend dependencies
+        run: |
+          cd ./server/
+          npm ci
+      - name: Build backend snapshot
+        run: |
+          cd ./server/
+          npm run esbuild --if-present
+      - name: Upload backend artifact
+        id: upload-artifact-backend
+        uses: actions/upload-artifact@v4
         with:
-            node-version: 22.x
-        secrets:
-            codecov_token: ${{ secrets.CODECOV_TOKEN }}
-    test-backend:
-        needs: snapshot
-        uses: ./.github/workflows/backend-test.yml
-        with:
-            node-version: 22.x
-        secrets:
-            codecov_token: ${{ secrets.CODECOV_TOKEN }}
-    deploy-frontend:
-        needs: [snapshot, test-frontend]
-        uses: ./.github/workflows/frontend-deploy.yml
-        with:
-            environment: test
-            artifact: ${{ needs.snapshot.outputs.frontend-artifact }}
-            dry-run: false
-        secrets:
-            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            SSH_HOST: ${{ secrets.SSH_HOST }}
-            SSH_USER: ${{ secrets.SSH_USER }}
-    deploy-backend:
-        needs: [snapshot, test-backend]
-        uses: ./.github/workflows/backend-deploy.yml
-        with:
-            environment: test
-            artifact: ${{ needs.snapshot.outputs.backend-artifact }}
-            dry-run: false
-        secrets:
-            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            SSH_HOST: ${{ secrets.SSH_HOST }}
-            SSH_USER: ${{ secrets.SSH_USER }}
+          if-no-files-found: error
+          name: ${{ steps.bump-snapshot.outputs.artifact-backend }}
+          path: ./server/build/
+  test-frontend:
+    needs: snapshot
+    uses: ./.github/workflows/frontend-test.yml
+    with:
+      node-version: 22.x
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+  test-backend:
+    needs: snapshot
+    uses: ./.github/workflows/backend-test.yml
+    with:
+      node-version: 22.x
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+  deploy-frontend:
+    needs: [snapshot, test-frontend]
+    uses: ./.github/workflows/frontend-deploy.yml
+    with:
+      environment: test
+      artifact: ${{ needs.snapshot.outputs.frontend-artifact }}
+      dry-run: false
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+  deploy-backend:
+    needs: [snapshot, test-backend]
+    uses: ./.github/workflows/backend-deploy.yml
+    with:
+      environment: test
+      artifact: ${{ needs.snapshot.outputs.backend-artifact }}
+      dry-run: false
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
