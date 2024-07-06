@@ -4,12 +4,13 @@ import swaggerUi from "swagger-ui-express";
 import cors from "cors";
 import helmet from "helmet";
 import SessionStore from "./session-store/SessionStore";
-import eventRoutes from "./api/events";
-import userRoutes from "./api/users";
-import guestUserRoutes from "./api/guestUsers";
-import categoryRoutes from "./api/categories";
-import expenseRoutes from "./api/expenses";
 import authRoutes from "./api/authentication";
+import categoryRoutes from "./api/categories";
+import eventRoutes from "./api/events";
+import expenseRoutes from "./api/expenses";
+import guestUserRoutes from "./api/guestUsers";
+import notificationRoutes from "./api/notifications";
+import userRoutes from "./api/users";
 import validationRoutes from "./api/validation";
 import apiDocument from "./api.json";
 import env from "./env";
@@ -55,8 +56,8 @@ app.use(helmet());
 
 // Enable client access
 app.use(cors({
-    origin: env.ALLOWED_ORIGIN,
-    credentials: true,
+  origin: env.ALLOWED_ORIGIN,
+  credentials: true
 }));
 
 // API documentation
@@ -115,13 +116,14 @@ app.put("*", (req, res, next) => {
   next();
 });
 
-// Initialize routes defined in "/api/"
-app.use("/api", eventRoutes);
-app.use("/api", userRoutes);
-app.use("/api", guestUserRoutes);
-app.use("/api", categoryRoutes);
-app.use("/api", expenseRoutes);
+// Initialize routes defined in "/api"
 app.use("/api", authRoutes);
+app.use("/api", categoryRoutes);
+app.use("/api", eventRoutes);
+app.use("/api", expenseRoutes);
+app.use("/api", guestUserRoutes);
+app.use("/api", notificationRoutes);
+app.use("/api", userRoutes);
 app.use("/api", validationRoutes);
 
 // Error handler

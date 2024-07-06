@@ -25,13 +25,15 @@ const deleteAccountEmailHTML = (key: string) => {
             <body>
               <h1>You have requested to delete your Mikane account</h1>
               <div>Are you absolutely sure you want to delete your account?</div>
-              <div>Remember, this action is permanent, and all your data will be gone.</div>
+              <div>This action is permanent and will result in the loss of all your data.</div>
+              <br>
+              <div>Click the button below to confirm:</div>
               <br>
               <a href="${url + key}" style="display: inline-block; padding: 10px 20px; background-color: #c2185b; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">Yes, delete my account</a>
               <br><br>
-              <div>This link will stay active for 1 hour.</div>
+              <div>This link will remain active for 1 hour.</div>
               <div>If you changed your mind, you can simply ignore this email.</div>
-              <div>If you didn't request this email, someone has access to your account, and you should immediately change your password and contact PuddingTech.</div>
+              <div>If you didn't request this, someone may have access to your account. Please immediately change your password and contact the Mikane team.</div>
             </body>
           </html>`;
 };

@@ -221,6 +221,18 @@ describe("authentication", async () => {
       expect(res.body.code).toEqual(ec.PUD079.code);
     });
 
+    test("fail when resetting password with too short password", async () => {
+      const res = await request(app)
+        .post("/api/resetpassword")
+        .send({
+          key: resetPasswordKey,
+          password: "12"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD079.code);
+    });
+
     test("should reset password", async () => {
       const res = await request(app)
         .post("/api/resetpassword")

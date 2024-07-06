@@ -54,8 +54,8 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 		email: new FormControl<string>('', [Validators.required, Validators.email], [emailValidator(this.formValidationService)]),
 		phone: new FormControl<string>('', [Validators.required], [phoneValidator(this.formValidationService)]),
 		passwordGroup: new FormGroup({
-			password: new FormControl<string>('', [Validators.required]),
-			passwordRetype: new FormControl<string>('', [Validators.required]),
+			password: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
+			passwordRetype: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
 		}),
 	});
 
