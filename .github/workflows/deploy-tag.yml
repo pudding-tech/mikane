@@ -8,8 +8,8 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      frontend-artifact: steps.vars.outputs.frontend-artifact
-      backend-artifact: steps.vars.outputs.backend-artifact
+      frontend-artifact: ${{ steps.vars.outputs.frontend-artifact }}
+      backend-artifact: ${{ steps.vars.outputs.backend-artifact }}
     steps:
       - name: Configure variables
         id: vars
