@@ -1,0 +1,55 @@
+name: "~ Deploy tag"
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+$"
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend-artifact: steps.vars.outputs.frontend-artifact
+      backend-artifact: steps.vars.outputs.backend-artifact
+    steps:
+      - name: Configure variables
+        id: vars
+        run: |
+          echo "frontend-artifact=mikane-dist-${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "backend-artifact=backend-${{ github.ref_name }}" >> $GITHUB_OUTPUT
+  build-frontend:
+    needs: setup
+    uses: ./.github/workflows/frontend-build.yml
+    with:
+      tag: ${{ github.ref_name }}
+      node-version: 22.x
+      upload-artifact: true
+      environment: production
+  build-backend:
+    needs: setup
+    uses: ./.github/workflows/backend-build.yml
+    with:
+      tag: ${{ github.ref_name }}
+      node-version: 22.x
+      upload-artifact: true
+  deploy-frontend:
+    needs: [setup, build-frontend]
+    uses: ./.github/workflows/frontend-deploy.yml
+    with:
+      environment: production
+      artifact: ${{ needs.setup.outputs.frontend-artifact }}
+      dry-run: false
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+  deploy-backend:
+    needs: [setup, build-backend]
+    uses: ./.github/workflows/backend-deploy.yml
+    with:
+      environment: production
+      artifact: ${{ needs.setup.outputs.backend-artifact }}
+      dry-run: false
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
