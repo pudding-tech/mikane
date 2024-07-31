@@ -1,15 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-	ChangeDetectorRef,
-	Component,
-	ElementRef,
-	Input,
-	OnDestroy,
-	OnInit,
-	ViewChild,
-	computed,
-	signal,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, computed, signal } from '@angular/core';
 import { MatBottomSheet, MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -30,10 +20,10 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
@@ -269,7 +259,13 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 
 	editExpense(expenseId: string) {
 		const oldExpense = this.expenses().find((expense) => expense.id === expenseId);
-		let editExpense: Expense;
+		let editExpense: {
+			description?: string;
+			amount: number;
+			name: string;
+			payerId: string;
+			expenseDate?: Date;
+		};
 
 		this.dialog
 			.open(ExpenditureDialogComponent, {
@@ -299,7 +295,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 						editExpense.description ?? undefined,
 						editExpense.amount,
 						category.id,
-						editExpense.payer as unknown as string,
+						editExpense.payerId,
 						editExpense.expenseDate,
 					);
 				}),
@@ -448,7 +444,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 						return this.compare(
 							a.expenseDate ? new Date(a.expenseDate).getTime() : new Date(a.created).getTime(),
 							b.expenseDate ? new Date(b.expenseDate).getTime() : new Date(b.created).getTime(),
-							isAsc
+							isAsc,
 						);
 					default:
 						return 0;
