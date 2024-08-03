@@ -130,3 +130,10 @@ export type DBConfig = {
   user: string,
   password: string
 };
+
+export type Config = {
+  id: number,
+  name: string,
+  value: string,
+  description: string
+};

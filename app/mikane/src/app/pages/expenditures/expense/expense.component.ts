@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DEFAULT_CURRENCY_CODE, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -55,9 +55,11 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 		public dialog: MatDialog,
 		private router: Router,
 		private route: ActivatedRoute,
+		@Inject(DEFAULT_CURRENCY_CODE) private currencyCode: string,
 	) {}
 
 	ngOnInit() {
+		console.log(this.currencyCode);
 		this.loading = true;
 		const eventId = this.route.parent.parent.snapshot.paramMap.get('eventId');
 		const expenseId = this.route.snapshot.paramMap.get('id');

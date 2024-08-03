@@ -1,7 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import localeNo from '@angular/common/locales/no';
-import { LOCALE_ID, enableProdMode, importProvidersFrom } from '@angular/core';
+import { APP_INITIALIZER, DEFAULT_CURRENCY_CODE, LOCALE_ID, enableProdMode, importProvidersFrom } from '@angular/core';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -11,11 +11,27 @@ import { AppComponent } from './app/app.component';
 import { AuthInterceptor } from './app/services/auth/auth.interceptor';
 import { environment } from './environments/environment';
 import { ENV, getEnv } from './environments/environment.provider';
+import { ConfigService } from './app/services/config/config.service';
+import { APP_CONFIG_TOKEN } from './app/config';
+import { firstValueFrom, from } from 'rxjs';
 
 registerLocaleData(localeNo);
 
 if (environment.production) {
 	enableProdMode();
+}
+
+export function initializeApp(configService: ConfigService) {
+	return () => firstValueFrom(configService.getConfig()).then(config => {
+		console.log(config);
+		console.log(config[0].value);
+		// (APP_CONFIG_TOKEN as any).useValue = config;
+		console.log('APP_CONFIG_TOKEN:');
+		console.log(APP_CONFIG_TOKEN);
+		(DEFAULT_CURRENCY_CODE as any).useValue = config[0].value;
+		console.log('DEFAULT_CURRENCY_TOKEN:');
+		console.log(DEFAULT_CURRENCY_CODE);
+	});
 }
 
 bootstrapApplication(AppComponent, {
@@ -31,6 +47,12 @@ bootstrapApplication(AppComponent, {
 			}),
 			MatSnackBarModule
 		),
+		{
+			provide: APP_INITIALIZER,
+			useFactory: initializeApp,
+			deps: [ConfigService],
+			multi: true,
+		},
 		{
 			provide: LOCALE_ID,
 			useValue: 'no',
@@ -49,6 +71,10 @@ bootstrapApplication(AppComponent, {
 		{
 			provide: ENV,
 			useFactory: getEnv,
+		},
+		{
+			provide: DEFAULT_CURRENCY_CODE,
+			useValue: 'DKK',
 		},
 		provideAnimations(),
 		provideHttpClient(withInterceptorsFromDi()),

@@ -1346,3 +1346,13 @@ export const PUD142: ErrorCode = {
   message: "Request body must include name, amount, category ID, and payer ID",
   status: 400
 };
+
+/**
+ * PUD-143: get_config (500)
+ */
+export const PUD143: ErrorCode = {
+  code: "PUD-143",
+  message: "Something went wrong while getting config",
+  status: 500,
+  log: true
+};
