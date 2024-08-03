@@ -98,7 +98,13 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	}
 
 	editExpense() {
-		let newExpense: Expense;
+		let editExpense: {
+			description?: string;
+			amount: number;
+			name: string;
+			payerId: string;
+			expenseDate?: Date;
+		};
 
 		this.dialog
 			.open(ExpenditureDialogComponent, {
@@ -115,7 +121,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 					if (!expense) {
 						this.cancel$.next();
 					}
-					newExpense = expense;
+					editExpense = expense;
 					return this.categoryService.findOrCreate(this.event.id, expense?.category);
 				}),
 				takeUntil(this.cancel$),
@@ -124,12 +130,12 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 				switchMap((category: Category) => {
 					return this.expenseService.editExpense(
 						this.expense.id,
-						newExpense.name,
-						newExpense.description ?? undefined,
-						newExpense.amount,
+						editExpense.name,
+						editExpense.description ?? undefined,
+						editExpense.amount,
 						category.id,
-						newExpense.payer as unknown as string,
-						newExpense.expenseDate,
+						editExpense.payerId,
+						editExpense.expenseDate,
 					);
 				}),
 				takeUntil(this.destroy$),
