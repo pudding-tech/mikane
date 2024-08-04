@@ -117,12 +117,14 @@
 								<th mat-header-cell *matHeaderCellDef></th>
 								<td mat-cell *matCellDef="let expense">
 									@if (expense.payer.id === currentUserId || event?.userInfo?.isAdmin) {
-										<button mat-icon-button type="button" (click)="editExpense(expense.id)">
-											<mat-icon>edit</mat-icon>
-										</button>
-										<button mat-icon-button type="button" (click)="removeExpense(expense.id)">
-											<mat-icon>delete</mat-icon>
-										</button>
+										<div class="edit-delete-column">
+											<button mat-icon-button type="button" (click)="editExpense(expense.id)">
+												<mat-icon>edit</mat-icon>
+											</button>
+											<button mat-icon-button type="button" (click)="removeExpense(expense.id)">
+												<mat-icon>delete</mat-icon>
+											</button>
+										</div>
 									}
 								</td>
 							</ng-container>
