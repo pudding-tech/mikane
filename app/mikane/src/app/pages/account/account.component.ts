@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -40,17 +40,15 @@ import { PreferencesComponent } from './preferences/preferences.component';
 	],
 })
 export class AccountComponent implements OnInit, OnDestroy {
+	private authService = inject(AuthService);
+	private userService = inject(UserService);
+	breakpointService = inject(BreakpointService);
+	private messageService = inject(MessageService);
+
 	protected loading = new BehaviorSubject<boolean>(true);
 	protected user: User;
 
 	private subscription: Subscription;
-
-	constructor(
-		private authService: AuthService,
-		private userService: UserService,
-		public breakpointService: BreakpointService,
-		private messageService: MessageService
-	) {}
 
 	ngOnInit(): void {
 		this.subscription = this.authService

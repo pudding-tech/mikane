@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,6 +19,10 @@ import { ApiError } from 'src/app/types/apiError.type';
 	imports: [CommonModule, MatCardModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSlideToggleModule],
 })
 export class PreferencesComponent implements OnInit, OnDestroy {
+	private userService = inject(UserService);
+	private messageService = inject(MessageService);
+	breakpointService = inject(BreakpointService);
+
 	@Input() user: User;
 	private editPreferencesSubscription = new Subscription();
 	protected publicEmail: boolean;
@@ -27,12 +31,6 @@ export class PreferencesComponent implements OnInit, OnDestroy {
 	protected loadingPhone: boolean;
 	protected updatedEmail: boolean;
 	protected updatedPhone: boolean;
-
-	constructor(
-		private userService: UserService,
-		private messageService: MessageService,
-		public breakpointService: BreakpointService,
-	) {}
 
 	ngOnInit(): void {
 		this.publicEmail = this.user.publicEmail;

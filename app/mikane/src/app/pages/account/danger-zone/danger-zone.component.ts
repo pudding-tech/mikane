@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -32,16 +32,14 @@ import { ApiError } from 'src/app/types/apiError.type';
 	],
 })
 export class DangerZoneComponent implements OnDestroy {
+	private userService = inject(UserService);
+	private router = inject(Router);
+	dialog = inject(MatDialog);
+	private messageService = inject(MessageService);
+	breakpointService = inject(BreakpointService);
+
 	private deleteSubscription: Subscription;
 	protected loading = false;
-
-	constructor(
-		private userService: UserService,
-		private router: Router,
-		public dialog: MatDialog,
-		private messageService: MessageService,
-		public breakpointService: BreakpointService
-	) {}
 
 	deleteUser() {
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {

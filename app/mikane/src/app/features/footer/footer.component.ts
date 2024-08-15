@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import packageJson from '../../../../package.json';
@@ -12,9 +12,10 @@ import packageJson from '../../../../package.json';
 	imports: [CommonModule],
 })
 export class FooterComponent {
-	public version: string = packageJson.version;
+	private router = inject(Router);
+	breakpointService = inject(BreakpointService);
 
-	constructor(private router: Router, public breakpointService: BreakpointService) {}
+	public version: string = packageJson.version;
 
 	showFooter() {
 		const includedPages = ['events'];

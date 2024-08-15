@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,9 +13,10 @@ import { Expense } from 'src/app/services/expense/expense.service';
 	imports: [MatIconModule, CurrencyPipe, MatListModule],
 })
 export class ExpenseItemComponent {
-	expense = input.required<Expense>();
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
 
-	constructor(private router: Router, private route: ActivatedRoute) {}
+	expense = input.required<Expense>();
 
 	gotoExpense() {
 		this.router.navigate([this.expense().id], {

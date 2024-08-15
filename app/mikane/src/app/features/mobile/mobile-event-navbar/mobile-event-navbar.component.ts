@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input, model } from '@angular/core';
+import { Component, computed, input, model, inject } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterOutlet } from '@angular/router';
@@ -19,6 +19,8 @@ interface Route {
 	imports: [CommonModule, RouterLink, RouterOutlet, MatIconModule, MatRippleModule],
 })
 export class MobileEventNavbarComponent {
+	contextService = inject(ContextService);
+
 	activeLink = model.required<string>();
 	links = input.required<Route[]>();
 
@@ -32,6 +34,4 @@ export class MobileEventNavbarComponent {
 			...this.links(),
 		];
 	});
-
-	constructor(public contextService: ContextService) {}
 }

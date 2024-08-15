@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -44,6 +44,12 @@ import { GuestDialogComponent } from './guest-dialog/guest-dialog.component';
 	],
 })
 export class GuestsComponent implements OnInit, OnDestroy {
+	private userService = inject(UserService);
+	private authService = inject(AuthService);
+	private messageService = inject(MessageService);
+	protected breakpointService = inject(BreakpointService);
+	dialog = inject(MatDialog);
+
 	loading = false;
 	guests: User[] = [];
 	pagedGuests: User[] = [];
@@ -56,14 +62,6 @@ export class GuestsComponent implements OnInit, OnDestroy {
 	length = 0;
 	pageSize = 20;
 	pageSizeOptions: number[] = [10, 20, 30];
-
-	constructor(
-		private userService: UserService,
-		private authService: AuthService,
-		private messageService: MessageService,
-		protected breakpointService: BreakpointService,
-		public dialog: MatDialog
-	) {}
 
 	ngOnInit() {
 		this.loadUsers();

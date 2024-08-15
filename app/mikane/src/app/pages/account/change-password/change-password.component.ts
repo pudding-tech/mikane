@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -30,6 +30,11 @@ import { createCompareValidator } from 'src/app/shared/forms/validators/compare.
 	],
 })
 export class ChangePasswordComponent implements OnInit, OnDestroy {
+	private userService = inject(UserService);
+	private messageService = inject(MessageService);
+	private router = inject(Router);
+	breakpointService = inject(BreakpointService);
+
 	hide = true;
 
 	private userSub: Subscription;
@@ -39,13 +44,6 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 		newPassword: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
 		newPasswordRetype: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
 	});
-
-	constructor(
-		private userService: UserService,
-		private messageService: MessageService,
-		private router: Router,
-		public breakpointService: BreakpointService
-	) {}
 
 	ngOnInit(): void {
 		this.changePasswordForm?.addValidators([

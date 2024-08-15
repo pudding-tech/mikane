@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ErrorMessageComponent } from './error/error-message.component';
 import { SuccessMessageComponent } from './success/success-message.component';
@@ -7,7 +7,8 @@ import { SuccessMessageComponent } from './success/success-message.component';
 	providedIn: 'root',
 })
 export class MessageService {
-	constructor(private _snackBar: MatSnackBar) {}
+	private _snackBar = inject(MatSnackBar);
+
 
 	openSnackBar(message: string, action: string) {
 		this._snackBar.open(message, action, {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -32,6 +32,11 @@ import { ApiError } from 'src/app/types/apiError.type';
 	],
 })
 export class LoginComponent {
+	private authService = inject(AuthService);
+	private router = inject(Router);
+	private messageService = inject(MessageService);
+	breakpointService = inject(BreakpointService);
+
 	@ViewChild('usernameField') private usernameField: ElementRef;
 
 	hide = true;
@@ -47,13 +52,6 @@ export class LoginComponent {
 	resetPasswordForm = new FormGroup({
 		email: new FormControl<string>('', [Validators.required, Validators.email]),
 	});
-
-	constructor(
-		private authService: AuthService,
-		private router: Router,
-		private messageService: MessageService,
-		public breakpointService: BreakpointService
-	) {}
 
 	login() {
 		if (this.loginForm.valid) {

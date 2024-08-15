@@ -1,4 +1,4 @@
-import { Directive, TemplateRef } from '@angular/core';
+import { Directive, TemplateRef, inject } from '@angular/core';
 import { SplitButtonItemComponent } from './split-button-item.component';
 
 @Directive({
@@ -6,5 +6,5 @@ import { SplitButtonItemComponent } from './split-button-item.component';
 	standalone: true,
 })
 export class SplitButtonItemDirective {
-	constructor(public templateRef: TemplateRef<SplitButtonItemComponent>) {}
+	templateRef = inject<TemplateRef<SplitButtonItemComponent>>(TemplateRef);
 }

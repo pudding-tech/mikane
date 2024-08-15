@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -65,6 +65,18 @@ import { ParticipantDialogComponent } from './user-dialog/participant-dialog.com
 	],
 })
 export class ParticipantComponent implements OnInit, OnDestroy {
+	private userService = inject(UserService);
+	private eventService = inject(EventService);
+	private router = inject(Router);
+	dialog = inject(MatDialog);
+	private messageService = inject(MessageService);
+	private expenseService = inject(ExpenseService);
+	private categoryService = inject(CategoryService);
+	protected authService = inject(AuthService);
+	breakpointService = inject(BreakpointService);
+	contextService = inject(ContextService);
+	scrollService = inject(ScrollService);
+
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	private userSubscription: Subscription;
 	private addUserSubscription: Subscription;
@@ -87,20 +99,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 	isAdmin = false;
 
 	@ViewChild(MatAccordion) accordion: MatAccordion;
-
-	constructor(
-		private userService: UserService,
-		private eventService: EventService,
-		private router: Router,
-		public dialog: MatDialog,
-		private messageService: MessageService,
-		private expenseService: ExpenseService,
-		private categoryService: CategoryService,
-		protected authService: AuthService,
-		public breakpointService: BreakpointService,
-		public contextService: ContextService,
-		public scrollService: ScrollService,
-	) {}
 
 	ngOnInit() {
 		this.eventSubscription = this.$event

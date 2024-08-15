@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -23,16 +23,18 @@ import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/asy
 	],
 })
 export class GuestDialogComponent {
+	dialogRef = inject<MatDialogRef<GuestDialogComponent>>(MatDialogRef);
+	data = inject<{ edit: boolean; guest: User }>(MAT_DIALOG_DATA);
+
 	guest: { id?: string; firstName: string; lastName: string } = { firstName: '', lastName: '' };
 	edit: boolean;
 	currentFirstName: string;
 	currentLastName: string;
 	delete = false;
 
-	constructor(
-		public dialogRef: MatDialogRef<GuestDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: { edit: boolean; guest: User },
-	) {
+	constructor() {
+		const data = this.data;
+
 		if (data?.guest) {
 			this.guest.firstName = data.guest.firstName;
 			this.guest.lastName = data.guest.lastName;

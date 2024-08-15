@@ -1,5 +1,6 @@
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MockBuilder, MockRender, MockedComponentFixture } from 'ng-mocks';
+import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 import { CategoryIcon } from 'src/app/types/enums';
 import { CategoryDialogComponent } from './category-dialog.component';
 
@@ -22,7 +23,8 @@ describe('CategoryDialogComponent', () => {
 
 		return MockBuilder(CategoryDialogComponent)
 			.provide({ provide: MatDialogRef, useValue: matDialogRefSpy })
-			.provide({ provide: MAT_DIALOG_DATA, useValue: data });
+			.provide({ provide: MAT_DIALOG_DATA, useValue: data })
+			.provide({ provide: FormValidationService, useValue: jasmine.createSpyObj('FormValidationService', ['validateCategoryName']) });
 	});
 
 	beforeEach(() => {

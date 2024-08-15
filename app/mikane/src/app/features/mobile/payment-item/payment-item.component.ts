@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, ElementRef, input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, OnInit, ViewChild, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,6 +29,8 @@ import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 	],
 })
 export class PaymentItemComponent implements OnInit {
+	private router = inject(Router);
+
 	@ViewChild('lower') lower: ElementRef;
 	payment = input.required<{
 		sender: User;
@@ -42,10 +44,6 @@ export class PaymentItemComponent implements OnInit {
 
 	dropdownOpen: boolean;
 	lowerHeight: number | string;
-
-	constructor(
-		private router: Router,
-	) {}
 
 	ngOnInit(): void {
 		this.dropdownOpen = this.self() ? true : false;

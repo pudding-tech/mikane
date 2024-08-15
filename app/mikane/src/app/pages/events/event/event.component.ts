@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, signal, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -37,6 +37,13 @@ import { ParticipantComponent } from '../../participant/participant.component';
 	],
 })
 export class EventComponent implements OnInit {
+	private eventService = inject(EventService);
+	private route = inject(ActivatedRoute);
+	private router = inject(Router);
+	private messageService = inject(MessageService);
+	breakpointService = inject(BreakpointService);
+	contextService = inject(ContextService);
+
 	event: PuddingEvent = {
 		name: '',
 	} as PuddingEvent;
@@ -86,14 +93,7 @@ export class EventComponent implements OnInit {
 		return eventLinks;
 	});
 
-	constructor(
-		private eventService: EventService,
-		private route: ActivatedRoute,
-		private router: Router,
-		private messageService: MessageService,
-		public breakpointService: BreakpointService,
-		public contextService: ContextService,
-	) {
+	constructor() {
 		const event = this.router.getCurrentNavigation()?.extras.state?.['event'];
 		if (event) {
 			this.event = event;

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -36,6 +36,13 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 	],
 })
 export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
+	private userService = inject(UserService);
+	private messageService = inject(MessageService);
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
+	private formValidationService = inject(FormValidationService);
+	breakpointService = inject(BreakpointService);
+
 	hide = true;
 
 	private userSub: Subscription;
@@ -58,15 +65,6 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 			passwordRetype: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
 		}),
 	});
-
-	constructor(
-		private userService: UserService,
-		private messageService: MessageService,
-		private router: Router,
-		private route: ActivatedRoute,
-		private formValidationService: FormValidationService,
-		public breakpointService: BreakpointService
-	) {}
 
 	ngOnInit() {
 		this.route.data.subscribe(({ res }) => {

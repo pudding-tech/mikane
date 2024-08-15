@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
@@ -29,9 +29,10 @@ export interface Expense {
 	providedIn: 'root',
 })
 export class ExpenseService {
-	private apiUrl = this.env.apiUrl + 'expenses';
+	private httpClient = inject(HttpClient);
+	private env = inject<Environment>(ENV);
 
-	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
+	private apiUrl = this.env.apiUrl + 'expenses';
 
 	loadExpenses(eventId: string): Observable<Expense[]> {
 		return this.httpClient.get<Expense[]>(this.apiUrl + `?eventId=${eventId}`);
@@ -47,7 +48,7 @@ export class ExpenseService {
 		amount: number,
 		categoryId: string,
 		payerId: string,
-		expenseDate: Date
+		expenseDate: Date,
 	): Observable<Expense> {
 		return this.httpClient.post<Expense>(this.apiUrl, {
 			name: expenseName,
@@ -66,7 +67,7 @@ export class ExpenseService {
 		amount: number,
 		categoryId: string,
 		payerId: string,
-		expenseDate: Date
+		expenseDate: Date,
 	): Observable<Expense> {
 		return this.httpClient.put<Expense>(this.apiUrl + `/${expenseId}`, {
 			name,

@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -46,6 +46,12 @@ interface SenderPayments {
 	],
 })
 export class PaymentStructureComponent implements OnInit {
+	private authService = inject(AuthService);
+	private eventService = inject(EventService);
+	private route = inject(ActivatedRoute);
+	private messageService = inject(MessageService);
+	breakpointService = inject(BreakpointService);
+
 	@ViewChild('paymentsSelfRef') paymentsSelfRef!: PaymentExpansionPanelItemComponent;
 	@ViewChild('paymentsOthersRef') paymentsOthersRef!: PaymentExpansionPanelItemComponent;
 
@@ -60,14 +66,6 @@ export class PaymentStructureComponent implements OnInit {
 	paymentsSelf: SenderPayments[] = [];
 	paymentsOthers: SenderPayments[] = [];
 	currentUser: User;
-
-	constructor(
-		private authService: AuthService,
-		private eventService: EventService,
-		private route: ActivatedRoute,
-		private messageService: MessageService,
-		public breakpointService: BreakpointService,
-	) {}
 
 	ngOnInit(): void {
 		this.route?.parent?.parent?.params.subscribe((params) => {

@@ -1,4 +1,4 @@
-import { Directive, Input } from '@angular/core';
+import { Directive, Input, inject } from '@angular/core';
 import { AbstractControl, AsyncValidator, AsyncValidatorFn, NG_ASYNC_VALIDATORS, ValidationErrors } from '@angular/forms';
 import { Observable, catchError, of, switchMap, timer } from 'rxjs';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
@@ -31,8 +31,9 @@ export function eventNameValidator(formValidationService: FormValidationService,
 	standalone: true,
 })
 export class EventNameValidatorDirective implements AsyncValidator {
+	private validationService = inject(FormValidationService);
+
 	@Input() appEventName: string;
-	constructor(private validationService: FormValidationService) {}
 
 	validate(control: AbstractControl<unknown, unknown>): Promise<ValidationErrors> | Observable<ValidationErrors> {
 		const validationFn = eventNameValidator(this.validationService, this.appEventName);
