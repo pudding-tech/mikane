@@ -1,11 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
-import { Expense } from '../expense/expense.service';
 import { PuddingEvent } from '../event/event.service';
+import { Expense } from '../expense/expense.service';
 
 export interface User {
 	id: string;
@@ -63,8 +63,10 @@ export interface UserBalance {
 	providedIn: 'root',
 })
 export class UserService {
+	private httpClient = inject(HttpClient);
+	private env = inject<Environment>(ENV);
+
 	private apiUrl = this.env.apiUrl + 'users';
-	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
 
 	/**
 	 * Loads all users
@@ -230,7 +232,7 @@ export class UserService {
 		email: string,
 		phone: Phonenumber,
 		password: string,
-		key?: string
+		key?: string,
 	): Observable<User> {
 		return this.httpClient.post<User>(this.apiUrl, {
 			username,

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 
 @Component({
@@ -6,5 +6,5 @@ import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 	standalone: true,
 })
 export class ErrorMessageComponent {
-	constructor(@Inject(MAT_SNACK_BAR_DATA) public data: string) {}
+	data = inject<string>(MAT_SNACK_BAR_DATA);
 }

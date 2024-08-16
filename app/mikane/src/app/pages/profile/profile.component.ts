@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -39,6 +39,14 @@ import { ApiError } from 'src/app/types/apiError.type';
 	],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+	breakpointService = inject(BreakpointService);
+	private authService = inject(AuthService);
+	private userService = inject(UserService);
+	private messageService = inject(MessageService);
+	private titleService = inject(Title);
+	private route = inject(ActivatedRoute);
+	private router = inject(Router);
+
 	protected loading = true;
 	protected loadingEvents = false;
 	protected loadingExpenses = false;
@@ -56,16 +64,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
 	private subscription: Subscription;
 	readonly EventStatusType = EventStatusType;
-
-	constructor(
-		public breakpointService: BreakpointService,
-		private authService: AuthService,
-		private userService: UserService,
-		private messageService: MessageService,
-		private titleService: Title,
-		private route: ActivatedRoute,
-		private router: Router,
-	) {}
 
 	ngOnInit() {
 		this.subscription = this.route.paramMap

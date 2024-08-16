@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -36,6 +36,16 @@ import { ExpenditureDialogComponent } from '../expenditure-dialog/expenditure-di
 	],
 })
 export class ExpenseComponent implements OnInit, OnDestroy {
+	breakpointService = inject(BreakpointService);
+	private authService = inject(AuthService);
+	private eventService = inject(EventService);
+	private expenseService = inject(ExpenseService);
+	private categoryService = inject(CategoryService);
+	private messageService = inject(MessageService);
+	dialog = inject(MatDialog);
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
+
 	protected loading = true;
 	expense: Expense;
 	event: PuddingEvent;
@@ -44,18 +54,6 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	readonly EventStatusType = EventStatusType;
 	cancel$: Subject<void> = new Subject();
 	destroy$: Subject<void> = new Subject();
-
-	constructor(
-		public breakpointService: BreakpointService,
-		private authService: AuthService,
-		private eventService: EventService,
-		private expenseService: ExpenseService,
-		private categoryService: CategoryService,
-		private messageService: MessageService,
-		public dialog: MatDialog,
-		private router: Router,
-		private route: ActivatedRoute,
-	) {}
 
 	ngOnInit() {
 		this.loading = true;

@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
@@ -29,6 +29,8 @@ import { User } from 'src/app/services/user/user.service';
 	],
 })
 export class PaymentExpansionPanelItemComponent {
+	private router = inject(Router);
+
 	@ViewChild(MatAccordion) accordion!: MatAccordion;
 	@Input() payments: Array<{
 		sender: User;
@@ -42,10 +44,6 @@ export class PaymentExpansionPanelItemComponent {
 	@Output() allPanelsExpanded = new EventEmitter();
 
 	displayedColumns: string[] = ['name', 'amount'];
-
-	constructor(
-		private router: Router,
-	) {}
 
 	openExpand(open: boolean) {
 		if (open) {

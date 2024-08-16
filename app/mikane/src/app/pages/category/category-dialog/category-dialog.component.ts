@@ -1,6 +1,6 @@
 import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
 import { KeyValuePipe } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -33,6 +33,10 @@ import { CategoryIcon } from 'src/app/types/enums';
 	],
 })
 export class CategoryDialogComponent implements OnInit {
+	dialogRef = inject<MatDialogRef<CategoryDialogComponent>>(MatDialogRef);
+	data = inject<{ name: string; weighted: boolean; eventId: string; categoryId: string; icon: CategoryIcon }>(MAT_DIALOG_DATA);
+	private formValidationService = inject(FormValidationService);
+
 	weighted = new FormControl(false);
 	isOpen = false;
 	categoryIcons = CategoryIcon;
@@ -45,13 +49,6 @@ export class CategoryDialogComponent implements OnInit {
 		weighted: new FormControl(false),
 		selectedIcon: new FormControl(CategoryIcon.SHOPPING),
 	});
-
-	constructor(
-		public dialogRef: MatDialogRef<CategoryDialogComponent>,
-		@Inject(MAT_DIALOG_DATA)
-		public data: { name: string; weighted: boolean; eventId: string; categoryId: string; icon: CategoryIcon },
-		private formValidationService: FormValidationService,
-	) {}
 
 	ngOnInit(): void {
 		if (this.data.name) {

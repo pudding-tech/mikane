@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, computed, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, computed, signal, inject } from '@angular/core';
 import { MatBottomSheet, MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -55,6 +55,19 @@ import { ExpenseBottomSheetComponent } from './expense-bottom-sheet/expense-bott
 	],
 })
 export class ExpendituresComponent implements OnInit, OnDestroy {
+	private expenseService = inject(ExpenseService);
+	private categoryService = inject(CategoryService);
+	private authService = inject(AuthService);
+	dialog = inject(MatDialog);
+	private messageService = inject(MessageService);
+	breakpointService = inject(BreakpointService);
+	contextService = inject(ContextService);
+	scrollService = inject(ScrollService);
+	private route = inject(ActivatedRoute);
+	private router = inject(Router);
+	private changeDetector = inject(ChangeDetectorRef);
+	private bottomSheet = inject(MatBottomSheet);
+
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event!: PuddingEvent;
 
@@ -103,21 +116,6 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 
 	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description', 'expenseDate'];
 	currentUserId: string;
-
-	constructor(
-		private expenseService: ExpenseService,
-		private categoryService: CategoryService,
-		private authService: AuthService,
-		public dialog: MatDialog,
-		private messageService: MessageService,
-		public breakpointService: BreakpointService,
-		public contextService: ContextService,
-		public scrollService: ScrollService,
-		private route: ActivatedRoute,
-		private router: Router,
-		private changeDetector: ChangeDetectorRef,
-		private bottomSheet: MatBottomSheet,
-	) {}
 
 	ngOnInit(): void {
 		this.loading = true;

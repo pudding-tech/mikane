@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
-import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, signal, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -45,6 +45,14 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 	],
 })
 export class EventsComponent implements OnInit, OnDestroy {
+	private eventService = inject(EventService);
+	private messageService = inject(MessageService);
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
+	dialog = inject(MatDialog);
+	breakpointService = inject(BreakpointService);
+	scrollService = inject(ScrollService);
+
 	events = signal<PuddingEvent[]>([]);
 	eventsActive = computed(() => {
 		return this.events().filter((event) => event.status.id !== EventStatusType.SETTLED);
@@ -78,16 +86,6 @@ export class EventsComponent implements OnInit, OnDestroy {
 	endIndexActive = signal(this.pageSizeActive());
 	endIndexSettled = signal(this.pageSizeSettled());
 	pageSizeOptions: number[] = [5, 10, 20];
-
-	constructor(
-		private eventService: EventService,
-		private messageService: MessageService,
-		private router: Router,
-		private route: ActivatedRoute,
-		public dialog: MatDialog,
-		public breakpointService: BreakpointService,
-		public scrollService: ScrollService,
-	) {}
 
 	ngOnInit() {
 		this.loading.next(true);

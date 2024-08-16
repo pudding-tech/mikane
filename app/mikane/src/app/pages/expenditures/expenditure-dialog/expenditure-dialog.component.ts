@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,8 +10,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { ContextService } from 'src/app/services/context/context.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
+import { ContextService } from 'src/app/services/context/context.service';
 import { Expense } from 'src/app/services/expense/expense.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
@@ -39,6 +39,16 @@ import { CategoryIcon } from 'src/app/types/enums';
 	],
 })
 export class ExpenditureDialogComponent implements OnInit {
+	dialogRef = inject<MatDialogRef<ExpenditureDialogComponent>>(MatDialogRef);
+	data = inject<{
+		eventId: string;
+		userId: string;
+		expense?: Expense;
+	}>(MAT_DIALOG_DATA);
+	private categoryService = inject(CategoryService);
+	private userService = inject(UserService);
+	contextService = inject(ContextService);
+
 	isOpen = false;
 	edit = false;
 	categoryIcons = CategoryIcon;
@@ -55,19 +65,6 @@ export class ExpenditureDialogComponent implements OnInit {
 		payerId: new FormControl(this.data.userId, [Validators.required]),
 		expenseDate: new FormControl(null),
 	});
-
-	constructor(
-		public dialogRef: MatDialogRef<ExpenditureDialogComponent>,
-		@Inject(MAT_DIALOG_DATA)
-		public data: {
-			eventId: string;
-			userId: string;
-			expense?: Expense;
-		},
-		private categoryService: CategoryService,
-		private userService: UserService,
-		public contextService: ContextService,
-	) {}
 
 	ngOnInit() {
 		this.categoryService.loadCategories(this.data.eventId).subscribe((categories) => {

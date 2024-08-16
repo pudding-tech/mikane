@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, ElementRef, input, output, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, output, Renderer2, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,6 +30,8 @@ import { CategoryIcon } from 'src/app/types/enums';
 	],
 })
 export class CategoryItemComponent {
+	private renderer = inject(Renderer2);
+
 	@ViewChild('lower') lower: ElementRef;
 	category = input.required<Category>();
 	eventActive = input.required<boolean>();
@@ -46,8 +48,6 @@ export class CategoryItemComponent {
 
 	dropdownOpen = false;
 	lowerHeight = 0;
-
-	constructor(private renderer: Renderer2) {}
 
 	toggleDropdown = () => {
 		this.dropdownOpen = !this.dropdownOpen;

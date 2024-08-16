@@ -1,5 +1,5 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NEVER, Observable, catchError, throwError } from 'rxjs';
 import { MessageService } from '../message/message.service';
@@ -7,11 +7,10 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-	constructor(
-		private router: Router,
-		private authService: AuthService,
-		private messageService: MessageService,
-	) {}
+	private router = inject(Router);
+	private authService = inject(AuthService);
+	private messageService = inject(MessageService);
+
 
 	intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 		req = req.clone({

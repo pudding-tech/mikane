@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormGroupDirective, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -40,6 +40,10 @@ import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 	],
 })
 export class InviteComponent implements OnInit, OnDestroy {
+	private userService = inject(UserService);
+	private messageService = inject(MessageService);
+	protected breakpointService = inject(BreakpointService);
+
 	protected inviteForm = new FormGroup({
 		email: new FormControl('', [Validators.required, Validators.email]),
 	});
@@ -54,8 +58,6 @@ export class InviteComponent implements OnInit, OnDestroy {
 	private guestsSubscription: Subscription;
 	private inviteSubscription: Subscription;
 	guests: User[] = [];
-
-	constructor(private userService: UserService, private messageService: MessageService, protected breakpointService: BreakpointService) {}
 
 	ngOnInit() {
 		this.guestsSubscription = this.userService.loadGuestUsers().subscribe({

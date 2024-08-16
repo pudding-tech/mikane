@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -41,6 +41,12 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 	],
 })
 export class EventInfoComponent implements OnInit, OnDestroy {
+	private router = inject(Router);
+	private userService = inject(UserService);
+	private authService = inject(AuthService);
+	breakpointService = inject(BreakpointService);
+	private messageService = inject(MessageService);
+
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -49,14 +55,6 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 
 	private eventSubscription: Subscription;
 	readonly EventStatusType = EventStatusType;
-
-	constructor(
-		private router: Router,
-		private userService: UserService,
-		private authService: AuthService,
-		public breakpointService: BreakpointService,
-		private messageService: MessageService,
-	) {}
 
 	ngOnInit(): void {
 		this.loading.next(true);

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
@@ -12,9 +12,10 @@ export interface ValidationResult {
 	providedIn: 'root',
 })
 export class FormValidationService {
-	private apiUrl = this.env.apiUrl + 'validation';
+	private httpClient = inject(HttpClient);
+	private env = inject<Environment>(ENV);
 
-	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
+	private apiUrl = this.env.apiUrl + 'validation';
 
 	/**
 	 * Check if a given username is available for use. User ID in body is optional, and used when validating against a specific user.
