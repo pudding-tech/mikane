@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input, model, inject } from '@angular/core';
+import { Component, computed, inject, input, model } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterOutlet } from '@angular/router';
@@ -15,7 +15,6 @@ interface Route {
 	selector: 'app-mobile-event-navbar',
 	templateUrl: 'mobile-event-navbar.component.html',
 	styleUrls: ['./mobile-event-navbar.component.scss'],
-	standalone: true,
 	imports: [CommonModule, RouterLink, RouterOutlet, MatIconModule, MatRippleModule],
 })
 export class MobileEventNavbarComponent {

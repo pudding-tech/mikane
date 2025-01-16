@@ -15,7 +15,7 @@ import { BehaviorSubject, NEVER, Subscription, combineLatest, filter, switchMap 
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
+import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
@@ -26,7 +26,6 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 @Component({
 	templateUrl: 'event-settings.component.html',
 	styleUrls: ['./event-settings.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatButtonModule,
@@ -57,7 +56,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
 	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-	eventData: { id?: string; name: string; description: string, private: boolean } = { name: '', description: '', private: false };
+	eventData: { id?: string; name: string; description: string; private: boolean } = { name: '', description: '', private: false };
 	adminsInEvent: User[];
 	otherUsersInEvent: User[];
 	currentUser: User;
@@ -102,21 +101,28 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	}
 
 	editEvent() {
-		this.eventService.editEvent({ id: this.event.id, name: this.eventData.name, description: this.eventData.description, privateEvent: this.eventData.private }).subscribe({
-			next: (event) => {
-				this.event = event;
-				this.messageService.showSuccess('Event successfully edited');
+		this.eventService
+			.editEvent({
+				id: this.event.id,
+				name: this.eventData.name,
+				description: this.eventData.description,
+				privateEvent: this.eventData.private,
+			})
+			.subscribe({
+				next: (event) => {
+					this.event = event;
+					this.messageService.showSuccess('Event successfully edited');
 
-				// Reload to refresh edited event
-				this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-					this.router.navigate(['events', this.event.id, 'settings']);
-				});
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Failed to edit event');
-				console.error('Something went wrong while editing event', err?.error?.message);
-			},
-		});
+					// Reload to refresh edited event
+					this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+						this.router.navigate(['events', this.event.id, 'settings']);
+					});
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to edit event');
+					console.error('Something went wrong while editing event', err?.error?.message);
+				},
+			});
 	}
 
 	setStatus(status: EventStatusType) {
@@ -125,11 +131,9 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				this.event = event;
 				if (status === EventStatusType.ACTIVE) {
 					this.messageService.showSuccess('Event successfully set as active');
-				}
-				else if (status === EventStatusType.READY_TO_SETTLE) {
+				} else if (status === EventStatusType.READY_TO_SETTLE) {
 					this.messageService.showSuccess('Event successfully ready to be settled');
-				}
-				else if (status === EventStatusType.SETTLED) {
+				} else if (status === EventStatusType.SETTLED) {
 					this.messageService.showSuccess('Event successfully settled');
 				}
 
@@ -262,8 +266,8 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
 			width: '420px',
 			data: {
-				title: 'Send \'ready to settle\' email',
-				content: 'Are you sure you want to send the \'ready to settle\' email? Emails will be sent to all payers in the event.',
+				title: "Send 'ready to settle' email",
+				content: "Are you sure you want to send the 'ready to settle' email? Emails will be sent to all payers in the event.",
 				confirm: 'Yes, I am sure',
 			},
 		});

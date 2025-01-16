@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 	selector: 'app-split-button-item',
 	templateUrl: './split-button-item.component.html',
 	styleUrls: ['./split-button-item.component.scss'],
-	standalone: true,
 	imports: [MatIconModule, MatRippleModule],
 })
 export class SplitButtonItemComponent {

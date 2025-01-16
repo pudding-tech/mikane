@@ -35,7 +35,6 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 	selector: 'app-category',
 	templateUrl: './category.component.html',
 	styleUrls: ['./category.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatButtonModule,
@@ -404,7 +403,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 		});
 	}
 
-	gotoUserProfile(user: { id: string, guest: boolean, username: string }) {
+	gotoUserProfile(user: { id: string; guest: boolean; username: string }) {
 		if (!user.guest) {
 			this.router.navigate(['u', user.username]);
 		}

@@ -30,7 +30,6 @@ interface SenderPayments {
 @Component({
 	templateUrl: './payment-structure.component.html',
 	styleUrls: ['./payment-structure.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatButtonModule,

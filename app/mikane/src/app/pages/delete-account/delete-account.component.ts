@@ -16,7 +16,6 @@ import { ApiError } from 'src/app/types/apiError.type';
 @Component({
 	templateUrl: './delete-account.component.html',
 	styleUrls: ['./delete-account.component.scss'],
-	standalone: true,
 	imports: [CommonModule, MatCardModule, MenuComponent, MatToolbarModule, MatIconModule, MatButtonModule, RouterModule],
 })
 export class DeleteAccountComponent implements OnInit, OnDestroy {
@@ -46,7 +45,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
 				switchMap((user: User) => {
 					return this.userService.deleteUser(user?.id, this.key);
 				}),
-				takeUntil(this.destroy$)
+				takeUntil(this.destroy$),
 			)
 			.subscribe({
 				next: () => {

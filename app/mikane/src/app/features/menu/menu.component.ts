@@ -15,7 +15,6 @@ import { SplitButtonItemDirective } from '../split-button/split-button-item/spli
 	selector: 'app-menu',
 	templateUrl: './menu.component.html',
 	styleUrls: ['./menu.component.scss'],
-	standalone: true,
 	imports: [CommonModule, MatIconModule, SplitButtonComponent, SplitButtonItemComponent, SplitButtonItemDirective],
 })
 export class MenuComponent implements OnInit {

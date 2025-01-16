@@ -20,7 +20,6 @@ import { CategoryIcon } from 'src/app/types/enums';
 @Component({
 	templateUrl: 'expenditure-dialog.component.html',
 	styleUrls: ['expenditure-dialog.component.scss'],
-	standalone: true,
 	providers: [provideNativeDateAdapter()],
 	imports: [
 		MatDialogModule,

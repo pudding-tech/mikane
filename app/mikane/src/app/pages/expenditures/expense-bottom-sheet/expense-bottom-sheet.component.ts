@@ -18,7 +18,6 @@ type CategoryInfo = {
 	selector: 'app-expense-bottom-sheet',
 	templateUrl: './expense-bottom-sheet.component.html',
 	styleUrls: ['./expense-bottom-sheet.component.scss'],
-	standalone: true,
 	imports: [MatListModule, MatButtonModule, MatIconModule, FormsModule, MatFormFieldModule, MatInputModule],
 })
 export class ExpenseBottomSheetComponent {

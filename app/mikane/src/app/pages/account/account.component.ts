@@ -16,13 +16,12 @@ import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progre
 import { ApiError } from 'src/app/types/apiError.type';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { DangerZoneComponent } from './danger-zone/danger-zone.component';
-import { UserSettingsComponent } from './user/user-settings.component';
 import { PreferencesComponent } from './preferences/preferences.component';
+import { UserSettingsComponent } from './user/user-settings.component';
 
 @Component({
 	templateUrl: './account.component.html',
 	styleUrls: ['./account.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatToolbarModule,
@@ -56,7 +55,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 			.pipe(
 				switchMap((user) => {
 					return this.userService.loadUserById(user?.id);
-				})
+				}),
 			)
 			.subscribe({
 				next: (user) => {

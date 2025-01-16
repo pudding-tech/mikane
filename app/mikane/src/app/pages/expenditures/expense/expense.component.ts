@@ -12,7 +12,7 @@ import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
+import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
@@ -22,7 +22,6 @@ import { ExpenditureDialogComponent } from '../expenditure-dialog/expenditure-di
 @Component({
 	templateUrl: 'expense.component.html',
 	styleUrls: ['./expense.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatCardModule,
@@ -181,7 +180,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 
 	goBack() {
 		this.router.navigate(['events', this.event.id, 'expenses'], {
-			queryParams: { ...this.route.snapshot.queryParams }
+			queryParams: { ...this.route.snapshot.queryParams },
 		});
 	}
 

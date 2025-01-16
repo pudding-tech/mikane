@@ -17,7 +17,6 @@ import { User } from 'src/app/services/user/user.service';
 @Component({
 	templateUrl: './participant-dialog.component.html',
 	styleUrls: ['./participant-dialog.component.scss'],
-	standalone: true,
 	imports: [
 		MatDialogModule,
 		FormsModule,

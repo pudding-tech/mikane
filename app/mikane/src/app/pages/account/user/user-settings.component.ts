@@ -21,7 +21,6 @@ import { ApiError } from 'src/app/types/apiError.type';
 	selector: 'app-user-settings',
 	templateUrl: './user-settings.component.html',
 	styleUrls: ['./user-settings.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatCardModule,
@@ -69,7 +68,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 				this.editUserForm.get('firstName').value,
 				this.editUserForm.get('lastName').value,
 				this.editUserForm.get('email').value,
-				this.editUserForm.get('phone').value
+				this.editUserForm.get('phone').value,
 			)
 			.subscribe({
 				next: (user) => {

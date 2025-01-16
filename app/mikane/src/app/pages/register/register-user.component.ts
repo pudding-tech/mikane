@@ -22,7 +22,6 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 @Component({
 	templateUrl: './register-user.component.html',
 	styleUrls: ['./register-user.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatToolbarModule,
@@ -112,7 +111,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 					this.registerUserForm.get<string>('email')?.value,
 					this.phone,
 					this.registerUserForm.get('passwordGroup').get<string>('password')?.value,
-					this.key
+					this.key,
 				)
 				.subscribe({
 					next: (user: User) => {
@@ -145,7 +144,9 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 								this.registerUserForm.get('phone').setErrors({ duplicate: true });
 								break;
 							case 'PUD-132':
-								this.messageService.showError('Can only contain letters, numbers, hyphens, and underscores. Must be between 3-40 characters. Username cannot begin or end with hyphen/underscore.');
+								this.messageService.showError(
+									'Can only contain letters, numbers, hyphens, and underscores. Must be between 3-40 characters. Username cannot begin or end with hyphen/underscore.',
+								);
 								this.registerUserForm.get('username').setErrors({ invalid: true });
 								break;
 							default:

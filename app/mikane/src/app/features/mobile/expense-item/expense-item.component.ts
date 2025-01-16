@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, input, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +9,6 @@ import { Expense } from 'src/app/services/expense/expense.service';
 	selector: 'app-expense-item',
 	templateUrl: 'expense-item.component.html',
 	styleUrls: ['./expense-item.component.scss'],
-	standalone: true,
 	imports: [MatIconModule, CurrencyPipe, MatListModule],
 })
 export class ExpenseItemComponent {
@@ -21,7 +20,7 @@ export class ExpenseItemComponent {
 	gotoExpense() {
 		this.router.navigate([this.expense().id], {
 			relativeTo: this.route,
-			queryParams: { ...this.route.snapshot.queryParams }
+			queryParams: { ...this.route.snapshot.queryParams },
 		});
 	}
 }

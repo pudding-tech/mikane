@@ -24,7 +24,6 @@ import { GuestDialogComponent } from './guest-dialog/guest-dialog.component';
 @Component({
 	templateUrl: './guests.component.html',
 	styleUrls: ['./guests.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		ReactiveFormsModule,
@@ -98,7 +97,7 @@ export class GuestsComponent implements OnInit, OnDestroy {
 						return this.userService.createGuestUser(res.guest.firstName, res.guest.lastName);
 					}
 					return EMPTY;
-				})
+				}),
 			)
 			.subscribe({
 				next: () => {
@@ -132,7 +131,7 @@ export class GuestsComponent implements OnInit, OnDestroy {
 						return this.userService.editGuestUser(res.guest.id, res.guest.firstName, res.guest.lastName);
 					}
 					return EMPTY;
-				})
+				}),
 			)
 			.subscribe({
 				next: () => {

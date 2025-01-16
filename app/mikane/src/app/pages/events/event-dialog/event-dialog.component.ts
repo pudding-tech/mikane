@@ -12,7 +12,6 @@ import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/asy
 @Component({
 	templateUrl: 'event-dialog.component.html',
 	styleUrls: ['event-dialog.component.scss'],
-	standalone: true,
 	imports: [
 		MatDialogModule,
 		MatFormFieldModule,
