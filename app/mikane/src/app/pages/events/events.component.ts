@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
-import { Component, OnDestroy, OnInit, computed, signal, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -24,7 +24,6 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 	selector: 'app-events',
 	templateUrl: './events.component.html',
 	styleUrls: ['./events.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatToolbarModule,
@@ -148,11 +147,11 @@ export class EventsComponent implements OnInit, OnDestroy {
 		const dialogRef = this.dialog.open(EventDialogComponent, {
 			width: '350px',
 			data: {
-				edit: false
-			}
+				edit: false,
+			},
 		});
 
-		dialogRef.afterClosed().subscribe((event: { name: string; description: string, private: boolean }) => {
+		dialogRef.afterClosed().subscribe((event: { name: string; description: string; private: boolean }) => {
 			if (event) {
 				this.eventService.createEvent({ name: event.name, description: event.description, privateEvent: event.private }).subscribe({
 					next: (newEvent) => {

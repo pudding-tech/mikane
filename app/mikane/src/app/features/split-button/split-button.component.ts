@@ -1,6 +1,6 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, ContentChildren, ElementRef, HostListener, output, QueryList, inject } from '@angular/core';
+import { Component, ContentChildren, ElementRef, HostListener, inject, output, QueryList } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -10,7 +10,6 @@ import { SplitButtonItemDirective } from './split-button-item/split-button-item.
 	selector: 'app-split-button',
 	templateUrl: './split-button.component.html',
 	styleUrls: ['./split-button.component.scss'],
-	standalone: true,
 	animations: [
 		trigger('overlayAnimation', [
 			transition(':enter', [style({ opacity: 0, transform: 'scaleY(0.8)' }), animate('{{showTransitionParams}}')]),

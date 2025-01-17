@@ -19,7 +19,6 @@ import { ApiError } from 'src/app/types/apiError.type';
 	selector: 'app-danger-zone',
 	templateUrl: './danger-zone.component.html',
 	styleUrls: ['./danger-zone.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatCardModule,
@@ -62,7 +61,7 @@ export class DangerZoneComponent implements OnDestroy {
 					} else {
 						return NEVER;
 					}
-				})
+				}),
 			)
 			.subscribe({
 				next: () => {

@@ -15,7 +15,6 @@ import { ApiError } from 'src/app/types/apiError.type';
 	selector: 'app-preferences',
 	templateUrl: './preferences.component.html',
 	styleUrls: ['./preferences.component.scss'],
-	standalone: true,
 	imports: [CommonModule, MatCardModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSlideToggleModule],
 })
 export class PreferencesComponent implements OnInit, OnDestroy {

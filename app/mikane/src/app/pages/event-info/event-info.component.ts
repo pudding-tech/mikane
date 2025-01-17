@@ -23,7 +23,6 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 @Component({
 	templateUrl: 'event-info.component.html',
 	styleUrls: ['./event-info.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatButtonModule,

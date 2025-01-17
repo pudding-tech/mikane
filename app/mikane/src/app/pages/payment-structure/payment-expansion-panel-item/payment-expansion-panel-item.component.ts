@@ -14,7 +14,6 @@ import { User } from 'src/app/services/user/user.service';
 	selector: 'app-payment-expansion-panel-item',
 	templateUrl: './payment-expansion-panel-item.component.html',
 	styleUrls: ['./payment-expansion-panel-item.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatButtonModule,

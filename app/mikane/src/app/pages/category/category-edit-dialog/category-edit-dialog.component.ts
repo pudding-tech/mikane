@@ -8,7 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 @Component({
 	templateUrl: 'category-edit-dialog.component.html',
 	styleUrls: ['category-edit-dialog.component.scss'],
-	standalone: true,
 	imports: [MatDialogModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
 })
 export class CategoryEditDialogComponent {

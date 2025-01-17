@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, computed, signal, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { MatBottomSheet, MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -34,7 +34,6 @@ import { ExpenseBottomSheetComponent } from './expense-bottom-sheet/expense-bott
 	selector: 'app-expenditures',
 	templateUrl: './expenditures.component.html',
 	styleUrls: ['./expenditures.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatButtonModule,

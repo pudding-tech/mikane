@@ -31,11 +31,11 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
+import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
+import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { ExpenditureDialogComponent } from '../expenditures/expenditure-dialog/expenditure-dialog.component';
@@ -46,7 +46,6 @@ import { ParticipantDialogComponent } from './user-dialog/participant-dialog.com
 	selector: 'app-participant',
 	templateUrl: './participant.component.html',
 	styleUrls: ['./participant.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatButtonModule,
@@ -246,9 +245,11 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
 	deleteUserDialog(user: User) {
 		const privateInfo = `Please note: This is a private event.
-			${user.id === this.currentUser.id
-				? 'If you leave, you will not be able to rejoin on your own.'
-				: 'If you remove this user, they will lose all access to the event.'}`;
+			${
+				user.id === this.currentUser.id
+					? 'If you leave, you will not be able to rejoin on your own.'
+					: 'If you remove this user, they will lose all access to the event.'
+			}`;
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
 			width: '430px',
 			data: {
@@ -272,8 +273,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 				if (this.event.private && userId === this.currentUser.id) {
 					this.router.navigate(['events']);
 					this.messageService.showSuccess(`You no longer have access to ${this.event.name}`);
-				}
-				else {
+				} else {
 					// Reload users and balances
 					this.loadUsers();
 					this.messageService.showSuccess(userId === this.currentUser.id ? 'You have left the event' : 'User removed!');
@@ -412,7 +412,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			return;
 		}
 		this.router.navigate(['events', this.event.id, 'expenses'], {
-			queryParams: { payers: user.user.id }
+			queryParams: { payers: user.user.id },
 		});
 	}
 

@@ -8,7 +8,6 @@ import packageJson from '../../../../package.json';
 	selector: 'app-custom-footer',
 	templateUrl: 'footer.component.html',
 	styleUrls: ['./footer.component.scss'],
-	standalone: true,
 	imports: [CommonModule],
 })
 export class FooterComponent {

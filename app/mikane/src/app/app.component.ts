@@ -8,7 +8,6 @@ import { FooterComponent } from './features/footer/footer.component';
 	selector: 'app-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.scss'],
-	standalone: true,
 	imports: [RouterOutlet, FooterComponent],
 })
 export class AppComponent {
@@ -18,7 +17,7 @@ export class AppComponent {
 	constructor() {
 		this.iconRegistry.addSvgIcon(
 			'passkey_outlined',
-			this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/passkey_outlined.svg')
+			this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/passkey_outlined.svg'),
 		);
 	}
 }

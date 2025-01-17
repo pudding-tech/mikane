@@ -17,7 +17,6 @@ import { createCompareValidator } from 'src/app/shared/forms/validators/compare.
 	selector: 'app-change-password',
 	templateUrl: './change-password.component.html',
 	styleUrls: ['./change-password.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatCardModule,
@@ -56,7 +55,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 			this.userSub = this.userService
 				.changeUserPassword(
 					this.changePasswordForm.get<string>('currentPassword')?.value,
-					this.changePasswordForm.get<string>('newPassword')?.value
+					this.changePasswordForm.get<string>('newPassword')?.value,
 				)
 				.subscribe({
 					next: (user: User) => {

@@ -9,7 +9,6 @@ import { User, UserBalance } from 'src/app/services/user/user.service';
 	selector: 'app-participant-item',
 	templateUrl: 'participant-item.component.html',
 	styleUrls: ['./participant-item.component.scss'],
-	standalone: true,
 	imports: [MatButtonModule, MatIconModule, CurrencyPipe, MatListModule],
 })
 export class ParticipantItemComponent {
@@ -17,7 +16,7 @@ export class ParticipantItemComponent {
 	eventActive = input.required<boolean>();
 	numberOfParticipants = input.required<number>();
 	numberOfAdmins = input.required<number>();
-	gotoUser = output<{ user: User}>();
+	gotoUser = output<{ user: User }>();
 	removeUser = output<{ user: User }>();
 
 	gotoUserProfile() {

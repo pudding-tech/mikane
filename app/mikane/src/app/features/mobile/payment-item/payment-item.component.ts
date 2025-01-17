@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, ElementRef, input, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, inject, input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,7 +14,6 @@ import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 	selector: 'app-payment-item',
 	templateUrl: 'payment-item.component.html',
 	styleUrls: ['./payment-item.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatIconModule,

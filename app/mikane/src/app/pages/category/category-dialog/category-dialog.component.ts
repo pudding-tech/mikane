@@ -16,7 +16,6 @@ import { CategoryIcon } from 'src/app/types/enums';
 @Component({
 	templateUrl: 'category-dialog.component.html',
 	styleUrls: ['category-dialog.component.scss'],
-	standalone: true,
 	imports: [
 		MatDialogModule,
 		FormsModule,

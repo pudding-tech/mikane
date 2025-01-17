@@ -21,7 +21,6 @@ import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 @Component({
 	templateUrl: './invite.component.html',
 	styleUrls: ['./invite.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		ReactiveFormsModule,

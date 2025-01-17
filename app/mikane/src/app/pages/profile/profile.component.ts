@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { MatRippleModule } from '@angular/material/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Title } from '@angular/platform-browser';
@@ -23,7 +23,6 @@ import { ApiError } from 'src/app/types/apiError.type';
 @Component({
 	templateUrl: 'profile.component.html',
 	styleUrls: ['./profile.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatCardModule,
@@ -93,7 +92,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 						this.user = user;
 						this.titleService.setTitle(`${user.name} | Mikane`);
 
-						return combineLatest([this.userService.loadUserEvents(user.id, 5), this.userService.loadUserExpenses(user.id, null, 5)]);
+						return combineLatest([
+							this.userService.loadUserEvents(user.id, 5),
+							this.userService.loadUserExpenses(user.id, null, 5),
+						]);
 					} else {
 						this.messageService.showError('User not found');
 						console.error('user not found on profile page');
@@ -109,9 +111,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			.subscribe({
 				next: ([events, expenses]) => {
 					this.events = events;
-					this.expenses = expenses.map(expense => ({
+					this.expenses = expenses.map((expense) => ({
 						...expense,
-						created: new Date(expense.created)
+						created: new Date(expense.created),
 					}));
 					this.loading = false;
 				},
@@ -172,8 +174,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		if (window.isSecureContext && navigator.clipboard) {
 			navigator.clipboard.writeText(url);
 			this.messageService.showSuccess('Link to profile copied to clipboard');
-		}
-		else {
+		} else {
 			this.messageService.showError('Copy to clipboard is only allowed in a secure environment');
 			console.error('Copy to clipboard is only allowed in a secure environment');
 		}
@@ -187,15 +188,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		this.breakpointService.isMobile().subscribe((isMobile) => {
 			if (isMobile) {
 				this.router.navigate(['events', expense.eventInfo.id, 'expenses', expense.id]);
-			}
-			else {
+			} else {
 				this.router.navigate(['events', expense.eventInfo.id, 'expenses'], {
 					queryParams: {
-						payers: expense.payer.id
-					}
+						payers: expense.payer.id,
+					},
 				});
 			}
-		})
+		});
 	}
 
 	ngOnDestroy(): void {

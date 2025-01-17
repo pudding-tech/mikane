@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, signal, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,7 +23,6 @@ import { ParticipantComponent } from '../../participant/participant.component';
 	selector: 'app-event',
 	templateUrl: './event.component.html',
 	styleUrls: ['./event.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatToolbarModule,

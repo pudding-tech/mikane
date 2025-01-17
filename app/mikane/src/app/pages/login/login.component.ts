@@ -17,7 +17,6 @@ import { ApiError } from 'src/app/types/apiError.type';
 @Component({
 	templateUrl: 'login.component.html',
 	styleUrls: ['./login.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatToolbarModule,

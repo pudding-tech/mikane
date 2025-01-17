@@ -19,7 +19,6 @@ import { ApiError } from 'src/app/types/apiError.type';
 @Component({
 	templateUrl: './reset-password.component.html',
 	styleUrls: ['./reset-password.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatToolbarModule,
