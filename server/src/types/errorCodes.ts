@@ -33,11 +33,11 @@ export const PUD002: ErrorCode = {
 };
 
 /**
- * PUD-003: Username/email and password does not match (401)
+ * PUD-003: Username/email and password do not match (401)
  */
 export const PUD003: ErrorCode = {
   code: "PUD-003",
-  message: "Username/email and password does not match",
+  message: "Username/email and password do not match",
   status: 401
 };
 
