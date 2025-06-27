@@ -39,7 +39,7 @@ export const sendReadyToSettleEmails = async (paymentsInput: Payment[], event: E
 
   for (const senderPayment of senderPayments) {
     if (senderPayment.sender.guest) {
-      return;
+      continue;
     }
     if (!senderPayment.sender.email) {
       throw new Error("User " + senderPayment.sender.name + " missing email");
