@@ -193,10 +193,10 @@ describe("notifications", async () => {
         .post(`/api/notifications/${event.id}/settle`)
         .set("Cookie", authToken);
 
-      const sentEmail = nodemailerMock.mock.getSentMail();
-      const subject = sentEmail[0].subject as string;
-      const html = sentEmail[0].html as string;
-      const sentToEmail = sentEmail[0].to as string;
+      const sentEmails = nodemailerMock.mock.getSentMail();
+      const subject = sentEmails[0].subject as string;
+      const html = sentEmails[0].html as string;
+      const sentToEmail = sentEmails[0].to as string;
 
       const receiver1NameStart = html.indexOf("<div style=\"margin-left: 10px;\">") + "<div style=\"margin-left: 10px;\">".length;
       const receiver1NameEnd = html.indexOf("<", receiver1NameStart);

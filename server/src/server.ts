@@ -44,7 +44,8 @@ app.use(express.json());
 // Error handler for invalid JSON in body
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   if (err) {
-    return res.status(400).json({ error: "Invalid JSON in body"});
+    res.status(400).json({ error: "Invalid JSON in body"});
+    return;
   }
 });
 
@@ -102,16 +103,26 @@ app.use(session({
   unset: "destroy"
 }));
 
-app.post("*", (req, res, next) => {
+app.post("/{*any}", (req, res, next) => {
   if (req.headers["content-type"] !== undefined && !req.is("application/json")) {
-    return res.status(400).json({ error: "Wrong content-type" });
+    res.status(400).json({ error: "Wrong content-type" });
+    return;
   }
   next();
 });
 
-app.put("*", (req, res, next) => {
+app.put("/{*any}", (req, res, next) => {
   if (req.headers["content-type"] !== undefined && !req.is("application/json")) {
-    return res.status(400).json({ error: "Wrong content-type" });
+    res.status(400).json({ error: "Wrong content-type" });
+    return;
+  }
+  next();
+});
+
+// Ensure req.body is always an object for JSON requests
+app.use((req, _res, next) => {
+  if ((req.method === "POST" || req.method === "PUT" || req.method === "PATCH" || req.method === "DELETE") && typeof req.body === "undefined") {
+    req.body = {};
   }
   next();
 });
