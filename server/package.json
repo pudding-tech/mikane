@@ -1,6 +1,6 @@
 {
   "name": "mikane_server",
-  "version": "2.3.9-SNAPSHOT.9",
+  "version": "2.3.9-SNAPSHOT.10",
   "description": "API server for Mikane",
   "scripts": {
     "build": "rimraf ./build && tsc && npm run copy && cd build && npm ci --omit=dev",
