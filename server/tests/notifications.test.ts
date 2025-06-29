@@ -1,10 +1,10 @@
 import { describe, test, expect, beforeAll, afterEach, vi } from "vitest";
 import request from "supertest";
 import nodemailerMock from "nodemailer-mock";
-import app from "../src/server";
-import * as ec from "../src/types/errorCodes";
-import { Category, Event, Payment, User } from "../src/types/types";
-import { EventStatusType } from "../src/types/enums";
+import app from "../src/server.ts";
+import * as ec from "../src/types/errorCodes.ts";
+import { Category, Event, Payment, User } from "../src/types/types.ts";
+import { EventStatusType } from "../src/types/enums.ts";
 
 // Mock nodemailer
 vi.mock("nodemailer", () => nodemailerMock);

@@ -1,12 +1,12 @@
 import express from "express";
-import env from "../env";
-import * as dbEvents from "../db/dbEvents";
-import { authCheck } from "../middlewares/authCheck";
-import { isUUID } from "../utils/validators/uuidValidator";
-import { EventStatusType } from "../types/enums";
-import { ErrorExt } from "../types/errorExt";
-import { sendReadyToSettleEmails } from "../email-services/notifications/readyToSettle";
-import * as ec from "../types/errorCodes";
+import env from "../env.ts";
+import * as dbEvents from "../db/dbEvents.ts";
+import { authCheck } from "../middlewares/authCheck.ts";
+import { isUUID } from "../utils/validators/uuidValidator.ts";
+import { EventStatusType } from "../types/enums.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import { sendReadyToSettleEmails } from "../email-services/notifications/readyToSettle.ts";
+import * as ec from "../types/errorCodes.ts";
 const router = express.Router();
 
 /*

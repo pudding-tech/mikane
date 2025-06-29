@@ -1,11 +1,11 @@
 import express from "express";
-import * as db from "../db/dbCategories";
-import { authCheck } from "../middlewares/authCheck";
-import { isUUID } from "../utils/validators/uuidValidator";
-import { Category } from "../types/types";
-import { CategoryIcon } from "../types/enums";
-import { ErrorExt } from "../types/errorExt";
-import * as ec from "../types/errorCodes";
+import * as db from "../db/dbCategories.ts";
+import { authCheck } from "../middlewares/authCheck.ts";
+import { isUUID } from "../utils/validators/uuidValidator.ts";
+import { Category } from "../types/types.ts";
+import { CategoryIcon } from "../types/enums.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import * as ec from "../types/errorCodes.ts";
 const router = express.Router();
 
 /* --- */

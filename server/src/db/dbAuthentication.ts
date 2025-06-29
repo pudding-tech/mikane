@@ -1,7 +1,7 @@
-import { pool } from "../db";
-import { PUD033, PUD063, PUD064, PUD070, PUD075, PUD076, PUD077 } from "../types/errorCodes";
-import { ErrorExt } from "../types/errorExt";
-import { parseApiKeys } from "../parsers/parseKeys";
+import { pool } from "../db.ts";
+import { PUD033, PUD063, PUD064, PUD070, PUD075, PUD076, PUD077 } from "../types/errorCodes.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import { parseApiKeys } from "../parsers/parseKeys.ts";
 import { randomUUID } from "crypto";
 
 /**

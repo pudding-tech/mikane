@@ -1,5 +1,5 @@
-import { APIKey } from "../types/types";
-import { APIKeyDB } from "../types/typesDB";
+import { APIKey } from "../types/types.ts";
+import { APIKeyDB } from "../types/typesDB.ts";
 
 /**
  * Build array of API keys 

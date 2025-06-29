@@ -1,6 +1,6 @@
 import { Pool } from "pg";
-import { DBConfig } from "./types/types";
-import env from "./env";
+import { DBConfig } from "./types/types.ts";
+import env from "./env.ts";
 
 const config: DBConfig = {
   host: env.DB_HOST,

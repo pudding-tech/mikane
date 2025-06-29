@@ -1,7 +1,7 @@
 import { createTransport } from "nodemailer";
-import env from "../env";
-import { ErrorExt } from "../types/errorExt";
-import { PUD073, PUD074 } from "../types/errorCodes";
+import env from "../env.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import { PUD073, PUD074 } from "../types/errorCodes.ts";
 
 const email = env.MIKANE_EMAIL;
 const password = env.MIKANE_EMAIL_PASSWORD;

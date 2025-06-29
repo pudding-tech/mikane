@@ -1,4 +1,4 @@
-import { CategoryIcon } from "./enums";
+import { CategoryIcon } from "./enums.ts";
 
 export type User = {
   id: string,
@@ -130,3 +130,9 @@ export type DBConfig = {
   user: string,
   password: string
 };
+
+export type LogEntryDB = {
+  timestamp: Date,
+  level: string,
+  message: string
+}

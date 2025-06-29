@@ -1,8 +1,8 @@
-import { pool } from "../db";
-import { parseExpenses } from "../parsers/parseExpenses";
-import { ErrorExt } from "../types/errorExt";
-import { Expense } from "../types/types";
-import * as ec from "../types/errorCodes";
+import { pool } from "../db.ts";
+import { parseExpenses } from "../parsers/parseExpenses.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import { Expense } from "../types/types.ts";
+import * as ec from "../types/errorCodes.ts";
 
 /**
  * DB interface: Get all expenses in a given event

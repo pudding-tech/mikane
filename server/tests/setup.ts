@@ -1,5 +1,5 @@
 import { afterAll } from "vitest";
-import { resetDatabase } from "./resetDatabase";
+import { resetDatabase } from "./resetDatabase.ts";
 
 afterAll(async () => {
   try {

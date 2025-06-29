@@ -1,8 +1,8 @@
-import { pool } from "../db";
-import { parseGuestUser, parseGuestUsers } from "../parsers/parseUsers";
-import { Guest } from "../types/types";
-import { ErrorExt } from "../types/errorExt";
-import * as ec from "../types/errorCodes";
+import { pool } from "../db.ts";
+import { parseGuestUser, parseGuestUsers } from "../parsers/parseUsers.ts";
+import { Guest } from "../types/types.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import * as ec from "../types/errorCodes.ts";
 
 /**
  * DB interface: Get all guest users

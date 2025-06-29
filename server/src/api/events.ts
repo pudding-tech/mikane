@@ -1,11 +1,11 @@
 import express from "express";
-import * as db from "../db/dbEvents";
-import { authCheck, authKeyCheck } from "../middlewares/authCheck";
-import { removeUserInfoFromPayments, removeUserInfoFromUserBalances } from "../parsers/parseUserInfo";
-import { isUUID } from "../utils/validators/uuidValidator";
-import { Event, Payment, UserBalance } from "../types/types";
-import { ErrorExt } from "../types/errorExt";
-import * as ec from "../types/errorCodes";
+import * as db from "../db/dbEvents.ts";
+import { authCheck, authKeyCheck } from "../middlewares/authCheck.ts";
+import { removeUserInfoFromPayments, removeUserInfoFromUserBalances } from "../parsers/parseUserInfo.ts";
+import { isUUID } from "../utils/validators/uuidValidator.ts";
+import { Event, Payment, UserBalance } from "../types/types.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import * as ec from "../types/errorCodes.ts";
 const router = express.Router();
 
 /* --- */

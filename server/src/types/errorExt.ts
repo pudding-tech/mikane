@@ -1,4 +1,4 @@
-import { ErrorCode } from "./errorCodes";
+import { ErrorCode } from "./errorCodes.ts";
 
 /**
  * Custom Error class

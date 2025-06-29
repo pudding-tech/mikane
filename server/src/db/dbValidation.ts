@@ -1,6 +1,6 @@
-import { pool } from "../db";
-import { ErrorExt } from "../types/errorExt";
-import { PUD006 } from "../types/errorCodes";
+import { pool } from "../db.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import { PUD006 } from "../types/errorCodes.ts";
 
 /* ---- */
 /* USER */
