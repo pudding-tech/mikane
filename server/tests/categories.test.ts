@@ -343,7 +343,7 @@ describe("categories", async () => {
   /* --------------------------------- */
   /* POST /categories/:id/user/:userId */
   /* --------------------------------- */
-  describe("PUT /categories/:id/user/:userId", async () => {
+  describe("POST /categories/:id/user/:userId", async () => {
     // Check number of users in category (should be 0)
     test("number of users in category should be 0", async () => {
       const res = await request(app)
