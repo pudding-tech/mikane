@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
-    "lib": ["ES2023"],
-    "module": "Node16",
-    "target": "ES2022",
+    "lib": ["ES2024"],
+    "module": "Node18",
+    "target": "ES2024",
 
     "strict": true,
     // "noUncheckedIndexedAccess": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "rewriteRelativeImportExtensions": true,
     "moduleResolution": "Node16",
 
     "outDir": "build",

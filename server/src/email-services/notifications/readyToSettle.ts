@@ -1,6 +1,7 @@
-import env from "../../env";
-import { sendEmail } from "../../utils/sendEmail";
-import { Event, Payment, User } from "../../types/types";
+import env from "../../env.ts";
+import logger from "../../utils/logger.ts";
+import { sendEmail } from "../../utils/sendEmail.ts";
+import { Event, Payment, User } from "../../types/types.ts";
 
 type SenderPayments = {
   sender: User,
@@ -49,7 +50,7 @@ export const sendReadyToSettleEmails = async (paymentsInput: Payment[], event: E
 
     const sentMessageInfo = await sendEmail(senderPayment.sender.email, subject, html);
     if (sentMessageInfo.accepted) {
-      console.log(`'Ready to settle' email for event ${event.name} sent to ${sentMessageInfo.accepted}: ${sentMessageInfo.response}`);
+      logger.info(`'Ready to settle' email for event ${event.name} sent to ${sentMessageInfo.accepted}: ${sentMessageInfo.response}`);
     }
   }
 };

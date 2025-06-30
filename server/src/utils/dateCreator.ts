@@ -1,5 +1,5 @@
-import { ErrorExt } from "../types/errorExt";
-import { PUD141 } from "../types/errorCodes";
+import { ErrorExt } from "../types/errorExt.ts";
+import { PUD141 } from "../types/errorCodes.ts";
 
 /**
  * Creates a Date. Throws error if invalid date

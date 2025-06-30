@@ -1,11 +1,11 @@
 import express from "express";
-import * as db from "../db/dbGuestUsers";
-import * as ec from "../types/errorCodes";
+import * as db from "../db/dbGuestUsers.ts";
+import * as ec from "../types/errorCodes.ts";
 import { randomUUID } from "crypto";
-import { authCheck } from "../middlewares/authCheck";
-import { Guest } from "../types/types";
-import { ErrorExt } from "../types/errorExt";
-import { isUUID } from "../utils/validators/uuidValidator";
+import { authCheck } from "../middlewares/authCheck.ts";
+import { Guest } from "../types/types.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import { isUUID } from "../utils/validators/uuidValidator.ts";
 const router = express.Router();
 
 /* --- */

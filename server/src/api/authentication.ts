@@ -1,15 +1,16 @@
 import express from "express";
-import env from "../env";
-import * as dbUsers from "../db/dbUsers";
-import * as dbAuth from "../db/dbAuthentication";
-import * as ec from "../types/errorCodes";
-import { authenticate, createHash, generateApiKey } from "../utils/auth";
-import { generateKey } from "../utils/generateKey";
-import { User } from "../types/types";
-import { masterKeyCheck } from "../middlewares/authCheck";
-import { isValidPassword } from "../utils/validators/passwordValidator";
-import { sendPasswordResetEmail } from "../email-services/passwordReset";
-import { ErrorExt } from "../types/errorExt";
+import env from "../env.ts";
+import logger from "../utils/logger.ts";
+import * as dbUsers from "../db/dbUsers.ts";
+import * as dbAuth from "../db/dbAuthentication.ts";
+import * as ec from "../types/errorCodes.ts";
+import { authenticate, createHash, generateApiKey } from "../utils/auth.ts";
+import { generateKey } from "../utils/generateKey.ts";
+import { User } from "../types/types.ts";
+import { masterKeyCheck } from "../middlewares/authCheck.ts";
+import { isValidPassword } from "../utils/validators/passwordValidator.ts";
+import { sendPasswordResetEmail } from "../email-services/passwordReset.ts";
+import { ErrorExt } from "../types/errorExt.ts";
 const router = express.Router();
 
 /* --- */
@@ -58,7 +59,7 @@ router.post("/login", async (req, res) => {
   }
 
   if (req.session.authenticated && req.session.userId) {
-    console.log(`User ${req.session.username} already authenticated`);
+    logger.info(`User ${req.session.username} tried signing in, but is already authenticated`);
     const user: User | null = await dbUsers.getUser(req.session.userId);
     if (!user) {
       throw new ErrorExt(ec.PUD054);
@@ -89,7 +90,7 @@ router.post("/login", async (req, res) => {
   req.session.username = user.username;
   req.session.avatarURL = user.avatarURL;
   req.session.superAdmin = user.superAdmin;
-  console.log(`User ${user.username} signing in...`, req.sessionID);
+  logger.info(`User ${user.username} signing in - sessionId: `, req.sessionID);
   res.status(200).json({
     authenticated: req.session.authenticated,
     ...user
@@ -109,7 +110,7 @@ router.post("/logout", (req, res) => {
     if (err) {
       throw new ErrorExt(ec.PUD060);
     }
-    console.log(`User ${username} successfully signed out`);
+    logger.info(`User ${username} successfully signed out`);
     res.status(200).json({ msg: "Signed out successfully" });
   });
 });

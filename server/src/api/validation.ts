@@ -1,12 +1,12 @@
 import express from "express";
-import * as ec from "../types/errorCodes";
-import * as db from "../db/dbValidation";
-import { authCheck } from "../middlewares/authCheck";
-import { isEmail } from "../utils/validators/emailValidator";
-import { isUUID } from "../utils/validators/uuidValidator";
-import { ErrorExt } from "../types/errorExt";
-import { isValidUsername } from "../utils/validators/usernameValidator";
-import { isPhoneNumber } from "../utils/validators/phoneValidator";
+import * as ec from "../types/errorCodes.ts";
+import * as db from "../db/dbValidation.ts";
+import { authCheck } from "../middlewares/authCheck.ts";
+import { isEmail } from "../utils/validators/emailValidator.ts";
+import { isUUID } from "../utils/validators/uuidValidator.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import { isValidUsername } from "../utils/validators/usernameValidator.ts";
+import { isPhoneNumber } from "../utils/validators/phoneValidator.ts";
 const router = express.Router();
 
 /*

@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { DBConfig } from "./types";
+import { DBConfig } from "./types.ts";
 
 export interface StoreOptions {
   /**

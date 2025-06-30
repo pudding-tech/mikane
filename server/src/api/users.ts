@@ -1,21 +1,21 @@
 import express from "express";
-import env from "../env";
-import * as db from "../db/dbUsers";
-import * as dbAuth from "../db/dbAuthentication";
-import * as ec from "../types/errorCodes";
-import { authCheck } from "../middlewares/authCheck";
-import { authenticate, createHash } from "../utils/auth";
-import { generateKey } from "../utils/generateKey";
-import { isUUID } from "../utils/validators/uuidValidator";
-import { isEmail } from "../utils/validators/emailValidator";
-import { isPhoneNumber } from "../utils/validators/phoneValidator";
-import { isValidPassword } from "../utils/validators/passwordValidator";
-import { isValidUsername } from "../utils/validators/usernameValidator";
-import { removeUserInfo } from "../parsers/parseUserInfo";
-import { sendRegisterAccountEmail } from "../email-services/registerAccount";
-import { sendDeleteAccountEmail } from "../email-services/deleteAccount";
-import { Event, Expense, User } from "../types/types";
-import { ErrorExt } from "../types/errorExt";
+import env from "../env.ts";
+import * as db from "../db/dbUsers.ts";
+import * as dbAuth from "../db/dbAuthentication.ts";
+import * as ec from "../types/errorCodes.ts";
+import { authCheck } from "../middlewares/authCheck.ts";
+import { authenticate, createHash } from "../utils/auth.ts";
+import { generateKey } from "../utils/generateKey.ts";
+import { isUUID } from "../utils/validators/uuidValidator.ts";
+import { isEmail } from "../utils/validators/emailValidator.ts";
+import { isPhoneNumber } from "../utils/validators/phoneValidator.ts";
+import { isValidPassword } from "../utils/validators/passwordValidator.ts";
+import { isValidUsername } from "../utils/validators/usernameValidator.ts";
+import { removeUserInfo } from "../parsers/parseUserInfo.ts";
+import { sendRegisterAccountEmail } from "../email-services/registerAccount.ts";
+import { sendDeleteAccountEmail } from "../email-services/deleteAccount.ts";
+import { Event, Expense, User } from "../types/types.ts";
+import { ErrorExt } from "../types/errorExt.ts";
 const router = express.Router();
 
 /* --- */

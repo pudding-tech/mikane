@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { isEmail } from "./utils/validators/emailValidator";
+import { isEmail } from "./utils/validators/emailValidator.ts";
 
 if (process.env.NODE_ENV === "test") {
   dotenv.config({ path: "./.env.test", quiet: true });
@@ -15,6 +15,7 @@ interface EnvVariables {
   PORT: number;
   ALLOWED_ORIGIN: string;
   SESSION_SECRET: string;
+  LOG_LEVEL: LogLevelType;
   COOKIE_NAME?: string;
   COOKIE_DOMAIN?: string;
 
@@ -28,10 +29,29 @@ interface EnvVariables {
   MIKANE_EMAIL_PASSWORD?: string;
 }
 
-type EnvType = "dev" | "production" | "staging" | "test";
+const allowedEnvironments = ["dev", "production", "staging", "test"] as const;
+const allowedLogLevels = ["alert", "error", "warn", "info", "fail", "success", "log", "debug", "verbose"] as const;
+
+type EnvType = typeof allowedEnvironments[number];
+type LogLevelType = typeof allowedLogLevels[number];
 
 const isEnvType = (environement: any): environement is EnvType => {
-  return ["dev", "production", "staging", "test"].includes(environement);
+  if (allowedEnvironments.includes(environement)) {
+    return true;
+  }
+  if (environement) {
+    console.warn(`Invalid environment: '${environement}'. Defaulting to 'dev'`);
+  } 
+  return false;
+};
+const isLogLevelType = (logLevel: any): logLevel is LogLevelType => {
+  if (allowedLogLevels.includes(logLevel)) {
+    return true;
+  }
+  if (logLevel) {
+    console.warn(`Invalid log level: '${logLevel}'. Defaulting to 'log'`);
+  }
+  return false;
 };
 
 const validateEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
@@ -69,6 +89,7 @@ const validateEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
     SESSION_SECRET: env.SESSION_SECRET || "abcdef",
     COOKIE_NAME: env.COOKIE_NAME,
     COOKIE_DOMAIN: env.COOKIE_DOMAIN,
+    LOG_LEVEL: isLogLevelType(env.LOG_LEVEL) ? (env.LOG_LEVEL) : "log",
 
     DB_HOST: env.DB_HOST as string,
     DB_PORT: parseInt(env.DB_PORT ?? "") || 5432,

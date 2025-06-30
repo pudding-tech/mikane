@@ -1,13 +1,13 @@
-import { pool } from "../db";
-import { calculateBalance, calculatePayments } from "../calculations";
-import { parseBalance, parseEvents } from "../parsers/parseEvents";
-import { parseCategories } from "../parsers/parseCategories";
-import { parseExpenses } from "../parsers/parseExpenses";
-import { parseUsers } from "../parsers/parseUsers";
-import { BalanceCalculationResult, Category, Event, Expense, Payment, User, UserBalance } from "../types/types";
-import { EventStatusType, Target } from "../types/enums";
-import { ErrorExt } from "../types/errorExt";
-import * as ec from "../types/errorCodes";
+import { pool } from "../db.ts";
+import { calculateBalance, calculatePayments } from "../calculations.ts";
+import { parseBalance, parseEvents } from "../parsers/parseEvents.ts";
+import { parseCategories } from "../parsers/parseCategories.ts";
+import { parseExpenses } from "../parsers/parseExpenses.ts";
+import { parseUsers } from "../parsers/parseUsers.ts";
+import { BalanceCalculationResult, Category, Event, Expense, Payment, User, UserBalance } from "../types/types.ts";
+import { EventStatusType, Target } from "../types/enums.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import * as ec from "../types/errorCodes.ts";
 
 /**
  * DB interface: Get all events

@@ -1,8 +1,9 @@
-import { setDisplayNames } from "../utils/setDisplayNames";
-import { getGravatarURL } from "../utils/gravatar";
-import { Category, User } from "../types/types";
-import { CategoryDB, UserNamesDB } from "../types/typesDB";
-import { Target, CategoryIcon } from "../types/enums";
+import logger from "../utils/logger.ts";
+import { setDisplayNames } from "../utils/setDisplayNames.ts";
+import { getGravatarURL } from "../utils/gravatar.ts";
+import { Category, User } from "../types/types.ts";
+import { CategoryDB, UserNamesDB } from "../types/typesDB.ts";
+import { Target, CategoryIcon } from "../types/enums.ts";
 
 /**
  * Build array of Category objects. Format for either client or calculate function
@@ -70,7 +71,7 @@ export const parseCategories = (catInput: CategoryDB[], target: Target, usersInE
       }
     }
     catch (err) {
-      console.error(err);
+      logger.error(err);
     }
 
     categories.push(category);

@@ -1,5 +1,5 @@
-import { Event, User, UserBalance, BalanceCalculationResult, Expense } from "../types/types";
-import { EventDB } from "../types/typesDB";
+import { Event, User, UserBalance, BalanceCalculationResult, Expense } from "../types/types.ts";
+import { EventDB } from "../types/typesDB.ts";
 
 /**
  * Build array of Event objects

@@ -1,11 +1,5 @@
-import {
-  User,
-  Category,
-  Expense,
-  Payment,
-  Record,
-  BalanceCalculationResult
-} from "./types/types";
+import logger from "./utils/logger.ts";
+import { User, Category, Expense, Payment, Record, BalanceCalculationResult } from "./types/types.ts";
 
 /**
  * Calculate an event's balance
@@ -27,7 +21,8 @@ export const calculateBalance = (
 
   categories.forEach((category) => {
     if (!category.userWeights) {
-      return console.log("Category object formatted wrong!");
+      logger.error("Category object formatted wrong!");
+      return;
     }
     let sumCategoryWeights = 0;
     category.userWeights.forEach((weight) => {

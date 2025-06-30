@@ -1,4 +1,4 @@
-import { User, UserBalance, Payment } from "../types/types";
+import { User, UserBalance, Payment } from "../types/types.ts";
 
 /**
  * Remove sensitive information for users who are not the signed-in user

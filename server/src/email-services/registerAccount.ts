@@ -1,6 +1,7 @@
-import env from "../env";
-import { User } from "../types/types";
-import { sendEmail } from "../utils/sendEmail";
+import env from "../env.ts";
+import logger from "../utils/logger.ts";
+import { User } from "../types/types.ts";
+import { sendEmail } from "../utils/sendEmail.ts";
 
 const url = env.ALLOWED_ORIGIN + "/register/";
 
@@ -18,7 +19,7 @@ export const sendRegisterAccountEmail = async (recipient: string, key: string, b
 
   const sentMessageInfo = await sendEmail(recipient, subject, html);
   if (sentMessageInfo.accepted) {
-    console.log(`Register account email sent to ${sentMessageInfo.accepted}: ${sentMessageInfo.response}`);
+    logger.info(`Register account email sent to ${sentMessageInfo.accepted}: ${sentMessageInfo.response}`);
   }
 };
 

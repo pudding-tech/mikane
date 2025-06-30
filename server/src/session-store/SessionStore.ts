@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import { Store, SessionData } from "express-session";
-import { StoreOptions } from "../types/StoreOptions";
+import { StoreOptions } from "../types/StoreOptions.ts";
+import logger from "../utils/logger.ts";
 
 export default class SessionStore extends Store {
 
@@ -25,7 +26,7 @@ export default class SessionStore extends Store {
   async checkConnection() {
     try {
       const client = await this.pool.connect();
-      console.log("Session store connected");
+      logger.info("Session store connected");
       client.release();
 
       if (this.autoDestroy) {
@@ -35,7 +36,7 @@ export default class SessionStore extends Store {
       }
     }
     catch (err) {
-      console.error("Something went wrong connecting to session store");
+      logger.error("Something went wrong connecting to session store");
     }
   }
   
@@ -170,6 +171,6 @@ export default class SessionStore extends Store {
     if (callback) {
       return callback(err);
     }
-    console.error(err);
+    logger.error(err);
   }
 }
