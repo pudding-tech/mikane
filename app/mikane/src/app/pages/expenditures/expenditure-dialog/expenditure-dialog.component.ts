@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -31,7 +30,6 @@ import { CategoryIcon } from 'src/app/types/enums';
 		MatAutocompleteModule,
 		MatOptionModule,
 		MatButtonModule,
-		AsyncPipe,
 		MatSelectModule,
 		FormControlPipe,
 		MatIconModule,

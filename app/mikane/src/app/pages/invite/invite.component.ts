@@ -16,7 +16,6 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
-import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 
 @Component({
 	templateUrl: './invite.component.html',
@@ -35,7 +34,6 @@ import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 		MatInputModule,
 		RouterModule,
 		MatProgressSpinnerModule,
-		FormControlPipe,
 	],
 })
 export class InviteComponent implements OnInit, OnDestroy {

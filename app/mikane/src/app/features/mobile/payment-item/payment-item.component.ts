@@ -8,7 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { Router } from '@angular/router';
 import { User } from 'src/app/services/user/user.service';
-import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 
 @Component({
 	selector: 'app-payment-item',
@@ -22,7 +21,6 @@ import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 		MatButtonModule,
 		MatFormFieldModule,
 		MatInputModule,
-		FormControlPipe,
 		FormsModule,
 		ReactiveFormsModule,
 	],

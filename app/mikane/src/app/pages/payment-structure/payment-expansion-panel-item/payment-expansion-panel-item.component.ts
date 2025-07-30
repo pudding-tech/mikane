@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -7,25 +7,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payment-item.component';
 import { User } from 'src/app/services/user/user.service';
 
 @Component({
 	selector: 'app-payment-expansion-panel-item',
 	templateUrl: './payment-expansion-panel-item.component.html',
 	styleUrls: ['./payment-expansion-panel-item.component.scss'],
-	imports: [
-		CommonModule,
-		MatButtonModule,
-		MatIconModule,
-		MatExpansionModule,
-		MatTableModule,
-		MatCardModule,
-		MatListModule,
-		AsyncPipe,
-		CurrencyPipe,
-		PaymentItemComponent,
-	],
+	imports: [CommonModule, MatButtonModule, MatIconModule, MatExpansionModule, MatTableModule, MatCardModule, MatListModule, CurrencyPipe],
 })
 export class PaymentExpansionPanelItemComponent {
 	private router = inject(Router);

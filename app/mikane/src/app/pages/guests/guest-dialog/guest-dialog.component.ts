@@ -6,20 +6,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { User } from 'src/app/services/user/user.service';
-import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
 
 @Component({
 	templateUrl: 'guest-dialog.component.html',
 	styleUrls: ['guest-dialog.component.scss'],
-	imports: [
-		MatDialogModule,
-		MatFormFieldModule,
-		MatInputModule,
-		FormsModule,
-		MatButtonModule,
-		EventNameValidatorDirective,
-		MatProgressSpinnerModule,
-	],
+	imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, MatProgressSpinnerModule],
 })
 export class GuestDialogComponent {
 	dialogRef = inject<MatDialogRef<GuestDialogComponent>>(MatDialogRef);

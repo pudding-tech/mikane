@@ -8,7 +8,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { EventItemComponent } from 'src/app/features/mobile/event-item/event-item.component';
@@ -28,7 +28,6 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 		CommonModule,
 		MatToolbarModule,
 		MatButtonModule,
-		RouterLink,
 		MatIconModule,
 		NgIf,
 		MatCardModule,

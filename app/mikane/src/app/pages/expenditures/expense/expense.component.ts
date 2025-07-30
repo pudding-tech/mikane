@@ -5,10 +5,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, filter, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
@@ -22,17 +21,7 @@ import { ExpenditureDialogComponent } from '../expenditure-dialog/expenditure-di
 @Component({
 	templateUrl: 'expense.component.html',
 	styleUrls: ['./expense.component.scss'],
-	imports: [
-		CommonModule,
-		MatCardModule,
-		ProgressSpinnerComponent,
-		MenuComponent,
-		MatDialogModule,
-		MatIconModule,
-		RouterLink,
-		MatButtonModule,
-		MatToolbarModule,
-	],
+	imports: [CommonModule, MatCardModule, ProgressSpinnerComponent, MatDialogModule, MatIconModule, MatButtonModule, MatToolbarModule],
 })
 export class ExpenseComponent implements OnInit, OnDestroy {
 	breakpointService = inject(BreakpointService);

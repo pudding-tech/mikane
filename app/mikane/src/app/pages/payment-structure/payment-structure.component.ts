@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -39,7 +39,6 @@ interface SenderPayments {
 		ProgressSpinnerComponent,
 		MatCardModule,
 		MatListModule,
-		CurrencyPipe,
 		PaymentExpansionPanelItemComponent,
 		PaymentItemComponent,
 	],

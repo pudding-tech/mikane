@@ -15,9 +15,7 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
-import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
 import { ApiError } from 'src/app/types/apiError.type';
-import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 
 @Component({
@@ -35,8 +33,6 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 		FormsModule,
 		ReactiveFormsModule,
 		ProgressSpinnerComponent,
-		EventNameValidatorDirective,
-		FormControlPipe,
 	],
 })
 export class EventInfoComponent implements OnInit, OnDestroy {
