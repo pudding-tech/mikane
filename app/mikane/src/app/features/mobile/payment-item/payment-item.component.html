@@ -6,6 +6,8 @@
 					[ngSrc]="payment().sender.avatarURL"
 					alt="Sender avatar"
 					class="avatar"
+					width="24"
+					height="24"
 					[ngClass]="{ clickable: !payment().sender.guest }"
 					(click)="gotoUserProfile(payment().sender)"
 				/>
@@ -33,6 +35,8 @@
 								[ngSrc]="receiver.receiver.avatarURL"
 								alt="Receiver avatar"
 								class="avatar"
+								width="20"
+								height="20"
 								[ngClass]="{ clickable: !receiver.receiver.guest }"
 								(click)="gotoUserProfile(receiver.receiver)"
 							/>
