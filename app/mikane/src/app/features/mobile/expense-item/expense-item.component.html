@@ -9,7 +9,7 @@
 	</div>
 	<div class="payer">
 		@if (expense().payer?.avatarURL) {
-			<img [ngSrc]="expense().payer?.avatarURL" alt="User avatar" class="payer-avatar" />
+			<img [ngSrc]="expense().payer?.avatarURL" width="16" height="16" alt="User avatar" class="payer-avatar" />
 		}
 		<span class="payer-name">
 			{{ expense().payer?.name }}
