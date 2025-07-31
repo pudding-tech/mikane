@@ -10,6 +10,7 @@ on:
 jobs:
   snapshot:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
     outputs:
       frontend-artifact: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
       backend-artifact: ${{ steps.bump-snapshot.outputs.artifact-backend }}
