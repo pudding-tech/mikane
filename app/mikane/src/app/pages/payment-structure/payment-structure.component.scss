@@ -42,6 +42,38 @@
 	color: #b4b4b4;
 }
 
+.payments-header-mobile {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 40px;
+	background-color: rgba(24, 24, 24, 1);
+	border-top: 1px solid #333333;
+	stroke: #333333;
+	color: #b4b4b4;
+
+	.title-mobile {
+		height: auto;
+		padding: 0;
+		padding-left: 16px;
+		background-color: transparent;
+		border: none;
+		flex: 1;
+	}
+
+	.collapse-button-mobile {
+		min-width: auto;
+		padding: 0 8px;
+		margin-right: 8px;
+
+		mat-icon {
+			font-size: 20px;
+			width: 20px;
+			height: 20px;
+		}
+	}
+}
+
 .no-payments {
 	display: flex;
 	align-items: center;

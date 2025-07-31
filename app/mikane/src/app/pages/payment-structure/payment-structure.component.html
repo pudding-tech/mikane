@@ -61,11 +61,21 @@
 					@if (paymentsSelf.length > 0) {
 						<div>
 							@if (paymentsOthers.length > 0) {
-								<div class="title-mobile">Your payments</div>
+								<div class="payments-header-mobile">
+									<div class="title-mobile">Your payments</div>
+									<button mat-button color="accent" (click)="toggleExpandMobile(1)" class="collapse-button-mobile">
+										<mat-icon>{{ allExpandedSelfMobile ? "visibility_off" : "visibility" }}</mat-icon>
+									</button>
+								</div>
 							}
 							<mat-nav-list class="payments-list-mobile">
 								@for (payment of paymentsSelf; track payment.sender.id) {
-									<app-payment-item [payment]="payment" [self]="true" [currentUser]="currentUser" />
+									<app-payment-item 
+										[payment]="payment" 
+										[self]="true" 
+										[currentUser]="currentUser"
+										[forceExpanded]="allExpandedSelfMobile"
+									/>
 								}
 							</mat-nav-list>
 						</div>
@@ -73,11 +83,21 @@
 					@if (paymentsOthers.length > 0) {
 						<div>
 							@if (paymentsSelf.length > 0) {
-								<div class="title-mobile">Other payments</div>
+								<div class="payments-header-mobile">
+									<div class="title-mobile">Other payments</div>
+									<button mat-button color="accent" (click)="toggleExpandMobile(2)" class="collapse-button-mobile">
+										<mat-icon>{{ allExpandedOthersMobile ? "visibility_off" : "visibility" }}</mat-icon>
+									</button>
+								</div>
 							}
 							<mat-nav-list class="payments-list-mobile">
 								@for (payment of paymentsOthers; track payment.sender.id) {
-									<app-payment-item [payment]="payment" [self]="false" [currentUser]="currentUser" />
+									<app-payment-item 
+										[payment]="payment" 
+										[self]="false" 
+										[currentUser]="currentUser"
+										[forceExpanded]="allExpandedOthersMobile"
+									/>
 								}
 							</mat-nav-list>
 						</div>

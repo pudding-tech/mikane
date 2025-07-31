@@ -1,5 +1,5 @@
 <div class="wrapper">
-	<mat-list-item (click)="toggleDropdown()">
+	<mat-list-item (click)="toggleDropdown()" [class.disabled-click]="forceExpanded() !== undefined">
 		<div class="upper">
 			@if (payment().sender.avatarURL) {
 				<img

@@ -117,4 +117,62 @@ describe('PaymentItemComponent', () => {
 
 		expect(component.lowerHeight).toEqual(100);
 	}));
+
+	it('should expand when forceExpanded is true', () => {
+		fixture.componentRef.setInput('forceExpanded', true);
+		fixture.componentRef.setInput('self', false); // Normally would be collapsed
+		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
+		component.ngOnInit();
+
+		expect(component.dropdownOpen).toBe(true);
+	});
+
+	it('should collapse when forceExpanded is false', () => {
+		fixture.componentRef.setInput('forceExpanded', false);
+		fixture.componentRef.setInput('self', true); // Normally would be expanded
+		component.ngOnInit();
+
+		expect(component.dropdownOpen).toBe(false);
+		expect(component.lowerHeight).toEqual(0);
+	});
+
+	it('should not allow manual toggle when forceExpanded is set', () => {
+		fixture.componentRef.setInput('forceExpanded', true);
+		component.ngOnInit();
+		const initialDropdownOpen = component.dropdownOpen;
+		
+		component.toggleDropdown();
+
+		expect(component.dropdownOpen).toEqual(initialDropdownOpen); // Should not change
+	});
+
+	it('should allow manual toggle when forceExpanded is undefined', () => {
+		fixture.componentRef.setInput('forceExpanded', undefined);
+		component.ngOnInit();
+		const initialDropdownOpen = component.dropdownOpen;
+		
+		component.toggleDropdown();
+
+		expect(component.dropdownOpen).toEqual(!initialDropdownOpen); // Should change
+	});
+
+	it('should respond to changes in forceExpanded', () => {
+		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
+		
+		// Start with undefined (manual control)
+		fixture.componentRef.setInput('forceExpanded', undefined);
+		fixture.componentRef.setInput('self', false);
+		component.ngOnInit();
+		expect(component.dropdownOpen).toBe(false);
+
+		// Change to force expanded
+		fixture.componentRef.setInput('forceExpanded', true);
+		component.ngOnChanges({ forceExpanded: { currentValue: true, previousValue: undefined, firstChange: false, isFirstChange: () => false } });
+		expect(component.dropdownOpen).toBe(true);
+
+		// Change to force collapsed
+		fixture.componentRef.setInput('forceExpanded', false);
+		component.ngOnChanges({ forceExpanded: { currentValue: false, previousValue: true, firstChange: false, isFirstChange: () => false } });
+		expect(component.dropdownOpen).toBe(false);
+	});
 });

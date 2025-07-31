@@ -4,6 +4,10 @@
 	mat-list-item {
 		height: fit-content !important;
 		padding: 0;
+
+		&.disabled-click {
+			cursor: default;
+		}
 	}
 }
 

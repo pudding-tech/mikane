@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe, NgOptimizedImage } from '@angular/common';
-import { Component, ElementRef, inject, input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,7 +26,7 @@ import { User } from 'src/app/services/user/user.service';
 		NgOptimizedImage,
 	],
 })
-export class PaymentItemComponent implements OnInit {
+export class PaymentItemComponent implements OnInit, OnChanges {
 	private router = inject(Router);
 
 	@ViewChild('lower') lower: ElementRef;
@@ -39,14 +39,33 @@ export class PaymentItemComponent implements OnInit {
 	}>();
 	self = input.required<boolean>();
 	currentUser = input.required<User>();
+	forceExpanded = input<boolean | undefined>(undefined);
 
 	dropdownOpen: boolean;
 	lowerHeight: number | string;
 
 	ngOnInit(): void {
-		this.dropdownOpen = this.self() ? true : false;
-		this.lowerHeight = this.self() ? 'auto' : 0;
-		if (this.lowerHeight === 'auto') {
+		this.updateExpansionState();
+	}
+
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes['forceExpanded']) {
+			this.updateExpansionState();
+		}
+	}
+
+	private updateExpansionState(): void {
+		if (this.forceExpanded() !== undefined) {
+			// External control is active
+			this.dropdownOpen = this.forceExpanded()!;
+		} else {
+			// Default behavior: self payments expanded, others collapsed
+			this.dropdownOpen = this.self() ? true : false;
+		}
+		
+		this.lowerHeight = this.dropdownOpen ? 'auto' : 0;
+		
+		if (this.lowerHeight === 'auto' && this.lower) {
 			setTimeout(() => {
 				this.lowerHeight = this.lower.nativeElement.scrollHeight;
 			});
@@ -54,6 +73,11 @@ export class PaymentItemComponent implements OnInit {
 	}
 
 	toggleDropdown = () => {
+		// Don't allow manual toggle when external control is active
+		if (this.forceExpanded() !== undefined) {
+			return;
+		}
+
 		this.dropdownOpen = !this.dropdownOpen;
 
 		if (this.lowerHeight === 0) {

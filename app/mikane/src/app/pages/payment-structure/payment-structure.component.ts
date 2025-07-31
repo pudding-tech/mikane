@@ -59,6 +59,8 @@ export class PaymentStructureComponent implements OnInit {
 
 	allExpandedSelf = true;
 	allExpandedOthers = false;
+	allExpandedSelfMobile = true;
+	allExpandedOthersMobile = false;
 
 	senders: SenderPayments[] = [];
 	paymentsSelf: SenderPayments[] = [];
@@ -150,6 +152,14 @@ export class PaymentStructureComponent implements OnInit {
 				this.paymentsOthersRef.openExpand(true);
 				this.allExpandedOthers = true;
 			}
+		}
+	};
+
+	toggleExpandMobile = (index: number) => {
+		if (index === 1) {
+			this.allExpandedSelfMobile = !this.allExpandedSelfMobile;
+		} else if (index === 2) {
+			this.allExpandedOthersMobile = !this.allExpandedOthersMobile;
 		}
 	};
 
