@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,6 +33,7 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 		FormsModule,
 		ReactiveFormsModule,
 		ProgressSpinnerComponent,
+		NgOptimizedImage,
 	],
 })
 export class EventInfoComponent implements OnInit, OnDestroy {
@@ -44,7 +45,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
-	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	loading = new BehaviorSubject<boolean>(false);
 	adminsInEvent: User[];
 	currentUser: User;
 

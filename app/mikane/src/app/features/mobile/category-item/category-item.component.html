@@ -35,7 +35,9 @@
 			<mat-list-item>
 				<div class="user data">
 					<span class="name">
-						<img [src]="user.avatarURL" alt="User avatar" class="avatar" (click)="gotoUserProfile(user)" />
+						@if (user.avatarURL) {
+							<img [ngSrc]="user.avatarURL" alt="User avatar" class="avatar" />
+						}
 						{{ user.name }}
 					</span>
 					<span>
@@ -120,7 +122,12 @@
 					<button mat-icon-button (click)="openEdit(category().id, category().name, category().icon)">
 						<mat-icon>edit</mat-icon>
 					</button>
-					<button mat-icon-button [disabled]="category().numberOfExpenses !== 0" color="warn" (click)="deleteCategory(category().id)">
+					<button
+						mat-icon-button
+						[disabled]="category().numberOfExpenses !== 0"
+						color="warn"
+						(click)="deleteCategory(category().id)"
+					>
 						<mat-icon>delete</mat-icon>
 					</button>
 				</div>

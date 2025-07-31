@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -33,6 +34,7 @@ import { CategoryIcon } from 'src/app/types/enums';
 		MatSelectModule,
 		FormControlPipe,
 		MatIconModule,
+		NgOptimizedImage,
 	],
 })
 export class ExpenditureDialogComponent implements OnInit {

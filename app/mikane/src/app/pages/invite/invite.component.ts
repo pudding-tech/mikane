@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormGroupDirective, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,6 +34,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 		MatInputModule,
 		RouterModule,
 		MatProgressSpinnerModule,
+		NgOptimizedImage,
 	],
 })
 export class InviteComponent implements OnInit, OnDestroy {

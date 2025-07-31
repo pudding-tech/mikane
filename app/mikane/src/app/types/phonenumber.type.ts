@@ -1,3 +1,3 @@
-export type Phonenumber = {
+export interface Phonenumber {
     number: string;
 }

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -21,7 +21,16 @@ import { ExpenditureDialogComponent } from '../expenditure-dialog/expenditure-di
 @Component({
 	templateUrl: 'expense.component.html',
 	styleUrls: ['./expense.component.scss'],
-	imports: [CommonModule, MatCardModule, ProgressSpinnerComponent, MatDialogModule, MatIconModule, MatButtonModule, MatToolbarModule],
+	imports: [
+		CommonModule,
+		MatCardModule,
+		ProgressSpinnerComponent,
+		MatDialogModule,
+		MatIconModule,
+		MatButtonModule,
+		MatToolbarModule,
+		NgOptimizedImage,
+	],
 })
 export class ExpenseComponent implements OnInit, OnDestroy {
 	breakpointService = inject(BreakpointService);
@@ -40,8 +49,8 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	currentUserId: string;
 
 	readonly EventStatusType = EventStatusType;
-	cancel$: Subject<void> = new Subject();
-	destroy$: Subject<void> = new Subject();
+	cancel$ = new Subject<void>();
+	destroy$ = new Subject<void>();
 
 	ngOnInit() {
 		this.loading = true;

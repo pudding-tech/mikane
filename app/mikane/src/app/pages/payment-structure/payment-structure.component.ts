@@ -21,10 +21,10 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 
 interface SenderPayments {
 	sender: User;
-	receivers: Array<{
+	receivers: {
 		receiver: User;
 		amount: number;
-	}>;
+	}[];
 }
 
 @Component({
@@ -55,7 +55,7 @@ export class PaymentStructureComponent implements OnInit {
 
 	private eventId!: string;
 
-	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	loading = new BehaviorSubject<boolean>(false);
 
 	allExpandedSelf = true;
 	allExpandedOthers = false;

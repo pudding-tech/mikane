@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule, NgOptimizedImage } from '@angular/common';
 import { AfterViewChecked, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -54,6 +54,7 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 		FormControlPipe,
 		MatSelectModule,
 		CategoryItemComponent,
+		NgOptimizedImage,
 	],
 })
 export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
@@ -69,7 +70,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 
-	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	loading = new BehaviorSubject<boolean>(false);
 	readonly EventStatusType = EventStatusType;
 
 	addUserForm = new FormGroup({

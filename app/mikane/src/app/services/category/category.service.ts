@@ -12,14 +12,14 @@ export interface Category {
 	weighted: boolean;
 	created: Date;
 	numberOfExpenses: number;
-	users: Array<{
+	users: {
 		id: string;
 		name: string;
 		username: string;
 		guest: boolean;
 		avatarURL: string;
 		weight?: number;
-	}>;
+	}[];
 }
 
 @Injectable({

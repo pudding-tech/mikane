@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -29,9 +29,7 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 		MatToolbarModule,
 		MatButtonModule,
 		MatIconModule,
-		NgIf,
 		MatCardModule,
-		NgFor,
 		EventItemComponent,
 		ProgressSpinnerComponent,
 		AsyncPipe,
@@ -40,6 +38,7 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 		MatPaginatorModule,
 		MenuComponent,
 		MatListModule,
+		NgOptimizedImage,
 	],
 })
 export class EventsComponent implements OnInit, OnDestroy {
@@ -66,7 +65,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 	});
 
 	selectedEvent!: PuddingEvent;
-	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	loading = new BehaviorSubject<boolean>(false);
 	editSubscription: Subscription;
 	readonly EventStatusType = EventStatusType;
 

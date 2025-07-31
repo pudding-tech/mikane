@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, NgOptimizedImage } from '@angular/common';
 import { Component, ElementRef, inject, input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,6 +23,7 @@ import { User } from 'src/app/services/user/user.service';
 		MatInputModule,
 		FormsModule,
 		ReactiveFormsModule,
+		NgOptimizedImage,
 	],
 })
 export class PaymentItemComponent implements OnInit {
@@ -31,10 +32,10 @@ export class PaymentItemComponent implements OnInit {
 	@ViewChild('lower') lower: ElementRef;
 	payment = input.required<{
 		sender: User;
-		receivers: Array<{
+		receivers: {
 			receiver: User;
 			amount: number;
-		}>;
+		}[];
 	}>();
 	self = input.required<boolean>();
 	currentUser = input.required<User>();

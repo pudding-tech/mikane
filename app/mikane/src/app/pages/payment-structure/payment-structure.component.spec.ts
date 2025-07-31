@@ -212,13 +212,13 @@ describe('PaymentStructureComponent', () => {
 						},
 					],
 				},
-			] as Array<{
+			] as {
 				sender: User;
-				receivers: Array<{
+				receivers: {
 					receiver: User;
 					amount: number;
-				}>;
-			}>);
+				}[];
+			}[]);
 		});
 
 		it('should add payments to paymentsSelf', () => {
@@ -273,13 +273,13 @@ describe('PaymentStructureComponent', () => {
 						},
 					],
 				},
-			] as Array<{
+			] as {
 				sender: User;
-				receivers: Array<{
+				receivers: {
 					receiver: User;
 					amount: number;
-				}>;
-			}>);
+				}[];
+			}[]);
 		});
 
 		it('should add payments to paymentsOthers', () => {
@@ -301,13 +301,13 @@ describe('PaymentStructureComponent', () => {
 						},
 					],
 				},
-			] as Array<{
+			] as {
 				sender: User;
-				receivers: Array<{
+				receivers: {
 					receiver: User;
 					amount: number;
-				}>;
-			}>);
+				}[];
+			}[]);
 		});
 
 		it('should toggle expand self payments', () => {

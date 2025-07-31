@@ -284,7 +284,7 @@ export class UserService {
 	 * @returns An observable that emits an array of User objects.
 	 */
 	loadGuestUsers() {
-		return this.httpClient.get<User[]>(this.env.apiUrl + '/guests');
+		return this.httpClient.get<User[]>(this.env.apiUrl + 'guests');
 	}
 
 	/**
@@ -294,7 +294,7 @@ export class UserService {
 	 * @returns An Observable that emits the newly created User object.
 	 */
 	createGuestUser(firstName: string, lastName: string): Observable<User> {
-		return this.httpClient.post<User>(this.env.apiUrl + '/guests', {
+		return this.httpClient.post<User>(this.env.apiUrl + 'guests', {
 			firstName,
 			lastName,
 		});
@@ -308,7 +308,7 @@ export class UserService {
 	 * @returns An Observable that emits the updated User object.
 	 */
 	editGuestUser(id: string, firstName: string, lastName: string): Observable<User> {
-		return this.httpClient.put<User>(this.env.apiUrl + `/guests/${id}`, {
+		return this.httpClient.put<User>(this.env.apiUrl + `guests/${id}`, {
 			firstName,
 			lastName,
 		});
@@ -320,6 +320,6 @@ export class UserService {
 	 * @returns An Observable that resolves when the guest user has been deleted.
 	 */
 	deleteGuestUser(id: string): Observable<void> {
-		return this.httpClient.delete<void>(this.env.apiUrl + `/guests/${id}`);
+		return this.httpClient.delete<void>(this.env.apiUrl + `guests/${id}`);
 	}
 }

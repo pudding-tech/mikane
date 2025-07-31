@@ -27,7 +27,9 @@
 				@for (user of filteredUsers | async; track user.id) {
 					<mat-option [value]="user">
 						<span class="user">
-							<img [src]="user.avatarURL" alt="Avatar URL" class="avatar" />
+							@if (user.avatarURL) {
+								<img [ngSrc]="user.avatarURL" height="24" width="24" alt="User avatar" class="avatar" />
+							}
 							{{ user.name }}
 						</span>
 					</mat-option>

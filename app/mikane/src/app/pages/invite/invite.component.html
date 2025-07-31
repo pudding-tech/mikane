@@ -4,7 +4,7 @@
 	</a>
 	<span>Invite user</span>
 	<span class="toolbar-spacer"></span>
-	<app-menu></app-menu>
+	<app-menu />
 </mat-toolbar>
 @if ((breakpointService.isMobile() | async) === false) {
 	<div class="invite-user-section">
@@ -16,7 +16,7 @@
 				<mat-card-title>Invite user</mat-card-title>
 			</mat-card-header>
 			<mat-card-content class="card-content">
-				<ng-container *ngTemplateOutlet="inviteNewContent"></ng-container>
+				<ng-container *ngTemplateOutlet="inviteNewContent" />
 			</mat-card-content>
 		</mat-card>
 		<mat-card class="invite-content">
@@ -27,7 +27,7 @@
 				<mat-card-title>Invite user from guest</mat-card-title>
 			</mat-card-header>
 			<mat-card-content class="card-content">
-				<ng-container *ngTemplateOutlet="inviteFromGuestContent"></ng-container>
+				<ng-container *ngTemplateOutlet="inviteFromGuestContent" />
 			</mat-card-content>
 		</mat-card>
 	</div>
@@ -35,11 +35,11 @@
 	<div class="mobile-view">
 		<div class="title-mobile">Invite a new user to Mikane</div>
 		<div class="content-mobile">
-			<ng-container *ngTemplateOutlet="inviteNewContent"></ng-container>
+			<ng-container *ngTemplateOutlet="inviteNewContent" />
 		</div>
 		<div class="title-mobile">Invite a user from a guest user</div>
 		<div class="content-mobile">
-			<ng-container *ngTemplateOutlet="inviteFromGuestContent"></ng-container>
+			<ng-container *ngTemplateOutlet="inviteFromGuestContent" />
 		</div>
 	</div>
 }
@@ -78,7 +78,7 @@
 					@for (guest of guests; track guest.id) {
 						<mat-option [value]="guest.id">
 							<span class="name">
-								<img [src]="guest.avatarURL" alt="Guest user avatar" class="avatar" />
+								<img [ngSrc]="guest.avatarURL" height="24" width="24" alt="Guest user avatar" class="avatar" />
 								{{ guest.name }}
 							</span>
 						</mat-option>

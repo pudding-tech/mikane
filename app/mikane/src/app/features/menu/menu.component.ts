@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
@@ -15,7 +15,7 @@ import { SplitButtonItemDirective } from '../split-button/split-button-item/spli
 	selector: 'app-menu',
 	templateUrl: './menu.component.html',
 	styleUrls: ['./menu.component.scss'],
-	imports: [CommonModule, MatIconModule, SplitButtonComponent, SplitButtonItemComponent, SplitButtonItemDirective],
+	imports: [CommonModule, MatIconModule, SplitButtonComponent, SplitButtonItemComponent, SplitButtonItemDirective, NgOptimizedImage],
 })
 export class MenuComponent implements OnInit {
 	private router = inject(Router);
