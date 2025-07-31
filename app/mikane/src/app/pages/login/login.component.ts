@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,6 +28,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 		MatInputModule,
 		MatProgressSpinnerModule,
 		MatButtonModule,
+		NgOptimizedImage,
 	],
 })
 export class LoginComponent {

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input, model } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ContextService } from 'src/app/services/context/context.service';
 
 interface Route {
@@ -15,7 +15,7 @@ interface Route {
 	selector: 'app-mobile-event-navbar',
 	templateUrl: 'mobile-event-navbar.component.html',
 	styleUrls: ['./mobile-event-navbar.component.scss'],
-	imports: [CommonModule, RouterLink, RouterOutlet, MatIconModule, MatRippleModule],
+	imports: [CommonModule, RouterLink, MatIconModule, MatRippleModule],
 })
 export class MobileEventNavbarComponent {
 	contextService = inject(ContextService);

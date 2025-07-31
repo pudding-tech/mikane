@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, ElementRef, inject, input, output, Renderer2, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,6 @@ import { CategoryIcon } from 'src/app/types/enums';
 	imports: [
 		CommonModule,
 		MatIconModule,
-		CurrencyPipe,
 		MatListModule,
 		MatButtonModule,
 		MatFormFieldModule,
@@ -26,6 +25,7 @@ import { CategoryIcon } from 'src/app/types/enums';
 		FormControlPipe,
 		FormsModule,
 		ReactiveFormsModule,
+		NgOptimizedImage,
 	],
 })
 export class CategoryItemComponent {

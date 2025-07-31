@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { MatBottomSheet, MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
@@ -51,6 +51,7 @@ import { ExpenseBottomSheetComponent } from './expense-bottom-sheet/expense-bott
 		MatInputModule,
 		MatChipsModule,
 		MatBottomSheetModule,
+		NgOptimizedImage,
 	],
 })
 export class ExpendituresComponent implements OnInit, OnDestroy {
@@ -73,7 +74,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	private sortValue = signal<Sort>({} as Sort);
 	protected expenses = signal<Expense[]>([]);
 	protected payers = signal<User[]>([]);
-	protected categories = signal<Array<{ id: string; name: string; icon: string }>>([]);
+	protected categories = signal<{ id: string; name: string; icon: string }[]>([]);
 
 	filteredExpenses = computed(() => {
 		return this.sortData(this.sortValue(), this.expenses()).filter((expense) => {
@@ -109,8 +110,8 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	private _filterInput: ElementRef<HTMLInputElement>;
 
 	loading = false;
-	cancel$: Subject<void> = new Subject();
-	destroy$: Subject<void> = new Subject();
+	cancel$ = new Subject<void>();
+	destroy$ = new Subject<void>();
 	readonly EventStatusType = EventStatusType;
 
 	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description', 'expenseDate'];

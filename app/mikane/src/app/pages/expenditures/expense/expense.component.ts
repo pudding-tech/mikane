@@ -1,14 +1,13 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, filter, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
@@ -26,12 +25,11 @@ import { ExpenditureDialogComponent } from '../expenditure-dialog/expenditure-di
 		CommonModule,
 		MatCardModule,
 		ProgressSpinnerComponent,
-		MenuComponent,
 		MatDialogModule,
 		MatIconModule,
-		RouterLink,
 		MatButtonModule,
 		MatToolbarModule,
+		NgOptimizedImage,
 	],
 })
 export class ExpenseComponent implements OnInit, OnDestroy {
@@ -51,8 +49,8 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	currentUserId: string;
 
 	readonly EventStatusType = EventStatusType;
-	cancel$: Subject<void> = new Subject();
-	destroy$: Subject<void> = new Subject();
+	cancel$ = new Subject<void>();
+	destroy$ = new Subject<void>();
 
 	ngOnInit() {
 		this.loading = true;

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -40,6 +40,7 @@ import { GuestDialogComponent } from './guest-dialog/guest-dialog.component';
 		MatPaginatorModule,
 		RouterModule,
 		ProgressSpinnerComponent,
+		NgOptimizedImage,
 	],
 })
 export class GuestsComponent implements OnInit, OnDestroy {

@@ -1,5 +1,5 @@
 import { ENTER } from '@angular/cdk/keycodes';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgOptimizedImage } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
@@ -30,6 +30,7 @@ import { User } from 'src/app/services/user/user.service';
 		AsyncPipe,
 		MatChipsModule,
 		MatIconModule,
+		NgOptimizedImage,
 	],
 })
 export class ParticipantDialogComponent implements OnInit {

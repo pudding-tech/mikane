@@ -13,7 +13,7 @@ import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { EventsComponent } from './events.component';
 
-describe('EventComponent', () => {
+describe('EventsComponent', () => {
 	let component: EventsComponent;
 	let fixture: ComponentFixture<EventsComponent>;
 	let activatedRouteStub: ActivatedRoute;

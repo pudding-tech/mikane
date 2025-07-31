@@ -12,52 +12,52 @@
 					<mat-card-content>
 						<div class="header">Edit event</div>
 						<div>
-							<ng-container *ngTemplateOutlet="editContent"></ng-container>
+							<ng-container *ngTemplateOutlet="editContent" />
 						</div>
 						<div class="header">Change status</div>
 						<div class="event-settings-content status">
-							<ng-container *ngTemplateOutlet="statusContent"></ng-container>
+							<ng-container *ngTemplateOutlet="statusContent" />
 						</div>
 						<div class="header">Manage administrators</div>
 						<div class="event-settings-content admins">
-							<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
+							<ng-container *ngTemplateOutlet="adminsContent" />
 						</div>
 						<div class="header">Notifications</div>
 						<div class="event-settings-content notifications">
-							<ng-container *ngTemplateOutlet="notificationsContent"></ng-container>
+							<ng-container *ngTemplateOutlet="notificationsContent" />
 						</div>
 						<div class="header">Delete event</div>
 						<div class="event-settings-content delete">
-							<ng-container *ngTemplateOutlet="deleteContent"></ng-container>
+							<ng-container *ngTemplateOutlet="deleteContent" />
 						</div>
 					</mat-card-content>
 				</mat-card>
 			</div>
-		} 
+		}
 		<!-- Mobile -->
 		@else {
 			<div class="header-mobile">Edit event</div>
-			<ng-container *ngTemplateOutlet="editContent"></ng-container>
+			<ng-container *ngTemplateOutlet="editContent" />
 			<div class="header-mobile">Change status</div>
 			<div class="event-settings-content status">
-				<ng-container *ngTemplateOutlet="statusContent"></ng-container>
+				<ng-container *ngTemplateOutlet="statusContent" />
 			</div>
 			<div class="header-mobile admins">Manage administrators</div>
 			<div>
-				<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
+				<ng-container *ngTemplateOutlet="adminsContent" />
 			</div>
 			<div class="header-mobile">Notifications</div>
 			<div class="event-settings-content notifications">
-				<ng-container *ngTemplateOutlet="notificationsContent"></ng-container>
+				<ng-container *ngTemplateOutlet="notificationsContent" />
 			</div>
 			<div class="header-mobile">Delete event</div>
 			<div class="event-settings-content delete-mobile">
-				<ng-container *ngTemplateOutlet="deleteContent"></ng-container>
+				<ng-container *ngTemplateOutlet="deleteContent" />
 			</div>
 		}
 	</div>
 } @else {
-	<app-loading-spinner></app-loading-spinner>
+	<app-loading-spinner />
 }
 
 <ng-template #editContent>
@@ -97,13 +97,19 @@
 		</mat-form-field>
 		<div class="private">
 			<div class="toggle-line">
-				<span [ngClass]="{ 'disabled': event.status.id !== EventStatusType.ACTIVE }">Private event:</span>
+				<span [ngClass]="{ disabled: event.status.id !== EventStatusType.ACTIVE }">Private event:</span>
 				<span class="toggle">
-					<mat-slide-toggle id="privateToggle" name="private" [(ngModel)]="eventData.private" [disabled]="event.status.id !== EventStatusType.ACTIVE">
-					</mat-slide-toggle>
+					<mat-slide-toggle
+						id="privateToggle"
+						name="private"
+						[(ngModel)]="eventData.private"
+						[disabled]="event.status.id !== EventStatusType.ACTIVE"
+					/>
 				</span>
 			</div>
-			<div [ngClass]="{ 'disabled': event.status.id !== EventStatusType.ACTIVE }" class="subtext">Private events are only visible to participants in the event.</div>
+			<div [ngClass]="{ disabled: event.status.id !== EventStatusType.ACTIVE }" class="subtext">
+				Private events are only visible to participants in the event.
+			</div>
 		</div>
 		<button
 			mat-raised-button
@@ -118,18 +124,15 @@
 </ng-template>
 
 <ng-template #statusContent>
-	<button
-		mat-stroked-button
-		disabled
-		class="event-info-marker"
-	>
+	<button mat-stroked-button disabled class="event-info-marker">
 		{{ event?.status.name }}
 	</button>
 	@switch (event?.status.id) {
 		@case (EventStatusType.ACTIVE) {
 			<div>
 				<div class="event-settings-text">
-					This event is currently <b>active</b>. Setting it as 'ready to settle' will prevent further edits and prompt participants to settle their payments.
+					This event is currently <b>active</b>. Setting it as 'ready to settle' will prevent further edits and prompt
+					participants to settle their payments.
 				</div>
 				<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.READY_TO_SETTLE)" class="status-button">
 					Set event as ready to settle
@@ -145,14 +148,18 @@
 				<button mat-raised-button color="primary" (click)="setStatus(EventStatusType.SETTLED)" class="status-button">
 					Set event as settled
 				</button>
-				<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)" class="status-button">Set event as active</button>
+				<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)" class="status-button">
+					Set event as active
+				</button>
 			</div>
 		}
 		@case (EventStatusType.SETTLED) {
 			<div class="event-settings-text">
 				This event is currently <b>settled</b>. Set it to active to allow participants to edit it again.
 			</div>
-			<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)" class="status-button">Set event as active</button>
+			<button mat-raised-button color="accent" (click)="setStatus(EventStatusType.ACTIVE)" class="status-button">
+				Set event as active
+			</button>
 		}
 	}
 </ng-template>
@@ -165,9 +172,11 @@
 					<div class="admin">
 						<div class="name">
 							<img
-								[src]="admin.avatarURL"
+								[ngSrc]="admin.avatarURL"
 								alt="User avatar"
 								class="avatar"
+								width="24"
+								height="24"
 								[ngClass]="{ clickable: !admin.guest }"
 								(click)="gotoUserProfile(admin)"
 							/>
@@ -187,7 +196,7 @@
 						@for (user of otherUsersInEvent; track user.id) {
 							<mat-option [value]="user.id">
 								<span class="name">
-									<img [src]="user.avatarURL" alt="User avatar" class="avatar" />
+									<img [ngSrc]="user.avatarURL" width="24" height="24" alt="User avatar" class="avatar" />
 									{{ user.name }}
 								</span>
 							</mat-option>
@@ -212,16 +221,20 @@
 
 <ng-template #notificationsContent>
 	@if (event?.status.id === EventStatusType.READY_TO_SETTLE) {
-	 <div class="event-settings-text">
-		As the event is ready to be settled, you can email all payers to inform them of their expenses, how much they owe, and who to pay.
-	 </div>
-	}
-	@else {
 		<div class="event-settings-text">
-			Only events that are ready to be settled can send emails
+			As the event is ready to be settled, you can email all payers to inform them of their expenses, how much they owe, and who to
+			pay.
 		</div>
+	} @else {
+		<div class="event-settings-text">Only events that are ready to be settled can send emails</div>
 	}
-	<button mat-raised-button color="primary" [disabled]="event?.status.id !== EventStatusType.READY_TO_SETTLE || emailSentLoading" [class.spinner]="emailSentLoading" (click)="sendReadyToSettleEmails()">
+	<button
+		mat-raised-button
+		color="primary"
+		[disabled]="event?.status.id !== EventStatusType.READY_TO_SETTLE || emailSentLoading"
+		[class.spinner]="emailSentLoading"
+		(click)="sendReadyToSettleEmails()"
+	>
 		<mat-icon>email</mat-icon>
 		Send 'ready to settle' email
 	</button>

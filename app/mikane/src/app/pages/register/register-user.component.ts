@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,6 +32,7 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 		MatFormFieldModule,
 		MatInputModule,
 		MatButtonModule,
+		NgOptimizedImage
 	],
 })
 export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {

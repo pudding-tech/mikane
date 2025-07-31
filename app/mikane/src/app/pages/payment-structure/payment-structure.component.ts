@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -21,10 +21,10 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 
 interface SenderPayments {
 	sender: User;
-	receivers: Array<{
+	receivers: {
 		receiver: User;
 		amount: number;
-	}>;
+	}[];
 }
 
 @Component({
@@ -39,7 +39,6 @@ interface SenderPayments {
 		ProgressSpinnerComponent,
 		MatCardModule,
 		MatListModule,
-		CurrencyPipe,
 		PaymentExpansionPanelItemComponent,
 		PaymentItemComponent,
 	],
@@ -56,7 +55,7 @@ export class PaymentStructureComponent implements OnInit {
 
 	private eventId!: string;
 
-	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	loading = new BehaviorSubject<boolean>(false);
 
 	allExpandedSelf = true;
 	allExpandedOthers = false;

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,9 +15,7 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
-import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
 import { ApiError } from 'src/app/types/apiError.type';
-import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 
 @Component({
@@ -35,8 +33,7 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 		FormsModule,
 		ReactiveFormsModule,
 		ProgressSpinnerComponent,
-		EventNameValidatorDirective,
-		FormControlPipe,
+		NgOptimizedImage,
 	],
 })
 export class EventInfoComponent implements OnInit, OnDestroy {
@@ -48,7 +45,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
-	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	loading = new BehaviorSubject<boolean>(false);
 	adminsInEvent: User[];
 	currentUser: User;
 

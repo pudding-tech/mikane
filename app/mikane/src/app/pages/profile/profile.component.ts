@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -35,6 +35,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 		MatButtonModule,
 		MatToolbarModule,
 		MatTooltipModule,
+		NgOptimizedImage,
 	],
 })
 export class ProfileComponent implements OnInit, OnDestroy {

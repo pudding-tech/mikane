@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, NgOptimizedImage } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -9,7 +9,7 @@ import { Expense } from 'src/app/services/expense/expense.service';
 	selector: 'app-expense-item',
 	templateUrl: 'expense-item.component.html',
 	styleUrls: ['./expense-item.component.scss'],
-	imports: [MatIconModule, CurrencyPipe, MatListModule],
+	imports: [MatIconModule, CurrencyPipe, MatListModule, NgOptimizedImage],
 })
 export class ExpenseItemComponent {
 	private router = inject(Router);

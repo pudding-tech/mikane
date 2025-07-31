@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, NgOptimizedImage } from '@angular/common';
 import { Component, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payment-item.component';
 import { User } from 'src/app/services/user/user.service';
 
 @Component({
@@ -22,22 +21,21 @@ import { User } from 'src/app/services/user/user.service';
 		MatTableModule,
 		MatCardModule,
 		MatListModule,
-		AsyncPipe,
 		CurrencyPipe,
-		PaymentItemComponent,
+		NgOptimizedImage,
 	],
 })
 export class PaymentExpansionPanelItemComponent {
 	private router = inject(Router);
 
 	@ViewChild(MatAccordion) accordion!: MatAccordion;
-	@Input() payments: Array<{
+	@Input() payments: {
 		sender: User;
-		receivers: Array<{
+		receivers: {
 			receiver: User;
 			amount: number;
-		}>;
-	}>;
+		}[];
+	}[];
 	@Input() self: boolean;
 	@Input() currentUser: User;
 	@Output() allPanelsExpanded = new EventEmitter();

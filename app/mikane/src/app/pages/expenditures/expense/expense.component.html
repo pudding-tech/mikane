@@ -24,7 +24,7 @@
 				<div class="header">Paid by</div>
 				<div class="payer">
 					<div class="payer-inner" (click)="gotoUserProfile()">
-						<img [src]="expense.payer.avatarURL" alt="User avatar" class="payer-avatar" />
+						<img [ngSrc]="expense.payer.avatarURL" height="24" width="24" alt="User avatar" class="payer-avatar" />
 						<div id="payer-name">{{ expense.payer.name }}</div>
 					</div>
 				</div>
@@ -32,12 +32,10 @@
 			<div class="title">
 				<div class="header">Date</div>
 				<span [ngClass]="{ 'expense-created-date': !expense.expenseDate }">
-					{{ (expense.expenseDate ?? expense.created) | date: 'mediumDate' : null : 'en' }}
+					{{ expense.expenseDate ?? expense.created | date: "mediumDate" : null : "en" }}
 				</span>
 				@if (!expense.expenseDate) {
-					<div class="expense-created-date date-explanation">
-						Expense date not set - displaying date created instead
-					</div>
+					<div class="expense-created-date date-explanation">Expense date not set - displaying date created instead</div>
 				}
 			</div>
 			@if (expense.description) {
@@ -67,5 +65,5 @@
 		</div>
 	</div>
 } @else {
-	<app-loading-spinner></app-loading-spinner>
+	<app-loading-spinner />
 }

@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, NgOptimizedImage } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -61,6 +61,7 @@ import { ParticipantDialogComponent } from './user-dialog/participant-dialog.com
 		MatListModule,
 		ParticipantItemComponent,
 		MatSortModule,
+		NgOptimizedImage,
 	],
 })
 export class ParticipantComponent implements OnInit, OnDestroy {
@@ -82,8 +83,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 	private eventSubscription: Subscription;
 	readonly EventStatusType = EventStatusType;
 
-	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-	cancel$: Subject<void> = new Subject();
+	loading = new BehaviorSubject<boolean>(false);
+	cancel$ = new Subject<void>();
 
 	event: PuddingEvent;
 	currentUser: User;
@@ -113,7 +114,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: (event) => {
-					if (event.status.id === EventStatusType.ACTIVE) {
+					if (event.status.id === EventStatusType.ACTIVE && !this.displayedColumns.find((col) => col === 'actions')) {
 						this.displayedColumns.push('actions');
 					}
 					this.event = event;
@@ -143,9 +144,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 					this.usersWithBalance = usersWithBalance;
 					this.usersWithBalance$.next(usersWithBalance);
 					this.loading.next(false);
-					for (let i = 0; i < usersWithBalance.length; i++) {
+					usersWithBalance.forEach(() => {
 						this.dataSources.push(new ExpenseDataSource(this.userService));
-					}
+					});
 				},
 				error: () => {
 					this.messageService.showError('Error loading users and user balance');

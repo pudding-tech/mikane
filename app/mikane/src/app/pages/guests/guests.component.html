@@ -4,7 +4,7 @@
 	</a>
 	<span>Guest users</span>
 	<span class="toolbar-spacer"></span>
-	<app-menu></app-menu>
+	<app-menu />
 </mat-toolbar>
 
 @if (loading === false) {
@@ -19,19 +19,19 @@
 						<mat-card-title>Manage guests</mat-card-title>
 					</mat-card-header>
 					<mat-card-content class="card-content">
-						<ng-container *ngTemplateOutlet="guestsContent"></ng-container>
+						<ng-container *ngTemplateOutlet="guestsContent" />
 					</mat-card-content>
 				</mat-card>
 			</div>
 		} @else {
 			<div class="mobile-view">
 				<div class="title-mobile">Manage guest users</div>
-				<ng-container *ngTemplateOutlet="guestsContent"></ng-container>
+				<ng-container *ngTemplateOutlet="guestsContent" />
 			</div>
 		}
 	</div>
 } @else {
-	<app-loading-spinner></app-loading-spinner>
+	<app-loading-spinner />
 }
 
 <ng-template #guestsContent>
@@ -41,7 +41,7 @@
 				<mat-list-item class="list-item">
 					<div class="user">
 						<div class="name">
-							<img [src]="guest.avatarURL" alt="Guest user avatar" class="avatar" />
+							<img [ngSrc]="guest.avatarURL" height="24" width="24" alt="Guest user avatar" class="avatar" />
 							{{ guest.name }}
 						</div>
 						@if (currentUser.superAdmin || guest.guestCreatedBy === currentUser.id) {
@@ -60,8 +60,7 @@
 				[pageSizeOptions]="pageSizeOptions"
 				(page)="onPageChange($event)"
 				[ngClass]="{ 'paginator-mobile': breakpointService.isMobile() | async }"
-			>
-			</mat-paginator>
+			/>
 		}
 	</div>
 	@if ((breakpointService.isMobile() | async) === false) {

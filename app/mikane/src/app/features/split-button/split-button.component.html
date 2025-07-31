@@ -1,12 +1,12 @@
 <mat-button-toggle-group class="button-group" hideSingleSelectionIndicator="true">
 	@if ((breakpointService.isMobile() | async) === false) {
 		<mat-button-toggle (click)="onClick()" class="split-button main-button">
-			<ng-content select="[button]"></ng-content>
+			<ng-content select="[button]" />
 		</mat-button-toggle>
 	}
 	<mat-button-toggle (click)="toggleDropdown()" class="split-button" [ngClass]="{ mobile: breakpointService.isMobile() | async }">
 		<div #ref>
-			<ng-content select="[dropdown-button]"></ng-content>
+			<ng-content select="[dropdown-button]" />
 		</div>
 		@if (!ref.children.length) {
 			<mat-icon> arrow_drop_down </mat-icon>
@@ -26,7 +26,7 @@
 		<ul class="menu-list">
 			@for (item of items; track item) {
 				<li>
-					<ng-container *ngTemplateOutlet="item.templateRef"></ng-container>
+					<ng-container *ngTemplateOutlet="item.templateRef" />
 				</li>
 			}
 			<!-- <li class="menu-separator"></li> -->

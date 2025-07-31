@@ -48,11 +48,13 @@
 												<th mat-header-cell *matHeaderCellDef>Participant</th>
 												<td mat-cell *matCellDef="let user" class="user">
 													<img
-														[src]="user.avatarURL"
+														[ngSrc]="user.avatarURL"
 														alt="User avatar"
 														class="avatar"
-														[ngClass]="{ 'clickable': !user.guest }"
+														[ngClass]="{ clickable: !user.guest }"
 														(click)="gotoUserProfile(user)"
+														width="24"
+														height="24"
 													/>
 													{{ user.name }}
 												</td>
@@ -69,7 +71,9 @@
 																	<mat-option [value]="user.id">
 																		<span class="user">
 																			<img
-																				[src]="user.avatarURL"
+																				[ngSrc]="user.avatarURL"
+																				height="24"
+																				width="24"
 																				alt="User avatar"
 																				class="avatar option"
 																			/>
@@ -229,9 +233,7 @@
 					<mat-card appearance="outlined" class="no-categories"> No expense categories </mat-card>
 				}
 			</div>
-		}
-
-		@else {
+		} @else {
 			@if (categories.length > 0) {
 				<mat-nav-list class="categories-list-mobile">
 					@for (category of categories; track category.id) {
@@ -248,8 +250,7 @@
 							(toggleWeighted)="toggleWeighted($event.categoryId, $event.weighted)"
 							(deleteCategoryDialog)="deleteCategoryDialog($event.categoryId)"
 							(gotoCategoryExpenses)="gotoCategoryExpenses($event.category)"
-						>
-						</app-category-item>
+						/>
 					}
 				</mat-nav-list>
 			} @else {
@@ -269,5 +270,5 @@
 		}
 	</div>
 } @else {
-	<app-loading-spinner></app-loading-spinner>
+	<app-loading-spinner />
 }

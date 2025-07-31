@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -42,6 +42,7 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 		ProgressSpinnerComponent,
 		EventNameValidatorDirective,
 		FormControlPipe,
+		NgOptimizedImage,
 	],
 })
 export class EventSettingsComponent implements OnInit, OnDestroy {
@@ -55,7 +56,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
-	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	loading = new BehaviorSubject<boolean>(false);
 	eventData: { id?: string; name: string; description: string; private: boolean } = { name: '', description: '', private: false };
 	adminsInEvent: User[];
 	otherUsersInEvent: User[];

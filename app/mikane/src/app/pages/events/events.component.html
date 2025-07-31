@@ -1,140 +1,172 @@
 <mat-toolbar class="events-toolbar" [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
 	<span class="logo-container" [ngClass]="{ fullview: (breakpointService.isMobile() | async) === false }">
-		<img src="assets/mikane.svg" alt="Mikane logo" class="logo" />
+		<img [ngSrc]="'assets/mikane.svg'" height="26" width="26" alt="Mikane logo" class="logo" />
 	</span>
 	<span>MIKANE</span>
 	<span class="toolbar-spacer"></span>
-	<app-menu></app-menu>
+	<app-menu />
 </mat-toolbar>
-<div *ngIf="(loading | async) === false; else loadingSpinner">
-	<div *ngIf="(breakpointService.isMobile() | async) === false; else mobileView" class="events-container">
-		<mat-card class="event-card">
-			<mat-card-content class="card-content">
-				<div class="header">Active Events</div>
-				<div *ngIf="pagedEventsActive().length > 0; else noActiveEvents">
-					<mat-card
-						*ngFor="let event of pagedEventsActive()"
-						class="event-item"
-						[ngClass]="{ 'ready-to-settle': event.status.id === EventStatusType.READY_TO_SETTLE }"
-					>
-						<mat-card-header class="event-header clickable" (click)="clickEvent(event)">
-							<mat-card-title class="event-title">
-								<span class="event-name">
-									<span class="name-text">{{ event.name }}</span>
-									@if (event.private) {
-										<mat-icon svgIcon="passkey_outlined" matTooltip="This event is private" [matTooltipShowDelay]="200" class="joined-icon" />
-									} @else if (event.userInfo.inEvent) {
-										<mat-icon matTooltip="You are in this event" [matTooltipShowDelay]="200" class="joined-icon">
-											how_to_reg
-										</mat-icon>
-									}
+@if ((loading | async) === false) {
+	@if ((breakpointService.isMobile() | async) === false) {
+		<div class="events-container">
+			<mat-card class="event-card">
+				<mat-card-content class="card-content">
+					<div class="header">Active Events</div>
+					@if (pagedEventsActive().length > 0) {
+						@for (event of pagedEventsActive(); track event) {
+							<mat-card
+								class="event-item"
+								[ngClass]="{ 'ready-to-settle': event.status.id === EventStatusType.READY_TO_SETTLE }"
+							>
+								<mat-card-header class="event-header clickable" (click)="clickEvent(event)">
+									<mat-card-title class="event-title">
+										<span class="event-name">
+											<span class="name-text">{{ event.name }}</span>
+											@if (event.private) {
+												<mat-icon
+													svgIcon="passkey_outlined"
+													matTooltip="This event is private"
+													[matTooltipShowDelay]="200"
+													class="joined-icon"
+												/>
+											} @else if (event.userInfo.inEvent) {
+												<mat-icon
+													matTooltip="You are in this event"
+													[matTooltipShowDelay]="200"
+													class="joined-icon"
+												>
+													how_to_reg
+												</mat-icon>
+											}
+											@if (event.userInfo.isAdmin) {
+												<span
+													matTooltip="You are an admin for this event"
+													[matTooltipShowDelay]="200"
+													class="admin-icon"
+												>
+													A
+												</span>
+											}
+										</span>
+									</mat-card-title>
+									<mat-card-subtitle>
+										{{ event.status.id === EventStatusType.READY_TO_SETTLE ? "READY TO SETTLE" : event.description }}
+									</mat-card-subtitle>
 									@if (event.userInfo.isAdmin) {
-										<span matTooltip="You are an admin for this event" [matTooltipShowDelay]="200" class="admin-icon">
-											A
+										<span class="event-actions">
+											<button mat-icon-button (click)="editEvent(event); $event.stopPropagation()">
+												<mat-icon>edit</mat-icon>
+											</button>
 										</span>
 									}
-								</span>
-							</mat-card-title>
-							<mat-card-subtitle>
-								{{ event.status.id === EventStatusType.READY_TO_SETTLE ? "READY TO SETTLE" : event.description }}
-							</mat-card-subtitle>
-							<span *ngIf="event.userInfo.isAdmin" class="event-actions">
-								<button mat-icon-button (click)="editEvent(event); $event.stopPropagation()">
-									<mat-icon>edit</mat-icon>
-								</button>
-							</span>
-						</mat-card-header>
-					</mat-card>
-					<mat-paginator
-						*ngIf="pagedEventsActive().length > 4"
-						[length]="lengthActive()"
-						[pageSize]="pageSizeActive()"
-						[pageSizeOptions]="pageSizeOptions"
-						(page)="onPageChange($event, 'active')"
-						class="events-paginator"
-					>
-					</mat-paginator>
-				</div>
-				<ng-template #noActiveEvents>
-					<div class="no-events">There are currently no active events</div>
-				</ng-template>
-				<div class="header settled-events">Settled events</div>
-				<div *ngIf="pagedEventsSettled().length > 0; else noSettledEvents">
-					<mat-card *ngFor="let event of pagedEventsSettled()" class="event-item">
-						<mat-card-header class="event-header clickable" (click)="clickEvent(event)">
-							<mat-card-title class="event-title">
-								<span class="event-name">
-									<span class="name-text">{{ event.name }}</span>
-									@if (event.private) {
-										<mat-icon svgIcon="passkey_outlined" matTooltip="This event is private" [matTooltipShowDelay]="200" class="joined-icon" />
-									} @else if (event.userInfo.inEvent) {
-										<mat-icon matTooltip="You are in this event" [matTooltipShowDelay]="200" class="joined-icon">
-											how_to_reg
-										</mat-icon>
-									}
-									@if (event.userInfo.isAdmin) {
-										<span matTooltip="You are an admin for this event" [matTooltipShowDelay]="200" class="admin-icon">
-											A
+								</mat-card-header>
+							</mat-card>
+						}
+						@if (pagedEventsActive().length > 4) {
+							<mat-paginator
+								[length]="lengthActive()"
+								[pageSize]="pageSizeActive()"
+								[pageSizeOptions]="pageSizeOptions"
+								(page)="onPageChange($event, 'active')"
+								class="events-paginator"
+							/>
+						}
+					} @else {
+						<div class="no-events">There are currently no active events</div>
+					}
+					<div class="header settled-events">Settled events</div>
+					@if (pagedEventsSettled().length > 0) {
+						@for (event of pagedEventsSettled(); track event) {
+							<mat-card class="event-item">
+								<mat-card-header class="event-header clickable" (click)="clickEvent(event)">
+									<mat-card-title class="event-title">
+										<span class="event-name">
+											<span class="name-text">{{ event.name }}</span>
+											@if (event.private) {
+												<mat-icon
+													svgIcon="passkey_outlined"
+													matTooltip="This event is private"
+													[matTooltipShowDelay]="200"
+													class="joined-icon"
+												/>
+											} @else if (event.userInfo.inEvent) {
+												<mat-icon
+													matTooltip="You are in this event"
+													[matTooltipShowDelay]="200"
+													class="joined-icon"
+												>
+													how_to_reg
+												</mat-icon>
+											}
+											@if (event.userInfo.isAdmin) {
+												<span
+													matTooltip="You are an admin for this event"
+													[matTooltipShowDelay]="200"
+													class="admin-icon"
+												>
+													A
+												</span>
+											}
 										</span>
-									}
-								</span>
-							</mat-card-title>
-							<mat-card-subtitle>
-								{{ event.description }}
-							</mat-card-subtitle>
-						</mat-card-header>
-					</mat-card>
-					<mat-paginator
-						[length]="lengthSettled()"
-						[pageSize]="pageSizeSettled()"
-						[pageSizeOptions]="pageSizeOptions"
-						(page)="onPageChange($event, 'settled')"
-						class="events-paginator"
-					>
-					</mat-paginator>
-				</div>
-				<ng-template #noSettledEvents>
-					<div class="no-events">There are currently no settled events</div>
-				</ng-template>
-			</mat-card-content>
-			<mat-card-actions>
-				<div class="add-button">
-					<button mat-raised-button color="primary" (click)="openDialog()">
-						<mat-icon>edit_calendar</mat-icon>
-						New event
-					</button>
-				</div>
-			</mat-card-actions>
-		</mat-card>
-	</div>
-</div>
-
-<ng-template #mobileView>
-	<div class="title-mobile">Active events</div>
-	<mat-nav-list *ngIf="pagedEventsActive().length > 0; else noActiveEvents" class="events-list-mobile">
-		<app-event-item *ngFor="let event of eventsActive()" [event]="event" (click)="clickEvent(event)"></app-event-item>
-	</mat-nav-list>
-	<ng-template #noActiveEvents>
-		<div class="no-events-mobile">There are currently no active events</div>
-	</ng-template>
-	<div class="title-mobile">Settled events</div>
-	<mat-nav-list *ngIf="pagedEventsSettled().length > 0; else noSettledEvents" class="events-list-mobile">
-		<app-event-item *ngFor="let event of eventsSettled()" [event]="event" (click)="clickEvent(event)"></app-event-item>
-	</mat-nav-list>
-	<ng-template #noSettledEvents>
-		<div class="no-events-mobile">There are currently no settled events</div>
-	</ng-template>
-	<button
-		mat-fab
-		color="primary"
-		class="add-event-button-mobile"
-		(click)="openDialog()"
-		[ngClass]="{ hidden: scrollService.isScrolledToBottom() | async }"
-	>
-		<mat-icon>edit_calendar</mat-icon>
-	</button>
-</ng-template>
-
-<ng-template #loadingSpinner>
-	<app-loading-spinner></app-loading-spinner>
-</ng-template>
+									</mat-card-title>
+									<mat-card-subtitle>
+										{{ event.description }}
+									</mat-card-subtitle>
+								</mat-card-header>
+							</mat-card>
+						}
+						<mat-paginator
+							[length]="lengthSettled()"
+							[pageSize]="pageSizeSettled()"
+							[pageSizeOptions]="pageSizeOptions"
+							(page)="onPageChange($event, 'settled')"
+							class="events-paginator"
+						/>
+					} @else {
+						<div class="no-events">There are currently no settled events</div>
+					}
+				</mat-card-content>
+				<mat-card-actions>
+					<div class="add-button">
+						<button mat-raised-button color="primary" (click)="openDialog()">
+							<mat-icon>edit_calendar</mat-icon>
+							New event
+						</button>
+					</div>
+				</mat-card-actions>
+			</mat-card>
+		</div>
+	} @else {
+		<div class="title-mobile">Active events</div>
+		@if (pagedEventsActive().length > 0) {
+			<mat-nav-list class="events-list-mobile">
+				@for (event of eventsActive(); track event) {
+					<app-event-item [event]="event" (click)="clickEvent(event)" />
+				}
+			</mat-nav-list>
+		} @else {
+			<div class="no-events-mobile">There are currently no active events</div>
+		}
+		<div class="title-mobile">Settled events</div>
+		@if (pagedEventsSettled().length > 0) {
+			<mat-nav-list class="events-list-mobile">
+				@for (event of eventsSettled(); track event) {
+					<app-event-item [event]="event" (click)="clickEvent(event)" />
+				}
+			</mat-nav-list>
+		} @else {
+			<div class="no-events-mobile">There are currently no settled events</div>
+		}
+		<button
+			mat-fab
+			color="primary"
+			class="add-event-button-mobile"
+			(click)="openDialog()"
+			[ngClass]="{ hidden: scrollService.isScrolledToBottom() | async }"
+		>
+			<mat-icon>edit_calendar</mat-icon>
+		</button>
+	}
+} @else {
+	<app-loading-spinner />
+}

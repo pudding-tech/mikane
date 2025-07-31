@@ -7,14 +7,14 @@
 	<app-split-button #splitButton (splitButtonClick)="onProfileClick()">
 		<div button>
 			@if (user?.avatarURL) {
-				<img alt="User avatar" [src]="user?.avatarURL" class="avatar" />
+				<img alt="User avatar" height="36" width="36" [ngSrc]="user?.avatarURL" class="avatar" />
 			}
 		</div>
 		<div dropdown-button>
 			@if (breakpointService.isMobile() | async) {
 				<div>
 					@if (user?.avatarURL) {
-						<img alt="User avatar" [src]="user?.avatarURL" class="avatar" />
+						<img alt="User avatar" height="36" width="36" [ngSrc]="user?.avatarURL" class="avatar" />
 					}
 				</div>
 			} @else {
@@ -22,31 +22,11 @@
 			}
 		</div>
 		@if (breakpointService.isMobile() | async) {
-			<app-split-button-item
-				*appSplitButtonItem
-				(splitButtonClick)="onProfileClick()"
-				icon="person"
-				text="Profile"
-			></app-split-button-item>
+			<app-split-button-item *appSplitButtonItem (splitButtonClick)="onProfileClick()" icon="person" text="Profile" />
 		}
-		<app-split-button-item
-			*appSplitButtonItem
-			(splitButtonClick)="onAccountClick()"
-			icon="manage_accounts"
-			text="Account"
-		></app-split-button-item>
-		<app-split-button-item
-			*appSplitButtonItem
-			(splitButtonClick)="onGuestsClick()"
-			icon="supervisor_account"
-			text="Guests"
-		></app-split-button-item>
-		<app-split-button-item
-			*appSplitButtonItem
-			(splitButtonClick)="inviteUser()"
-			icon="person_add"
-			text="Invite"
-		></app-split-button-item>
-		<app-split-button-item *appSplitButtonItem (splitButtonClick)="logout()" icon="logout" text="Log out"></app-split-button-item>
+		<app-split-button-item *appSplitButtonItem (splitButtonClick)="onAccountClick()" icon="manage_accounts" text="Account" />
+		<app-split-button-item *appSplitButtonItem (splitButtonClick)="onGuestsClick()" icon="supervisor_account" text="Guests" />
+		<app-split-button-item *appSplitButtonItem (splitButtonClick)="inviteUser()" icon="person_add" text="Invite" />
+		<app-split-button-item *appSplitButtonItem (splitButtonClick)="logout()" icon="logout" text="Log out" />
 	</app-split-button>
 </div>
