@@ -37,9 +37,10 @@ export default class SessionStore extends Store {
     }
     catch (err) {
       logger.error("Something went wrong connecting to session store");
+      logger.error(err);
     }
   }
-  
+
   async get(sid: string, callback: (err: any, session?: SessionData | null | undefined) => void) {
     try {
       const query = {
