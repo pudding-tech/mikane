@@ -134,7 +134,7 @@ router.post("/generatekey", masterKeyCheck, async (req, res) => {
 * Request a password reset
 */
 router.post("/requestpasswordreset", async (req, res) => {
-  if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_PASSWORD) {
+  if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
     throw new ErrorExt(ec.PUD073);
   }
 

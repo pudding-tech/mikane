@@ -16,8 +16,8 @@ export const sendPasswordResetEmail = async (recipient: string, key: string) => 
   const html = passwordResetEmailHTML(uriEncodedKey);
 
   const sentMessageInfo = await sendEmail(recipient, subject, html);
-  if (sentMessageInfo.accepted) {
-    logger.info(`Password reset email sent to ${sentMessageInfo.accepted}: ${sentMessageInfo.response}`);
+  if (sentMessageInfo.To) {
+    logger.info(`Password reset email sent to ${sentMessageInfo.To}: ${sentMessageInfo.Message}`);
   }
 };
 

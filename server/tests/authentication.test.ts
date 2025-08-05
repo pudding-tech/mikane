@@ -1,12 +1,9 @@
-import { describe, test, expect, beforeAll, afterEach, vi } from "vitest";
+import { describe, test, expect, beforeAll, afterEach } from "vitest";
 import request from "supertest";
-import nodemailerMock from "nodemailer-mock";
 import app from "../src/server.ts";
 import * as ec from "../src/types/errorCodes.ts";
 import { User } from "../src/types/types.ts";
-
-// Mock nodemailer
-vi.mock("nodemailer", () => nodemailerMock);
+import { getSentEmails, resetSentEmails } from "./mocks/postmarkMock.ts";
 
 describe("authentication", async () => {
 
@@ -33,7 +30,7 @@ describe("authentication", async () => {
   });
 
   afterEach(async () => {
-    nodemailerMock.mock.reset();
+    resetSentEmails();
   });
 
   /* ----------- */
@@ -161,16 +158,18 @@ describe("authentication", async () => {
           email: "a@mikane.no"
         });
 
-      const sentEmail = nodemailerMock.mock.getSentMail();
-      const html = sentEmail[0].html as string;
+      const sentEmails = getSentEmails();
+      const sentEmail = sentEmails[0];
+      const html = sentEmail.HtmlBody as string;
       const keyStart = html.indexOf("/reset-password/") + "/reset-password/".length;
       const keyEnd = html.indexOf("\"", keyStart);
       resetPasswordKey = html.substring(keyStart, keyEnd);
 
       expect(res.status).toEqual(200);
-      expect(sentEmail.length).toEqual(1);
-      expect(sentEmail[0].to).toEqual("a@mikane.no");
-      expect(sentEmail[0].subject).toEqual("Reset your password - Mikane");
+      expect(sentEmails.length).toEqual(1);
+      expect(sentEmail.To).toEqual("a@mikane.no");
+      expect(sentEmail.Subject).toEqual("Reset your password - Mikane");
+      expect(resetPasswordKey).toBeDefined();
     });
   });
 
