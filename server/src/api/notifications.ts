@@ -13,7 +13,7 @@ const router = express.Router();
 * Send 'ready-to-settle' email to all payers in an event
 */
 router.post("/notifications/:eventId/settle", authCheck, async (req, res) => {
-  if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_PASSWORD) {
+  if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
     throw new ErrorExt(ec.PUD073);
   }
 

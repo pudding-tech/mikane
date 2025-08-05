@@ -282,7 +282,7 @@ router.post("/users/changepassword", authCheck, async (req, res) => {
 * Invite a new user via email
 */
 router.post("/users/invite", authCheck, async (req, res) => {
-  if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_PASSWORD) {
+  if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
     throw new ErrorExt(ec.PUD073);
   }
 
@@ -317,7 +317,7 @@ router.post("/users/invite", authCheck, async (req, res) => {
 * Request an account deletion confirmation email
 */
 router.post("/users/requestdeleteaccount", authCheck, async (req, res) => {
-  if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_PASSWORD) {
+  if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
     throw new ErrorExt(ec.PUD073);
   }
 

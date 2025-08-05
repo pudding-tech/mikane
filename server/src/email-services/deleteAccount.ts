@@ -16,8 +16,8 @@ export const sendDeleteAccountEmail = async (recipient: string, key: string) => 
   const html = deleteAccountEmailHTML(uriEncodedKey);
 
   const sentMessageInfo = await sendEmail(recipient, subject, html);
-  if (sentMessageInfo.accepted) {
-    logger.info(`Delete account email sent to ${sentMessageInfo.accepted}: ${sentMessageInfo.response}`);
+  if (sentMessageInfo.To) {
+    logger.info(`Delete account email sent to ${sentMessageInfo.To}: ${sentMessageInfo.Message}`);
   }
 };
 

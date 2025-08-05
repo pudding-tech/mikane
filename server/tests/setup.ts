@@ -1,5 +1,6 @@
 import { afterAll } from "vitest";
 import { resetDatabase } from "./resetDatabase.ts";
+import "./mocks/postmarkMock.ts"; // Ensure postmark mock is loaded
 
 afterAll(async () => {
   try {

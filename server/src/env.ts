@@ -26,7 +26,7 @@ interface EnvVariables {
   DB_PASSWORD: string;
 
   MIKANE_EMAIL?: string;
-  MIKANE_EMAIL_PASSWORD?: string;
+  MIKANE_EMAIL_API_TOKEN?: string;
 }
 
 const allowedEnvironments = ["dev", "production", "staging", "test"] as const;
@@ -98,7 +98,7 @@ const validateEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
     DB_PASSWORD: env.DB_PASSWORD as string,
 
     MIKANE_EMAIL: env.MIKANE_EMAIL,
-    MIKANE_EMAIL_PASSWORD: env.MIKANE_EMAIL_PASSWORD
+    MIKANE_EMAIL_API_TOKEN: env.MIKANE_EMAIL_API_TOKEN
   };
 };
 

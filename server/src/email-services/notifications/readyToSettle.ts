@@ -49,8 +49,8 @@ export const sendReadyToSettleEmails = async (paymentsInput: Payment[], event: E
     const html = readyToSettleEmailHTML(senderPayment, event);
 
     const sentMessageInfo = await sendEmail(senderPayment.sender.email, subject, html);
-    if (sentMessageInfo.accepted) {
-      logger.info(`'Ready to settle' email for event ${event.name} sent to ${sentMessageInfo.accepted}: ${sentMessageInfo.response}`);
+    if (sentMessageInfo.To) {
+      logger.info(`'Ready to settle' email for event ${event.name} sent to ${sentMessageInfo.To}: ${sentMessageInfo.Message}`);
     }
   }
 };

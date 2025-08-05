@@ -1,13 +1,10 @@
-import { describe, test, expect, beforeAll, afterEach, vi } from "vitest";
+import { describe, test, expect, beforeAll, afterEach } from "vitest";
 import request from "supertest";
-import nodemailerMock from "nodemailer-mock";
 import app from "../src/server.ts";
 import * as ec from "../src/types/errorCodes.ts";
 import { Category, Event, Payment, User } from "../src/types/types.ts";
 import { EventStatusType } from "../src/types/enums.ts";
-
-// Mock nodemailer
-vi.mock("nodemailer", () => nodemailerMock);
+import { getSentEmails, resetSentEmails } from "./mocks/postmarkMock.ts";
 
 describe("notifications", async () => {
 
@@ -132,7 +129,7 @@ describe("notifications", async () => {
   });
 
   afterEach(async () => {
-    nodemailerMock.mock.reset();
+    resetSentEmails();
   });
 
   /* ----------------------------------- */
@@ -193,10 +190,10 @@ describe("notifications", async () => {
         .post(`/api/notifications/${event.id}/settle`)
         .set("Cookie", authToken);
 
-      const sentEmails = nodemailerMock.mock.getSentMail();
-      const subject = sentEmails[0].subject as string;
-      const html = sentEmails[0].html as string;
-      const sentToEmail = sentEmails[0].to as string;
+      const sentEmails = getSentEmails();
+      const subject = sentEmails[0].Subject;
+      const html = sentEmails[0].HtmlBody as string;
+      const sentToEmail = sentEmails[0].To;
 
       const receiver1NameStart = html.indexOf("<div style=\"margin-left: 10px;\">") + "<div style=\"margin-left: 10px;\">".length;
       const receiver1NameEnd = html.indexOf("<", receiver1NameStart);

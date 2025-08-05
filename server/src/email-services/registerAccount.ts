@@ -18,8 +18,8 @@ export const sendRegisterAccountEmail = async (recipient: string, key: string, b
   const html = registerAccountEmailHTML(uriEncodedKey, byUser);
 
   const sentMessageInfo = await sendEmail(recipient, subject, html);
-  if (sentMessageInfo.accepted) {
-    logger.info(`Register account email sent to ${sentMessageInfo.accepted}: ${sentMessageInfo.response}`);
+  if (sentMessageInfo.To) {
+    logger.info(`Register account email sent to ${sentMessageInfo.To}: ${sentMessageInfo.Message}`);
   }
 };
 

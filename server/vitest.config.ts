@@ -15,7 +15,8 @@ export default defineConfig({
       if (log.includes("signing in -")) return false;
       if (log.includes("successfully signed out")) return false;
       if (log.includes("but is already authenticated")) return false;
-      if (log.includes("nodemailer-mock success")) return false;
+      if (log.includes("Mocking Postmark sendEmail")) return false;
+      if (log.includes("sent to")) return false;
     }
   }
 });
