@@ -109,6 +109,6 @@ export class EventService {
 	}
 
 	sendReadyToSettleEmails(eventId: string): Observable<void> {
-		return this.httpClient.post<void>(this.env.apiUrl + `/notifications/${eventId}/settle`, {});
+		return this.httpClient.post<void>(this.env.apiUrl + `notifications/${eventId}/settle`, {});
 	}
 }

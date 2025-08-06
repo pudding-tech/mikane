@@ -144,7 +144,7 @@ describe('PaymentStructureComponent', () => {
 
 		it('should load payments', () => {
 			expect(eventService.loadPayments).toHaveBeenCalledWith('1');
-			expect(component.senders).toEqual([
+			expect(component.senders()).toEqual([
 				{
 					sender: {
 						id: '1',
@@ -222,7 +222,7 @@ describe('PaymentStructureComponent', () => {
 		});
 
 		it('should add payments to paymentsSelf', () => {
-			expect(component.paymentsSelf).toEqual([
+			expect(component.paymentsSelf()).toEqual([
 				{
 					sender: {
 						id: '1',
@@ -283,7 +283,7 @@ describe('PaymentStructureComponent', () => {
 		});
 
 		it('should add payments to paymentsOthers', () => {
-			expect(component.paymentsOthers).toEqual([
+			expect(component.paymentsOthers()).toEqual([
 				{
 					sender: {
 						id: '3',
@@ -379,9 +379,9 @@ describe('PaymentStructureComponent', () => {
 		}));
 
 		it('should not have any payments', () => {
-			expect(component.senders).toEqual([]);
-			expect(component.paymentsSelf).toEqual([]);
-			expect(component.paymentsOthers).toEqual([]);
+			expect(component.senders()).toEqual([]);
+			expect(component.paymentsSelf()).toEqual([]);
+			expect(component.paymentsOthers()).toEqual([]);
 		});
 
 		it('should show payment error message', () => {
