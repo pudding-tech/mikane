@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, signal, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { map } from 'lodash-es';
 import { BehaviorSubject } from 'rxjs';
 import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payment-item.component';
 import { PaymentExpansionPanelItemComponent } from 'src/app/pages/payment-structure/payment-expansion-panel-item/payment-expansion-panel-item.component';
@@ -57,12 +56,18 @@ export class PaymentStructureComponent implements OnInit {
 
 	loading = new BehaviorSubject<boolean>(false);
 
+	senders = signal<SenderPayments[]>([]);
+	paymentsSelf = computed(() => this.senders().filter(senderPayment => {
+		return senderPayment.sender.id === this.currentUser?.id || senderPayment.receivers.some(r => r.receiver.id === this.currentUser?.id);
+	}));
+	paymentsOthers = computed(() => this.senders().filter(senderPayment => {
+		return !(senderPayment.sender.id === this.currentUser?.id || senderPayment.receivers.some(r => r.receiver.id === this.currentUser?.id))
+	}));
+
+	expandedSelf = signal<Set<string>>(new Set());
+	expandedOthers = signal<Set<string>>(new Set());
 	allExpandedSelf = true;
 	allExpandedOthers = false;
-
-	senders: SenderPayments[] = [];
-	paymentsSelf: SenderPayments[] = [];
-	paymentsOthers: SenderPayments[] = [];
 	currentUser: User;
 
 	ngOnInit(): void {
@@ -85,44 +90,27 @@ export class PaymentStructureComponent implements OnInit {
 		this.loading.next(true);
 		this.eventService.loadPayments(this.eventId).subscribe({
 			next: (payments) => {
-				map(payments, (payment) => {
-					if (
-						this.senders.find((sender) => {
-							return sender.sender.id === payment.sender.id;
-						}) === undefined
-					) {
-						this.senders.push({
-							sender: payment.sender,
-							receivers: [],
-						});
+				// Build unique senders
+				const uniqueSenders: SenderPayments[] = [];
+				payments.forEach(payment => {
+					if (!uniqueSenders.find(s => s.sender.id === payment.sender.id)) {
+						uniqueSenders.push({ sender: payment.sender, receivers: [] });
 					}
 				});
 
-				map(this.senders, (sender) => {
-					map(
-						payments.filter((payment) => {
-							return payment.sender.id === sender.sender.id;
-						}),
-						(payment) => {
-							sender.receivers.push({
-								receiver: payment.receiver,
-								amount: payment.amount,
-							});
-						},
-					);
+				// Assign receivers to each sender
+				const updatedSenders = uniqueSenders.map(sender => {
+					const receivers = payments
+						.filter(payment => payment.sender.id === sender.sender.id)
+						.map(payment => ({
+							receiver: payment.receiver,
+							amount: payment.amount,
+						}));
+					return { ...sender, receivers };
 				});
 
-				this.senders.forEach((sender) => {
-					if (
-						sender.sender.id === this.currentUser?.id ||
-						sender.receivers.find((receiver) => receiver.receiver.id === this.currentUser?.id)
-					) {
-						this.paymentsSelf.push(sender);
-					} else {
-						this.paymentsOthers.push(sender);
-					}
-				});
-
+				this.senders.set(updatedSenders);
+				this.expandedSelf.set(new Set(this.paymentsSelf().map(p => p.sender.id)));
 				this.loading.next(false);
 			},
 			error: (err: ApiError) => {
@@ -153,11 +141,60 @@ export class PaymentStructureComponent implements OnInit {
 		}
 	};
 
+	toggleExpandMobile = (index: number) => {
+		if (index === 1) {
+			if (this.allExpandedSelf) {
+				this.expandedSelf.set(new Set());
+				this.allExpandedSelf = false;
+			} else {
+				this.expandedSelf.set(new Set(this.paymentsSelf().map(p => p.sender.id)));
+				this.allExpandedSelf = true;
+			}
+		} else if (index === 2) {
+			if (this.allExpandedOthers) {
+				this.expandedOthers.set(new Set());
+				this.allExpandedOthers = false;
+			} else {
+				this.expandedOthers.set(new Set(this.paymentsOthers().map(p => p.sender.id)));
+				this.allExpandedOthers = true;
+			}
+		}
+	};
+
 	panelToggled = (index: number, allPanelsExpanded: boolean) => {
 		if (index === 1) {
 			this.allExpandedSelf = allPanelsExpanded;
 		} else if (index === 2) {
 			this.allExpandedOthers = allPanelsExpanded;
+		}
+	};
+
+	paymentToggledMobile = (senderId: string, expanded: boolean, self: boolean) => {
+		const set = new Set(self ? this.expandedSelf() : this.expandedOthers());
+		if (expanded) {
+			set.add(senderId);
+		}
+		else {
+			set.delete(senderId);
+		}
+
+		if (self) {
+			this.expandedSelf.set(set);
+			if (this.expandedSelf().size === this.paymentsSelf().length) {
+				this.allExpandedSelf = true;
+			}
+			else if (this.expandedSelf().size === 0) {
+				this.allExpandedSelf = false;
+			}
+		}
+		else {
+			this.expandedOthers.set(set);
+			if (this.expandedOthers().size === this.paymentsOthers().length) {
+				this.allExpandedOthers = true;
+			}
+			else if (this.expandedOthers().size === 0) {
+				this.allExpandedOthers = false;
+			}
 		}
 	};
 }

@@ -31,15 +31,30 @@
 	margin-left: 24px;
 }
 
-.title-mobile {
+.payments-header-mobile {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	height: 40px;
-	padding-left: 16px;
 	background-color: rgba(24, 24, 24, 1);
 	border-top: 1px solid #333333;
 	stroke: #333333;
 	color: #b4b4b4;
+
+	.title-mobile {
+		padding-left: 16px;
+	}
+
+	.collapse-button-mobile {
+		min-width: auto;
+		padding: 0 8px;
+		margin-right: 8px;
+
+		mat-icon {
+			margin-right: 10px;
+			margin-left: 10px;
+		}
+	}
 }
 
 .no-payments {
