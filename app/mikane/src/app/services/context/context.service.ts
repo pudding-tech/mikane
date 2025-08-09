@@ -2,6 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 
+interface NavigatorIOS extends Navigator {
+  standalone?: boolean;
+}
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -36,6 +40,10 @@ export class ContextService {
 		}
 
 		return /iPad|iPhone|iPod/.test(this.userAgent);
+	}
+
+	get isIosPwaStandalone(): boolean {
+		return this.isIos && ((window.navigator as NavigatorIOS).standalone === true);
 	}
 
 	get environment(): 'dev' | 'prod' {

@@ -228,7 +228,7 @@
 					color="primary"
 					class="add-expense-button-mobile"
 					(click)="openDialog()"
-					[ngClass]="{ iOS: contextService.isIos, hidden: scrollService.isScrolledToBottom() | async }"
+					[ngClass]="{ 'iOS-PWA': contextService.isIosPwaStandalone, hidden: scrollService.isScrolledToBottom() | async }"
 				>
 					<mat-icon>add_card</mat-icon>
 				</button>

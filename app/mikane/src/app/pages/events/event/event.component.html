@@ -48,7 +48,7 @@
 	[ngClass]="{
 		content: (breakpointService.isMobile() | async) === false,
 		'mobile-event': breakpointService.isMobile() | async,
-		iOS: contextService.isIos
+		'iOS-PWA': contextService.isIosPwaStandalone
 	}"
 >
 	<router-outlet (activate)="onOutletLoaded($event)" />

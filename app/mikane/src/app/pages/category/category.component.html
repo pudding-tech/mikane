@@ -262,7 +262,7 @@
 					color="primary"
 					class="add-category-button-mobile"
 					(click)="openDialog()"
-					[ngClass]="{ iOS: contextService.isIos, hidden: scrollService.isScrolledToBottom() | async }"
+					[ngClass]="{ 'iOS-PWA': contextService.isIosPwaStandalone, hidden: scrollService.isScrolledToBottom() | async }"
 				>
 					<mat-icon>post_add</mat-icon>
 				</button>
