@@ -1,4 +1,4 @@
-<div class="navbar" [ngClass]="{ iOS: contextService.isIos }">
+<div class="navbar" [ngClass]="{ 'iOS-PWA': contextService.isIosPwaStandalone}">
 	@for (link of mobileLinks(); track link.location) {
 		<a
 			class="nav-button"
