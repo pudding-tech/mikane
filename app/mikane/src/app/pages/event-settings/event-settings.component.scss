@@ -32,7 +32,7 @@
 	}
 
 	&.notifications {
-		margin-bottom: 40px;
+		margin-bottom: 30px !important;
 	}
 
 	&.delete {
@@ -167,6 +167,26 @@
 
 .list-item {
 	cursor: default !important;
+}
+
+.clear-icon {
+	position: relative;
+	float: right;
+	top: -8px;
+	cursor: pointer;
+	color: rgba(255, 255, 255, 0.4);
+}
+
+.mat-datepicker-input {
+	width: 85%;
+}
+
+mat-form-field {
+	width: 100%;
+
+	&.full-view {
+		width: 50%;
+	}
 }
 
 mat-card-title {

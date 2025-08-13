@@ -1,13 +1,15 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
@@ -15,6 +17,7 @@ import { BehaviorSubject, NEVER, Subscription, combineLatest, filter, switchMap 
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
@@ -26,10 +29,12 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 @Component({
 	templateUrl: 'event-settings.component.html',
 	styleUrls: ['./event-settings.component.scss'],
+	providers: [provideNativeDateAdapter()],
 	imports: [
 		CommonModule,
 		MatButtonModule,
 		MatCardModule,
+		MatDatepickerModule,
 		MatDialogModule,
 		MatIconModule,
 		MatListModule,
@@ -51,6 +56,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	private userService = inject(UserService);
 	private authService = inject(AuthService);
 	breakpointService = inject(BreakpointService);
+	contextService = inject(ContextService);
 	private messageService = inject(MessageService);
 	dialog = inject(MatDialog);
 
@@ -61,7 +67,11 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	adminsInEvent: User[];
 	otherUsersInEvent: User[];
 	currentUser: User;
-	emailSentLoading = false;
+
+	addExpensesCutoffDate = signal<Date | null>(null);
+	notificationsMinDate = new Date();
+	emailReadyToSettleSentLoading = false;
+	emailReminderSentLoading = false;
 
 	addAdminForm = new FormGroup({
 		userId: new FormControl('', [Validators.required]),
@@ -278,7 +288,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			.pipe(
 				switchMap((confirm) => {
 					if (confirm) {
-						this.emailSentLoading = true;
+						this.emailReadyToSettleSentLoading = true;
 						return this.eventService.sendReadyToSettleEmails(this.event.id);
 					} else {
 						return NEVER;
@@ -287,7 +297,42 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: () => {
-					this.emailSentLoading = false;
+					this.emailReadyToSettleSentLoading = false;
+					this.messageService.showSuccess('Emails successfully sent');
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to send emails');
+					console.error('Something went wrong while sending emails', err?.error?.message);
+				},
+			});
+	}
+
+	sendAddExpensesReminderEmails() {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '420px',
+			data: {
+				title: "Send 'add expenses reminder' email",
+				content: "Are you sure you want to send the 'add expenses reminder' email? Emails will be sent to all participants in the event.",
+				confirm: 'Yes, I am sure',
+			},
+		});
+
+		this.emailSubscription = dialogRef
+			.afterClosed()
+			.pipe(
+				switchMap((confirm) => {
+					if (confirm) {
+						this.emailReminderSentLoading = true;
+						return this.eventService.sendAddExpensesReminderEmails(this.event.id, this.addExpensesCutoffDate());
+					} else {
+						return NEVER;
+					}
+				}),
+			)
+			.subscribe({
+				next: () => {
+					this.emailReminderSentLoading = false;
+					this.addExpensesCutoffDate.set(null);
 					this.messageService.showSuccess('Emails successfully sent');
 				},
 				error: (err: ApiError) => {

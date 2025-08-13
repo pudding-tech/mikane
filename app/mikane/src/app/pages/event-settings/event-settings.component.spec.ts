@@ -5,6 +5,7 @@ import { MockBuilder, MockRender } from 'ng-mocks';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
+import { ContextService } from 'src/app/services/context/context.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -33,6 +34,10 @@ describe('EventSettingsComponent', () => {
 				useValue: {
 					getCurrentUser: jasmine.createSpy('getCurrentUser').and.returnValue(of({ id: '1' })),
 				},
+			})
+			.provide({
+				provide: ContextService,
+				useValue: jasmine.createSpyObj('ContextService', [], ['isMobileDevice']),
 			})
 			.provide({
 				provide: MessageService,
