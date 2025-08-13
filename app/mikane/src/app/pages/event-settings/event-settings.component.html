@@ -22,13 +22,29 @@
 						<div class="event-settings-content admins">
 							<ng-container *ngTemplateOutlet="adminsContent" />
 						</div>
-						<div class="header">Notifications</div>
-						<div class="event-settings-content notifications">
-							<ng-container *ngTemplateOutlet="notificationsContent" />
-						</div>
 						<div class="header">Delete event</div>
 						<div class="event-settings-content delete">
 							<ng-container *ngTemplateOutlet="deleteContent" />
+						</div>
+					</mat-card-content>
+				</mat-card>
+			</div>
+			<div class="settings">
+				<mat-card class="card">
+					<mat-card-header>
+						<div mat-card-avatar>
+							<mat-icon>mail</mat-icon>
+						</div>
+						<mat-card-title>Notifications</mat-card-title>
+					</mat-card-header>
+					<mat-card-content>
+						<div class="header">Add expenses reminder</div>
+						<div class="event-settings-content notifications">
+							<ng-container *ngTemplateOutlet="notificationsAddExpensesReminderContent" />
+						</div>
+						<div class="header">Ready to settle</div>
+						<div class="event-settings-content notifications">
+							<ng-container *ngTemplateOutlet="notificationsReadyToSettleContent" />
 						</div>
 					</mat-card-content>
 				</mat-card>
@@ -46,9 +62,13 @@
 			<div>
 				<ng-container *ngTemplateOutlet="adminsContent" />
 			</div>
-			<div class="header-mobile">Notifications</div>
+			<div class="header-mobile">Notification: Add expenses reminder</div>
 			<div class="event-settings-content notifications">
-				<ng-container *ngTemplateOutlet="notificationsContent" />
+				<ng-container *ngTemplateOutlet="notificationsAddExpensesReminderContent" />
+			</div>
+			<div class="header-mobile">Notification: Ready to settle</div>
+			<div class="event-settings-content notifications">
+				<ng-container *ngTemplateOutlet="notificationsReadyToSettleContent" />
 			</div>
 			<div class="header-mobile">Delete event</div>
 			<div class="event-settings-content delete-mobile">
@@ -219,24 +239,62 @@
 	</div>
 </ng-template>
 
-<ng-template #notificationsContent>
+<ng-template #notificationsReadyToSettleContent>
 	@if (event?.status.id === EventStatusType.READY_TO_SETTLE) {
 		<div class="event-settings-text">
 			As the event is ready to be settled, you can email all payers to inform them of their expenses, how much they owe, and who to
 			pay.
 		</div>
 	} @else {
-		<div class="event-settings-text">Only events that are ready to be settled can send emails</div>
+		<div class="event-settings-text">Only events that are ready to be settled can send this email.</div>
 	}
 	<button
 		mat-raised-button
 		color="primary"
-		[disabled]="event?.status.id !== EventStatusType.READY_TO_SETTLE || emailSentLoading"
-		[class.spinner]="emailSentLoading"
+		[disabled]="event?.status.id !== EventStatusType.READY_TO_SETTLE || emailReadyToSettleSentLoading"
+		[class.spinner]="emailReadyToSettleSentLoading"
 		(click)="sendReadyToSettleEmails()"
 	>
 		<mat-icon>email</mat-icon>
 		Send 'ready to settle' email
+	</button>
+</ng-template>
+
+<ng-template #notificationsAddExpensesReminderContent>
+	@if (event?.status.id === EventStatusType.ACTIVE) {
+		<div class="event-settings-text">
+			Email all participants to remind them to add their expenses, optionally with a deadline before a planned 'ready to settle' date.
+		</div>
+	} @else {
+		<div class="event-settings-text">Only active events can send this email.</div>
+	}
+	<div>
+		<mat-form-field [ngClass]="{ 'full-view': (breakpointService.isMobile() | async) === false }">
+			<mat-label>Planned 'ready to settle' date</mat-label>
+			<input
+				matInput
+				readonly
+				[matDatepicker]="picker"
+				[(ngModel)]="addExpensesCutoffDate"
+				[disabled]="event?.status.id !== EventStatusType.ACTIVE || emailReminderSentLoading"
+				[min]="notificationsMinDate"
+				(click)="picker.open()"
+				class="mat-datepicker-input"
+			/>
+			<mat-icon matDatepickerToggleIcon (click)="addExpensesCutoffDate.set(null)" class="clear-icon">clear</mat-icon>
+			<mat-datepicker-toggle matIconSuffix [for]="picker" />
+			<mat-datepicker #picker [touchUi]="contextService.isMobileDevice" />
+		</mat-form-field>
+	</div>
+	<button
+		mat-raised-button
+		color="primary"
+		[disabled]="event?.status.id !== EventStatusType.ACTIVE || emailReminderSentLoading"
+		[class.spinner]="emailReminderSentLoading"
+		(click)="sendAddExpensesReminderEmails()"
+	>
+		<mat-icon>email</mat-icon>
+		Send 'add expenses reminder' email
 	</button>
 </ng-template>
 

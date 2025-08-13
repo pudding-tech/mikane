@@ -111,4 +111,8 @@ export class EventService {
 	sendReadyToSettleEmails(eventId: string): Observable<void> {
 		return this.httpClient.post<void>(this.env.apiUrl + `notifications/${eventId}/settle`, {});
 	}
+
+	sendAddExpensesReminderEmails(eventId: string, cutoffDate?: Date): Observable<void> {
+		return this.httpClient.post<void>(this.env.apiUrl + `notifications/${eventId}/reminder`, { cutoffDate });
+	}
 }

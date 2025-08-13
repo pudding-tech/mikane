@@ -76,37 +76,20 @@
 				</select>
 			</mat-form-field>
 		}
-		@if (contextService.isMobileDevice === false) {
-			<mat-form-field>
-				<mat-label>Expense Date</mat-label>
-				<input
-					matInput
-					readonly
-					[matDatepicker]="picker"
-					formControlName="expenseDate"
-					(click)="picker.open()"
-					class="mat-datepicker-input"
-				/>
-				<mat-icon matDatepickerToggleIcon (click)="clearDate($event)" class="clear-icon">clear</mat-icon>
-				<mat-datepicker-toggle matIconSuffix [for]="picker" />
-				<mat-datepicker #picker />
-			</mat-form-field>
-		} @else {
-			<mat-form-field>
-				<mat-label>Expense Date</mat-label>
-				<input
-					matInput
-					readonly
-					[matDatepicker]="picker"
-					formControlName="expenseDate"
-					(click)="picker.open()"
-					class="mat-datepicker-input"
-				/>
-				<mat-icon matDatepickerToggleIcon (click)="clearDate($event)" class="clear-icon">clear</mat-icon>
-				<mat-datepicker-toggle matIconSuffix [for]="picker" />
-				<mat-datepicker touchUi #picker />
-			</mat-form-field>
-		}
+		<mat-form-field>
+			<mat-label>Expense Date</mat-label>
+			<input
+				matInput
+				readonly
+				[matDatepicker]="picker"
+				formControlName="expenseDate"
+				(click)="picker.open()"
+				class="mat-datepicker-input"
+			/>
+			<mat-icon matDatepickerToggleIcon (click)="clearDate($event)" class="clear-icon">clear</mat-icon>
+			<mat-datepicker-toggle matIconSuffix [for]="picker" />
+			<mat-datepicker #picker [touchUi]="contextService.isMobileDevice" />
+		</mat-form-field>
 	</form>
 </div>
 <div mat-dialog-actions class="dialog-buttons">

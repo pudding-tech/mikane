@@ -1346,3 +1346,12 @@ export const PUD142: ErrorCode = {
   message: "Request body must include name, amount, category ID, and payer ID",
   status: 400
 };
+
+/**
+ * PUD-143: Cannot send 'add expenses reminder' notification email for event that's not active (400)
+ */
+export const PUD143: ErrorCode = {
+  code: "PUD-143",
+  message: "Cannot send 'add expenses reminder' notification email for event that's not active",
+  status: 400
+};

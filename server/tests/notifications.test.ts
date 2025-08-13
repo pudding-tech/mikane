@@ -132,6 +132,103 @@ describe("notifications", async () => {
     resetSentEmails();
   });
 
+  /* ------------------------------------- */
+  /* POST /notifications/:eventId/reminder */
+  /* ------------------------------------- */
+  describe("POST /notifications/:eventId/reminder", async () => {
+    test("fail sending 'add expenses reminder' email for ready-to-settle event", async () => {
+      // Set event as ready-to-settle
+      const resReadySettle = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          status: EventStatusType.READY_TO_SETTLE
+        });
+
+      expect(resReadySettle.status).toEqual(200);
+      expect(resReadySettle.body.status.id).toEqual(EventStatusType.READY_TO_SETTLE);
+
+      const res = await request(app)
+        .post(`/api/notifications/${event.id}/reminder`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD143.code);
+    });
+
+    test("fail sending 'add expenses reminder' email for settled event", async () => {
+      // Set event as settled
+      const resSettle = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          status: EventStatusType.SETTLED
+        });
+
+      expect(resSettle.status).toEqual(200);
+      expect(resSettle.body.status.id).toEqual(EventStatusType.SETTLED);
+
+      const res = await request(app)
+        .post(`/api/notifications/${event.id}/reminder`)
+        .set("Cookie", authToken);
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD143.code);
+    });
+
+    test("should send 'add expenses reminder' email without cutoff date", async () => {
+      // Set event as active
+      const resActive = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          status: EventStatusType.ACTIVE
+        });
+
+      expect(resActive.status).toEqual(200);
+      expect(resActive.body.status.id).toEqual(EventStatusType.ACTIVE);
+
+      // Send emails
+      const res = await request(app)
+        .post(`/api/notifications/${event.id}/reminder`)
+        .set("Cookie", authToken);
+
+      const sentEmails = getSentEmails();
+      const subject = sentEmails[0].Subject;
+      const html = sentEmails[0].HtmlBody as string;
+
+      expect(res.status).toEqual(200);
+      expect(res.body.message).toEqual("Emails successfully sent");
+
+      expect(sentEmails.length).toEqual(3);
+      expect(subject).toEqual(`Reminder: Add your expenses for ${event.name} before settlement - Mikane`);
+      expect(html).toContain("Settlement will begin soon, so please review your records and add any missing expenses.");
+    });
+
+    test("should send 'add expenses reminder' email with a cutoff date", async () => {
+      const cutoffDate = new Date("2025-08-01");
+
+      // Send emails
+      const res = await request(app)
+        .post(`/api/notifications/${event.id}/reminder`)
+        .set("Cookie", authToken)
+        .send({
+          cutoffDate: cutoffDate
+        });
+
+      const sentEmails = getSentEmails();
+      const subject = sentEmails[0].Subject;
+      const html = sentEmails[0].HtmlBody as string;
+
+      expect(res.status).toEqual(200);
+      expect(res.body.message).toEqual("Emails successfully sent");
+
+      expect(sentEmails.length).toEqual(3);
+      expect(subject).toEqual(`Reminder: Add your expenses for ${event.name} before ${cutoffDate.toLocaleDateString()} - Mikane`);
+      expect(html).toContain(`<strong>Important:</strong> Settlement is scheduled to begin on <span style="color:#c2185b;">${cutoffDate.toLocaleDateString()}</span>`);
+    });
+  });
+
   /* ----------------------------------- */
   /* POST /notifications/:eventId/settle */
   /* ----------------------------------- */
@@ -167,15 +264,15 @@ describe("notifications", async () => {
 
     test("should send ready-to-settle email with the correct payment information", async () => {
       // Set event as ready-to-settle
-      const resSettle = await request(app)
+      const resReadySettle = await request(app)
         .put("/api/events/" + event.id)
         .set("Cookie", authToken)
         .send({
           status: EventStatusType.READY_TO_SETTLE
         });
 
-      expect(resSettle.status).toEqual(200);
-      expect(resSettle.body.status.id).toEqual(EventStatusType.READY_TO_SETTLE);
+      expect(resReadySettle.status).toEqual(200);
+      expect(resReadySettle.body.status.id).toEqual(EventStatusType.READY_TO_SETTLE);
 
       // Get event payments (for cross-referencing)
       const resPayments = await request(app)

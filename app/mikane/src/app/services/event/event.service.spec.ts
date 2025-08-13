@@ -252,4 +252,29 @@ describe('EventService', () => {
 			req.flush(mockEvent);
 		});
 	});
+
+	describe('#sendAddExpensesReminderEmails', () => {
+		it('should send sendAddExpensesReminderEmails API call', () => {
+			service.sendAddExpensesReminderEmails('eventId', new Date('2025-08-01')).subscribe({ error: fail });
+
+			const req = httpTestingController.expectOne('http://localhost:3002/api/notifications/eventId/reminder');
+
+			expect(req.request.method).toEqual('POST');
+			expect(req.request.body).toEqual({ cutoffDate: new Date('2025-08-01') });
+
+			req.flush(null);
+		});
+	});
+
+	describe('#sendReadyToSettleEmails', () => {
+		it('should send sendReadyToSettleEmails API call', () => {
+			service.sendReadyToSettleEmails('eventId').subscribe({ error: fail });
+
+			const req = httpTestingController.expectOne('http://localhost:3002/api/notifications/eventId/settle');
+
+			expect(req.request.method).toEqual('POST');
+
+			req.flush(null);
+		});
+	});
 });
