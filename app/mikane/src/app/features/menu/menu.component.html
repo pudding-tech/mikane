@@ -7,14 +7,14 @@
 	<app-split-button #splitButton (splitButtonClick)="onProfileClick()">
 		<div button>
 			@if (user?.avatarURL) {
-				<img alt="User avatar" height="36" width="36" [ngSrc]="user?.avatarURL" class="avatar" />
+				<img alt="User avatar" height="36" width="36" [ngSrc]="user?.avatarURL" class="avatar" priority />
 			}
 		</div>
 		<div dropdown-button>
 			@if (breakpointService.isMobile() | async) {
 				<div>
 					@if (user?.avatarURL) {
-						<img alt="User avatar" height="36" width="36" [ngSrc]="user?.avatarURL" class="avatar" />
+						<img alt="User avatar" height="36" width="36" [ngSrc]="user?.avatarURL" class="avatar" priority />
 					}
 				</div>
 			} @else {
