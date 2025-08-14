@@ -1,9 +1,9 @@
 import { describe, test, expect, beforeAll } from "vitest";
 import request from "supertest";
-import app from "../src/server";
-import * as ec from "../src/types/errorCodes";
-import { Event, User } from "../src/types/types";
-import { EventStatusType } from "../src/types/enums";
+import app from "../src/server.ts";
+import * as ec from "../src/types/errorCodes.ts";
+import { Event, User } from "../src/types/types.ts";
+import { EventStatusType } from "../src/types/enums.ts";
 
 describe("events", async () => {
 

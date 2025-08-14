@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { ErrorCode, PUD001, PUD065, PUD066, PUD067, PUD069 } from "../types/errorCodes";
-import { getApiKeys } from "../db/dbAuthentication";
-import { authenticate } from "../utils/auth";
-import { APIKey } from "../types/types";
-import { ErrorExt } from "../types/errorExt";
+import { ErrorCode, PUD001, PUD065, PUD066, PUD067, PUD069 } from "../types/errorCodes.ts";
+import { getApiKeys } from "../db/dbAuthentication.ts";
+import { authenticate } from "../utils/auth.ts";
+import { APIKey } from "../types/types.ts";
+import { ErrorExt } from "../types/errorExt.ts";
 
 /**
  * Only allow authenticated users to progress

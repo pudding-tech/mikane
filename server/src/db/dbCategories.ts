@@ -1,9 +1,9 @@
-import { pool } from "../db";
-import { parseCategories } from "../parsers/parseCategories";
-import { CategoryIcon, Target } from "../types/enums";
-import { Category } from "../types/types";
-import { ErrorExt } from "../types/errorExt";
-import * as ec from "../types/errorCodes";
+import { pool } from "../db.ts";
+import { parseCategories } from "../parsers/parseCategories.ts";
+import { CategoryIcon, Target } from "../types/enums.ts";
+import { Category } from "../types/types.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import * as ec from "../types/errorCodes.ts";
 
 /**
  * DB interface: Get categories for an event

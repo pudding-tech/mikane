@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
@@ -9,6 +9,9 @@ import { User } from '../user/user.service';
 	providedIn: 'root',
 })
 export class AuthService {
+	private httpClient = inject(HttpClient);
+	private env = inject<Environment>(ENV);
+
 	private apiUrl = this.env.apiUrl;
 	private currentUser: User;
 
@@ -25,8 +28,6 @@ export class AuthService {
 		this._redirectUrl = value;
 	}
 
-	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
-
 	login(username: string, password: string): Observable<User> {
 		return this.httpClient
 			.post<User>(this.apiUrl + 'login', {
@@ -40,7 +41,7 @@ export class AuthService {
 		return this.httpClient.post<void>(this.apiUrl + 'logout', {}).pipe(
 			tap(() => {
 				this.clearCurrentUser();
-			})
+			}),
 		);
 	}
 

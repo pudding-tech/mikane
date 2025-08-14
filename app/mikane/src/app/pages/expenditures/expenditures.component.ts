@@ -1,15 +1,5 @@
-import { CommonModule } from '@angular/common';
-import {
-	ChangeDetectorRef,
-	Component,
-	ElementRef,
-	Input,
-	OnDestroy,
-	OnInit,
-	ViewChild,
-	computed,
-	signal,
-} from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { MatBottomSheet, MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -30,10 +20,10 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
@@ -44,7 +34,6 @@ import { ExpenseBottomSheetComponent } from './expense-bottom-sheet/expense-bott
 	selector: 'app-expenditures',
 	templateUrl: './expenditures.component.html',
 	styleUrls: ['./expenditures.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatButtonModule,
@@ -62,16 +51,30 @@ import { ExpenseBottomSheetComponent } from './expense-bottom-sheet/expense-bott
 		MatInputModule,
 		MatChipsModule,
 		MatBottomSheetModule,
+		NgOptimizedImage,
 	],
 })
 export class ExpendituresComponent implements OnInit, OnDestroy {
+	private expenseService = inject(ExpenseService);
+	private categoryService = inject(CategoryService);
+	private authService = inject(AuthService);
+	dialog = inject(MatDialog);
+	private messageService = inject(MessageService);
+	breakpointService = inject(BreakpointService);
+	contextService = inject(ContextService);
+	scrollService = inject(ScrollService);
+	private route = inject(ActivatedRoute);
+	private router = inject(Router);
+	private changeDetector = inject(ChangeDetectorRef);
+	private bottomSheet = inject(MatBottomSheet);
+
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event!: PuddingEvent;
 
 	private sortValue = signal<Sort>({} as Sort);
 	protected expenses = signal<Expense[]>([]);
 	protected payers = signal<User[]>([]);
-	protected categories = signal<Array<{ id: string; name: string; icon: string }>>([]);
+	protected categories = signal<{ id: string; name: string; icon: string }[]>([]);
 
 	filteredExpenses = computed(() => {
 		return this.sortData(this.sortValue(), this.expenses()).filter((expense) => {
@@ -107,27 +110,12 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	private _filterInput: ElementRef<HTMLInputElement>;
 
 	loading = false;
-	cancel$: Subject<void> = new Subject();
-	destroy$: Subject<void> = new Subject();
+	cancel$ = new Subject<void>();
+	destroy$ = new Subject<void>();
 	readonly EventStatusType = EventStatusType;
 
 	displayedColumns: string[] = ['icon', 'name', 'payer', 'amount', 'categoryName', 'description', 'expenseDate'];
 	currentUserId: string;
-
-	constructor(
-		private expenseService: ExpenseService,
-		private categoryService: CategoryService,
-		private authService: AuthService,
-		public dialog: MatDialog,
-		private messageService: MessageService,
-		public breakpointService: BreakpointService,
-		public contextService: ContextService,
-		public scrollService: ScrollService,
-		private route: ActivatedRoute,
-		private router: Router,
-		private changeDetector: ChangeDetectorRef,
-		private bottomSheet: MatBottomSheet,
-	) {}
 
 	ngOnInit(): void {
 		this.loading = true;
@@ -269,7 +257,13 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 
 	editExpense(expenseId: string) {
 		const oldExpense = this.expenses().find((expense) => expense.id === expenseId);
-		let editExpense: Expense;
+		let editExpense: {
+			description?: string;
+			amount: number;
+			name: string;
+			payerId: string;
+			expenseDate?: Date;
+		};
 
 		this.dialog
 			.open(ExpenditureDialogComponent, {
@@ -299,7 +293,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 						editExpense.description ?? undefined,
 						editExpense.amount,
 						category.id,
-						editExpense.payer as unknown as string,
+						editExpense.payerId,
 						editExpense.expenseDate,
 					);
 				}),
@@ -448,7 +442,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 						return this.compare(
 							a.expenseDate ? new Date(a.expenseDate).getTime() : new Date(a.created).getTime(),
 							b.expenseDate ? new Date(b.expenseDate).getTime() : new Date(b.created).getTime(),
-							isAsc
+							isAsc,
 						);
 					default:
 						return 0;

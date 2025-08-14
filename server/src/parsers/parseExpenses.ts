@@ -1,8 +1,8 @@
-import { setDisplayNames } from "../utils/setDisplayNames";
-import { Expense, User } from "../types/types";
-import { ExpenseDB, UserNamesDB } from "../types/typesDB";
-import { CategoryIcon } from "../types/enums";
-import { getGravatarURL } from "../utils/gravatar";
+import { setDisplayNames } from "../utils/setDisplayNames.ts";
+import { Expense, User } from "../types/types.ts";
+import { ExpenseDB, UserNamesDB } from "../types/typesDB.ts";
+import { CategoryIcon } from "../types/enums.ts";
+import { getGravatarURL } from "../utils/gravatar.ts";
 
 /**
  * Build array of Expense objects

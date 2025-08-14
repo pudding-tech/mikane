@@ -1,5 +1,5 @@
-import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
-import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
+import { AsyncPipe, CommonModule, NgOptimizedImage } from '@angular/common';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -8,7 +8,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { EventItemComponent } from 'src/app/features/mobile/event-item/event-item.component';
@@ -24,16 +24,12 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 	selector: 'app-events',
 	templateUrl: './events.component.html',
 	styleUrls: ['./events.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatToolbarModule,
 		MatButtonModule,
-		RouterLink,
 		MatIconModule,
-		NgIf,
 		MatCardModule,
-		NgFor,
 		EventItemComponent,
 		ProgressSpinnerComponent,
 		AsyncPipe,
@@ -42,9 +38,18 @@ import { EventDialogComponent } from './event-dialog/event-dialog.component';
 		MatPaginatorModule,
 		MenuComponent,
 		MatListModule,
+		NgOptimizedImage,
 	],
 })
 export class EventsComponent implements OnInit, OnDestroy {
+	private eventService = inject(EventService);
+	private messageService = inject(MessageService);
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
+	dialog = inject(MatDialog);
+	breakpointService = inject(BreakpointService);
+	scrollService = inject(ScrollService);
+
 	events = signal<PuddingEvent[]>([]);
 	eventsActive = computed(() => {
 		return this.events().filter((event) => event.status.id !== EventStatusType.SETTLED);
@@ -60,7 +65,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 	});
 
 	selectedEvent!: PuddingEvent;
-	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	loading = new BehaviorSubject<boolean>(false);
 	editSubscription: Subscription;
 	readonly EventStatusType = EventStatusType;
 
@@ -78,16 +83,6 @@ export class EventsComponent implements OnInit, OnDestroy {
 	endIndexActive = signal(this.pageSizeActive());
 	endIndexSettled = signal(this.pageSizeSettled());
 	pageSizeOptions: number[] = [5, 10, 20];
-
-	constructor(
-		private eventService: EventService,
-		private messageService: MessageService,
-		private router: Router,
-		private route: ActivatedRoute,
-		public dialog: MatDialog,
-		public breakpointService: BreakpointService,
-		public scrollService: ScrollService,
-	) {}
 
 	ngOnInit() {
 		this.loading.next(true);
@@ -150,11 +145,11 @@ export class EventsComponent implements OnInit, OnDestroy {
 		const dialogRef = this.dialog.open(EventDialogComponent, {
 			width: '350px',
 			data: {
-				edit: false
-			}
+				edit: false,
+			},
 		});
 
-		dialogRef.afterClosed().subscribe((event: { name: string; description: string, private: boolean }) => {
+		dialogRef.afterClosed().subscribe((event: { name: string; description: string; private: boolean }) => {
 			if (event) {
 				this.eventService.createEvent({ name: event.name, description: event.description, privateEvent: event.private }).subscribe({
 					next: (newEvent) => {

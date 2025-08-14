@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -22,7 +22,6 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 @Component({
 	templateUrl: './register-user.component.html',
 	styleUrls: ['./register-user.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatToolbarModule,
@@ -33,9 +32,17 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 		MatFormFieldModule,
 		MatInputModule,
 		MatButtonModule,
+		NgOptimizedImage
 	],
 })
 export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
+	private userService = inject(UserService);
+	private messageService = inject(MessageService);
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
+	private formValidationService = inject(FormValidationService);
+	breakpointService = inject(BreakpointService);
+
 	hide = true;
 
 	private userSub: Subscription;
@@ -58,15 +65,6 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 			passwordRetype: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
 		}),
 	});
-
-	constructor(
-		private userService: UserService,
-		private messageService: MessageService,
-		private router: Router,
-		private route: ActivatedRoute,
-		private formValidationService: FormValidationService,
-		public breakpointService: BreakpointService
-	) {}
 
 	ngOnInit() {
 		this.route.data.subscribe(({ res }) => {
@@ -114,7 +112,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 					this.registerUserForm.get<string>('email')?.value,
 					this.phone,
 					this.registerUserForm.get('passwordGroup').get<string>('password')?.value,
-					this.key
+					this.key,
 				)
 				.subscribe({
 					next: (user: User) => {
@@ -147,7 +145,9 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 								this.registerUserForm.get('phone').setErrors({ duplicate: true });
 								break;
 							case 'PUD-132':
-								this.messageService.showError('Can only contain letters, numbers, hyphens, and underscores. Must be between 3-40 characters. Username cannot begin or end with hyphen/underscore.');
+								this.messageService.showError(
+									'Can only contain letters, numbers, hyphens, and underscores. Must be between 3-40 characters. Username cannot begin or end with hyphen/underscore.',
+								);
 								this.registerUserForm.get('username').setErrors({ invalid: true });
 								break;
 							default:

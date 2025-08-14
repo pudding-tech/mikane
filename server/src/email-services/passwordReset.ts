@@ -1,5 +1,6 @@
-import env from "../env";
-import { sendEmail } from "../utils/sendEmail";
+import env from "../env.ts";
+import logger from "../utils/logger.ts";
+import { sendEmail } from "../utils/sendEmail.ts";
 
 const url = env.ALLOWED_ORIGIN + "/reset-password/";
 
@@ -15,8 +16,8 @@ export const sendPasswordResetEmail = async (recipient: string, key: string) => 
   const html = passwordResetEmailHTML(uriEncodedKey);
 
   const sentMessageInfo = await sendEmail(recipient, subject, html);
-  if (sentMessageInfo.accepted) {
-    console.log(`Password reset email sent to ${sentMessageInfo.accepted}: ${sentMessageInfo.response}`);
+  if (sentMessageInfo.To) {
+    logger.info(`Password reset email sent to ${sentMessageInfo.To}: ${sentMessageInfo.Message}`);
   }
 };
 

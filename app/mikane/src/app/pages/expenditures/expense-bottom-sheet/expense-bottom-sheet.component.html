@@ -23,7 +23,7 @@
 				<mat-list-item mat-list-item (click)="selectItem(payer.id)" class="wrapper">
 					<div class="payers">
 						<div class="name">
-							<img [src]="payer.avatarURL" alt="Payer avatar" class="avatar" />
+							<img [ngSrc]="payer.avatarURL" height="24" width="24" alt="Payer avatar" class="avatar" />
 							{{ payer.name }}
 						</div>
 						@if (selectedValues.includes(payer.id)) {

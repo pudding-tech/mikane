@@ -1,10 +1,10 @@
-import { pool } from "../db";
-import { parseEvents } from "../parsers/parseEvents";
-import { parseExpenses } from "../parsers/parseExpenses";
-import { parseUser, parseUsers } from "../parsers/parseUsers";
-import { Event, Expense, User } from "../types/types";
-import { ErrorExt } from "../types/errorExt";
-import * as ec from "../types/errorCodes";
+import { pool } from "../db.ts";
+import { parseEvents } from "../parsers/parseEvents.ts";
+import { parseExpenses } from "../parsers/parseExpenses.ts";
+import { parseUser, parseUsers } from "../parsers/parseUsers.ts";
+import { Event, Expense, User } from "../types/types.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import * as ec from "../types/errorCodes.ts";
 
 /**
  * DB interface: Get user information

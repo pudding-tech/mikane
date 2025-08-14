@@ -1,5 +1,6 @@
-import env from "../env";
-import { sendEmail } from "../utils/sendEmail";
+import env from "../env.ts";
+import logger from "../utils/logger.ts";
+import { sendEmail } from "../utils/sendEmail.ts";
 
 const url = env.ALLOWED_ORIGIN + "/delete-account/";
 
@@ -15,8 +16,8 @@ export const sendDeleteAccountEmail = async (recipient: string, key: string) => 
   const html = deleteAccountEmailHTML(uriEncodedKey);
 
   const sentMessageInfo = await sendEmail(recipient, subject, html);
-  if (sentMessageInfo.accepted) {
-    console.log(`Delete account email sent to ${sentMessageInfo.accepted}: ${sentMessageInfo.response}`);
+  if (sentMessageInfo.To) {
+    logger.info(`Delete account email sent to ${sentMessageInfo.To}: ${sentMessageInfo.Message}`);
   }
 };
 

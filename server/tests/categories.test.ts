@@ -1,9 +1,9 @@
 import { describe, test, expect, beforeAll } from "vitest";
 import request from "supertest";
-import app from "../src/server";
-import * as ec from "../src/types/errorCodes";
-import { Category, Event, Expense, User } from "../src/types/types";
-import { EventStatusType } from "../src/types/enums";
+import app from "../src/server.ts";
+import * as ec from "../src/types/errorCodes.ts";
+import { Category, Event, Expense, User } from "../src/types/types.ts";
+import { EventStatusType } from "../src/types/enums.ts";
 
 describe("categories", async () => {
 
@@ -343,7 +343,7 @@ describe("categories", async () => {
   /* --------------------------------- */
   /* POST /categories/:id/user/:userId */
   /* --------------------------------- */
-  describe("PUT /categories/:id/user/:userId", async () => {
+  describe("POST /categories/:id/user/:userId", async () => {
     // Check number of users in category (should be 0)
     test("number of users in category should be 0", async () => {
       const res = await request(app)

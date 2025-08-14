@@ -59,9 +59,11 @@
 									<mat-panel-title>
 										<div class="user first">
 											<img
-												[src]="userWithBalance.user.avatarURL"
+												[ngSrc]="userWithBalance.user.avatarURL"
 												alt="User avatar"
 												class="avatar"
+												width="24"
+												height="24"
 												[ngClass]="{ clickable: !userWithBalance.user.guest }"
 												(click)="gotoUserProfile(userWithBalance.user)"
 											/>
@@ -81,7 +83,7 @@
 									<!-- Deferred initialization until the panel is open. -->
 									@if (dataSources[i].loading$ | async) {
 										<div class="spinner-container">
-											<mat-spinner class="spinner"></mat-spinner>
+											<mat-spinner class="spinner" />
 										</div>
 									}
 									@if (dataSources[i].notEmpty | async) {
@@ -122,11 +124,15 @@
 												<th mat-header-cell *matHeaderCellDef>Date</th>
 												<td mat-cell *matCellDef="let expense">
 													<span
-														[matTooltip]="expense.expenseDate ? null : 'Expense date not set - displaying date created instead'"
+														[matTooltip]="
+															expense.expenseDate
+																? null
+																: 'Expense date not set - displaying date created instead'
+														"
 														[matTooltipShowDelay]="100"
 														[ngClass]="{ 'expense-created-date': !expense.expenseDate }"
 													>
-														{{ (expense.expenseDate ?? expense.created) | date: 'mediumDate' : null : 'en' }}
+														{{ expense.expenseDate ?? expense.created | date: "mediumDate" : null : "en" }}
 													</span>
 												</td>
 											</ng-container>
@@ -166,32 +172,29 @@
 											@if (usersWithBalance.length === 1) {
 												<span matTooltip="Cannot remove the sole participant from an event" style="padding: 8px 0">
 													<button mat-raised-button disabled>
-														{{ userWithBalance.user.id === currentUser.id ? 'Leave event' : 'Remove user' }}
+														{{ userWithBalance.user.id === currentUser.id ? "Leave event" : "Remove user" }}
 													</button>
 												</span>
-											}
-											@else if (userWithBalance.expensesCount > 0) {
+											} @else if (userWithBalance.expensesCount > 0) {
 												<span matTooltip="Cannot remove a user with expenses" style="padding: 8px 0">
 													<button mat-raised-button disabled>
-														{{ userWithBalance.user.id === currentUser.id ? 'Leave event' : 'Remove user' }}
+														{{ userWithBalance.user.id === currentUser.id ? "Leave event" : "Remove user" }}
 													</button>
 												</span>
-											}
-											@else if (event.adminIds.length === 1 && userWithBalance.user.eventInfo.isAdmin) {
+											} @else if (event.adminIds.length === 1 && userWithBalance.user.eventInfo.isAdmin) {
 												<span matTooltip="Cannot remove the sole event admin from an event" style="padding: 8px 0">
 													<button mat-raised-button disabled>
-														{{ userWithBalance.user.id === currentUser.id ? 'Leave event' : 'Remove user' }}
+														{{ userWithBalance.user.id === currentUser.id ? "Leave event" : "Remove user" }}
 													</button>
 												</span>
-											}
-											@else {
+											} @else {
 												<button
 													mat-raised-button
 													type="button"
 													color="warn"
 													(click)="deleteUserDialog(userWithBalance.user)"
 												>
-													{{ userWithBalance.user.id === currentUser.id ? 'Leave event' : 'Remove user' }}
+													{{ userWithBalance.user.id === currentUser.id ? "Leave event" : "Remove user" }}
 												</button>
 											}
 										</div>
@@ -204,7 +207,6 @@
 					<mat-card appearance="outlined"> No participants </mat-card>
 				}
 			</div>
-
 		} @else {
 			<div class="header-mobile">
 				@if (inEvent) {
@@ -248,7 +250,7 @@
 						(click)="gotoUserExpenses(userWithBalance)"
 						(gotoUser)="gotoUserProfile($event.user)"
 						(removeUser)="deleteUserDialog($event.user)"
-					></app-participant-item>
+					/>
 				}
 			</mat-nav-list>
 			@if (event?.status.id === EventStatusType.ACTIVE) {
@@ -257,7 +259,7 @@
 					color="primary"
 					class="add-users-button-mobile"
 					(click)="openDialog()"
-					[ngClass]="{ iOS: contextService.isIos, hidden: scrollService.isScrolledToBottom() | async }"
+					[ngClass]="{ 'iOS-PWA': contextService.isIosPwaStandalone, hidden: scrollService.isScrolledToBottom() | async }"
 				>
 					<mat-icon>person_add</mat-icon>
 				</button>
@@ -265,7 +267,7 @@
 		}
 	</div>
 } @else {
-	<app-loading-spinner></app-loading-spinner>
+	<app-loading-spinner />
 }
 
 <ng-template #emptyMessage><p>Participant has no expenses</p></ng-template>

@@ -1,10 +1,10 @@
-import { createTransport } from "nodemailer";
-import env from "../env";
-import { ErrorExt } from "../types/errorExt";
-import { PUD073, PUD074 } from "../types/errorCodes";
+import { ServerClient } from "postmark";
+import env from "../env.ts";
+import { ErrorExt } from "../types/errorExt.ts";
+import { PUD073, PUD074 } from "../types/errorCodes.ts";
 
 const email = env.MIKANE_EMAIL;
-const password = env.MIKANE_EMAIL_PASSWORD;
+const token = env.MIKANE_EMAIL_API_TOKEN;
 
 /**
  * Send an email to a recipient
@@ -14,37 +14,22 @@ const password = env.MIKANE_EMAIL_PASSWORD;
  */
 export const sendEmail = async (recipient: string, subject: string, html: string) => {
 
-  if (!email || !password) {
+  if (!email || !token) {
     throw new ErrorExt(PUD073);
   }
 
-  const transporter = createTransport({
-    host: "smtp-mail.outlook.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: email,
-      pass: password
-    },
-    tls: {
-      ciphers: "SSLv3"
-    }
+  const client = new ServerClient(token);
+
+  return client.sendEmail({
+    From: email,
+    To: recipient,
+    Subject: subject,
+    HtmlBody: html
+  })
+  .then(res => {
+    return res;
+  })
+  .catch(err => {
+    throw new ErrorExt(PUD074, err);
   });
-
-  const info = await transporter.sendMail({
-    from: {
-      name: "Mikane",
-      address: email
-    },
-    to: recipient,
-    subject: subject,
-    html: html
-  }).catch(err => { throw new ErrorExt(PUD074, err); });
-
-  if (info.accepted) {
-    return info;
-  }
-  else {
-    throw new ErrorExt(PUD074, new Error("Something went wrong while sending email:\n" + info));
-  }
 };

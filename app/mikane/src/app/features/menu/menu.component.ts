@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { SplitButtonComponent } from 'src/app/features/split-button/split-button.component';
@@ -15,19 +15,16 @@ import { SplitButtonItemDirective } from '../split-button/split-button-item/spli
 	selector: 'app-menu',
 	templateUrl: './menu.component.html',
 	styleUrls: ['./menu.component.scss'],
-	standalone: true,
-	imports: [CommonModule, MatIconModule, SplitButtonComponent, SplitButtonItemComponent, SplitButtonItemDirective],
+	imports: [CommonModule, MatIconModule, SplitButtonComponent, SplitButtonItemComponent, SplitButtonItemDirective, NgOptimizedImage],
 })
 export class MenuComponent implements OnInit {
+	private router = inject(Router);
+	private messageService = inject(MessageService);
+	private authService = inject(AuthService);
+	breakpointService = inject(BreakpointService);
+
 	@ViewChild('splitButton') private splitButton: SplitButtonComponent;
 	user: User;
-
-	constructor(
-		private router: Router,
-		private messageService: MessageService,
-		private authService: AuthService,
-		public breakpointService: BreakpointService
-	) {}
 
 	ngOnInit() {
 		this.authService.getCurrentUser()?.subscribe({

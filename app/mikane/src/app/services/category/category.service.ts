@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, map, of, switchMap } from 'rxjs';
 import { CategoryIcon } from 'src/app/types/enums';
 import { Environment } from 'src/environments/environment.interface';
@@ -12,23 +12,24 @@ export interface Category {
 	weighted: boolean;
 	created: Date;
 	numberOfExpenses: number;
-	users: Array<{
+	users: {
 		id: string;
 		name: string;
 		username: string;
 		guest: boolean;
 		avatarURL: string;
 		weight?: number;
-	}>;
+	}[];
 }
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CategoryService {
-	private apiUrl = this.env.apiUrl + 'categories';
+	private httpClient = inject(HttpClient);
+	private env = inject<Environment>(ENV);
 
-	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
+	private apiUrl = this.env.apiUrl + 'categories';
 
 	loadCategories(eventId: string): Observable<Category[]> {
 		return this.httpClient.get<Category[]>(this.apiUrl + `?eventId=${eventId}`);
@@ -81,7 +82,7 @@ export class CategoryService {
 				} else {
 					return this.createCategory(categoryName, eventId, false, CategoryIcon.SHOPPING);
 				}
-			})
+			}),
 		);
 	}
 }

@@ -28,7 +28,7 @@
 								@for (payer of payers(); track payer.id) {
 									<mat-option [value]="payer.id">
 										<span class="payer">
-											<img [src]="payer.avatarURL" alt="User avatar" class="payer-avatar" />
+											<img [ngSrc]="payer.avatarURL" alt="User avatar" width="20" height="20" class="payer-avatar" />
 											{{ payer.name }}
 										</span>
 									</mat-option>
@@ -71,8 +71,18 @@
 								<th mat-header-cell *matHeaderCellDef mat-sort-header>Paid by</th>
 								<td mat-cell *matCellDef="let expense">
 									<div class="payer">
-										<div class="payer" [ngClass]="{ 'clickable': !expense.payer.guest }" (click)="gotoUserProfile(expense.payer)">
-											<img [src]="expense.payer.avatarURL" alt="User avatar" class="payer-avatar" />
+										<div
+											class="payer"
+											[ngClass]="{ clickable: !expense.payer.guest }"
+											(click)="gotoUserProfile(expense.payer)"
+										>
+											<img
+												[ngSrc]="expense.payer.avatarURL"
+												height="20"
+												width="20"
+												alt="User avatar"
+												class="payer-avatar"
+											/>
 											{{ expense.payer.name }}
 										</div>
 									</div>
@@ -108,7 +118,7 @@
 										[matTooltipShowDelay]="100"
 										[ngClass]="{ 'expense-created-date': !expense.expenseDate }"
 									>
-										{{ (expense.expenseDate ?? expense.created) | date: 'mediumDate' : null : 'en' }}
+										{{ expense.expenseDate ?? expense.created | date: "mediumDate" : null : "en" }}
 									</span>
 								</td>
 							</ng-container>
@@ -117,12 +127,14 @@
 								<th mat-header-cell *matHeaderCellDef></th>
 								<td mat-cell *matCellDef="let expense">
 									@if (expense.payer.id === currentUserId || event?.userInfo?.isAdmin) {
-										<button mat-icon-button type="button" (click)="editExpense(expense.id)">
-											<mat-icon>edit</mat-icon>
-										</button>
-										<button mat-icon-button type="button" (click)="removeExpense(expense.id)">
-											<mat-icon>delete</mat-icon>
-										</button>
+										<div class="edit-delete-column">
+											<button mat-icon-button type="button" (click)="editExpense(expense.id)">
+												<mat-icon>edit</mat-icon>
+											</button>
+											<button mat-icon-button type="button" (click)="removeExpense(expense.id)">
+												<mat-icon>delete</mat-icon>
+											</button>
+										</div>
 									}
 								</td>
 							</ng-container>
@@ -164,7 +176,13 @@
 						} @else {
 							@if (payersFilter().length === 1) {
 								<div class="filter-one-element-text">
-									<img [src]="filteredPayer().avatarURL" alt="User avatar" class="filter-icon payer" />
+									<img
+										[ngSrc]="filteredPayer().avatarURL"
+										height="14"
+										width="14"
+										alt="User avatar"
+										class="filter-icon payer"
+									/>
 									{{ filteredPayer().name }}
 								</div>
 							} @else {
@@ -198,7 +216,7 @@
 			@if (filteredExpenses().length > 0) {
 				<mat-nav-list #expensesList class="expenses-list-mobile">
 					@for (expense of filteredExpenses(); track expense.id) {
-						<app-expense-item [expense]="expense"></app-expense-item>
+						<app-expense-item [expense]="expense" />
 					}
 				</mat-nav-list>
 			} @else {
@@ -210,7 +228,7 @@
 					color="primary"
 					class="add-expense-button-mobile"
 					(click)="openDialog()"
-					[ngClass]="{ iOS: contextService.isIos, hidden: scrollService.isScrolledToBottom() | async }"
+					[ngClass]="{ 'iOS-PWA': contextService.isIosPwaStandalone, hidden: scrollService.isScrolledToBottom() | async }"
 				>
 					<mat-icon>add_card</mat-icon>
 				</button>
@@ -218,5 +236,5 @@
 		}
 	</div>
 } @else {
-	<app-loading-spinner></app-loading-spinner>
+	<app-loading-spinner />
 }

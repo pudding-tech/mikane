@@ -1,13 +1,10 @@
-import { describe, test, expect, beforeAll, afterEach, vi } from "vitest";
+import { describe, test, expect, beforeAll, afterEach } from "vitest";
 import request from "supertest";
-import nodemailerMock from "nodemailer-mock";
-import app from "../src/server";
-import * as ec from "../src/types/errorCodes";
-import { Category, Event, User } from "../src/types/types";
-import { EventStatusType } from "../src/types/enums";
-
-// Mock nodemailer
-vi.mock("nodemailer", () => nodemailerMock);
+import app from "../src/server.ts";
+import * as ec from "../src/types/errorCodes.ts";
+import { Category, Event, User } from "../src/types/types.ts";
+import { EventStatusType } from "../src/types/enums.ts";
+import { getSentEmails, resetSentEmails } from "./mocks/postmarkMock.ts";
 
 describe("users", async () => {
 
@@ -46,7 +43,7 @@ describe("users", async () => {
   });
 
   afterEach(async () => {
-    nodemailerMock.mock.reset();
+    resetSentEmails();
   });
 
   /* ----------- */
@@ -484,16 +481,18 @@ describe("users", async () => {
         .post("/api/users/requestdeleteaccount")
         .set("Cookie", authToken2);
 
-      const sentEmail = nodemailerMock.mock.getSentMail();
-      const html = sentEmail[0].html as string;
+      const sentEmails = getSentEmails();
+      const sentEmail = sentEmails[0];
+      const html = sentEmail.HtmlBody as string;
       const keyStart = html.indexOf("/delete-account/") + "/delete-account/".length;
       const keyEnd = html.indexOf("\"", keyStart);
       deleteAccountKey = html.substring(keyStart, keyEnd);
 
       expect(res.status).toEqual(200);
-      expect(sentEmail.length).toEqual(1);
-      expect(sentEmail[0].to).toEqual(user2.email);
-      expect(sentEmail[0].subject).toEqual("Delete your Mikane account");
+      expect(sentEmails.length).toEqual(1);
+      expect(sentEmail.To).toEqual(user2.email);
+      expect(sentEmail.Subject).toEqual("Delete your Mikane account");
+      expect(deleteAccountKey).toBeDefined();
     });
   });
 
@@ -781,16 +780,18 @@ describe("users", async () => {
           email: "b@mikane.no"
         });
 
-      const sentEmail = nodemailerMock.mock.getSentMail();
-      const html = sentEmail[0].html as string;
+      const sentEmails = getSentEmails();
+      const sentEmail = sentEmails[0];
+      const html = sentEmail.HtmlBody as string;
       const keyStart = html.indexOf("/register/") + "/register/".length;
       const keyEnd = html.indexOf("\"", keyStart);
       inviteKey = html.substring(keyStart, keyEnd);
 
       expect(res.status).toEqual(200);
-      expect(sentEmail.length).toEqual(1);
-      expect(sentEmail[0].to).toEqual("b@mikane.no");
-      expect(sentEmail[0].subject).toEqual("You've been invited to Mikane");
+      expect(sentEmails.length).toEqual(1);
+      expect(sentEmail.To).toEqual("b@mikane.no");
+      expect(sentEmail.Subject).toEqual("You've been invited to Mikane");
+      expect(inviteKey).toBeDefined();
     });
   });
 

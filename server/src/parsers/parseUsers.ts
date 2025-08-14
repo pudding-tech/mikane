@@ -1,7 +1,7 @@
-import { setDisplayNames } from "../utils/setDisplayNames";
-import { getGravatarURL } from "../utils/gravatar";
-import { Guest, User } from "../types/types";
-import { UserDB } from "../types/typesDB";
+import { setDisplayNames } from "../utils/setDisplayNames.ts";
+import { getGravatarURL } from "../utils/gravatar.ts";
+import { Guest, User } from "../types/types.ts";
+import { UserDB } from "../types/typesDB.ts";
 
 /**
  * Build array of User objects

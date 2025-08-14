@@ -17,7 +17,7 @@
 		}
 	</div>
 	<span class="toolbar-spacer"></span>
-	<app-menu [ngClass]="{ 'mobile-menu': breakpointService.isMobile() | async }"></app-menu>
+	<app-menu [ngClass]="{ 'mobile-menu': breakpointService.isMobile() | async }" />
 </mat-toolbar>
 @if ((breakpointService.isMobile() | async) === false) {
 	<nav class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
@@ -41,15 +41,15 @@
 		}
 	</nav>
 } @else {
-	<app-mobile-event-navbar [activeLink]="activeLink()" [links]="links()"></app-mobile-event-navbar>
+	<app-mobile-event-navbar [activeLink]="activeLink()" [links]="links()" />
 }
-<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+<mat-tab-nav-panel #tabPanel />
 <div
 	[ngClass]="{
 		content: (breakpointService.isMobile() | async) === false,
 		'mobile-event': breakpointService.isMobile() | async,
-		iOS: contextService.isIos
+		'iOS-PWA': contextService.isIosPwaStandalone
 	}"
 >
-	<router-outlet (activate)="onOutletLoaded($event)"></router-outlet>
+	<router-outlet (activate)="onOutletLoaded($event)" />
 </div>

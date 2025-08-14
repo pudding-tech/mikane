@@ -1,13 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
@@ -15,7 +17,8 @@ import { BehaviorSubject, NEVER, Subscription, combineLatest, filter, switchMap 
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
+import { ContextService } from 'src/app/services/context/context.service';
+import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
@@ -26,11 +29,12 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 @Component({
 	templateUrl: 'event-settings.component.html',
 	styleUrls: ['./event-settings.component.scss'],
-	standalone: true,
+	providers: [provideNativeDateAdapter()],
 	imports: [
 		CommonModule,
 		MatButtonModule,
 		MatCardModule,
+		MatDatepickerModule,
 		MatDialogModule,
 		MatIconModule,
 		MatListModule,
@@ -43,17 +47,31 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 		ProgressSpinnerComponent,
 		EventNameValidatorDirective,
 		FormControlPipe,
+		NgOptimizedImage,
 	],
 })
 export class EventSettingsComponent implements OnInit, OnDestroy {
+	private router = inject(Router);
+	private eventService = inject(EventService);
+	private userService = inject(UserService);
+	private authService = inject(AuthService);
+	breakpointService = inject(BreakpointService);
+	contextService = inject(ContextService);
+	private messageService = inject(MessageService);
+	dialog = inject(MatDialog);
+
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
-	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-	eventData: { id?: string; name: string; description: string, private: boolean } = { name: '', description: '', private: false };
+	loading = new BehaviorSubject<boolean>(false);
+	eventData: { id?: string; name: string; description: string; private: boolean } = { name: '', description: '', private: false };
 	adminsInEvent: User[];
 	otherUsersInEvent: User[];
 	currentUser: User;
-	emailSentLoading = false;
+
+	addExpensesCutoffDate = signal<Date | null>(null);
+	notificationsMinDate = new Date();
+	emailReadyToSettleSentLoading = false;
+	emailReminderSentLoading = false;
 
 	addAdminForm = new FormGroup({
 		userId: new FormControl('', [Validators.required]),
@@ -63,16 +81,6 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	private eventSubscription: Subscription;
 	private deleteSubscription: Subscription;
 	private emailSubscription: Subscription;
-
-	constructor(
-		private router: Router,
-		private eventService: EventService,
-		private userService: UserService,
-		private authService: AuthService,
-		public breakpointService: BreakpointService,
-		private messageService: MessageService,
-		public dialog: MatDialog,
-	) {}
 
 	ngOnInit(): void {
 		this.loading.next(true);
@@ -104,21 +112,28 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	}
 
 	editEvent() {
-		this.eventService.editEvent({ id: this.event.id, name: this.eventData.name, description: this.eventData.description, privateEvent: this.eventData.private }).subscribe({
-			next: (event) => {
-				this.event = event;
-				this.messageService.showSuccess('Event successfully edited');
+		this.eventService
+			.editEvent({
+				id: this.event.id,
+				name: this.eventData.name,
+				description: this.eventData.description,
+				privateEvent: this.eventData.private,
+			})
+			.subscribe({
+				next: (event) => {
+					this.event = event;
+					this.messageService.showSuccess('Event successfully edited');
 
-				// Reload to refresh edited event
-				this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-					this.router.navigate(['events', this.event.id, 'settings']);
-				});
-			},
-			error: (err: ApiError) => {
-				this.messageService.showError('Failed to edit event');
-				console.error('Something went wrong while editing event', err?.error?.message);
-			},
-		});
+					// Reload to refresh edited event
+					this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+						this.router.navigate(['events', this.event.id, 'settings']);
+					});
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to edit event');
+					console.error('Something went wrong while editing event', err?.error?.message);
+				},
+			});
 	}
 
 	setStatus(status: EventStatusType) {
@@ -127,11 +142,9 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				this.event = event;
 				if (status === EventStatusType.ACTIVE) {
 					this.messageService.showSuccess('Event successfully set as active');
-				}
-				else if (status === EventStatusType.READY_TO_SETTLE) {
+				} else if (status === EventStatusType.READY_TO_SETTLE) {
 					this.messageService.showSuccess('Event successfully ready to be settled');
-				}
-				else if (status === EventStatusType.SETTLED) {
+				} else if (status === EventStatusType.SETTLED) {
 					this.messageService.showSuccess('Event successfully settled');
 				}
 
@@ -264,8 +277,8 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
 			width: '420px',
 			data: {
-				title: 'Send \'ready to settle\' email',
-				content: 'Are you sure you want to send the \'ready to settle\' email? Emails will be sent to all payers in the event.',
+				title: "Send 'ready to settle' email",
+				content: "Are you sure you want to send the 'ready to settle' email? Emails will be sent to all payers in the event.",
 				confirm: 'Yes, I am sure',
 			},
 		});
@@ -275,7 +288,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			.pipe(
 				switchMap((confirm) => {
 					if (confirm) {
-						this.emailSentLoading = true;
+						this.emailReadyToSettleSentLoading = true;
 						return this.eventService.sendReadyToSettleEmails(this.event.id);
 					} else {
 						return NEVER;
@@ -284,7 +297,42 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: () => {
-					this.emailSentLoading = false;
+					this.emailReadyToSettleSentLoading = false;
+					this.messageService.showSuccess('Emails successfully sent');
+				},
+				error: (err: ApiError) => {
+					this.messageService.showError('Failed to send emails');
+					console.error('Something went wrong while sending emails', err?.error?.message);
+				},
+			});
+	}
+
+	sendAddExpensesReminderEmails() {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '420px',
+			data: {
+				title: "Send 'add expenses reminder' email",
+				content: "Are you sure you want to send the 'add expenses reminder' email? Emails will be sent to all participants in the event.",
+				confirm: 'Yes, I am sure',
+			},
+		});
+
+		this.emailSubscription = dialogRef
+			.afterClosed()
+			.pipe(
+				switchMap((confirm) => {
+					if (confirm) {
+						this.emailReminderSentLoading = true;
+						return this.eventService.sendAddExpensesReminderEmails(this.event.id, this.addExpensesCutoffDate());
+					} else {
+						return NEVER;
+					}
+				}),
+			)
+			.subscribe({
+				next: () => {
+					this.emailReminderSentLoading = false;
+					this.addExpensesCutoffDate.set(null);
 					this.messageService.showSuccess('Emails successfully sent');
 				},
 				error: (err: ApiError) => {

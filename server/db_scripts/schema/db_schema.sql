@@ -1,6 +1,6 @@
 create table event_status_type (
   id int primary key,
-  name varchar(255) not null
+  "name" varchar(255) not null
 );
 
 create table "user" (
@@ -110,6 +110,13 @@ create table user_preferences (
   public_email boolean not null,
   public_phone boolean not null,
   primary key (user_id)
+);
+
+create table log (
+  id uuid primary key default gen_random_uuid(),
+  "timestamp" timestamp not null,
+  "level" varchar(50) not null,
+  "message" text not null
 );
 
 insert into event_status_type (id, name)

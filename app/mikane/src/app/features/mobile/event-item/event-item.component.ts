@@ -9,7 +9,6 @@ import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.serv
 	selector: 'app-event-item',
 	templateUrl: 'event-item.component.html',
 	styleUrls: ['./event-item.component.scss'],
-	standalone: true,
 	imports: [CommonModule, MatIconModule, MatListModule, MatTooltipModule],
 })
 export class EventItemComponent {

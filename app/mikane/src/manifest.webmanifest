@@ -5,5 +5,12 @@
   "background_color": "#1d1d1d",
   "display": "standalone",
   "scope": "./",
-  "start_url": "./"
+  "start_url": "./",
+  "icons": [
+    {
+      "src": "/assets/mikane.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
 }

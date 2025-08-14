@@ -33,7 +33,7 @@ describe('Login Component', () => {
 		authService = jasmine.createSpyObj<AuthService>(
 			'AuthService',
 			['login', 'logout', 'sendResetPasswordEmail', 'getCurrentUser'],
-			['redirectUrl']
+			['redirectUrl'],
 		);
 		messageService = jasmine.createSpyObj<MessageService>('MessageService', ['showSuccess', 'showError']);
 		breakpointService = jasmine.createSpyObj<BreakpointService>('BreakpointService', ['isMobile']);
@@ -45,7 +45,7 @@ describe('Login Component', () => {
 				{ provide: MessageService, useValue: messageService },
 				{ provide: BreakpointService, useValue: breakpointService },
 				provideRouter([
-					{ path: 'login', component: LoginComponent },
+					{ path: 'login', loadComponent: () => import('./login.component').then((m) => m.LoginComponent) },
 					{ path: 'events', component: MockComponent(EventsComponent) },
 					{ path: 'account', component: MockComponent(AccountComponent) },
 				]),
@@ -114,7 +114,7 @@ describe('Login Component', () => {
 		authService.login.and.returnValue(
 			throwError(() => {
 				return { error: { code: 'PUD-003' } } as ApiError;
-			})
+			}),
 		);
 		messageService.showError.and.stub();
 
@@ -228,7 +228,7 @@ describe('Login Component', () => {
 				return {
 					status: 400,
 				};
-			})
+			}),
 		);
 
 		page.forgotPasswordButton.click();
@@ -250,7 +250,7 @@ describe('Login Component', () => {
 				return {
 					status: 500,
 				};
-			})
+			}),
 		);
 
 		page.emailInput.value = 'email@email.com';
@@ -269,7 +269,7 @@ describe('Login Component', () => {
 				return {
 					status: 400,
 				};
-			})
+			}),
 		);
 
 		page.forgotPasswordButton.click();

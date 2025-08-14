@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormGroupDirective, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -16,12 +16,10 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
-import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 
 @Component({
 	templateUrl: './invite.component.html',
 	styleUrls: ['./invite.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		ReactiveFormsModule,
@@ -36,10 +34,14 @@ import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 		MatInputModule,
 		RouterModule,
 		MatProgressSpinnerModule,
-		FormControlPipe,
+		NgOptimizedImage,
 	],
 })
 export class InviteComponent implements OnInit, OnDestroy {
+	private userService = inject(UserService);
+	private messageService = inject(MessageService);
+	protected breakpointService = inject(BreakpointService);
+
 	protected inviteForm = new FormGroup({
 		email: new FormControl('', [Validators.required, Validators.email]),
 	});
@@ -54,8 +56,6 @@ export class InviteComponent implements OnInit, OnDestroy {
 	private guestsSubscription: Subscription;
 	private inviteSubscription: Subscription;
 	guests: User[] = [];
-
-	constructor(private userService: UserService, private messageService: MessageService, protected breakpointService: BreakpointService) {}
 
 	ngOnInit() {
 		this.guestsSubscription = this.userService.loadGuestUsers().subscribe({

@@ -1,6 +1,6 @@
 import { ENTER } from '@angular/cdk/keycodes';
-import { AsyncPipe } from '@angular/common';
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { AsyncPipe, NgOptimizedImage } from '@angular/common';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,7 +17,6 @@ import { User } from 'src/app/services/user/user.service';
 @Component({
 	templateUrl: './participant-dialog.component.html',
 	styleUrls: ['./participant-dialog.component.scss'],
-	standalone: true,
 	imports: [
 		MatDialogModule,
 		FormsModule,
@@ -31,9 +30,13 @@ import { User } from 'src/app/services/user/user.service';
 		AsyncPipe,
 		MatChipsModule,
 		MatIconModule,
+		NgOptimizedImage,
 	],
 })
 export class ParticipantDialogComponent implements OnInit {
+	dialogRef = inject<MatDialogRef<ParticipantDialogComponent>>(MatDialogRef);
+	data = inject<{ users: Observable<User[]> }>(MAT_DIALOG_DATA);
+
 	private users: User[] = [];
 
 	@ViewChild('userInput') userInput: ElementRef<HTMLInputElement>;
@@ -47,11 +50,6 @@ export class ParticipantDialogComponent implements OnInit {
 	addUserForm = new FormGroup({
 		users: new FormControl<string | User>(''),
 	});
-
-	constructor(
-		public dialogRef: MatDialogRef<ParticipantDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: { users: Observable<User[]> },
-	) {}
 
 	ngOnInit(): void {
 		this.filteredUsers = this.data.users.pipe(

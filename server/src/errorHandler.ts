@@ -1,21 +1,22 @@
 import { NextFunction, Request, Response } from "express";
-import { ErrorExt } from "./types/errorExt";
+import { ErrorExt } from "./types/errorExt.ts";
+import logger from "./utils/logger.ts";
 
 export const errorHandler = (err: ErrorExt | Error, _req: Request, res: Response, next: NextFunction) => {
   if (!err) {
-    return next();
+    next();
   }
   if (err instanceof ErrorExt) {
     if (err.log) {
-      console.error(err.error || err);
+      logger.error(err.error || err);
     }
-    return res.status(err.status).json({
+    res.status(err.status).json({
       code: err.code,
       message: err.message
     });
   }
   else {
-    console.error(err);
-    return res.status(500).json({ error: "Something broke :(" });
+    logger.error(err);
+    res.status(500).json({ error: "Something broke :(" });
   }
 };

@@ -3,9 +3,9 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
+import { PuddingEvent } from '../event/event.service';
 import { Expense } from '../expense/expense.service';
 import { User, UserBalance, UserService } from './user.service';
-import { PuddingEvent } from '../event/event.service';
 
 describe('UserService', () => {
 	let service: UserService;
@@ -359,7 +359,7 @@ describe('UserService', () => {
 			service.loadGuestUsers().subscribe((users) => {
 				expect(users).toEqual(mockUsers);
 			});
-			const req = httpMock.expectOne(env.apiUrl + '/guests');
+			const req = httpMock.expectOne(env.apiUrl + 'guests');
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUsers);
@@ -374,7 +374,7 @@ describe('UserService', () => {
 			service.createGuestUser(firstName, lastName).subscribe((user) => {
 				expect(user).toEqual(mockUser);
 			});
-			const req = httpMock.expectOne(env.apiUrl + '/guests');
+			const req = httpMock.expectOne(env.apiUrl + 'guests');
 
 			expect(req.request.method).toBe('POST');
 			expect(req.request.body).toEqual({ firstName, lastName });
@@ -391,7 +391,7 @@ describe('UserService', () => {
 			service.editGuestUser(id, firstName, lastName).subscribe((user) => {
 				expect(user).toEqual(mockUser);
 			});
-			const req = httpMock.expectOne(env.apiUrl + `/guests/${id}`);
+			const req = httpMock.expectOne(env.apiUrl + `guests/${id}`);
 
 			expect(req.request.method).toBe('PUT');
 			expect(req.request.body).toEqual({ firstName, lastName });
@@ -405,7 +405,7 @@ describe('UserService', () => {
 			service.deleteGuestUser(id).subscribe((res) => {
 				expect(res).toBeDefined();
 			});
-			const req = httpMock.expectOne(env.apiUrl + `/guests/${id}`);
+			const req = httpMock.expectOne(env.apiUrl + `guests/${id}`);
 
 			expect(req.request.method).toBe('DELETE');
 			req.flush({});

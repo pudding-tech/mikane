@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -21,7 +21,6 @@ import { ApiError } from 'src/app/types/apiError.type';
 	selector: 'app-user-settings',
 	templateUrl: './user-settings.component.html',
 	styleUrls: ['./user-settings.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatCardModule,
@@ -34,6 +33,12 @@ import { ApiError } from 'src/app/types/apiError.type';
 	],
 })
 export class UserSettingsComponent implements OnInit, OnDestroy {
+	private userService = inject(UserService);
+	dialog = inject(MatDialog);
+	private messageService = inject(MessageService);
+	breakpointService = inject(BreakpointService);
+	private formValidationService = inject(FormValidationService);
+
 	private editSubscription: Subscription;
 
 	@Input() user: User;
@@ -46,14 +51,6 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 		email: new FormControl<string>('', [Validators.required, Validators.email]),
 		phone: new FormControl<string>('', [Validators.required]),
 	});
-
-	constructor(
-		private userService: UserService,
-		public dialog: MatDialog,
-		private messageService: MessageService,
-		public breakpointService: BreakpointService,
-		private formValidationService: FormValidationService
-	) {}
 
 	ngOnInit(): void {
 		this.editUserForm.patchValue(this.user);
@@ -71,7 +68,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 				this.editUserForm.get('firstName').value,
 				this.editUserForm.get('lastName').value,
 				this.editUserForm.get('email').value,
-				this.editUserForm.get('phone').value
+				this.editUserForm.get('phone').value,
 			)
 			.subscribe({
 				next: (user) => {

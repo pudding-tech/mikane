@@ -1,7 +1,14 @@
 <mat-list-item class="wrapper">
 	<div class="upper">
 		<div class="title">
-			<img [src]="userBalance().user.avatarURL" alt="User avatar" class="avatar" (click)="gotoUserProfile(); $event.stopPropagation()" />
+			<img
+				[ngSrc]="userBalance().user.avatarURL"
+				alt="User avatar"
+				class="avatar"
+				width="24"
+				height="24"
+				(click)="gotoUserProfile(); $event.stopPropagation()"
+			/>
 			<div>
 				<div class="number-of-expenses">Number of expenses: {{ userBalance().expensesCount }}</div>
 				<div class="name">
@@ -9,8 +16,13 @@
 				</div>
 			</div>
 		</div>
-		@if (eventActive() && numberOfParticipants() > 1 && userBalance().expensesCount === 0 && (numberOfAdmins() > 1 || !userBalance().user.eventInfo.isAdmin)) {
-			<button	mat-icon-button (click)="removeUserFromEvent(); $event.stopPropagation()">
+		@if (
+			eventActive() &&
+			numberOfParticipants() > 1 &&
+			userBalance().expensesCount === 0 &&
+			(numberOfAdmins() > 1 || !userBalance().user.eventInfo.isAdmin)
+		) {
+			<button mat-icon-button (click)="removeUserFromEvent(); $event.stopPropagation()">
 				<mat-icon>remove</mat-icon>
 			</button>
 		}
@@ -19,15 +31,15 @@
 		<div class="balances">
 			<div>
 				<span class="text">Spending:</span>
-				<span> {{ userBalance().spending | currency : "" : "" : "1.2-2" : "no" }} kr </span>
+				<span> {{ userBalance().spending | currency: "" : "" : "1.2-2" : "no" }} kr </span>
 			</div>
 			<div>
 				<span class="text">Expenses:</span>
-				<span> {{ userBalance().expenses | currency : "" : "" : "1.2-2" : "no" }} kr </span>
+				<span> {{ userBalance().expenses | currency: "" : "" : "1.2-2" : "no" }} kr </span>
 			</div>
 			<div>
 				<span class="text">Balance:</span>
-				<span class="amount-color"> {{ userBalance().balance | currency : "" : "" : "1.2-2" : "no" }} kr </span>
+				<span class="amount-color"> {{ userBalance().balance | currency: "" : "" : "1.2-2" : "no" }} kr </span>
 			</div>
 		</div>
 	</div>

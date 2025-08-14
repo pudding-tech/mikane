@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -16,13 +16,12 @@ import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progre
 import { ApiError } from 'src/app/types/apiError.type';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { DangerZoneComponent } from './danger-zone/danger-zone.component';
-import { UserSettingsComponent } from './user/user-settings.component';
 import { PreferencesComponent } from './preferences/preferences.component';
+import { UserSettingsComponent } from './user/user-settings.component';
 
 @Component({
 	templateUrl: './account.component.html',
 	styleUrls: ['./account.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatToolbarModule,
@@ -40,17 +39,15 @@ import { PreferencesComponent } from './preferences/preferences.component';
 	],
 })
 export class AccountComponent implements OnInit, OnDestroy {
+	private authService = inject(AuthService);
+	private userService = inject(UserService);
+	breakpointService = inject(BreakpointService);
+	private messageService = inject(MessageService);
+
 	protected loading = new BehaviorSubject<boolean>(true);
 	protected user: User;
 
 	private subscription: Subscription;
-
-	constructor(
-		private authService: AuthService,
-		private userService: UserService,
-		public breakpointService: BreakpointService,
-		private messageService: MessageService
-	) {}
 
 	ngOnInit(): void {
 		this.subscription = this.authService
@@ -58,7 +55,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 			.pipe(
 				switchMap((user) => {
 					return this.userService.loadUserById(user?.id);
-				})
+				}),
 			)
 			.subscribe({
 				next: (user) => {

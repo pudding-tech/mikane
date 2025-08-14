@@ -99,6 +99,10 @@ a.nostyle:visited {
 	background-color: #202020;
 }
 
+.mat-toolbar {
+	background-color: #212121 !important;
+}
+
 .flex-spacer {
 	flex: 1 1 auto;
 }
@@ -271,7 +275,7 @@ input:-webkit-autofill:active {
 
 // Prevent mat dialog removing backgrounds when page is scrolled down
 .cdk-global-scrollblock {
-	overflow-y: initial;
+	overflow-y: initial !important;
 }
 
 // Remove left/right padding from bottom sheet

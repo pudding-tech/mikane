@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
@@ -32,16 +32,17 @@ export interface Payment {
 export enum EventStatusType {
 	ACTIVE = 1,
 	READY_TO_SETTLE = 2,
-	SETTLED = 3
+	SETTLED = 3,
 }
 
 @Injectable({
 	providedIn: 'root',
 })
 export class EventService {
-	private apiUrl = this.env.apiUrl + 'events';
+	private httpClient = inject(HttpClient);
+	private env = inject<Environment>(ENV);
 
-	constructor(private httpClient: HttpClient, @Inject(ENV) private env: Environment) {}
+	private apiUrl = this.env.apiUrl + 'events';
 
 	loadEvents(): Observable<PuddingEvent[]> {
 		return this.httpClient.get<PuddingEvent[]>(this.apiUrl);
@@ -59,11 +60,31 @@ export class EventService {
 		return this.httpClient.get<PuddingEvent>(this.apiUrl + `/${eventId}`);
 	}
 
-	createEvent({ name, description, privateEvent }: { name: string; description: string, privateEvent: boolean }): Observable<PuddingEvent> {
+	createEvent({
+		name,
+		description,
+		privateEvent,
+	}: {
+		name: string;
+		description: string;
+		privateEvent: boolean;
+	}): Observable<PuddingEvent> {
 		return this.httpClient.post<PuddingEvent>(this.apiUrl, { name, description, private: privateEvent });
 	}
 
-	editEvent({ id, name, description, privateEvent, status }: { id: string; name?: string; description?: string; privateEvent?: boolean; status?: EventStatusType }): Observable<PuddingEvent> {
+	editEvent({
+		id,
+		name,
+		description,
+		privateEvent,
+		status,
+	}: {
+		id: string;
+		name?: string;
+		description?: string;
+		privateEvent?: boolean;
+		status?: EventStatusType;
+	}): Observable<PuddingEvent> {
 		return this.httpClient.put<PuddingEvent>(this.apiUrl + `/${id}`, { name, description, private: privateEvent, status });
 	}
 
@@ -88,6 +109,10 @@ export class EventService {
 	}
 
 	sendReadyToSettleEmails(eventId: string): Observable<void> {
-		return this.httpClient.post<void>(this.env.apiUrl + `/notifications/${eventId}/settle`, {});
+		return this.httpClient.post<void>(this.env.apiUrl + `notifications/${eventId}/settle`, {});
+	}
+
+	sendAddExpensesReminderEmails(eventId: string, cutoffDate?: Date): Observable<void> {
+		return this.httpClient.post<void>(this.env.apiUrl + `notifications/${eventId}/reminder`, { cutoffDate });
 	}
 }

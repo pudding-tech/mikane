@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -19,7 +19,6 @@ import { ApiError } from 'src/app/types/apiError.type';
 @Component({
 	templateUrl: './reset-password.component.html',
 	styleUrls: ['./reset-password.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatToolbarModule,
@@ -30,9 +29,17 @@ import { ApiError } from 'src/app/types/apiError.type';
 		MatFormFieldModule,
 		MatInputModule,
 		MatButtonModule,
+		NgOptimizedImage
 	],
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
+	private authService = inject(AuthService);
+	private keyValidationService = inject(KeyValidationService);
+	private messageService = inject(MessageService);
+	breakpointService = inject(BreakpointService);
+
 	protected hide = true;
 
 	private passSub: Subscription;
@@ -44,15 +51,6 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 		newPassword: new FormControl<string>('', [Validators.required]),
 		newPasswordRetype: new FormControl<string>('', [Validators.required]),
 	});
-
-	constructor(
-		private router: Router,
-		private route: ActivatedRoute,
-		private authService: AuthService,
-		private keyValidationService: KeyValidationService,
-		private messageService: MessageService,
-		public breakpointService: BreakpointService
-	) {}
 
 	ngOnInit(): void {
 		this.resetPasswordForm?.addValidators([

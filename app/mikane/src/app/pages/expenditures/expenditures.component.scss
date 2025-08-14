@@ -16,7 +16,7 @@
 		transition: opacity 0.2s ease;
 	}
 
-	&.iOS {
+	&.iOS-PWA {
 		bottom: 110px;
 	}
 }
@@ -82,6 +82,10 @@
 	justify-content: center;
 	margin-top: 30px;
 	font-size: 1.2em;
+}
+
+.edit-delete-column {
+	display: flex;
 }
 
 .filters {

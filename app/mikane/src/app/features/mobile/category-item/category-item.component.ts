@@ -1,5 +1,5 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, ElementRef, input, output, Renderer2, ViewChild } from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { Component, ElementRef, inject, input, output, Renderer2, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,11 +15,9 @@ import { CategoryIcon } from 'src/app/types/enums';
 	selector: 'app-category-item',
 	templateUrl: 'category-item.component.html',
 	styleUrls: ['./category-item.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatIconModule,
-		CurrencyPipe,
 		MatListModule,
 		MatButtonModule,
 		MatFormFieldModule,
@@ -27,9 +25,12 @@ import { CategoryIcon } from 'src/app/types/enums';
 		FormControlPipe,
 		FormsModule,
 		ReactiveFormsModule,
+		NgOptimizedImage,
 	],
 })
 export class CategoryItemComponent {
+	private renderer = inject(Renderer2);
+
 	@ViewChild('lower') lower: ElementRef;
 	category = input.required<Category>();
 	eventActive = input.required<boolean>();
@@ -42,12 +43,10 @@ export class CategoryItemComponent {
 	toggleWeighted = output<{ categoryId: string; weighted: boolean }>();
 	deleteCategoryDialog = output<{ categoryId: string }>();
 	gotoCategoryExpenses = output<{ category: Category }>();
-	gotoUser = output<{ user: { id: string, guest: boolean, username: string } }>();
+	gotoUser = output<{ user: { id: string; guest: boolean; username: string } }>();
 
 	dropdownOpen = false;
 	lowerHeight = 0;
-
-	constructor(private renderer: Renderer2) {}
 
 	toggleDropdown = () => {
 		this.dropdownOpen = !this.dropdownOpen;
@@ -91,7 +90,7 @@ export class CategoryItemComponent {
 		this.gotoCategoryExpenses.emit({ category: this.category() });
 	};
 
-	gotoUserProfile = (user: { id: string, guest: boolean, username: string }) => {
+	gotoUserProfile = (user: { id: string; guest: boolean; username: string }) => {
 		this.gotoUser.emit({ user: user });
 	};
 }

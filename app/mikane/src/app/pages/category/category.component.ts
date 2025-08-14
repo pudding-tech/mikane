@@ -1,5 +1,5 @@
-import { AsyncPipe, CommonModule } from '@angular/common';
-import { AfterViewChecked, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AsyncPipe, CommonModule, NgOptimizedImage } from '@angular/common';
+import { AfterViewChecked, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -35,7 +35,6 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 	selector: 'app-category',
 	templateUrl: './category.component.html',
 	styleUrls: ['./category.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatButtonModule,
@@ -55,12 +54,23 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 		FormControlPipe,
 		MatSelectModule,
 		CategoryItemComponent,
+		NgOptimizedImage,
 	],
 })
 export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
+	private categoryService = inject(CategoryService);
+	private userService = inject(UserService);
+	dialog = inject(MatDialog);
+	private cd = inject(ChangeDetectorRef);
+	private messageService = inject(MessageService);
+	breakpointService = inject(BreakpointService);
+	contextService = inject(ContextService);
+	scrollService = inject(ScrollService);
+	private router = inject(Router);
+
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 
-	loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	loading = new BehaviorSubject<boolean>(false);
 	readonly EventStatusType = EventStatusType;
 
 	addUserForm = new FormGroup({
@@ -74,18 +84,6 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 	displayedColumns: string[] = ['name', 'weight'];
 
 	private destroy$ = new Subject<void>();
-
-	constructor(
-		private categoryService: CategoryService,
-		private userService: UserService,
-		public dialog: MatDialog,
-		private cd: ChangeDetectorRef,
-		private messageService: MessageService,
-		public breakpointService: BreakpointService,
-		public contextService: ContextService,
-		public scrollService: ScrollService,
-		private router: Router,
-	) {}
 
 	ngOnInit(): void {
 		this.$event
@@ -406,7 +404,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 		});
 	}
 
-	gotoUserProfile(user: { id: string, guest: boolean, username: string }) {
+	gotoUserProfile(user: { id: string; guest: boolean; username: string }) {
 		if (!user.guest) {
 			this.router.navigate(['u', user.username]);
 		}

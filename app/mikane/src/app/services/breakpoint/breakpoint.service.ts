@@ -1,12 +1,13 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class BreakpointService {
-	constructor(private breakpointObserver: BreakpointObserver) {}
+	private breakpointObserver = inject(BreakpointObserver);
+
 
 	/**
 	 * Returns observable that emits true if screen is mobile and false otherwise.

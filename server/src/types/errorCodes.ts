@@ -33,11 +33,11 @@ export const PUD002: ErrorCode = {
 };
 
 /**
- * PUD-003: Username/email and password does not match (401)
+ * PUD-003: Username/email and password do not match (401)
  */
 export const PUD003: ErrorCode = {
   code: "PUD-003",
-  message: "Username/email and password does not match",
+  message: "Username/email and password do not match",
   status: 401
 };
 
@@ -1344,5 +1344,14 @@ export const PUD141: ErrorCode = {
 export const PUD142: ErrorCode = {
   code: "PUD-142",
   message: "Request body must include name, amount, category ID, and payer ID",
+  status: 400
+};
+
+/**
+ * PUD-143: Cannot send 'add expenses reminder' notification email for event that's not active (400)
+ */
+export const PUD143: ErrorCode = {
+  code: "PUD-143",
+  message: "Cannot send 'add expenses reminder' notification email for event that's not active",
   status: 400
 };

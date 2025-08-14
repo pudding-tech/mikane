@@ -2,47 +2,45 @@
 	<div>
 		@if ((breakpointService.isMobile() | async) === false) {
 			<div>
-				@if (senders.length > 0) {
+				@if (senders().length > 0) {
 					<div>
-						<div class="payments-header" [ngClass]="{ 'empty-payments': paymentsSelf.length === 0 }">
+						<div class="payments-header" [ngClass]="{ 'empty-payments': paymentsSelf().length === 0 }">
 							<h3 class="payments-title">Your payments</h3>
-							@if (paymentsSelf.length > 0) {
+							@if (paymentsSelf().length > 0) {
 								<button mat-button color="accent" (click)="toggleExpand(1)" class="collapse-button">
 									<mat-icon>{{ allExpandedSelf ? "visibility_off" : "visibility" }}</mat-icon>
 									{{ allExpandedSelf ? "Collapse all payments" : "Show all payments" }}
 								</button>
 							}
 						</div>
-						@if (paymentsSelf.length > 0) {
+						@if (paymentsSelf().length > 0) {
 							<app-payment-expansion-panel-item
 								#paymentsSelfRef
-								[payments]="paymentsSelf"
+								[payments]="paymentsSelf()"
 								[self]="true"
 								[currentUser]="currentUser"
 								(allPanelsExpanded)="panelToggled(1, $event)"
-							>
-							</app-payment-expansion-panel-item>
+							/>
 						} @else {
 							<span class="empty-payments-text">You have no payments in this event</span>
 						}
-						<div class="payments-header" [ngClass]="{ 'empty-payments': paymentsOthers.length === 0 }">
+						<div class="payments-header" [ngClass]="{ 'empty-payments': paymentsOthers().length === 0 }">
 							<h3 class="payments-title">Other payments</h3>
-							@if (paymentsOthers.length > 0) {
+							@if (paymentsOthers().length > 0) {
 								<button mat-button color="accent" (click)="toggleExpand(2)" class="collapse-button">
 									<mat-icon>{{ allExpandedOthers ? "visibility_off" : "visibility" }}</mat-icon>
 									{{ allExpandedOthers ? "Collapse all payments" : "Show all payments" }}
 								</button>
 							}
 						</div>
-						@if (paymentsOthers.length > 0) {
+						@if (paymentsOthers().length > 0) {
 							<app-payment-expansion-panel-item
 								#paymentsOthersRef
-								[payments]="paymentsOthers"
+								[payments]="paymentsOthers()"
 								[self]="false"
 								[currentUser]="currentUser"
 								(allPanelsExpanded)="panelToggled(2, $event)"
-							>
-							</app-payment-expansion-panel-item>
+							/>
 						} @else {
 							<span class="empty-payments-text">There are no other payments in this event</span>
 						}
@@ -58,28 +56,46 @@
 		}
 
 		@else {
-			@if (senders.length > 0) {
+			@if (senders().length > 0) {
 				<div>
-					@if (paymentsSelf.length > 0) {
+					@if (paymentsSelf().length > 0) {
 						<div>
-							@if (paymentsOthers.length > 0) {
+							<div class="payments-header-mobile">
 								<div class="title-mobile">Your payments</div>
-							}
+								<button mat-button color="accent" (click)="toggleExpandMobile(1)" class="collapse-button-mobile">
+									<mat-icon>{{ allExpandedSelf ? "visibility_off" : "visibility" }}</mat-icon>
+								</button>
+							</div>
 							<mat-nav-list class="payments-list-mobile">
-								@for (payment of paymentsSelf; track payment.sender.id) {
-									<app-payment-item [payment]="payment" [self]="true" [currentUser]="currentUser"> </app-payment-item>
+								@for (payment of paymentsSelf(); track payment.sender.id) {
+									<app-payment-item
+										[payment]="payment"
+										[self]="true"
+										[currentUser]="currentUser"
+										[expanded]="expandedSelf().has(payment.sender.id)"
+										(dropdownToggled)="paymentToggledMobile($event.senderId, $event.expanded, $event.self)"
+									/>
 								}
 							</mat-nav-list>
 						</div>
 					}
-					@if (paymentsOthers.length > 0) {
+					@if (paymentsOthers().length > 0) {
 						<div>
-							@if (paymentsSelf.length > 0) {
+							<div class="payments-header-mobile">
 								<div class="title-mobile">Other payments</div>
-							}
+								<button mat-button color="accent" (click)="toggleExpandMobile(2)" class="collapse-button-mobile">
+									<mat-icon>{{ allExpandedOthers ? "visibility_off" : "visibility" }}</mat-icon>
+								</button>
+							</div>
 							<mat-nav-list class="payments-list-mobile">
-								@for (payment of paymentsOthers; track payment.sender.id) {
-									<app-payment-item [payment]="payment" [self]="false" [currentUser]="currentUser"> </app-payment-item>
+								@for (payment of paymentsOthers(); track payment.sender.id) {
+									<app-payment-item
+										[payment]="payment"
+										[self]="false"
+										[currentUser]="currentUser"
+										[expanded]="expandedOthers().has(payment.sender.id)"
+										(dropdownToggled)="paymentToggledMobile($event.senderId, $event.expanded, $event.self)"
+									/>
 								}
 							</mat-nav-list>
 						</div>
@@ -91,5 +107,5 @@
 		}
 	</div>
 } @else {
-	<app-loading-spinner></app-loading-spinner>
+	<app-loading-spinner />
 }

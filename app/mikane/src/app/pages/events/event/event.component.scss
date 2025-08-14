@@ -9,7 +9,7 @@ mat-toolbar button {
 .mobile-event {
 	margin-bottom: 58px; // Add margin to adjust for fixed event navbar
 
-	&.iOS {
+	&.iOS-PWA {
 		margin-bottom: 88px; // Adjust margin for iOS event navbar
 	}
 }
@@ -23,6 +23,7 @@ mat-toolbar button {
 	overflow: hidden;
 	display: -webkit-box;
 	-webkit-line-clamp: 1;
+	line-clamp: 1;
 	-webkit-box-orient: vertical;
 }
 

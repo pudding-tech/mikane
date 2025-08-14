@@ -1,8 +1,8 @@
 import { describe, test, expect, beforeAll } from "vitest";
 import request from "supertest";
-import app from "../src/server";
-import * as ec from "../src/types/errorCodes";
-import { Category, Event, User } from "../src/types/types";
+import app from "../src/server.ts";
+import * as ec from "../src/types/errorCodes.ts";
+import { Category, Event, User } from "../src/types/types.ts";
 
 describe("validation", async () => {
 

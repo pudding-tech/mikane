@@ -12,15 +12,15 @@
 					<mat-card-content>
 						<div class="header">Status</div>
 						<div class="event-info-content">
-							<ng-container *ngTemplateOutlet="statusContent"></ng-container>
+							<ng-container *ngTemplateOutlet="statusContent" />
 						</div>
 						<div class="header">Privacy</div>
 						<div class="event-info-content">
-							<ng-container *ngTemplateOutlet="privacyContent"></ng-container>
+							<ng-container *ngTemplateOutlet="privacyContent" />
 						</div>
 						<div class="header">Administrators</div>
 						<div class="event-info-content">
-							<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
+							<ng-container *ngTemplateOutlet="adminsContent" />
 						</div>
 					</mat-card-content>
 				</mat-card>
@@ -30,60 +30,53 @@
 		@else {
 			<div class="header-mobile">Status</div>
 			<div class="event-info-content">
-				<ng-container *ngTemplateOutlet="statusContent"></ng-container>
+				<ng-container *ngTemplateOutlet="statusContent" />
 			</div>
 			<div class="header-mobile">Privacy</div>
 			<div class="event-info-content">
-				<ng-container *ngTemplateOutlet="privacyContent"></ng-container>
+				<ng-container *ngTemplateOutlet="privacyContent" />
 			</div>
 			<div class="header-mobile">Administrators</div>
 			<div class="event-admins-content-mobile">
-				<ng-container *ngTemplateOutlet="adminsContent"></ng-container>
+				<ng-container *ngTemplateOutlet="adminsContent" />
 			</div>
 		}
 	</div>
 } @else {
-	<app-loading-spinner></app-loading-spinner>
+	<app-loading-spinner />
 }
 
 <ng-template #statusContent>
-	<button
-		mat-stroked-button
-		disabled
-		class="event-info-marker"
-	>
+	<button mat-stroked-button disabled class="event-info-marker">
 		{{ event?.status.name }}
 	</button>
 	<div>
 		@switch (event?.status.id) {
 			@case (EventStatusType.ACTIVE) {
-				This event is currently <b>active</b>, allowing participants to add to or modify it as needed. Once the event is ready for settlement, it will transition to 'ready to settle' status.
+				This event is currently <b>active</b>, allowing participants to add to or modify it as needed. Once the event is ready for
+				settlement, it will transition to 'ready to settle' status.
 			}
 			@case (EventStatusType.READY_TO_SETTLE) {
-				This event is currently <b>ready to settle</b>. Once all participants have completed their payments, the event will be marked as settled.
+				This event is currently <b>ready to settle</b>. Once all participants have completed their payments, the event will be
+				marked as settled.
 			}
 			@case (EventStatusType.SETTLED) {
-				This event is currently marked as <b>settled</b>, indicating that all participants have completed their payments, and the event has been finalized.
+				This event is currently marked as <b>settled</b>, indicating that all participants have completed their payments, and the
+				event has been finalized.
 			}
 		}
 	</div>
 </ng-template>
 
 <ng-template #privacyContent>
-	<button
-		mat-stroked-button
-		type="button"
-		color="accent"
-		disabled
-		class="event-info-marker"
-	>
-		{{ event?.private ? 'Private' : 'Public' }}
+	<button mat-stroked-button type="button" color="accent" disabled class="event-info-marker">
+		{{ event?.private ? "Private" : "Public" }}
 	</button>
 	<div>
 		@if (event?.private) {
-			This event is marked as <b>private</b>, meaning only participants have access to it. To view this event, a user must be added by an existing participant.
-		}
-		@else {
+			This event is marked as <b>private</b>, meaning only participants have access to it. To view this event, a user must be added by
+			an existing participant.
+		} @else {
 			This event is marked as <b>public</b>, meaning all users can view the event and join or leave at their convenience.
 		}
 	</div>
@@ -100,9 +93,11 @@
 					<div class="admin">
 						<div class="name">
 							<img
-								[src]="admin.avatarURL"
+								[ngSrc]="admin.avatarURL"
 								alt="User avatar"
 								class="avatar"
+								width="24"
+								height="24"
 								[ngClass]="{ clickable: !admin.guest }"
 								(click)="gotoUserProfile(admin)"
 							/>

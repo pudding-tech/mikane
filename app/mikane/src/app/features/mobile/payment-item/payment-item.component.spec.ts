@@ -109,9 +109,9 @@ describe('PaymentItemComponent', () => {
 	});
 
 	it('should set lowerHeight to scrollHeight when self is true', fakeAsync(() => {
-		fixture.componentRef.setInput('self', true);
 		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
-		component.ngOnInit();
+		fixture.componentRef.setInput('self', true);
+		fixture.componentRef.setInput('expanded', true);
 		fixture.detectChanges();
 		tick();
 

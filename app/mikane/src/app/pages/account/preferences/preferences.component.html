@@ -7,13 +7,13 @@
 			<mat-card-title>Preferences</mat-card-title>
 		</mat-card-header>
 		<mat-card-content>
-			<ng-container *ngTemplateOutlet="preferencesContent"></ng-container>
+			<ng-container *ngTemplateOutlet="preferencesContent" />
 		</mat-card-content>
 	</mat-card>
 } @else {
 	<div class="title-mobile">Preferences</div>
 	<div class="preferences-mobile">
-		<ng-container *ngTemplateOutlet="preferencesContent"></ng-container>
+		<ng-container *ngTemplateOutlet="preferencesContent" />
 	</div>
 }
 
@@ -22,8 +22,7 @@
 		<div class="toggle-line">
 			<span>Show email:</span>
 			<span class="toggle">
-				<mat-slide-toggle id="emailToggle" [(ngModel)]="publicEmail" [disabled]="loadingEmail" (change)="toggleEmail()">
-				</mat-slide-toggle>
+				<mat-slide-toggle id="emailToggle" [(ngModel)]="publicEmail" [disabled]="loadingEmail" (change)="toggleEmail()" />
 			</span>
 		</div>
 		<div class="text">Choose whether your email is visible to others on your profile.</div>
@@ -32,8 +31,7 @@
 		<div class="toggle-line">
 			<span>Show phone number:</span>
 			<span class="toggle">
-				<mat-slide-toggle id="phoneToggle" [(ngModel)]="publicPhone" [disabled]="loadingPhone" (change)="togglePhone()">
-				</mat-slide-toggle>
+				<mat-slide-toggle id="phoneToggle" [(ngModel)]="publicPhone" [disabled]="loadingPhone" (change)="togglePhone()" />
 			</span>
 		</div>
 		<div class="text end">

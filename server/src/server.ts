@@ -3,19 +3,20 @@ import session from "express-session";
 import swaggerUi from "swagger-ui-express";
 import cors from "cors";
 import helmet from "helmet";
-import SessionStore from "./session-store/SessionStore";
-import authRoutes from "./api/authentication";
-import categoryRoutes from "./api/categories";
-import eventRoutes from "./api/events";
-import expenseRoutes from "./api/expenses";
-import guestUserRoutes from "./api/guestUsers";
-import notificationRoutes from "./api/notifications";
-import userRoutes from "./api/users";
-import validationRoutes from "./api/validation";
-import apiDocument from "./api.json";
-import env from "./env";
-import { pool } from "./db";
-import { errorHandler } from "./errorHandler";
+import SessionStore from "./session-store/SessionStore.ts";
+import authRoutes from "./api/authentication.ts";
+import categoryRoutes from "./api/categories.ts";
+import eventRoutes from "./api/events.ts";
+import expenseRoutes from "./api/expenses.ts";
+import guestUserRoutes from "./api/guestUsers.ts";
+import notificationRoutes from "./api/notifications.ts";
+import userRoutes from "./api/users.ts";
+import validationRoutes from "./api/validation.ts";
+import apiDocument from "./api.json" with { type: "json" };
+import env from "./env.ts";
+import logger from "./utils/logger.ts";
+import { pool } from "./db.ts";
+import { errorHandler } from "./errorHandler.ts";
 
 const app = express();
 
@@ -23,11 +24,11 @@ const app = express();
 const checkDBConnection = () => {
   pool.connect()
     .then(client => {
-      console.log(`Connected to SQL database: ${env.DB_HOST} - ${env.DB_DATABASE}`);
+      logger.success(`Connected to SQL database: ${env.DB_HOST} - ${env.DB_DATABASE}`);
       client.release();
     })
     .catch(err => {
-      console.log("An error occurred connecting to database: " + err);
+      logger.error("An error occurred connecting to database: " + err);
       setTimeout(() => {
         checkDBConnection();
       }, 10000);
@@ -44,7 +45,8 @@ app.use(express.json());
 // Error handler for invalid JSON in body
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   if (err) {
-    return res.status(400).json({ error: "Invalid JSON in body"});
+    res.status(400).json({ error: "Invalid JSON in body"});
+    return;
   }
 });
 
@@ -102,16 +104,26 @@ app.use(session({
   unset: "destroy"
 }));
 
-app.post("*", (req, res, next) => {
+app.post("/{*any}", (req, res, next) => {
   if (req.headers["content-type"] !== undefined && !req.is("application/json")) {
-    return res.status(400).json({ error: "Wrong content-type" });
+    res.status(400).json({ error: "Wrong content-type" });
+    return;
   }
   next();
 });
 
-app.put("*", (req, res, next) => {
+app.put("/{*any}", (req, res, next) => {
   if (req.headers["content-type"] !== undefined && !req.is("application/json")) {
-    return res.status(400).json({ error: "Wrong content-type" });
+    res.status(400).json({ error: "Wrong content-type" });
+    return;
+  }
+  next();
+});
+
+// Ensure req.body is always an object for JSON requests
+app.use((req, _res, next) => {
+  if ((req.method === "POST" || req.method === "PUT" || req.method === "PATCH" || req.method === "DELETE") && typeof req.body === "undefined") {
+    req.body = {};
   }
   next();
 });

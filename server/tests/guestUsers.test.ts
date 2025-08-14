@@ -1,13 +1,10 @@
-import { describe, test, expect, beforeAll, afterEach, vi } from "vitest";
+import { describe, test, expect, beforeAll, afterEach } from "vitest";
 import request from "supertest";
-import nodemailerMock from "nodemailer-mock";
-import app from "../src/server";
-import { pool } from "../src/db";
-import * as ec from "../src/types/errorCodes";
-import { Guest, User } from "../src/types/types";
-
-// Mock nodemailer
-vi.mock("nodemailer", () => nodemailerMock);
+import app from "../src/server.ts";
+import { pool } from "../src/db.ts";
+import * as ec from "../src/types/errorCodes.ts";
+import { Guest, User } from "../src/types/types.ts";
+import { getSentEmails, resetSentEmails } from "./mocks/postmarkMock.ts";
 
 describe("guest", async () => {
 
@@ -90,7 +87,7 @@ describe("guest", async () => {
   });
 
   afterEach(async () => {
-    nodemailerMock.mock.reset();
+    resetSentEmails();
   });
 
   /* ------------ */
@@ -336,16 +333,18 @@ describe("guest", async () => {
           guestId: guest2.id
         });
 
-      const sentEmail = nodemailerMock.mock.getSentMail();
-      const html = sentEmail[0].html as string;
+      const sentEmails = getSentEmails();
+      const sentEmail = sentEmails[0];
+      const html = sentEmail.HtmlBody as string;
       const keyStart = html.indexOf("/register/") + "/register/".length;
       const keyEnd = html.indexOf("\"", keyStart);
       inviteKey = html.substring(keyStart, keyEnd);
 
       expect(res.status).toEqual(200);
-      expect(sentEmail.length).toEqual(1);
-      expect(sentEmail[0].to).toEqual("a@mikane.no");
-      expect(sentEmail[0].subject).toEqual("You've been invited to Mikane");
+      expect(sentEmails.length).toEqual(1);
+      expect(sentEmail.To).toEqual("a@mikane.no");
+      expect(sentEmail.Subject).toEqual("You've been invited to Mikane");
+      expect(inviteKey).toBeDefined();
     });
   });
 

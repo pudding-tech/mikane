@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,23 +16,20 @@ import { ApiError } from 'src/app/types/apiError.type';
 @Component({
 	templateUrl: './delete-account.component.html',
 	styleUrls: ['./delete-account.component.scss'],
-	standalone: true,
 	imports: [CommonModule, MatCardModule, MenuComponent, MatToolbarModule, MatIconModule, MatButtonModule, RouterModule],
 })
 export class DeleteAccountComponent implements OnInit, OnDestroy {
+	private userService = inject(UserService);
+	private route = inject(ActivatedRoute);
+	private router = inject(Router);
+	private authService = inject(AuthService);
+	private messageService = inject(MessageService);
+	protected breakpointService = inject(BreakpointService);
+
 	private destroy$ = new Subject<void>();
 	protected loading = false;
 
 	protected key: string;
-
-	constructor(
-		private userService: UserService,
-		private route: ActivatedRoute,
-		private router: Router,
-		private authService: AuthService,
-		private messageService: MessageService,
-		protected breakpointService: BreakpointService
-	) {}
 
 	ngOnInit(): void {
 		this.route.data.pipe(takeUntil(this.destroy$)).subscribe(({ key }) => {
@@ -48,7 +45,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
 				switchMap((user: User) => {
 					return this.userService.deleteUser(user?.id, this.key);
 				}),
-				takeUntil(this.destroy$)
+				takeUntil(this.destroy$),
 			)
 			.subscribe({
 				next: () => {

@@ -1,18 +1,17 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, filter, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { EventService, PuddingEvent, EventStatusType } from 'src/app/services/event/event.service';
+import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
@@ -22,40 +21,36 @@ import { ExpenditureDialogComponent } from '../expenditure-dialog/expenditure-di
 @Component({
 	templateUrl: 'expense.component.html',
 	styleUrls: ['./expense.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatCardModule,
 		ProgressSpinnerComponent,
-		MenuComponent,
 		MatDialogModule,
 		MatIconModule,
-		RouterLink,
 		MatButtonModule,
 		MatToolbarModule,
+		NgOptimizedImage,
 	],
 })
 export class ExpenseComponent implements OnInit, OnDestroy {
+	breakpointService = inject(BreakpointService);
+	private authService = inject(AuthService);
+	private eventService = inject(EventService);
+	private expenseService = inject(ExpenseService);
+	private categoryService = inject(CategoryService);
+	private messageService = inject(MessageService);
+	dialog = inject(MatDialog);
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
+
 	protected loading = true;
 	expense: Expense;
 	event: PuddingEvent;
 	currentUserId: string;
 
 	readonly EventStatusType = EventStatusType;
-	cancel$: Subject<void> = new Subject();
-	destroy$: Subject<void> = new Subject();
-
-	constructor(
-		public breakpointService: BreakpointService,
-		private authService: AuthService,
-		private eventService: EventService,
-		private expenseService: ExpenseService,
-		private categoryService: CategoryService,
-		private messageService: MessageService,
-		public dialog: MatDialog,
-		private router: Router,
-		private route: ActivatedRoute,
-	) {}
+	cancel$ = new Subject<void>();
+	destroy$ = new Subject<void>();
 
 	ngOnInit() {
 		this.loading = true;
@@ -98,7 +93,13 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	}
 
 	editExpense() {
-		let newExpense: Expense;
+		let editExpense: {
+			description?: string;
+			amount: number;
+			name: string;
+			payerId: string;
+			expenseDate?: Date;
+		};
 
 		this.dialog
 			.open(ExpenditureDialogComponent, {
@@ -115,7 +116,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 					if (!expense) {
 						this.cancel$.next();
 					}
-					newExpense = expense;
+					editExpense = expense;
 					return this.categoryService.findOrCreate(this.event.id, expense?.category);
 				}),
 				takeUntil(this.cancel$),
@@ -124,12 +125,12 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 				switchMap((category: Category) => {
 					return this.expenseService.editExpense(
 						this.expense.id,
-						newExpense.name,
-						newExpense.description ?? undefined,
-						newExpense.amount,
+						editExpense.name,
+						editExpense.description ?? undefined,
+						editExpense.amount,
 						category.id,
-						newExpense.payer as unknown as string,
-						newExpense.expenseDate,
+						editExpense.payerId,
+						editExpense.expenseDate,
 					);
 				}),
 				takeUntil(this.destroy$),
@@ -177,7 +178,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 
 	goBack() {
 		this.router.navigate(['events', this.event.id, 'expenses'], {
-			queryParams: { ...this.route.snapshot.queryParams }
+			queryParams: { ...this.route.snapshot.queryParams },
 		});
 	}
 

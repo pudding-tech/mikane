@@ -1,5 +1,5 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, ElementRef, input, OnInit, ViewChild } from '@angular/core';
+import { CommonModule, CurrencyPipe, NgOptimizedImage } from '@angular/common';
+import { Component, ElementRef, inject, input, output, effect, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,13 +8,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { Router } from '@angular/router';
 import { User } from 'src/app/services/user/user.service';
-import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 
 @Component({
 	selector: 'app-payment-item',
 	templateUrl: 'payment-item.component.html',
 	styleUrls: ['./payment-item.component.scss'],
-	standalone: true,
 	imports: [
 		CommonModule,
 		MatIconModule,
@@ -23,38 +21,47 @@ import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 		MatButtonModule,
 		MatFormFieldModule,
 		MatInputModule,
-		FormControlPipe,
 		FormsModule,
 		ReactiveFormsModule,
+		NgOptimizedImage,
 	],
 })
-export class PaymentItemComponent implements OnInit {
+export class PaymentItemComponent {
+	private router = inject(Router);
+
 	@ViewChild('lower') lower: ElementRef;
 	payment = input.required<{
 		sender: User;
-		receivers: Array<{
+		receivers: {
 			receiver: User;
 			amount: number;
-		}>;
+		}[];
 	}>();
 	self = input.required<boolean>();
 	currentUser = input.required<User>();
+	expanded = input<boolean>(false);
+	dropdownToggled = output<{ senderId: string, expanded: boolean, self: boolean }>();
 
 	dropdownOpen: boolean;
 	lowerHeight: number | string;
+	private initialized = false;
 
-	constructor(
-		private router: Router,
-	) {}
-
-	ngOnInit(): void {
-		this.dropdownOpen = this.self() ? true : false;
-		this.lowerHeight = this.self() ? 'auto' : 0;
-		if (this.lowerHeight === 'auto') {
-			setTimeout(() => {
-				this.lowerHeight = this.lower.nativeElement.scrollHeight;
-			});
-		}
+	constructor() {
+		effect(() => {
+			this.dropdownOpen = this.expanded();
+			this.lowerHeight = this.dropdownOpen ? 'auto' : 0;
+			if (this.lowerHeight === 'auto') {
+				if (!this.initialized) {
+					setTimeout(() => {
+						this.lowerHeight = this.lower.nativeElement.scrollHeight;
+						this.initialized = true;
+					});
+				}
+				else {
+					this.lowerHeight = this.lower.nativeElement.scrollHeight;
+				}
+			}
+		});
 	}
 
 	toggleDropdown = () => {
@@ -65,6 +72,8 @@ export class PaymentItemComponent implements OnInit {
 		} else {
 			this.lowerHeight = 0;
 		}
+
+		this.dropdownToggled.emit({ senderId: this.payment().sender.id, expanded: this.dropdownOpen, self: this.self() });
 	};
 
 	gotoUserProfile(user: User) {
