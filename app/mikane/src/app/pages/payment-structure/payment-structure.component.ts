@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -13,6 +13,7 @@ import { PaymentExpansionPanelItemComponent } from 'src/app/pages/payment-struct
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { EventService } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -48,6 +49,7 @@ export class PaymentStructureComponent implements OnInit {
 	private route = inject(ActivatedRoute);
 	private messageService = inject(MessageService);
 	breakpointService = inject(BreakpointService);
+	private logService = inject(LogService);
 
 	@ViewChild('paymentsSelfRef') paymentsSelfRef!: PaymentExpansionPanelItemComponent;
 	@ViewChild('paymentsOthersRef') paymentsOthersRef!: PaymentExpansionPanelItemComponent;
@@ -57,12 +59,22 @@ export class PaymentStructureComponent implements OnInit {
 	loading = new BehaviorSubject<boolean>(false);
 
 	senders = signal<SenderPayments[]>([]);
-	paymentsSelf = computed(() => this.senders().filter(senderPayment => {
-		return senderPayment.sender.id === this.currentUser?.id || senderPayment.receivers.some(r => r.receiver.id === this.currentUser?.id);
-	}));
-	paymentsOthers = computed(() => this.senders().filter(senderPayment => {
-		return !(senderPayment.sender.id === this.currentUser?.id || senderPayment.receivers.some(r => r.receiver.id === this.currentUser?.id))
-	}));
+	paymentsSelf = computed(() =>
+		this.senders().filter((senderPayment) => {
+			return (
+				senderPayment.sender.id === this.currentUser?.id ||
+				senderPayment.receivers.some((r) => r.receiver.id === this.currentUser?.id)
+			);
+		}),
+	);
+	paymentsOthers = computed(() =>
+		this.senders().filter((senderPayment) => {
+			return !(
+				senderPayment.sender.id === this.currentUser?.id ||
+				senderPayment.receivers.some((r) => r.receiver.id === this.currentUser?.id)
+			);
+		}),
+	);
 
 	expandedSelf = signal<Set<string>>(new Set());
 	expandedOthers = signal<Set<string>>(new Set());
@@ -81,7 +93,7 @@ export class PaymentStructureComponent implements OnInit {
 			},
 			error: (error: ApiError) => {
 				this.messageService.showError('Something went wrong');
-				console.error('something went wrong when getting current user on account page', error);
+				this.logService.error('Something went wrong when getting current user on account page: ' + error);
 			},
 		});
 	}
@@ -92,17 +104,17 @@ export class PaymentStructureComponent implements OnInit {
 			next: (payments) => {
 				// Build unique senders
 				const uniqueSenders: SenderPayments[] = [];
-				payments.forEach(payment => {
-					if (!uniqueSenders.find(s => s.sender.id === payment.sender.id)) {
+				payments.forEach((payment) => {
+					if (!uniqueSenders.find((s) => s.sender.id === payment.sender.id)) {
 						uniqueSenders.push({ sender: payment.sender, receivers: [] });
 					}
 				});
 
 				// Assign receivers to each sender
-				const updatedSenders = uniqueSenders.map(sender => {
+				const updatedSenders = uniqueSenders.map((sender) => {
 					const receivers = payments
-						.filter(payment => payment.sender.id === sender.sender.id)
-						.map(payment => ({
+						.filter((payment) => payment.sender.id === sender.sender.id)
+						.map((payment) => ({
 							receiver: payment.receiver,
 							amount: payment.amount,
 						}));
@@ -110,13 +122,13 @@ export class PaymentStructureComponent implements OnInit {
 				});
 
 				this.senders.set(updatedSenders);
-				this.expandedSelf.set(new Set(this.paymentsSelf().map(p => p.sender.id)));
+				this.expandedSelf.set(new Set(this.paymentsSelf().map((p) => p.sender.id)));
 				this.loading.next(false);
 			},
 			error: (err: ApiError) => {
 				this.loading.next(false);
 				this.messageService.showError('Error loading payments');
-				console.error('something went wrong while loading payments', err?.error?.message);
+				this.logService.error('Something went wrong while loading payments: ' + err?.error?.message);
 			},
 		});
 	}
@@ -147,7 +159,7 @@ export class PaymentStructureComponent implements OnInit {
 				this.expandedSelf.set(new Set());
 				this.allExpandedSelf = false;
 			} else {
-				this.expandedSelf.set(new Set(this.paymentsSelf().map(p => p.sender.id)));
+				this.expandedSelf.set(new Set(this.paymentsSelf().map((p) => p.sender.id)));
 				this.allExpandedSelf = true;
 			}
 		} else if (index === 2) {
@@ -155,7 +167,7 @@ export class PaymentStructureComponent implements OnInit {
 				this.expandedOthers.set(new Set());
 				this.allExpandedOthers = false;
 			} else {
-				this.expandedOthers.set(new Set(this.paymentsOthers().map(p => p.sender.id)));
+				this.expandedOthers.set(new Set(this.paymentsOthers().map((p) => p.sender.id)));
 				this.allExpandedOthers = true;
 			}
 		}
@@ -173,8 +185,7 @@ export class PaymentStructureComponent implements OnInit {
 		const set = new Set(self ? this.expandedSelf() : this.expandedOthers());
 		if (expanded) {
 			set.add(senderId);
-		}
-		else {
+		} else {
 			set.delete(senderId);
 		}
 
@@ -182,17 +193,14 @@ export class PaymentStructureComponent implements OnInit {
 			this.expandedSelf.set(set);
 			if (this.expandedSelf().size === this.paymentsSelf().length) {
 				this.allExpandedSelf = true;
-			}
-			else if (this.expandedSelf().size === 0) {
+			} else if (this.expandedSelf().size === 0) {
 				this.allExpandedSelf = false;
 			}
-		}
-		else {
+		} else {
 			this.expandedOthers.set(set);
 			if (this.expandedOthers().size === this.paymentsOthers().length) {
 				this.allExpandedOthers = true;
-			}
-			else if (this.expandedOthers().size === 0) {
+			} else if (this.expandedOthers().size === 0) {
 				this.allExpandedOthers = false;
 			}
 		}

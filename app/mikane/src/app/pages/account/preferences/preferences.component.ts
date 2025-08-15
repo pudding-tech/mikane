@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Subscription } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -21,6 +22,7 @@ export class PreferencesComponent implements OnInit, OnDestroy {
 	private userService = inject(UserService);
 	private messageService = inject(MessageService);
 	breakpointService = inject(BreakpointService);
+	private logService = inject(LogService);
 
 	@Input() user: User;
 	private editPreferencesSubscription = new Subscription();
@@ -47,7 +49,7 @@ export class PreferencesComponent implements OnInit, OnDestroy {
 				error: (err: ApiError) => {
 					this.publicEmail = !this.publicEmail;
 					this.messageService.showError('Failed to change user preferences');
-					console.error('something went wrong while changing user email preference', err?.error?.message);
+					this.logService.error('something went wrong while changing user email preference: ' + err?.error?.message);
 					this.loadingEmail = false;
 				},
 			}),
@@ -65,7 +67,7 @@ export class PreferencesComponent implements OnInit, OnDestroy {
 				error: (err: ApiError) => {
 					this.publicPhone = !this.publicPhone;
 					this.messageService.showError('Failed to change user preferences');
-					console.error('something went wrong while changing user phone preference', err?.error?.message);
+					this.logService.error('something went wrong while changing user phone preference: ' + err?.error?.message);
 					this.loadingPhone = false;
 				},
 			}),

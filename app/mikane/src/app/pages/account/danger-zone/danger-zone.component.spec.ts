@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MockService } from 'ng-mocks';
 import { of, throwError } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { DangerZoneComponent } from './danger-zone.component';
@@ -25,6 +27,7 @@ describe('DangerZoneComponent', () => {
 				{ provide: UserService, useValue: userServiceSpy },
 				{ provide: MatDialog, useValue: dialogSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
+				{ provide: LogService, useValue: MockService(LogService) },
 			],
 		}).compileComponents();
 

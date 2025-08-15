@@ -21,6 +21,7 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { User, UserService } from 'src/app/services/user/user.service';
@@ -67,6 +68,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 	contextService = inject(ContextService);
 	scrollService = inject(ScrollService);
 	private router = inject(Router);
+	private logService = inject(LogService);
 
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 
@@ -127,7 +129,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 				error: (err: ApiError) => {
 					this.loading.next(false);
 					this.messageService.showError('Error loading categories');
-					console.error('something went wrong while loading categories', err?.error?.message);
+					this.logService.error('something went wrong while loading categories: ' + err?.error?.message);
 				},
 			});
 	}
@@ -142,7 +144,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error loading users');
-					console.error('something went wrong while loading users', err?.error?.message);
+					this.logService.error('something went wrong while loading users: ' + err?.error?.message);
 				},
 			});
 	}
@@ -198,12 +200,12 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 						this.messageService.showSuccess('Category created');
 					} else {
 						this.messageService.showError('Error creating category');
-						console.error('create category returned undefined');
+						this.logService.error('create category returned undefined');
 					}
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error creating category');
-					console.error('something went wrong while creating category', err?.error?.message);
+					this.logService.error('something went wrong while creating category: ' + err?.error?.message);
 				},
 			});
 	}
@@ -224,12 +226,12 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 						this.messageService.showSuccess('Category edited');
 					} else {
 						this.messageService.showError('Error editing category');
-						console.error('edit category returned undefined');
+						this.logService.error('edit category returned undefined');
 					}
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error editing category');
-					console.error('something went wrong while editing category', err);
+					this.logService.error('something went wrong while editing category: ' + err?.error?.message);
 				},
 			});
 	}
@@ -254,12 +256,12 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 							this.messageService.showSuccess('User added to category "' + this.categories[index].name + '"');
 						} else {
 							this.messageService.showError('Error adding user to category');
-							console.error('add user to category returned undefined');
+							this.logService.error('add user to category returned undefined');
 						}
 					},
 					error: (err: ApiError) => {
 						this.messageService.showError('Error adding user to category');
-						console.error('something went wrong while adding user to category', err?.error?.message);
+						this.logService.error('something went wrong while adding user to category: ' + err?.error?.message);
 					},
 				});
 		}
@@ -280,12 +282,12 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 						this.messageService.showSuccess('User removed from category "' + this.categories[index].name + '"');
 					} else {
 						this.messageService.showError('Error removing user from category');
-						console.error('remove user from category returned undefined');
+						this.logService.error('remove user from category returned undefined');
 					}
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error removing user from category');
-					console.error('something went wrong while removing user from category', err?.error?.message);
+					this.logService.error('something went wrong while removing user from category: ' + err?.error?.message);
 				},
 			});
 	}
@@ -324,12 +326,12 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 						}
 					} else {
 						this.messageService.showError('Error editing category');
-						console.error('edit category returned undefined');
+						this.logService.error('edit category returned undefined');
 					}
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error editing category');
-					console.error('something went wrong while editing category', err?.error?.message);
+					this.logService.error('something went wrong while editing category: ' + err?.error?.message);
 				},
 			});
 	}
@@ -351,12 +353,12 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 						}
 					} else {
 						this.messageService.showError('Error toggling weighted status');
-						console.error('toggle weighted status returned undefined');
+						this.logService.error('toggle weighted status returned undefined');
 					}
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to toggle weighted status');
-					console.error('something went wrong while toggling category weight', err?.error?.message);
+					this.logService.error('something went wrong while toggling category weight: ' + err?.error?.message);
 				},
 			});
 	}
@@ -390,7 +392,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error deleting category');
-					console.error('something went wrong while deleting category', err?.error?.message);
+					this.logService.error('something went wrong while deleting category: ' + err?.error?.message);
 				},
 			});
 	}

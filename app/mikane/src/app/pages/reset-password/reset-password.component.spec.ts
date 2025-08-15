@@ -7,6 +7,7 @@ import { of, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { KeyValidationService } from 'src/app/services/key-validation/key-validation.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ResetPasswordComponent } from './reset-password.component';
@@ -46,6 +47,7 @@ describe('ResetPasswordComponent', () => {
 				},
 			})
 			.mock(BreakpointService)
+			.mock(LogService)
 			.provide({
 				provide: ActivatedRoute,
 				useValue: {
@@ -183,7 +185,7 @@ describe('ResetPasswordComponent', () => {
 						message: 'error',
 					},
 				} as ApiError;
-			})
+			}),
 		);
 		page.passwordField.nativeElement.value = 'password';
 		page.passwordField.nativeElement.dispatchEvent(new Event('input'));
@@ -207,7 +209,7 @@ describe('ResetPasswordComponent', () => {
 						message: 'error',
 					},
 				} as ApiError;
-			})
+			}),
 		);
 
 		ngMocks.flushTestBed();
@@ -226,7 +228,7 @@ describe('ResetPasswordComponent', () => {
 				return {
 					status: 404,
 				} as ApiError;
-			})
+			}),
 		);
 
 		ngMocks.flushTestBed();
@@ -245,7 +247,7 @@ describe('ResetPasswordComponent', () => {
 				return {
 					status: 404,
 				} as ApiError;
-			})
+			}),
 		);
 
 		ngMocks.flushTestBed();

@@ -11,6 +11,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ApiError } from 'src/app/types/apiError.type';
 
@@ -36,6 +37,7 @@ export class LoginComponent {
 	private router = inject(Router);
 	private messageService = inject(MessageService);
 	breakpointService = inject(BreakpointService);
+	private logService = inject(LogService);
 
 	@ViewChild('usernameField') private usernameField: ElementRef;
 
@@ -72,7 +74,7 @@ export class LoginComponent {
 						} else {
 							this.loading = false;
 							this.messageService.showError('Login failed');
-							console.error('Could not login');
+							this.logService.error('Could not login');
 						}
 					},
 					error: (error: ApiError) => {
@@ -81,7 +83,7 @@ export class LoginComponent {
 							this.messageService.showError('Wrong username or password');
 						} else {
 							this.messageService.showError('Login failed');
-							console.error('Error occurred while logging in', error?.error?.message);
+							this.logService.error('Error occurred while logging in: ' + error?.error?.message);
 						}
 						this.loading = false;
 					},

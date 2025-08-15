@@ -4,8 +4,9 @@ import { Router } from '@angular/router';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { ContextService } from 'src/app/services/context/context.service';
+import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -59,6 +60,7 @@ describe('EventSettingsComponent', () => {
 					navigateByUrl: jasmine.createSpy('navigateByUrl').and.resolveTo(),
 				},
 			})
+			.mock(LogService),
 	);
 
 	it('should create', () => {
@@ -156,7 +158,7 @@ describe('EventSettingsComponent', () => {
 							message: 'error',
 						},
 					} as ApiError;
-				})
+				}),
 			);
 			fixture.detectChanges();
 			component.ngOnInit();
@@ -179,7 +181,7 @@ describe('EventSettingsComponent', () => {
 							message: 'error',
 						},
 					} as ApiError;
-				})
+				}),
 			);
 			fixture.detectChanges();
 			component.ngOnInit();
@@ -204,7 +206,7 @@ describe('EventSettingsComponent', () => {
 							message: 'error',
 						},
 					} as ApiError;
-				})
+				}),
 			);
 			fixture.detectChanges();
 			component.editEvent();
@@ -223,7 +225,7 @@ describe('EventSettingsComponent', () => {
 			const messageService = fixture.point.injector.get(MessageService) as jasmine.SpyObj<MessageService>;
 
 			(fixture.point.injector.get(EventService) as jasmine.SpyObj<EventService>).editEvent.and.returnValue(
-				of({ id: '10' } as PuddingEvent)
+				of({ id: '10' } as PuddingEvent),
 			);
 			tick();
 			fixture.detectChanges();
@@ -256,7 +258,7 @@ describe('EventSettingsComponent', () => {
 			const messageService = fixture.point.injector.get(MessageService) as jasmine.SpyObj<MessageService>;
 
 			(fixture.point.injector.get(EventService) as jasmine.SpyObj<EventService>).editEvent.and.returnValue(
-				of({ id: '10' } as PuddingEvent)
+				of({ id: '10' } as PuddingEvent),
 			);
 			tick();
 			fixture.detectChanges();
@@ -287,7 +289,7 @@ describe('EventSettingsComponent', () => {
 			const messageService = fixture.point.injector.get(MessageService) as jasmine.SpyObj<MessageService>;
 
 			(fixture.point.injector.get(EventService) as jasmine.SpyObj<EventService>).editEvent.and.returnValue(
-				of({ id: '10' } as PuddingEvent)
+				of({ id: '10' } as PuddingEvent),
 			);
 			tick();
 			fixture.detectChanges();
@@ -318,7 +320,7 @@ describe('EventSettingsComponent', () => {
 			const messageService = fixture.point.injector.get(MessageService) as jasmine.SpyObj<MessageService>;
 
 			(fixture.point.injector.get(EventService) as jasmine.SpyObj<EventService>).editEvent.and.returnValue(
-				of({ id: '10' } as PuddingEvent)
+				of({ id: '10' } as PuddingEvent),
 			);
 			tick();
 			fixture.detectChanges();
@@ -352,7 +354,7 @@ describe('EventSettingsComponent', () => {
 							message: 'error',
 						},
 					} as ApiError;
-				})
+				}),
 			);
 			fixture.detectChanges();
 			component.setStatus(EventStatusType.READY_TO_SETTLE);
@@ -377,7 +379,7 @@ describe('EventSettingsComponent', () => {
 							message: 'error',
 						},
 					} as ApiError;
-				})
+				}),
 			);
 			fixture.detectChanges();
 			component.setStatus(EventStatusType.SETTLED);
@@ -429,7 +431,7 @@ describe('EventSettingsComponent', () => {
 							message: 'error',
 						},
 					} as ApiError;
-				})
+				}),
 			);
 			(fixture.point.injector.get(MatDialog) as jasmine.SpyObj<MatDialog>).open.and.returnValue({
 				afterClosed: () => of(true),
@@ -485,13 +487,13 @@ describe('EventSettingsComponent', () => {
 					id: '1',
 					status: {},
 					adminIds: ['1', '2'],
-				} as PuddingEvent)
+				} as PuddingEvent),
 			);
 			userService.loadUsersByEvent.and.returnValue(
 				of([
 					{ id: '1', eventInfo: { isAdmin: true } },
 					{ id: '2', eventInfo: { isAdmin: false } },
-				] as User[])
+				] as User[]),
 			);
 			fixture.detectChanges();
 			component.ngOnInit();
@@ -537,7 +539,7 @@ describe('EventSettingsComponent', () => {
 							message: 'error',
 						},
 					} as ApiError;
-				})
+				}),
 			);
 			fixture.detectChanges();
 			component.addAdmin();
@@ -564,13 +566,13 @@ describe('EventSettingsComponent', () => {
 					id: '1',
 					status: {},
 					adminIds: ['1'],
-				} as PuddingEvent)
+				} as PuddingEvent),
 			);
 			userService.loadUsersByEvent.and.returnValue(
 				of([
 					{ id: '1', eventInfo: { isAdmin: true } },
 					{ id: '2', eventInfo: { isAdmin: true } },
-				] as User[])
+				] as User[]),
 			);
 			fixture.detectChanges();
 			component.ngOnInit();
@@ -665,7 +667,7 @@ describe('EventSettingsComponent', () => {
 							message: 'error',
 						},
 					} as ApiError;
-				})
+				}),
 			);
 
 			fixture.detectChanges();

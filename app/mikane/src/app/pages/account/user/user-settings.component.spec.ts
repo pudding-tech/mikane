@@ -7,10 +7,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MockModule } from 'ng-mocks';
+import { MockModule, MockService } from 'ng-mocks';
 import { of, throwError } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -49,6 +50,7 @@ describe('UserSettingsComponent', () => {
 				{ provide: FormValidationService, useValue: formValidationServiceSpy },
 				{ provide: BreakpointService, useValue: breakpointServiceSpy },
 				{ provide: MatDialog, useValue: matDialogSpy },
+				{ provide: LogService, useValue: MockService(LogService) },
 			],
 		}).compileComponents();
 
@@ -116,7 +118,7 @@ describe('UserSettingsComponent', () => {
 				'New',
 				'Name',
 				'newemail@example.com',
-				'0987654321'
+				'0987654321',
 			);
 		});
 

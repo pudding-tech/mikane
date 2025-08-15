@@ -10,6 +10,7 @@ import { BehaviorSubject, Subscription, switchMap } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
@@ -43,6 +44,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 	private userService = inject(UserService);
 	breakpointService = inject(BreakpointService);
 	private messageService = inject(MessageService);
+	private logService = inject(LogService);
 
 	protected loading = new BehaviorSubject<boolean>(true);
 	protected user: User;
@@ -64,7 +66,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 				},
 				error: (error: ApiError) => {
 					this.messageService.showError('Something went wrong');
-					console.error('something went wrong when getting current user on account page', error);
+					this.logService.error('something went wrong when getting current user on account page: ' + error);
 					this.loading.next(false);
 				},
 			});

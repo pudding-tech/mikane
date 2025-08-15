@@ -9,11 +9,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { By } from '@angular/platform-browser';
 import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { MockComponent, MockModule } from 'ng-mocks';
+import { MockComponent, MockModule, MockService } from 'ng-mocks';
 import { of, throwError } from 'rxjs';
 import { spyPropertyGetter } from 'src/app/helpers/test.helpers';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -44,6 +45,7 @@ describe('Login Component', () => {
 				{ provide: AuthService, useValue: authService },
 				{ provide: MessageService, useValue: messageService },
 				{ provide: BreakpointService, useValue: breakpointService },
+				{ provide: LogService, useValue: MockService(LogService) },
 				provideRouter([
 					{ path: 'login', loadComponent: () => import('./login.component').then((m) => m.LoginComponent) },
 					{ path: 'events', component: MockComponent(EventsComponent) },

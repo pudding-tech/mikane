@@ -3,13 +3,13 @@ import { Component, Input, OnDestroy, OnInit, inject, signal } from '@angular/co
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
@@ -19,6 +19,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
@@ -59,6 +60,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	contextService = inject(ContextService);
 	private messageService = inject(MessageService);
 	dialog = inject(MatDialog);
+	private logService = inject(LogService);
 
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
@@ -106,7 +108,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				error: (err: ApiError) => {
 					this.loading.next(false);
 					this.messageService.showError('Error loading event settings');
-					console.error('Something went wrong while loading event settings data', err?.error?.message);
+					this.logService.error('Something went wrong while loading event settings data: ' + err?.error?.message);
 				},
 			});
 	}
@@ -131,7 +133,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to edit event');
-					console.error('Something went wrong while editing event', err?.error?.message);
+					this.logService.error('Something went wrong while editing event: ' + err?.error?.message);
 				},
 			});
 	}
@@ -155,7 +157,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to change event status');
-				console.error('Something went wrong while changing event status', err?.error?.message);
+				this.logService.error('Something went wrong while changing event status: ' + err?.error?.message);
 			},
 		});
 	}
@@ -188,7 +190,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to delete event');
-					console.error('Something went wrong while deleting event', err?.error?.message);
+					this.logService.error('Something went wrong while deleting event: ' + err?.error?.message);
 				},
 			});
 	}
@@ -210,7 +212,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to add admin');
-					console.error('Something went wrong while setting admin for event', err?.error?.message);
+					this.logService.error('Something went wrong while setting admin for event: ' + err?.error?.message);
 				},
 			});
 		}
@@ -246,7 +248,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 					},
 					error: (err: ApiError) => {
 						this.messageService.showError('Failed to remove current user as admin');
-						console.error('Something went wrong while removing admin from event', err?.error?.message);
+						this.logService.error('Something went wrong while removing admin from event: ' + err?.error?.message);
 					},
 				});
 		} else {
@@ -261,7 +263,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to remove admin');
-					console.error('Something went wrong while removing admin from event', err?.error?.message);
+					this.logService.error('Something went wrong while removing admin from event: ' + err?.error?.message);
 				},
 			});
 		}
@@ -302,7 +304,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to send emails');
-					console.error('Something went wrong while sending emails', err?.error?.message);
+					this.logService.error('Something went wrong while sending emails: ' + err?.error?.message);
 				},
 			});
 	}
@@ -312,7 +314,8 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			width: '420px',
 			data: {
 				title: "Send 'add expenses reminder' email",
-				content: "Are you sure you want to send the 'add expenses reminder' email? Emails will be sent to all participants in the event.",
+				content:
+					"Are you sure you want to send the 'add expenses reminder' email? Emails will be sent to all participants in the event.",
 				confirm: 'Yes, I am sure',
 			},
 		});
@@ -337,7 +340,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to send emails');
-					console.error('Something went wrong while sending emails', err?.error?.message);
+					this.logService.error('Something went wrong while sending emails: ' + err?.error?.message);
 				},
 			});
 	}

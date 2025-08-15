@@ -12,6 +12,7 @@ import { Category, CategoryService } from 'src/app/services/category/category.se
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
 import { CategoryIcon } from 'src/app/types/enums';
 import { ExpenditureDialogComponent } from '../expenditures/expenditure-dialog/expenditure-dialog.component';
@@ -55,7 +56,8 @@ describe('ParticipantComponent', () => {
 			.provide({ provide: MessageService, useValue: messageServiceStub })
 			.mock(MatCardModule)
 			.mock(MatIconModule)
-			.mock(MatDialogModule);
+			.mock(MatDialogModule)
+			.mock(LogService);
 	});
 
 	function createComponent() {
@@ -68,7 +70,7 @@ describe('ParticipantComponent', () => {
 					id: EventStatusType.ACTIVE,
 					name: 'Active',
 				},
-				adminIds: []
+				adminIds: [],
 			} as PuddingEvent),
 		});
 		component = fixture.point.componentInstance;
@@ -85,7 +87,13 @@ describe('ParticipantComponent', () => {
 	it('should load event', () => {
 		createComponent();
 
-		expect(component.event).toEqual({ id: '1', name: 'Test Event', private: false, status: { id: EventStatusType.ACTIVE, name: 'Active' }, adminIds: [] } as PuddingEvent);
+		expect(component.event).toEqual({
+			id: '1',
+			name: 'Test Event',
+			private: false,
+			status: { id: EventStatusType.ACTIVE, name: 'Active' },
+			adminIds: [],
+		} as PuddingEvent);
 		expect(component.displayedColumns).toContain('actions');
 	});
 
@@ -839,7 +847,7 @@ describe('ParticipantComponent', () => {
 		beforeEach(() => {
 			(eventServiceStub.loadBalances as jasmine.Spy).and.returnValue(
 				of([
-					{ user: { id: '1', name: 'a' }, balance: 1, expensesCount: 1, spending: 1, expenses: 1  },
+					{ user: { id: '1', name: 'a' }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
 					{ user: { id: '2', name: 'b' }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
 				] as UserBalance[]),
 			);
@@ -852,7 +860,7 @@ describe('ParticipantComponent', () => {
 			component.gotoUserExpenses(component.usersWithBalance[0]);
 
 			expect(routerStub.navigate).toHaveBeenCalledWith(['events', component.event.id, 'expenses'], {
-				queryParams: { payers: component.usersWithBalance[0].user.id }
+				queryParams: { payers: component.usersWithBalance[0].user.id },
 			});
 		});
 	});

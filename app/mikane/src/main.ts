@@ -1,7 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import localeNo from '@angular/common/locales/no';
-import { LOCALE_ID, enableProdMode, importProvidersFrom } from '@angular/core';
+import { ErrorHandler, LOCALE_ID, enableProdMode, importProvidersFrom } from '@angular/core';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -9,6 +9,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { AppRoutingModule } from './app/app-routing.module';
 import { AppComponent } from './app/app.component';
 import { AuthInterceptor } from './app/services/auth/auth.interceptor';
+import { MikaneErrorHandler } from './app/services/log/error-handler';
+import { LOG_LEVEL, LoggerLevel } from './app/services/log/log-level.config';
 import { environment } from './environments/environment';
 import { ENV, getEnv } from './environments/environment.provider';
 
@@ -29,8 +31,16 @@ bootstrapApplication(AppComponent, {
 				// or after 30 seconds (whichever comes first).
 				registrationStrategy: 'registerWhenStable:30000',
 			}),
-			MatSnackBarModule
+			MatSnackBarModule,
 		),
+		{
+			provide: ErrorHandler,
+			useClass: MikaneErrorHandler,
+		},
+		{
+			provide: LOG_LEVEL,
+			useValue: LoggerLevel.INFO,
+		},
 		{
 			provide: LOCALE_ID,
 			useValue: 'no',

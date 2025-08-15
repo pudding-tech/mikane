@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { createCompareValidator } from 'src/app/shared/forms/validators/compare.validator';
@@ -33,6 +34,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 	private messageService = inject(MessageService);
 	private router = inject(Router);
 	breakpointService = inject(BreakpointService);
+	private logService = inject(LogService);
 
 	hide = true;
 
@@ -64,12 +66,12 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 							this.router.navigate(['/login']);
 						} else {
 							this.messageService.showError('Failed to change password');
-							console.error('Something went wrong while getting user');
+							this.logService.error('Something went wrong while getting user');
 						}
 					},
 					error: (err) => {
 						this.messageService.showError('Failed to change password');
-						console.error('Error occurred while changing password', err?.error);
+						this.logService.error('Error occurred while changing password: ' + err?.error);
 					},
 				});
 		}
