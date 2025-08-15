@@ -15,6 +15,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense } from 'src/app/services/expense/expense.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
@@ -46,6 +47,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	private titleService = inject(Title);
 	private route = inject(ActivatedRoute);
 	private router = inject(Router);
+	private logService = inject(LogService);
 
 	protected loading = true;
 	protected loadingEvents = false;
@@ -99,13 +101,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 						]);
 					} else {
 						this.messageService.showError('User not found');
-						console.error('user not found on profile page');
+						this.logService.error('User not found on profile page');
 						return of(undefined);
 					}
 				}),
 				catchError((err: ApiError) => {
 					this.messageService.showError('Something went wrong');
-					console.error('something went wrong while getting user on profile page', err);
+					this.logService.error('Something went wrong while getting user on profile page: ' + err);
 					return of(undefined);
 				}),
 			)
@@ -120,7 +122,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 				},
 				error: (error: ApiError) => {
 					this.messageService.showError('Something went wrong');
-					console.error('something went wrong when getting user on profile page', error);
+					this.logService.error('Something went wrong when getting user on profile page: ' + error);
 					this.router.navigate(['/events']);
 				},
 			});
@@ -143,7 +145,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			error: (err: ApiError) => {
 				this.loadingEvents = false;
 				this.messageService.showError('Failed to get more events');
-				console.error('Something went wrong while retrieving more events', err?.error?.message);
+				this.logService.error('Something went wrong while retrieving more events: ' + err?.error?.message);
 			},
 		});
 	}
@@ -165,7 +167,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			error: (err: ApiError) => {
 				this.loadingExpenses = false;
 				this.messageService.showError('Failed to get more expenses');
-				console.error('Something went wrong while retrieving more expenses', err?.error?.message);
+				this.logService.error('Something went wrong while retrieving more expenses: ' + err?.error?.message);
 			},
 		});
 	}
@@ -177,7 +179,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			this.messageService.showSuccess('Link to profile copied to clipboard');
 		} else {
 			this.messageService.showError('Copy to clipboard is only allowed in a secure environment');
-			console.error('Copy to clipboard is only allowed in a secure environment');
+			this.logService.error('Copy to clipboard is only allowed in a secure environment');
 		}
 	}
 

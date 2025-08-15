@@ -6,9 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { MockModule } from 'ng-mocks';
+import { MockModule, MockService } from 'ng-mocks';
 import { of, throwError } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ChangePasswordComponent } from './change-password.component';
@@ -39,6 +40,7 @@ describe('ChangePasswordComponent', () => {
 				{ provide: UserService, useValue: userServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
 				{ provide: Router, useValue: routerSpy },
+				{ provide: LogService, useValue: MockService(LogService) },
 				BreakpointService,
 			],
 		}).compileComponents();

@@ -8,11 +8,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockComponent, MockModule } from 'ng-mocks';
+import { MockComponent, MockModule, MockService } from 'ng-mocks';
 import { of, throwError } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
@@ -63,6 +64,7 @@ describe('AccountComponent', () => {
 				{ provide: AuthService, useValue: authServiceSpy },
 				{ provide: UserService, useValue: userServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
+				{ provide: LogService, useValue: MockService(LogService) },
 			],
 		}).compileComponents();
 	});

@@ -13,6 +13,7 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -42,6 +43,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	dialog = inject(MatDialog);
 	private router = inject(Router);
 	private route = inject(ActivatedRoute);
+	private logService = inject(LogService);
 
 	protected loading = true;
 	expense: Expense;
@@ -74,7 +76,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 				error: (err: ApiError) => {
 					this.loading = false;
 					this.messageService.showError('Error loading expense');
-					console.error('Something went wrong while loading expense', err?.error?.message);
+					this.logService.error('Something went wrong while loading expense: ' + err?.error?.message);
 				},
 			});
 
@@ -87,7 +89,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to get user');
-					console.error('Something went wrong getting signed in user', err?.error?.message);
+					this.logService.error('Something went wrong getting signed in user: ' + err?.error?.message);
 				},
 			});
 	}
@@ -142,7 +144,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to edit expense');
-					console.error('Something went wrong while editing expense', err);
+					this.logService.error('Something went wrong while editing expense: ' + err);
 				},
 			});
 	}
@@ -171,7 +173,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to delete expense');
-					console.error('Something went wrong while deleting expense', err?.error?.message);
+					this.logService.error('Something went wrong while deleting expense: ' + err?.error?.message);
 				},
 			});
 	}

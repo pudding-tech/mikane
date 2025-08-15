@@ -4,11 +4,12 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { MockComponent, MockModule } from 'ng-mocks';
+import { MockComponent, MockModule, MockService } from 'ng-mocks';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
 
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { LogService } from 'src/app/services/log/log.service';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { EventsComponent } from './events.component';
@@ -33,6 +34,7 @@ describe('EventsComponent', () => {
 				{ provide: ActivatedRoute, useValue: activatedRouteStub },
 				{ provide: MessageService, useValue: messageServiceStub },
 				{ provide: ENV, useValue: {} as Environment },
+				{ provide: LogService, useValue: MockService(LogService) },
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
 			],

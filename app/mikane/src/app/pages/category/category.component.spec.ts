@@ -11,6 +11,7 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { CategoryIcon } from 'src/app/types/enums';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
@@ -55,6 +56,7 @@ describe('CategoryComponent', () => {
 			.provide({ provide: ChangeDetectorRef, useValue: changeDetectorRefStub })
 			.provide({ provide: BreakpointService, useValue: breakpointObserverStub })
 			.provide({ provide: ContextService, useValue: contextServiceStub })
+			.mock(LogService)
 			.mock(MatIconModule)
 			.mock(MatCardModule);
 	});

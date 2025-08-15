@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { MockComponent, MockDirective, MockModule } from 'ng-mocks';
+import { MockComponent, MockDirective, MockModule, MockService } from 'ng-mocks';
 import { of, throwError } from 'rxjs';
 import { spyPropertyGetter } from 'src/app/helpers/test.helpers';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -39,6 +40,7 @@ describe('MenuComponent', () => {
 				{ provide: Router, useValue: routerSpy },
 				{ provide: AuthService, useValue: authServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
+				{ provide: LogService, useValue: MockService(LogService) },
 			],
 		}).compileComponents();
 	});

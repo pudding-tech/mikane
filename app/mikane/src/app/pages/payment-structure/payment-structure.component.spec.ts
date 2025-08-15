@@ -5,6 +5,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { EventService, Payment } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -47,7 +48,8 @@ describe('PaymentStructureComponent', () => {
 				useValue: {
 					showError: jasmine.createSpy(),
 				},
-			}),
+			})
+			.mock(LogService),
 	);
 
 	it('should create', () => {

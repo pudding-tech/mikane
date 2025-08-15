@@ -3,6 +3,7 @@ import { MockBuilder, MockRender, MockedComponentFixture } from 'ng-mocks';
 import { Observable, of, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { PuddingEvent } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { EventInfoComponent } from './event-info.component';
@@ -34,7 +35,8 @@ describe('EventInfoComponent', () => {
 				useValue: {
 					showError: showErrorSpy,
 				},
-			});
+			})
+			.mock(LogService);
 
 		fixture = MockRender(EventInfoComponent, {
 			$event: of({

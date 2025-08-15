@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Subscription } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { emailValidator } from 'src/app/shared/forms/validators/async-email.validator';
@@ -38,6 +39,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	private messageService = inject(MessageService);
 	breakpointService = inject(BreakpointService);
 	private formValidationService = inject(FormValidationService);
+	private logService = inject(LogService);
 
 	private editSubscription: Subscription;
 
@@ -78,7 +80,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to edit user');
-					console.error('something went wrong while editing user', err?.error?.message);
+					this.logService.error('something went wrong while editing user: ' + err?.error?.message);
 				},
 			});
 	}

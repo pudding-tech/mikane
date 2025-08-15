@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -41,6 +42,7 @@ export class InviteComponent implements OnInit, OnDestroy {
 	private userService = inject(UserService);
 	private messageService = inject(MessageService);
 	protected breakpointService = inject(BreakpointService);
+	private logService = inject(LogService);
 
 	protected inviteForm = new FormGroup({
 		email: new FormControl('', [Validators.required, Validators.email]),
@@ -64,7 +66,7 @@ export class InviteComponent implements OnInit, OnDestroy {
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to load guest users');
-				console.error('Something went wrong while loading guest users', err);
+				this.logService.error('Something went wrong while loading guest users: ' + err);
 			},
 		});
 	}
@@ -92,7 +94,7 @@ export class InviteComponent implements OnInit, OnDestroy {
 							break;
 						default:
 							this.messageService.showError('Failed to invite user');
-							console.error('something went wrong when inviting user', err);
+							this.logService.error('Something went wrong when inviting user: ' + err);
 							break;
 					}
 				},
@@ -128,7 +130,7 @@ export class InviteComponent implements OnInit, OnDestroy {
 								break;
 							default:
 								this.messageService.showError('Failed to invite user');
-								console.error('something went wrong when inviting user', err);
+								this.logService.error('Something went wrong when inviting user: ' + err);
 								break;
 						}
 					},

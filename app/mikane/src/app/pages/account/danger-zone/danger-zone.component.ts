@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { NEVER, Subscription, switchMap } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -36,6 +37,7 @@ export class DangerZoneComponent implements OnDestroy {
 	dialog = inject(MatDialog);
 	private messageService = inject(MessageService);
 	breakpointService = inject(BreakpointService);
+	private logService = inject(LogService);
 
 	private deleteSubscription: Subscription;
 	protected loading = false;
@@ -72,7 +74,7 @@ export class DangerZoneComponent implements OnDestroy {
 				error: (err: ApiError) => {
 					this.loading = false;
 					this.messageService.showError('Failed to send email!');
-					console.error('something went wrong while sending account deletion email', err?.error?.message);
+					this.logService.error('something went wrong while sending account deletion email: ' + err?.error?.message);
 				},
 			});
 	}

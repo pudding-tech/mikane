@@ -15,6 +15,7 @@ import { EMPTY, Subscription, combineLatest, switchMap } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
@@ -49,6 +50,7 @@ export class GuestsComponent implements OnInit, OnDestroy {
 	private messageService = inject(MessageService);
 	protected breakpointService = inject(BreakpointService);
 	dialog = inject(MatDialog);
+	private logService = inject(LogService);
 
 	loading = false;
 	guests: User[] = [];
@@ -80,7 +82,7 @@ export class GuestsComponent implements OnInit, OnDestroy {
 			error: (err: ApiError) => {
 				this.loading = false;
 				this.messageService.showError('Failed to load guest users');
-				console.error('Something went wrong while loading guest users', err);
+				this.logService.error('Something went wrong while loading guest users: ' + err);
 			},
 		});
 	}
@@ -106,7 +108,7 @@ export class GuestsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to create guest');
-					console.error('Something went wrong while creating guest', err?.error?.message);
+					this.logService.error('Something went wrong while creating guest: ' + err?.error?.message);
 				},
 			});
 	}
@@ -140,7 +142,7 @@ export class GuestsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to edit guest');
-					console.error('Something went wrong while editing guest', err?.error?.message);
+					this.logService.error('Something went wrong while editing guest: ' + err?.error?.message);
 				},
 			});
 	}

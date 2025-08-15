@@ -8,8 +8,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSlideToggleHarness } from '@angular/material/slide-toggle/testing';
-import { MockModule } from 'ng-mocks';
+import { MockModule, MockService } from 'ng-mocks';
 import { of, throwError } from 'rxjs';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { PreferencesComponent } from './preferences.component';
@@ -38,6 +39,7 @@ describe('PreferencesComponent', () => {
 			providers: [
 				{ provide: UserService, useValue: userServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
+				{ provide: LogService, useValue: MockService(LogService) },
 			],
 		}).compileComponents();
 	}));
