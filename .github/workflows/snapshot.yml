@@ -93,23 +93,13 @@ jobs:
       node-version: 22.x
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
-  deploy-frontend:
-    needs: [snapshot, test-frontend]
-    uses: ./.github/workflows/frontend-deploy.yml
+  deploy:
+    needs: [snapshot, test-frontend, test-backend]
+    uses: ./.github/workflows/deploy.yml
     with:
       environment: test
-      artifact: ${{ needs.snapshot.outputs.frontend-artifact }}
-      dry-run: false
-    secrets:
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USER: ${{ secrets.SSH_USER }}
-  deploy-backend:
-    needs: [snapshot, test-backend]
-    uses: ./.github/workflows/backend-deploy.yml
-    with:
-      environment: test
-      artifact: ${{ needs.snapshot.outputs.backend-artifact }}
+      artifact-frontend: ${{ needs.snapshot.outputs.frontend-artifact }}
+      artifact-backend: ${{ needs.snapshot.outputs.backend-artifact }}
       dry-run: false
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
