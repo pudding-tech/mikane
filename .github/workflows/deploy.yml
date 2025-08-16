@@ -1,90 +1,91 @@
-name: Deploy specific release
+name: "~ Deploy"
+
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
-      release:
-        description: "Release tag to deploy"
+      dry-run:
+        required: false
+        default: true
+        type: boolean
+      artifact-frontend:
+        required: true
+        type: string
+      artifact-backend:
         required: true
         type: string
       environment:
-        description: "Environment to deploy to"
         required: true
-        type: choice
-        default: test
-        options:
-          - test
-          - production
-      node-version:
-        description: "Node version"
+        type: string
+    secrets:
+      SSH_PRIVATE_KEY:
         required: true
-        type: choice
-        default: 22.x
-        options:
-          - 20.x
-          - 22.x
-      dry-run:
-        description: "Dry run for testing"
-        required: false
-        type: boolean
-        default: false
+      SSH_HOST:
+        required: true
+      SSH_USER:
+        required: true
+
 jobs:
-  check-tag:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - uses: mukunku/tag-exists-action@v1.5.0
-        id: check-tag
-        with:
-          tag: v${{ inputs.release }}
-      - run: |
-          echo "Tag exists, building and deploying ${{ inputs.release }}" >> $GITHUB_STEP_SUMMARY
-        if: steps.check-tag.outputs.exists == 'true'
-      - run: |
-          echo "Tag does not exist, skipping build and deploy of ${{ inputs.release }}" >> $GITHUB_STEP_SUMMARY
-        if: steps.check-tag.outputs.exists == 'false'
-    outputs:
-      tag-exists: ${{ steps.check-tag.outputs.exists }}
-  build-frontend:
-    needs: check-tag
-    if: needs.check-tag.outputs.tag-exists == 'true'
-    uses: ./.github/workflows/frontend-build.yml
-    with:
-      tag: v${{ inputs.release }}
-      node-version: ${{ inputs.node-version }}
-      dry-run: ${{ inputs.dry-run }}
-      environment: ${{ inputs.environment }}
-      upload-artifact: true
-  build-backend:
-    needs: check-tag
-    if: needs.check-tag.outputs.tag-exists == 'true'
-    uses: ./.github/workflows/backend-build.yml
-    with:
-      tag: v${{ inputs.release }}
-      node-version: ${{ inputs.node-version }}
-      dry-run: ${{ inputs.dry-run }}
-      upload-artifact: true
   deploy-frontend:
-    needs: [check-tag, build-frontend]
-    if: needs.check-tag.outputs.tag-exists == 'true'
-    uses: ./.github/workflows/frontend-deploy.yml
-    with:
-      dry-run: ${{ inputs.dry-run }}
-      environment: ${{ inputs.environment }}
-      artifact: ${{ needs.build-frontend.outputs.artifact }}
-    secrets:
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USER: ${{ secrets.SSH_USER }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2.7.0
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: "just-a-placeholder-so-we-dont-get-errors"
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - name: Download artifacts
+        id: download
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact-frontend }}
+      - name: Deploy to ${{ inputs.environment }} with rsync (dry-run)
+        if: inputs.dry-run
+        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.FRONTEND_LOCATION }} --delete
+
+      - name: Deploy to ${{ inputs.environment }} with rsync
+        if: ${{!inputs.dry-run}}
+        run: rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.FRONTEND_LOCATION }} --delete
   deploy-backend:
-    needs: [check-tag, build-backend]
-    if: needs.check-tag.outputs.tag-exists == 'true'
-    uses: ./.github/workflows/backend-deploy.yml
-    with:
-      dry-run: ${{ inputs.dry-run }}
-      environment: ${{ inputs.environment }}
-      artifact: ${{ needs.build-backend.outputs.artifact }}
-    secrets:
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USER: ${{ secrets.SSH_USER }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2.7.0
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: "just-a-placeholder-so-we-dont-get-errors"
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Download artifacts
+        id: download
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact-backend }}
+
+      - name: Deploy to ${{ inputs.environment }} with rsync (dry-run)
+        if: inputs.dry-run
+        run: rsync -avhzn ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.BACKEND_LOCATION }} --delete
+
+      - name: Deploy to ${{ inputs.environment }} with rsync
+        if: ${{!inputs.dry-run}}
+        run: |
+          rsync -avhz ${{steps.download.outputs.download-path}} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.BACKEND_LOCATION }} --delete
+
+      - name: Reload backend ${{ inputs.environment }}
+        if: ${{ !inputs.dry-run }}
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export PATH="$PATH:/home/${{ secrets.SSH_USER }}/.nvm/versions/node/v20.10.0/bin/"
+            cd ${{ vars.BACKEND_LOCATION }}
+            npm install swagger-ui-express --prefix mikane
+            cp .env ./mikane/.env
+            pm2 reload ecosystem.config.js

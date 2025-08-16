@@ -31,23 +31,13 @@ jobs:
       tag: ${{ github.ref_name }}
       node-version: 22.x
       upload-artifact: true
-  deploy-frontend:
-    needs: [setup, build-frontend]
-    uses: ./.github/workflows/frontend-deploy.yml
+  deploy:
+    needs: [setup, build-frontend, build-backend]
+    uses: ./.github/workflows/deploy.yml
     with:
       environment: production
-      artifact: ${{ needs.setup.outputs.frontend-artifact }}
-      dry-run: false
-    secrets:
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USER: ${{ secrets.SSH_USER }}
-  deploy-backend:
-    needs: [setup, build-backend]
-    uses: ./.github/workflows/backend-deploy.yml
-    with:
-      environment: production
-      artifact: ${{ needs.setup.outputs.backend-artifact }}
+      artifact-frontend: ${{ needs.setup.outputs.frontend-artifact }}
+      artifact-backend: ${{ needs.setup.outputs.backend-artifact }}
       dry-run: false
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
