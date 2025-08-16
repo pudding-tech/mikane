@@ -111,7 +111,8 @@ jobs:
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
   deploy:
-    needs: [snapshot, test-frontend, test-backend]
+    needs:
+      [snapshot, build-frontend, build-backend, test-frontend, test-backend]
     uses: ./.github/workflows/deploy.yml
     with:
       environment: test
