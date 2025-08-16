@@ -41,17 +41,17 @@ jobs:
         uses: actions/download-artifact@v4
       - name: Deploy frontend to ${{ inputs.environment }} with rsync (dry-run)
         if: inputs.dry-run
-        run: rsync -avhzn ${{steps.download.outputs.download-path}}/${{ inputs.artifact-frontend }}/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.FRONTEND_LOCATION }} --delete
+        run: rsync -avhzn ${{steps.download.outputs.download-path}}/${{ inputs.artifact-frontend }}/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.FRONTEND_LOCATION }}/mikane --delete
       - name: Deploy frontend to ${{ inputs.environment }} with rsync
         if: ${{!inputs.dry-run}}
-        run: rsync -avhz ${{steps.download.outputs.download-path}}/${{ inputs.artifact-frontend }}/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.FRONTEND_LOCATION }} --delete
+        run: rsync -avhz ${{steps.download.outputs.download-path}}/${{ inputs.artifact-frontend }}/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.FRONTEND_LOCATION }}/mikane --delete
       - name: Deploy backend to ${{ inputs.environment }} with rsync (dry-run)
         if: inputs.dry-run
-        run: rsync -avhzn ${{steps.download.outputs.download-path}}/${{ inputs.artifact-backend }}/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.BACKEND_LOCATION }} --delete
+        run: rsync -avhzn ${{steps.download.outputs.download-path}}/${{ inputs.artifact-backend }}/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.BACKEND_LOCATION }}/mikane --delete
       - name: Deploy backend to ${{ inputs.environment }} with rsync
         if: ${{!inputs.dry-run}}
         run: |
-          rsync -avhz ${{steps.download.outputs.download-path}}/${{ inputs.artifact-backend }}/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.BACKEND_LOCATION }} --delete
+          rsync -avhz ${{steps.download.outputs.download-path}}/${{ inputs.artifact-backend }}/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.BACKEND_LOCATION }}/mikane --delete
       - name: Reload backend ${{ inputs.environment }}
         if: ${{ !inputs.dry-run }}
         uses: appleboy/ssh-action@v1.0.0
