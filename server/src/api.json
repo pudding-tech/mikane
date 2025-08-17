@@ -4027,7 +4027,6 @@
         ],
         "requestBody": {
           "description": "Optional planned date for settlement (i.e. expenses need to be submitted by this date)",
-          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -4145,7 +4144,7 @@
           "Various"
         ],
         "summary": "Save log message to database",
-        "description": "Save a log message to the database. Message must be a non-empty string up to 1000 characters.",
+        "description": "Save a log message to the database. Message must be a non-empty string up to 1000 characters. Level and timestamp are optional, and will default to 'info' and the current time respectively.",
         "operationId": "postLogMessage",
         "security": [
           { "cookieAuth": [] }
@@ -4167,6 +4166,10 @@
                       "alert", "error", "warn", "info", "fail", "success", "log", "debug", "verbose"
                     ],
                     "example": "info"
+                  },
+                  "timestamp": {
+                    "type": "date",
+                    "example": "2025-01-10"
                   }
                 }
               }

@@ -1,6 +1,7 @@
 import express from "express";
 import { authCheck } from "../middlewares/authCheck.ts";
 import { logToDatabase } from "../db/dbLog.ts";
+import { createDate } from "../utils/dateCreator.ts";
 import { ALLOWED_LOG_LEVELS, type LogLevelType } from "../env.ts";
 import { ErrorExt } from "../types/errorExt.ts";
 import { PUD144, PUD145 } from "../types/errorCodes.ts";
@@ -13,6 +14,7 @@ const router = express.Router();
 router.post("/log", authCheck, async (req, res) => {
   const msg: string = req.body.message;
   const level: LogLevelType | undefined = req.body.level;
+  const timestamp = req.body.timestamp ? createDate(req.body.timestamp) : new Date();
 
   if (!msg || msg.trim().length === 0 || msg.length > 1000) {
     throw new ErrorExt(PUD144);
@@ -23,7 +25,7 @@ router.post("/log", authCheck, async (req, res) => {
   }
 
   await logToDatabase({
-    timestamp: new Date(),
+    timestamp: timestamp,
     level: level ?? "info",
     origin: "client",
     message: msg.trim(),

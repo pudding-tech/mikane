@@ -70,7 +70,20 @@ describe("log", async () => {
       expect(res.body.code).toEqual(ec.PUD145.code);
     });
 
-    test("should save log to database, without explicit level", async () => {
+    test("fail logging with invalid timestamp", async () => {
+      const res = await request(app)
+        .post("/api/log")
+        .set("Cookie", authToken)
+        .send({
+          message: "Test log message",
+          timestamp: "2025-13-01"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD141.code);
+    });
+
+    test("should save log to database, without explicit level and timestamp", async () => {
       const res = await request(app)
         .post("/api/log")
         .set("Cookie", authToken)
@@ -89,6 +102,19 @@ describe("log", async () => {
         .send({
           message: "Test log message",
           level: "info"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.message).toEqual("Log successfully received");
+    });
+
+    test("should save log to database, with explicit timestamp", async () => {
+      const res = await request(app)
+        .post("/api/log")
+        .set("Cookie", authToken)
+        .send({
+          message: "Test log message",
+          timestamp: "2025-12-01"
         });
 
       expect(res.status).toEqual(200);
