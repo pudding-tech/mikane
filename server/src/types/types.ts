@@ -134,5 +134,6 @@ export type DBConfig = {
 export type LogEntryDB = {
   timestamp: Date,
   level: string,
-  message: string
+  message: string,
+  origin?: string
 }

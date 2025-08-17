@@ -116,6 +116,7 @@ create table log (
   id uuid primary key default gen_random_uuid(),
   "timestamp" timestamp not null,
   "level" varchar(50) not null,
+  origin varchar(20) not null default 'server',
   "message" text not null
 );
 

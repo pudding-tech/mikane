@@ -1,3 +1,5 @@
+import { ALLOWED_LOG_LEVELS } from "../env.ts";
+
 export type ErrorCode = {
   code: string,
   message: string,
@@ -1354,4 +1356,32 @@ export const PUD143: ErrorCode = {
   code: "PUD-143",
   message: "Cannot send 'add expenses reminder' notification email for event that's not active",
   status: 400
+};
+
+/**
+ * PUD-144: Message must be a non-empty string up to 1000 characters (400)
+ */
+export const PUD144: ErrorCode = {
+  code: "PUD-144",
+  message: "Message must be a non-empty string up to 1000 characters",
+  status: 400
+};
+
+/**
+ * PUD-145: Level must be one of the following values: ALLOWED_LOG_LEVELS (400)
+ */
+export const PUD145: ErrorCode = {
+  code: "PUD-145",
+  message: "Level must be one of the following values: " + ALLOWED_LOG_LEVELS.join(", "),
+  status: 400
+};
+
+/**
+ * PUD-146: log_to_db (500)
+ */
+export const PUD146: ErrorCode = {
+  code: "PUD-146",
+  message: "Something went wrong while logging to the database",
+  status: 500,
+  log: true
 };

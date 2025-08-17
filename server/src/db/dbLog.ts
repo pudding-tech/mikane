@@ -1,5 +1,7 @@
 import { pool } from "../db.ts";
+import { ErrorExt } from "../types/errorExt.ts";
 import { LogEntryDB } from "../types/types.ts";
+import { PUD146 } from "../types/errorCodes.ts";
 
 /**
  * DB interface: Insert a log entry into the database
@@ -7,11 +9,11 @@ import { LogEntryDB } from "../types/types.ts";
  */
 export const logToDatabase = async (log: LogEntryDB) => {
   const query = {
-    text: "SELECT * FROM log_to_db($1, $2, $3);",
-    values: [log.timestamp, log.level, log.message],
+    text: "SELECT * FROM log_to_db($1, $2, $3, $4);",
+    values: [log.timestamp, log.level, log.origin, log.message],
   };
   await pool.query(query)
     .catch(err => {
-      console.error("Error writing log to database", err);
+      throw new ErrorExt(PUD146, err);
     });
 };

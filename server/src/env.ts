@@ -29,14 +29,14 @@ interface EnvVariables {
   MIKANE_EMAIL_API_TOKEN?: string;
 }
 
-const allowedEnvironments = ["dev", "production", "staging", "test"] as const;
-const allowedLogLevels = ["alert", "error", "warn", "info", "fail", "success", "log", "debug", "verbose"] as const;
+const ALLOWED_ENVIRONMENTS = ["dev", "production", "staging", "test"] as const;
+const ALLOWED_LOG_LEVELS = ["alert", "error", "warn", "info", "fail", "success", "log", "debug", "verbose"] as const;
 
-type EnvType = typeof allowedEnvironments[number];
-type LogLevelType = typeof allowedLogLevels[number];
+type EnvType = typeof ALLOWED_ENVIRONMENTS[number];
+type LogLevelType = typeof ALLOWED_LOG_LEVELS[number];
 
 const isEnvType = (environement: any): environement is EnvType => {
-  if (allowedEnvironments.includes(environement)) {
+  if (ALLOWED_ENVIRONMENTS.includes(environement)) {
     return true;
   }
   if (environement) {
@@ -45,7 +45,7 @@ const isEnvType = (environement: any): environement is EnvType => {
   return false;
 };
 const isLogLevelType = (logLevel: any): logLevel is LogLevelType => {
-  if (allowedLogLevels.includes(logLevel)) {
+  if (ALLOWED_LOG_LEVELS.includes(logLevel)) {
     return true;
   }
   if (logLevel) {
@@ -112,3 +112,4 @@ catch (err) {
 }
 
 export default envVariables;
+export { ALLOWED_LOG_LEVELS, LogLevelType };
