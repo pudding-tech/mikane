@@ -1377,11 +1377,21 @@ export const PUD145: ErrorCode = {
 };
 
 /**
- * PUD-146: log_to_db (500)
+ * PUD-146: log_server_to_db (500)
  */
 export const PUD146: ErrorCode = {
   code: "PUD-146",
-  message: "Something went wrong while logging to the database",
+  message: "Something went wrong while logging server events to the database",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-147: log_client_to_db (500)
+ */
+export const PUD147: ErrorCode = {
+  code: "PUD-147",
+  message: "Something went wrong while logging client events to the database",
   status: 500,
   log: true
 };

@@ -4143,8 +4143,8 @@
         "tags": [
           "Various"
         ],
-        "summary": "Save log message to database",
-        "description": "Save a log message to the database. Message must be a non-empty string up to 1000 characters. Level and timestamp are optional, and will default to 'info' and the current time respectively.",
+        "summary": "Save client log message to database",
+        "description": "Save a client log message to the database. Message must be a non-empty string up to 1000 characters. Level and timestamp are optional, and if not provided will default to 'info' and the current time respectively.",
         "operationId": "postLogMessage",
         "security": [
           { "cookieAuth": [] }

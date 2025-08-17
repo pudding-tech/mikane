@@ -36,7 +36,7 @@ describe("log", async () => {
   /* POST /log */
   /* --------- */
   describe("POST /log", async () => {
-    test("fail logging without message", async () => {
+    test("fail save log without message", async () => {
       const res = await request(app)
         .post("/api/log")
         .set("Cookie", authToken);
@@ -45,7 +45,7 @@ describe("log", async () => {
       expect(res.body.code).toEqual(ec.PUD144.code);
     });
 
-    test("fail logging with invalid message", async () => {
+    test("fail save log with invalid message", async () => {
       const res = await request(app)
         .post("/api/log")
         .set("Cookie", authToken)
@@ -57,7 +57,7 @@ describe("log", async () => {
       expect(res.body.code).toEqual(ec.PUD144.code);
     });
 
-    test("fail logging with invalid level", async () => {
+    test("fail save log with invalid level", async () => {
       const res = await request(app)
         .post("/api/log")
         .set("Cookie", authToken)
@@ -70,7 +70,7 @@ describe("log", async () => {
       expect(res.body.code).toEqual(ec.PUD145.code);
     });
 
-    test("fail logging with invalid timestamp", async () => {
+    test("fail save log with invalid timestamp", async () => {
       const res = await request(app)
         .post("/api/log")
         .set("Cookie", authToken)

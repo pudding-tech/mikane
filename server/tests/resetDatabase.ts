@@ -23,7 +23,8 @@ export const resetDatabase = async () => {
     DROP TABLE "user_preferences";
     DROP TABLE "user";
     DROP TABLE "event_status_type";
-    DROP TABLE "log";
+    DROP TABLE "log_server";
+    DROP TABLE "log_client";
   `);
   const sqlScript = fs.readFileSync("./db_scripts/schema/db_schema.sql", "utf8");
   await pool.query(sqlScript);

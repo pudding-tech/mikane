@@ -51,7 +51,7 @@ create table user_category (
   user_id uuid not null references "user"(id) on delete cascade,
   category_id uuid not null references category(id) on delete cascade,
   "weight" numeric(14),
-   joined_time timestamp not null,
+  joined_time timestamp not null,
   primary key (user_id, category_id)
 );
 
@@ -112,12 +112,21 @@ create table user_preferences (
   primary key (user_id)
 );
 
-create table log (
+create table log_server (
   id uuid primary key default gen_random_uuid(),
   "timestamp" timestamp not null,
   "level" varchar(50) not null,
-  origin varchar(20) not null default 'server',
   "message" text not null
+);
+
+create table log_client (
+  id uuid primary key default gen_random_uuid(),
+  "timestamp" timestamp not null,
+  "level" varchar(50) not null,
+  "message" text not null,
+  user_id uuid,
+  session_id varchar(255),
+  ip varchar(255)
 );
 
 insert into event_status_type (id, name)

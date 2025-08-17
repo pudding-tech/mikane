@@ -1,6 +1,6 @@
 import Log, { Middleware } from "adze";
 import env from "../env.js";
-import { logToDatabase } from "../db/dbLog.ts";
+import { logServerToDatabase } from "../db/dbLog.ts";
 
 const levelMap = { alert: 0, error: 1, warn: 2, info: 3, fail: 4, success: 5, log: 6, debug: 7, verbose: 8 } as const;
 
@@ -27,7 +27,7 @@ export class DbLogger extends Middleware {
       return;
     }
 
-    logToDatabase({
+    logServerToDatabase({
       timestamp: new Date(timestamp),
       level: levelName,
       message: args.join(" "),
