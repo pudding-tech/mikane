@@ -131,8 +131,19 @@ export type DBConfig = {
   password: string
 };
 
-export type LogEntryDB = {
+export type LogEntryServer = {
   timestamp: Date,
   level: string,
-  message: string
+  message: string,
+  userId?: string,
+  sessionId?: string
+}
+
+export type LogEntryClient = {
+  timestamp: Date,
+  level: string,
+  message: string,
+  userId?: string,
+  sessionId?: string,
+  ip?: string
 }

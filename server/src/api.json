@@ -4002,6 +4002,82 @@
         }
       }
     },
+    "/notifications/{eventId}/reminder": {
+      "post": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Send 'add expenses reminder' email to all participants in an event",
+        "description": "Send an 'add expenses reminder' email to all participants in an event",
+        "operationId": "postAddExpensesReminderEmail",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Optional planned date for settlement (i.e. expenses need to be submitted by this date)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cutoffDate": {
+                    "type": "date",
+                    "example": "2025-01-20"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Emails successfully sent"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/notifications/{eventId}/settle": {
       "post": {
         "tags": [
@@ -4035,6 +4111,91 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/log": {
+      "post": {
+        "tags": [
+          "Various"
+        ],
+        "summary": "Save client log message to database",
+        "description": "Save a client log message to the database. Message must be a non-empty string up to 1000 characters. Level and timestamp are optional, and if not provided will default to 'info' and the current time respectively.",
+        "operationId": "postLogMessage",
+        "security": [
+          { "cookieAuth": [] }
+        ],
+        "requestBody": {
+          "description": "Log message",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Test message"
+                  },
+                  "level": {
+                    "type": "string",
+                    "enum": [
+                      "alert", "error", "warn", "info", "fail", "success", "log", "debug", "verbose"
+                    ],
+                    "example": "info"
+                  },
+                  "timestamp": {
+                    "type": "date",
+                    "example": "2025-01-10"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Log successfully received"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
                 }
               }
             }
