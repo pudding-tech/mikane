@@ -280,7 +280,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			width: '420px',
 			data: {
 				title: "Send 'ready to settle' email",
-				content: "Are you sure you want to send the 'ready to settle' email? Emails will be sent to all payers in the event.",
+				content: "Are you sure you want to send the 'ready to settle' email? Emails will be sent to all participants in the event.",
 				confirm: 'Yes, I am sure',
 			},
 		});

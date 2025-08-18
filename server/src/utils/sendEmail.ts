@@ -20,6 +20,10 @@ export const sendEmail = async (recipient: string, subject: string, html: string
 
   const client = new ServerClient(token);
 
+  if (env.NODE_ENV === "dev") {
+    recipient = "test@blackhole.postmarkapp.com";
+  }
+
   return client.sendEmail({
     From: email,
     To: recipient,

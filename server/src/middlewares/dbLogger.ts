@@ -22,8 +22,8 @@ export class DbLogger extends Middleware {
       return;
     }
 
-    // Do not log to DB in dev environment
-    if (env.NODE_ENV === "dev") {
+    // Do not log to DB in local dev environment
+    if (env.NODE_ENV === "dev" && !env.DEPLOYED) {
       return;
     }
 

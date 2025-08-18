@@ -47,7 +47,7 @@ router.post("/notifications/:eventId/reminder", authCheck, async (req, res) => {
 });
 
 /*
-* Send 'ready-to-settle' email to all payers in an event
+* Send 'ready-to-settle' email to all participants in an event
 */
 router.post("/notifications/:eventId/settle", authCheck, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
