@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { User } from '../user/user.service';
@@ -16,6 +16,12 @@ export class AuthService {
 	private currentUser: User;
 
 	private _redirectUrl: string;
+
+	public authenticated$ = new BehaviorSubject<boolean | null>(false);
+
+	get authenticated(): boolean {
+		return !!this.currentUser;
+	}
 
 	get redirectUrl(): string {
 		// Consume redirect URL
@@ -34,13 +40,19 @@ export class AuthService {
 				usernameEmail: username,
 				password: password,
 			})
-			.pipe(tap((user) => (this.currentUser = user)));
+			.pipe(
+				tap((user) => {
+					this.currentUser = user;
+					this.authenticated$.next(true);
+				}),
+			);
 	}
 
 	logout() {
 		return this.httpClient.post<void>(this.apiUrl + 'logout', {}).pipe(
 			tap(() => {
 				this.clearCurrentUser();
+				this.authenticated$.next(false);
 			}),
 		);
 	}
@@ -51,9 +63,15 @@ export class AuthService {
 
 	getCurrentUser(): Observable<User> {
 		if (this.currentUser) {
+			this.authenticated$.next(true);
 			return of(this.currentUser);
 		} else {
-			return this.httpClient.get<User>(this.apiUrl + 'login').pipe(tap((user) => (this.currentUser = user)));
+			return this.httpClient.get<User>(this.apiUrl + 'login').pipe(
+				tap((user) => {
+					this.currentUser = user;
+					this.authenticated$.next(true);
+				}),
+			);
 		}
 	}
 

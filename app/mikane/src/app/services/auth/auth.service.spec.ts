@@ -150,6 +150,24 @@ describe('AuthService', () => {
 				error: fail,
 			});
 		});
+
+		it('should return authenticated status', () => {
+			expect(service.authenticated).toBeFalse();
+
+			service.getCurrentUser().subscribe({
+				next: (user) => {
+					expect(user).withContext('should return user').not.toBeNull();
+					expect(service.authenticated).toBeTrue();
+				},
+				error: fail,
+			});
+
+			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
+
+			expect(req.request.method).toEqual('GET');
+
+			req.flush(expectedLoginResponse);
+		});
 	});
 
 	describe('#resetPassword', () => {

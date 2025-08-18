@@ -3,7 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
 import { AuthService } from './auth.service';
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const authGuard: CanActivateFn = (_route, state) => {
 	const authService = inject(AuthService);
 	const router = inject(Router);
 
@@ -21,6 +21,6 @@ export const authGuard: CanActivateFn = (route, state) => {
 			// User is not logged in, save URL and redirect to login page
 			authService.redirectUrl = state.url;
 			return of(router.parseUrl('/login'));
-		})
+		}),
 	);
 };
