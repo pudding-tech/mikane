@@ -1,6 +1,6 @@
 {
   "name": "mikane_server",
-  "version": "2.4.1-SNAPSHOT.9",
+  "version": "2.4.1-SNAPSHOT.10",
   "type": "module",
   "description": "API server for Mikane",
   "scripts": {
