@@ -38,7 +38,7 @@
 						<mat-card-title>Notifications</mat-card-title>
 					</mat-card-header>
 					<mat-card-content>
-						<div class="header">Add expenses reminder</div>
+						<div class="header">Reminder for adding expenses</div>
 						<div class="event-settings-content notifications">
 							<ng-container *ngTemplateOutlet="notificationsAddExpensesReminderContent" />
 						</div>
@@ -62,7 +62,7 @@
 			<div>
 				<ng-container *ngTemplateOutlet="adminsContent" />
 			</div>
-			<div class="header-mobile">Notification: Add expenses reminder</div>
+			<div class="header-mobile">Notification: Reminder for adding expenses</div>
 			<div class="event-settings-content notifications">
 				<ng-container *ngTemplateOutlet="notificationsAddExpensesReminderContent" />
 			</div>
@@ -270,7 +270,7 @@
 	}
 	<div>
 		<mat-form-field [ngClass]="{ 'full-view': (breakpointService.isMobile() | async) === false }">
-			<mat-label>Planned 'ready to settle' date</mat-label>
+			<mat-label>Settlement date</mat-label>
 			<input
 				matInput
 				readonly
@@ -294,7 +294,7 @@
 		(click)="sendAddExpensesReminderEmails()"
 	>
 		<mat-icon>email</mat-icon>
-		Send 'add expenses reminder' email
+		Send expense reminder
 	</button>
 </ng-template>
 
