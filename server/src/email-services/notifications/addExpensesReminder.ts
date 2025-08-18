@@ -41,7 +41,7 @@ const addExpensesReminderEmailHTML = (user: User, event: Event, cutoffDate?: Dat
 
   return `<html>
             <body>
-              <h1>${event.name} - Reminder to submit your expenses</h1>
+              <h2>${event.name} - Reminder to submit your expenses</h2>
               <div>As a participant in ${event.name}, this is a friendly reminder to log any expenses you haven't yet added.</div>
               ${cutoffText}
               <br>

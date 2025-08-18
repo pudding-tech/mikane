@@ -288,9 +288,12 @@ describe("notifications", async () => {
         .set("Cookie", authToken);
 
       const sentEmails = getSentEmails();
-      const subject = sentEmails[0].Subject;
+      const subject1 = sentEmails[0].Subject;
+      const subject2 = sentEmails[1].Subject;
       const html = sentEmails[0].HtmlBody as string;
-      const sentToEmail = sentEmails[0].To;
+      const sentToEmail1 = sentEmails[0].To;
+      const sentToEmail2 = sentEmails[1].To;
+      const sentToEmail3 = sentEmails[2].To;
 
       const receiver1NameStart = html.indexOf("<div style=\"margin-left: 10px;\">") + "<div style=\"margin-left: 10px;\">".length;
       const receiver1NameEnd = html.indexOf("<", receiver1NameStart);
@@ -309,8 +312,11 @@ describe("notifications", async () => {
       expect(res.status).toEqual(200);
       expect(res.body.message).toEqual("Emails successfully sent");
       
-      expect(subject).toEqual(event.name + " is now ready for settlement - Mikane");
-      expect(sentToEmail).toEqual(user1.email);
+      expect(subject1).toEqual(event.name + " is now ready for settlement - Mikane");
+      expect(subject2).toEqual(event.name + ": You will soon receive payments - Mikane");
+      expect(sentToEmail1).toEqual(user1.email);
+      expect(sentToEmail2).toEqual(user2.email);
+      expect(sentToEmail3).toEqual(user3.email);
       expect(receiver1Name).toEqual(payments[0].receiver.name);
       expect(receiver1Amount).toEqual(payments[0].amount);
       expect(receiver2Name).toEqual(payments[1].receiver.name);
