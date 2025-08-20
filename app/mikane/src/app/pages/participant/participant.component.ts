@@ -18,6 +18,7 @@ import {
 	Subject,
 	Subscription,
 	combineLatest,
+	distinctUntilChanged,
 	filter,
 	forkJoin,
 	map,
@@ -106,6 +107,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		this.eventSubscription = this.$event
 			?.pipe(
 				filter((event) => event?.id !== undefined),
+				distinctUntilChanged((a, b) => a?.id === b?.id),
 				switchMap((event) => {
 					if (event.id) {
 						return of(event);

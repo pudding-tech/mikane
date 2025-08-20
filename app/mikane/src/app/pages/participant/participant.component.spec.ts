@@ -94,6 +94,7 @@ describe('ParticipantComponent', () => {
 			status: { id: EventStatusType.ACTIVE, name: 'Active' },
 			adminIds: [],
 		} as PuddingEvent);
+
 		expect(component.displayedColumns).toContain('actions');
 	});
 

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { map, Observable, of, tap } from 'rxjs';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { User, UserBalance } from '../user/user.service';
@@ -43,6 +43,7 @@ export class EventService {
 	private env = inject<Environment>(ENV);
 
 	private apiUrl = this.env.apiUrl + 'events';
+	private cachedEventNames = new Map<string, string>();
 
 	loadEvents(): Observable<PuddingEvent[]> {
 		return this.httpClient.get<PuddingEvent[]>(this.apiUrl);
@@ -57,7 +58,17 @@ export class EventService {
 	}
 
 	getEvent(eventId: string): Observable<PuddingEvent> {
-		return this.httpClient.get<PuddingEvent>(this.apiUrl + `/${eventId}`);
+		return this.httpClient
+			.get<PuddingEvent>(this.apiUrl + `/${eventId}`)
+			.pipe(tap((event) => this.cachedEventNames.set(eventId, event.name)));
+	}
+
+	getEventName(eventId: string): Observable<string> {
+		if (this.cachedEventNames.has(eventId)) {
+			return of(this.cachedEventNames.get(eventId));
+		} else {
+			return this.getEvent(eventId).pipe(map((event) => event.name));
+		}
 	}
 
 	createEvent({
