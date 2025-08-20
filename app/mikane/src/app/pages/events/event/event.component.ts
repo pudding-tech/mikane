@@ -6,18 +6,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, switchMap } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { MobileEventNavbarComponent } from 'src/app/features/mobile/mobile-event-navbar/mobile-event-navbar.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { CategoryComponent } from '../../category/category.component';
 import { EventInfoComponent } from '../../event-info/event-info.component';
 import { EventSettingsComponent } from '../../event-settings/event-settings.component';
 import { ExpendituresComponent } from '../../expenditures/expenditures.component';
 import { ParticipantComponent } from '../../participant/participant.component';
+import { ApiError } from 'src/app/types/apiError.type';
 
 @Component({
 	selector: 'app-event',
@@ -39,6 +41,7 @@ export class EventComponent implements OnInit {
 	private eventService = inject(EventService);
 	private route = inject(ActivatedRoute);
 	private router = inject(Router);
+	private logService = inject(LogService);
 	private messageService = inject(MessageService);
 	breakpointService = inject(BreakpointService);
 	contextService = inject(ContextService);
@@ -125,8 +128,11 @@ export class EventComponent implements OnInit {
 			}
 		});
 
-		this.route.params.subscribe((params) => {
-			this.eventService.getEvent(params['eventId']).subscribe({
+		this.route.params
+			.pipe(
+				switchMap((params) => this.eventService.getEvent(params['eventId']))
+			)
+			.subscribe({
 				next: (event) => {
 					if (event) {
 						this.event = event;
@@ -137,11 +143,11 @@ export class EventComponent implements OnInit {
 						this.router.navigate(['/events']);
 					}
 				},
-				error: () => {
-					this.messageService.showError('Error loading events');
+				error: (error: ApiError) => {
+					this.messageService.showError('Error loading event');
+					this.logService.error('something went wrong while loading event: ' + error);
 				},
 			});
-		});
 	}
 
 	getActiveLinkFromUrl(url: string) {
