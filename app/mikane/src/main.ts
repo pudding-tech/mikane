@@ -1,7 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import localeNo from '@angular/common/locales/no';
-import { ErrorHandler, LOCALE_ID, enableProdMode, importProvidersFrom } from '@angular/core';
+import { ErrorHandler, LOCALE_ID, enableProdMode, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -68,5 +68,6 @@ bootstrapApplication(AppComponent, {
 		},
 		provideAnimations(),
 		provideHttpClient(withInterceptorsFromDi()),
+		provideZonelessChangeDetection(),
 	],
 }).catch((err) => console.error(err));
