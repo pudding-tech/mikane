@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { MobileEventNavbarComponent } from 'src/app/features/mobile/mobile-event-navbar/mobile-event-navbar.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -125,15 +125,8 @@ export class EventComponent implements OnInit {
 			}
 		});
 
-		combineLatest([this.eventService.loadEvents(), this.route.params])
-			.pipe(
-				map(([events, params]) => {
-					return events.find((event) => {
-						return event.id === params['eventId'];
-					});
-				}),
-			)
-			.subscribe({
+		this.route.params.subscribe((params) => {
+			this.eventService.getEvent(params['eventId']).subscribe({
 				next: (event) => {
 					if (event) {
 						this.event = event;
@@ -148,6 +141,7 @@ export class EventComponent implements OnInit {
 					this.messageService.showError('Error loading events');
 				},
 			});
+		});
 	}
 
 	getActiveLinkFromUrl(url: string) {

@@ -14,7 +14,7 @@ export class BreakpointService {
 	 *
 	 * Ex. 1:
 	 *
-	 * *ngIf="breakpointService.isMobile() | async"
+	 * @if(breakpointService.isMobile() | async)
 	 *
 	 * Ex. 2:
 	 *

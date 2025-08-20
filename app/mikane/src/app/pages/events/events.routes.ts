@@ -9,17 +9,15 @@ import { EventComponent } from './event/event.component';
 import { EventsComponent } from './events.component';
 
 const eventTitleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
-	return inject(EventService)
-		.loadEvents()
-		.pipe(
-			map((events) => {
-				return (
-					events.find((event) => {
-						return event.id === route.parent?.params['eventId'];
-					})?.name + ' | Mikane'
-				);
-			}),
-		);
+	const eventService = inject(EventService);
+	const cachedName = eventService.getCachedEventName(route.parent?.params['eventId']);
+
+  if (cachedName) {
+    return cachedName + ' | Mikane';
+  }
+  return eventService.getEvent(route.parent?.params['eventId']).pipe(
+    map(event => event.name + ' | Mikane')
+  );
 };
 
 export default [
