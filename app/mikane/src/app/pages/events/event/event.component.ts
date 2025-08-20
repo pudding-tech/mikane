@@ -96,7 +96,7 @@ export class EventComponent implements OnInit {
 	});
 
 	constructor() {
-		const event = this.router.getCurrentNavigation()?.extras.state?.['event'];
+		const event = this.router.currentNavigation()?.extras.state?.['event'];
 		if (event) {
 			this.event = event;
 			this.isEventAdmin.set(event.userInfo.isAdmin);
