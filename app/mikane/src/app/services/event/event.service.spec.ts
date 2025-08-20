@@ -10,7 +10,7 @@ describe('EventService', () => {
 	let service: EventService;
 	let httpTestingController: HttpTestingController;
 	const mockEvent = {
-		id: 'id',
+		id: 'eventId',
 		name: 'name',
 		description: 'description',
 		created: new Date(),
@@ -133,6 +133,49 @@ describe('EventService', () => {
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId');
 
 			expect(req.request.method).toEqual('GET');
+
+			req.flush(mockEvent);
+		});
+	});
+
+	describe('#getEventName', () => {
+		it('should get event name', () => {
+			service.getEventName('eventId').subscribe({
+				next: (result) => {
+					expect(result).withContext('should return result').toEqual('name');
+				},
+				error: fail,
+			});
+
+			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId');
+
+			expect(req.request.method).toEqual('GET');
+
+			req.flush(mockEvent);
+		});
+
+		it('should cache event name', () => {
+			service.getEventName('eventId').subscribe({
+				next: (result) => {
+					expect(result).withContext('should return result').toEqual('name');
+				},
+				error: fail,
+			});
+
+			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId');
+
+			expect(req.request.method).toEqual('GET');
+			req.flush(mockEvent);
+
+			// Name should be cached this time
+			service.getEventName('eventId').subscribe({
+				next: (result) => {
+					expect(result).withContext('should return result').toEqual('name');
+				},
+				error: fail,
+			});
+
+			httpTestingController.expectNone('http://localhost:3002/api/events/eventId');
 		});
 	});
 
@@ -156,12 +199,14 @@ describe('EventService', () => {
 
 	describe('#editEvent', () => {
 		it('should edit event', () => {
-			service.editEvent({ id: 'eventId', name: 'name', description: 'description', privateEvent: false, status: EventStatusType.ACTIVE }).subscribe({
-				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
-				},
-				error: fail,
-			});
+			service
+				.editEvent({ id: 'eventId', name: 'name', description: 'description', privateEvent: false, status: EventStatusType.ACTIVE })
+				.subscribe({
+					next: (result) => {
+						expect(result).withContext('should return result').toEqual(mockEvent);
+					},
+					error: fail,
+				});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId');
 
