@@ -18,11 +18,20 @@ describe('createCompareValidator', () => {
 	});
 
 	it('should return { match_error: "Passwords do not match" } if control values do not match', () => {
-		controlTwo.setValue('different password');
+		controlTwo.setValue('value2-different');
 		const validator = createCompareValidator(controlOne, controlTwo)();
 
 		expect(validator).toEqual({ match_error: 'Passwords do not match' });
 		expect(controlTwo.errors).toEqual({ match_error: 'Passwords do not match' });
+	});
+
+	it('should return null if control values are empty strings', () => {
+		controlOne.setValue('');
+		controlTwo.setValue('');
+		const validator = createCompareValidator(controlOne, controlTwo)();
+
+		expect(validator).toBeNull();
+		expect(controlTwo.errors).toBeNull();
 	});
 
 	it('should return null if control values are undefined', () => {
