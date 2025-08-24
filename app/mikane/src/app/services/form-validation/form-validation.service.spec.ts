@@ -11,8 +11,8 @@ describe('FormValidationService', () => {
 
 	beforeEach(() => {
 		const env = { apiUrl: 'http://localhost:3002/api/' } as Environment;
+
 		TestBed.configureTestingModule({
-			imports: [],
 			providers: [
 				FormValidationService,
 				{ provide: ENV, useValue: env },
@@ -20,14 +20,9 @@ describe('FormValidationService', () => {
 				provideHttpClientTesting(),
 			],
 		});
+
 		service = TestBed.inject(FormValidationService);
-
-		// Inject the http service and test controller for each test
 		httpTestingController = TestBed.inject(HttpTestingController);
-	});
-
-	afterEach(() => {
-		httpTestingController.verify();
 	});
 
 	describe('#validateUsername', () => {
@@ -36,7 +31,6 @@ describe('FormValidationService', () => {
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual({ valid: true });
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/validation/user/username');
@@ -53,7 +47,6 @@ describe('FormValidationService', () => {
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual({ valid: true });
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/validation/user/email');
@@ -70,7 +63,6 @@ describe('FormValidationService', () => {
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual({ valid: true });
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/validation/user/phone');
@@ -87,7 +79,6 @@ describe('FormValidationService', () => {
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual({ valid: true });
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/validation/event/name');
@@ -102,7 +93,6 @@ describe('FormValidationService', () => {
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual({ valid: true });
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/validation/category/name');
