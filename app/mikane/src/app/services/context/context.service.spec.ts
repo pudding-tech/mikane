@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
+import { vi } from 'vitest';
 import { ContextService } from './context.service';
 
 interface NavigatorIOS extends Navigator {
-  standalone?: boolean;
+	standalone?: boolean;
 }
 
 describe('ContextService', () => {
@@ -16,26 +17,28 @@ describe('ContextService', () => {
 			production: false,
 		} as Environment;
 
-		TestBed.configureTestingModule({ providers: [{ provide: ENV, useValue: env }] });
+		TestBed.configureTestingModule({
+			providers: [ContextService, { provide: ENV, useValue: env }],
+		});
 	});
 
 	describe('#isMobileDevice', () => {
 		it('should return false if there is no user agent', () => {
-			spyOnProperty(window.navigator, 'userAgent').and.returnValue(undefined);
+			vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(undefined);
 			service = TestBed.inject(ContextService);
 
 			expect(service.isMobileDevice).toBe(false);
 		});
 
 		it('should return true if the user agent matches a mobile device', () => {
-			spyOnProperty(window.navigator, 'userAgent').and.returnValue('android');
+			vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue('android');
 			service = TestBed.inject(ContextService);
 
 			expect(service.isMobileDevice).toBe(true);
 		});
 
 		it('should return false if user agent does not match a mobile device', () => {
-			spyOnProperty(window.navigator, 'userAgent').and.returnValue('Mozilla');
+			vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue('Mozilla');
 			service = TestBed.inject(ContextService);
 
 			expect(service.isMobileDevice).toBe(false);
@@ -44,25 +47,25 @@ describe('ContextService', () => {
 
 	describe('#isIos', () => {
 		it('should return false when there is no user agent', () => {
-			spyOnProperty(window.navigator, 'userAgent').and.returnValue(undefined);
+			vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(undefined);
 			service = TestBed.inject(ContextService);
 
 			expect(service.isIos).toBe(false);
 		});
 
 		it('should return true if device is iOS', () => {
-			const spy = spyOnProperty(window.navigator, 'userAgent');
+			const spy = vi.spyOn(window.navigator, 'userAgent', 'get');
 
 			['iPad', 'iPhone', 'iPod'].forEach((userAgent) => {
-				spy.and.returnValue(userAgent);
+				spy.mockReturnValue(userAgent);
 				service = TestBed.inject(ContextService);
 
 				expect(service.isIos).toBe(true);
 			});
 		});
 
-		it('should return false if device is an Android', () => {
-			spyOnProperty(window.navigator, 'userAgent').and.returnValue('android');
+		it('should return false if device is not iOS', () => {
+			vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue('android');
 			service = TestBed.inject(ContextService);
 
 			expect(service.isIos).toBe(false);
@@ -71,17 +74,17 @@ describe('ContextService', () => {
 
 	describe('#isIosPwaStandalone', () => {
 		it('should return false in case of no user agent', () => {
-			spyOnProperty(window.navigator, 'userAgent').and.returnValue(undefined);
+			vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(undefined);
 			service = TestBed.inject(ContextService);
 
 			expect(service.isIosPwaStandalone).toBe(false);
 		});
 
 		it('should return false if device is iOS and not in standalone mode', () => {
-			const spy = spyOnProperty(window.navigator, 'userAgent');
+			const spy = vi.spyOn(window.navigator, 'userAgent', 'get');
 
 			['iPad', 'iPhone', 'iPod'].forEach((userAgent) => {
-				spy.and.returnValue(userAgent);
+				spy.mockReturnValue(userAgent);
 				service = TestBed.inject(ContextService);
 
 				expect(service.isIosPwaStandalone).toBe(false);
@@ -89,10 +92,10 @@ describe('ContextService', () => {
 		});
 
 		it('should return true if device is iOS and in standalone mode', () => {
-			const spy = spyOnProperty(window.navigator, 'userAgent');
+			const spy = vi.spyOn(window.navigator, 'userAgent', 'get');
 
 			['iPad', 'iPhone', 'iPod'].forEach((userAgent) => {
-				spy.and.returnValue(userAgent);
+				spy.mockReturnValue(userAgent);
 				Object.defineProperty(window.navigator, 'standalone', {
 					value: true,
 					configurable: true,
