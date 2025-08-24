@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EventService } from '../event/event.service';
 import { MikaneTitleStrategy } from './title-strategy';
 

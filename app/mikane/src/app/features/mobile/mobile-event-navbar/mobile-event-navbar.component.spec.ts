@@ -4,22 +4,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockModule, MockService } from 'ng-mocks';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ContextService } from 'src/app/services/context/context.service';
 import { MobileEventNavbarComponent } from './mobile-event-navbar.component';
 
 describe('MobileEventNavbarComponent', () => {
 	let component: MobileEventNavbarComponent;
 	let fixture: ComponentFixture<MobileEventNavbarComponent>;
-	let contextServiceSpy: jasmine.SpyObj<ContextService>;
 
 	beforeEach(() => {
-		contextServiceSpy = jasmine.createSpyObj<ContextService>('ContextService', ['isIos']);
 		TestBed.configureTestingModule({
-			imports: [MobileEventNavbarComponent, MockModule(MatIconModule), MockModule(MatRippleModule), RouterTestingModule],
+			imports: [MobileEventNavbarComponent, MatIconModule, MatRippleModule, RouterTestingModule],
 			providers: [
-				{ provide: ContextService, useValue: contextServiceSpy },
-				{ provide: ActivatedRoute, useValue: MockService(ActivatedRoute) },
+				{ provide: ContextService, useValue: { isIos: () => false } },
+				{ provide: ActivatedRoute, useValue: {} },
 			],
 		}).compileComponents();
 	});
