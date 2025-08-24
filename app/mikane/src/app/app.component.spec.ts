@@ -3,7 +3,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppComponent } from './app.component';
 import { FooterComponent } from './features/footer/footer.component';
 import { LogService } from './services/log/log.service';

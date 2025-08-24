@@ -117,8 +117,8 @@
 					"options": {
 						"tsConfig": "tsconfig.spec.json",
 						"runner": "vitest",
-						"buildTarget": "::development",
-						"codeCoverage": true
+						"buildTarget": "::development"
+						
 					}
 				},
 				"lint": {
