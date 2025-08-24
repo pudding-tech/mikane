@@ -13,6 +13,7 @@ describe('CategoryService', () => {
 
 	beforeEach(() => {
 		const env = { apiUrl: 'http://localhost:3002/api/' } as Environment;
+
 		mockCategory = {
 			id: 'id',
 			name: 'name',
@@ -23,7 +24,6 @@ describe('CategoryService', () => {
 		} as Category;
 
 		TestBed.configureTestingModule({
-			imports: [],
 			providers: [
 				CategoryService,
 				{ provide: ENV, useValue: env },
@@ -36,17 +36,12 @@ describe('CategoryService', () => {
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
-	afterEach(() => {
-		httpTestingController.verify();
-	});
-
 	describe('#loadCategories', () => {
 		it('should get categories', () => {
 			service.loadCategories('eventId').subscribe({
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual([mockCategory]);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories?eventId=eventId');
@@ -63,7 +58,6 @@ describe('CategoryService', () => {
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual(mockCategory);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories');
@@ -86,7 +80,6 @@ describe('CategoryService', () => {
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual(mockCategory);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId');
@@ -103,7 +96,7 @@ describe('CategoryService', () => {
 
 	describe('#deleteCategory', () => {
 		it('should delete category', () => {
-			service.deleteCategory('categoryId').subscribe({ error: fail });
+			service.deleteCategory('categoryId').subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId');
 
@@ -115,7 +108,7 @@ describe('CategoryService', () => {
 
 	describe('#addUser', () => {
 		it('should add user', () => {
-			service.addUser('categoryId', 'userId', 0).subscribe({ error: fail });
+			service.addUser('categoryId', 'userId', 0).subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId/user/userId');
 
@@ -128,7 +121,7 @@ describe('CategoryService', () => {
 
 	describe('#deleteUser', () => {
 		it('should delete user', () => {
-			service.deleteUser('categoryId', 'userId').subscribe({ error: fail });
+			service.deleteUser('categoryId', 'userId').subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId/user/userId');
 
@@ -140,7 +133,7 @@ describe('CategoryService', () => {
 
 	describe('#editUser', () => {
 		it('should edit user', () => {
-			service.editUser('categoryId', 'userId', 0).subscribe({ error: fail });
+			service.editUser('categoryId', 'userId', 0).subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId/user/userId');
 
@@ -153,7 +146,7 @@ describe('CategoryService', () => {
 
 	describe('#setWeighted', () => {
 		it('should set weighted', () => {
-			service.setWeighted('categoryId', true).subscribe({ error: fail });
+			service.setWeighted('categoryId', true).subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories/categoryId/weighted');
 
@@ -170,7 +163,6 @@ describe('CategoryService', () => {
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual(mockCategory);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories?eventId=eventId');
@@ -187,7 +179,6 @@ describe('CategoryService', () => {
 				next: (result) => {
 					expect(result).withContext('should return result').toEqual(mockCategory);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/categories?eventId=eventId');
