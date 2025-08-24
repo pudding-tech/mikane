@@ -6,20 +6,23 @@ describe('ErrorMessageComponent', () => {
 	let component: ErrorMessageComponent;
 	let fixture: ComponentFixture<ErrorMessageComponent>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [ErrorMessageComponent],
-			providers: [{ provide: MAT_SNACK_BAR_DATA, useValue: {} }],
-		}).compileComponents();
-	});
-
 	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [ErrorMessageComponent],
+			providers: [
+				{
+					provide: MAT_SNACK_BAR_DATA,
+					useValue: '',
+				},
+			],
+		});
+
 		fixture = TestBed.createComponent(ErrorMessageComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
 
 	it('should create', () => {
-		expect(component).toBeTruthy();
+		expect(component.data).toEqual('');
 	});
 });

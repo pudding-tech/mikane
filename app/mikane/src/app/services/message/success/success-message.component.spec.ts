@@ -6,20 +6,23 @@ describe('SuccessMessageComponent', () => {
 	let component: SuccessMessageComponent;
 	let fixture: ComponentFixture<SuccessMessageComponent>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [SuccessMessageComponent],
-			providers: [{ provide: MAT_SNACK_BAR_DATA, useValue: {} }],
-		}).compileComponents();
-	});
-
 	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [SuccessMessageComponent],
+			providers: [
+				{
+					provide: MAT_SNACK_BAR_DATA,
+					useValue: '',
+				},
+			],
+		});
+
 		fixture = TestBed.createComponent(SuccessMessageComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
 
 	it('should create', () => {
-		expect(component).toBeTruthy();
+		expect(component.data).toEqual('');
 	});
 });
