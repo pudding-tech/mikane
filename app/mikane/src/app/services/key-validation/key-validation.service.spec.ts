@@ -29,7 +29,7 @@ describe('KeyValidationService', () => {
 		it('should send verification key', () => {
 			service.verifyRegisterKey('key').subscribe({
 				next: (email) => {
-					expect(email).withContext('should return email').toEqual({ email: 'test@test.test' });
+					expect(email).toEqual({ email: 'test@test.test' });
 				},
 			});
 

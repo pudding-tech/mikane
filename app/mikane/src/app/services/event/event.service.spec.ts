@@ -76,7 +76,7 @@ describe('EventService', () => {
 		it('should load events', () => {
 			service.loadEvents().subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual([mockEvent]);
+					expect(result).toEqual([mockEvent]);
 				},
 			});
 
@@ -92,7 +92,7 @@ describe('EventService', () => {
 		it('should load balances', () => {
 			service.loadBalances('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual([mockUserBalance]);
+					expect(result).toEqual([mockUserBalance]);
 				},
 			});
 
@@ -108,7 +108,7 @@ describe('EventService', () => {
 		it('should load payments', () => {
 			service.loadPayments('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual([mockPayment]);
+					expect(result).toEqual([mockPayment]);
 				},
 			});
 
@@ -124,7 +124,7 @@ describe('EventService', () => {
 		it('should get event', () => {
 			service.getEvent('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
+					expect(result).toEqual(mockEvent);
 				},
 			});
 
@@ -140,7 +140,7 @@ describe('EventService', () => {
 		it('should get event name', () => {
 			service.getEventName('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual('name');
+					expect(result).toEqual('name');
 				},
 			});
 
@@ -154,7 +154,7 @@ describe('EventService', () => {
 		it('should cache event name', () => {
 			service.getEventName('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual('name');
+					expect(result).toEqual('name');
 				},
 			});
 
@@ -166,7 +166,7 @@ describe('EventService', () => {
 			// Name should be cached this time
 			service.getEventName('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual('name');
+					expect(result).toEqual('name');
 				},
 			});
 
@@ -178,7 +178,7 @@ describe('EventService', () => {
 		it('should create event', () => {
 			service.createEvent({ name: 'name', description: 'description', privateEvent: false }).subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
+					expect(result).toEqual(mockEvent);
 				},
 			});
 
@@ -197,7 +197,7 @@ describe('EventService', () => {
 				.editEvent({ id: 'eventId', name: 'name', description: 'description', privateEvent: false, status: EventStatusType.ACTIVE })
 				.subscribe({
 					next: (result) => {
-						expect(result).withContext('should return result').toEqual(mockEvent);
+						expect(result).toEqual(mockEvent);
 					},
 				});
 
@@ -226,7 +226,7 @@ describe('EventService', () => {
 		it('should add user', () => {
 			service.addUser('eventId', 'userId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
+					expect(result).toEqual(mockEvent);
 				},
 			});
 
@@ -243,7 +243,7 @@ describe('EventService', () => {
 		it('should remove user', () => {
 			service.removeUser('eventId', 'userId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
+					expect(result).toEqual(mockEvent);
 				},
 			});
 
@@ -259,7 +259,7 @@ describe('EventService', () => {
 		it('should set user as admin', () => {
 			service.setUserAsAdmin('eventId', 'userId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
+					expect(result).toEqual(mockEvent);
 				},
 			});
 
@@ -275,7 +275,7 @@ describe('EventService', () => {
 		it('should remove user as admin', () => {
 			service.removeUserAsAdmin('eventId', 'userId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
+					expect(result).toEqual(mockEvent);
 				},
 			});
 

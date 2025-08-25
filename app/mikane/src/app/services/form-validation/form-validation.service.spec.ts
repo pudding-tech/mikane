@@ -29,7 +29,7 @@ describe('FormValidationService', () => {
 		it('should validate username', () => {
 			service.validateUsername('username').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual({ valid: true });
+					expect(result).toEqual({ valid: true });
 				},
 			});
 
@@ -45,7 +45,7 @@ describe('FormValidationService', () => {
 		it('should validate email', () => {
 			service.validateEmail('email').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual({ valid: true });
+					expect(result).toEqual({ valid: true });
 				},
 			});
 
@@ -61,7 +61,7 @@ describe('FormValidationService', () => {
 		it('should validate phone', () => {
 			service.validatePhone('phone').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual({ valid: true });
+					expect(result).toEqual({ valid: true });
 				},
 			});
 
@@ -77,7 +77,7 @@ describe('FormValidationService', () => {
 		it('should validate event name', () => {
 			service.validateEventName('name').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual({ valid: true });
+					expect(result).toEqual({ valid: true });
 				},
 			});
 
@@ -91,7 +91,7 @@ describe('FormValidationService', () => {
 		it('should validate category name', () => {
 			service.validateCategoryName('name', 'eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual({ valid: true });
+					expect(result).toEqual({ valid: true });
 				},
 			});
 

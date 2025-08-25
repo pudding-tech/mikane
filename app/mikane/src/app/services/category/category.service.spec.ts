@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { CategoryIcon } from 'src/app/types/enums';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
+import { expect } from 'vitest';
 import { Category, CategoryService } from './category.service';
 
 describe('CategoryService', () => {
@@ -40,7 +41,7 @@ describe('CategoryService', () => {
 		it('should get categories', () => {
 			service.loadCategories('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual([mockCategory]);
+					expect(result).toEqual([mockCategory]);
 				},
 			});
 
@@ -56,7 +57,7 @@ describe('CategoryService', () => {
 		it('should create category', () => {
 			service.createCategory('name', 'eventId', false, CategoryIcon.CAR).subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockCategory);
+					expect(result).toEqual(mockCategory);
 				},
 			});
 
@@ -78,7 +79,7 @@ describe('CategoryService', () => {
 		it('should edit category', () => {
 			service.editCategory('categoryId', 'name', CategoryIcon.CAR).subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockCategory);
+					expect(result).toEqual(mockCategory);
 				},
 			});
 
@@ -161,7 +162,7 @@ describe('CategoryService', () => {
 		it('should not create category if it exists', () => {
 			service.findOrCreate('eventId', 'name').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockCategory);
+					expect(result).toEqual(mockCategory);
 				},
 			});
 
@@ -177,7 +178,7 @@ describe('CategoryService', () => {
 		it('should create category if it does not exist', () => {
 			service.findOrCreate('eventId', 'name').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockCategory);
+					expect(result).toEqual(mockCategory);
 				},
 			});
 
