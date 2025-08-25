@@ -98,7 +98,7 @@
 						"buildTarget": "mikane:build"
 					}
 				},
-				"test": {
+				"karma": {
 					"builder": "@angular/build:karma",
 					"options": {
 						"main": "src/test.ts",
@@ -110,6 +110,15 @@
 						"assets": ["src/favicon.png", "src/assets", "src/manifest.webmanifest"],
 						"styles": ["./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css", "src/styles.scss"],
 						"scripts": []
+					}
+				},
+				"test": {
+					"builder": "@angular/build:unit-test",
+					"options": {
+						"tsConfig": "tsconfig.spec.json",
+						"runner": "vitest",
+						"buildTarget": "::development"
+						
 					}
 				},
 				"lint": {

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import packageJson from '../../../../package.json';
 import { FooterComponent } from './footer.component';
@@ -44,7 +45,7 @@ describe('FooterComponent', () => {
 	});
 
 	it('should return true if the current page is included', () => {
-		expect(component.showFooter()).toBeTrue();
+		expect(component.showFooter()).toBeTruthy();
 	});
 
 	it('should return false if the current page is not included', () => {
@@ -70,6 +71,6 @@ describe('FooterComponent', () => {
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 
-		expect(component.showFooter()).toBeFalse();
+		expect(component.showFooter()).toBeFalsy();
 	});
 });

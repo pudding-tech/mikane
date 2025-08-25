@@ -1,14 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { QueryList } from '@angular/core';
+import { Directive, QueryList } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
-import { MockDirective, MockModule } from 'ng-mocks';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { SplitButtonItemDirective } from './split-button-item/split-button-item.directive';
 import { SplitButtonComponent } from './split-button.component';
+
+@Directive({
+  selector: '[appSplitButtonItem]',
+  standalone: true,
+})
+class MockSplitButtonItemDirective {}
 
 describe('SplitButtonComponent', () => {
 	let component: SplitButtonComponent;
@@ -16,8 +22,7 @@ describe('SplitButtonComponent', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			declarations: [MockDirective(SplitButtonItemDirective)],
-			imports: [SplitButtonComponent, CommonModule, MockModule(MatButtonToggleModule), MockModule(MatIconModule)],
+			imports: [SplitButtonComponent, CommonModule, MatButtonToggleModule, MatIconModule, MockSplitButtonItemDirective],
 			providers: [
 				{
 					provide: BreakpointService,
@@ -40,11 +45,11 @@ describe('SplitButtonComponent', () => {
 	});
 
 	it('should emit the onClick event when the button is clicked', () => {
-		spyOn(component.splitButtonClick, 'emit');
+		const spy = vi.spyOn(component.splitButtonClick, 'emit');
 		const buttonEl = fixture.debugElement.query(By.css('.split-button.main-button')).nativeElement;
 		buttonEl.click();
 
-		expect(component.splitButtonClick.emit).toHaveBeenCalledWith();
+		expect(spy).toHaveBeenCalledWith();
 	});
 
 	it('should toggle the dropdown when the toggleDropdown method is called', () => {
@@ -60,7 +65,7 @@ describe('SplitButtonComponent', () => {
 		document.body.appendChild(outsideEl);
 		outsideEl.click();
 
-		expect(component.toggled).toBeFalse();
+		expect(component.toggled).toBeFalsy();
 	});
 
 	it('should ignore outside click events when the dropdown is closed', () => {
@@ -69,7 +74,7 @@ describe('SplitButtonComponent', () => {
 		document.body.appendChild(outsideEl);
 		outsideEl.click();
 
-		expect(component.toggled).toBeFalse();
+		expect(component.toggled).toBeFalsy();
 	});
 
 	it('should not close the dropdown when a click event occurs inside the component', () => {
@@ -77,7 +82,7 @@ describe('SplitButtonComponent', () => {
 		const insideEl = fixture.debugElement.query(By.css('.split-button.main-button')).nativeElement;
 		insideEl.click();
 
-		expect(component.toggled).toBeTrue();
+		expect(component.toggled).toBeTruthy();
 	});
 
 	it('should have the correct number of items', () => {

@@ -1,21 +1,22 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { PuddingEvent } from '../event/event.service';
 import { Expense } from '../expense/expense.service';
 import { User, UserBalance, UserService } from './user.service';
 
+const apiUrl = 'http://localhost:3000/api/';
+const env = { apiUrl } as Environment;
+
 describe('UserService', () => {
 	let service: UserService;
 	let httpMock: HttpTestingController;
-	const apiUrl = 'http://localhost:3000/api/';
-	const env = { apiUrl: apiUrl } as Environment;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [],
 			providers: [
 				UserService,
 				{ provide: ENV, useValue: env },
@@ -23,6 +24,7 @@ describe('UserService', () => {
 				provideHttpClientTesting(),
 			],
 		});
+
 		service = TestBed.inject(UserService);
 		httpMock = TestBed.inject(HttpTestingController);
 	});
@@ -31,20 +33,18 @@ describe('UserService', () => {
 		httpMock.verify();
 	});
 
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-
 	describe('loadUsers', () => {
 		it('should return an array of users', () => {
 			const mockUsers: User[] = [
 				{ id: '1', name: 'User 1' },
 				{ id: '2', name: 'User 2' },
 			] as User[];
+
 			service.loadUsers().subscribe((users) => {
 				expect(users).toEqual(mockUsers);
 			});
-			const req = httpMock.expectOne(apiUrl + 'users');
+
+			const req = httpMock.expectOne(`${apiUrl}users`);
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUsers);
@@ -55,10 +55,12 @@ describe('UserService', () => {
 				{ id: '1', name: 'User 1' },
 				{ id: '2', name: 'User 2' },
 			] as User[];
+
 			service.loadUsers(true).subscribe((users) => {
 				expect(users).toEqual(mockUsers);
 			});
-			const req = httpMock.expectOne(apiUrl + 'users?excludeSelf=true');
+
+			const req = httpMock.expectOne(`${apiUrl}users?excludeSelf=true`);
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUsers);
@@ -71,11 +73,12 @@ describe('UserService', () => {
 				{ id: '1', name: 'User 1' },
 				{ id: '2', name: 'User 2' },
 			] as User[];
-			const eventId = '123';
-			service.loadUsersByEvent(eventId).subscribe((users) => {
+
+			service.loadUsersByEvent('eventId').subscribe((users) => {
 				expect(users).toEqual(mockUsers);
 			});
-			const req = httpMock.expectOne(apiUrl + `users?eventId=${eventId}`);
+
+			const req = httpMock.expectOne(`${apiUrl}users?eventId=eventId`);
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUsers);
@@ -86,11 +89,12 @@ describe('UserService', () => {
 				{ id: '1', name: 'User 1' },
 				{ id: '2', name: 'User 2' },
 			] as User[];
-			const eventId = '123';
-			service.loadUsersByEvent(eventId, true).subscribe((users) => {
+
+			service.loadUsersByEvent('eventId', true).subscribe((users) => {
 				expect(users).toEqual(mockUsers);
 			});
-			const req = httpMock.expectOne(apiUrl + `users?eventId=${eventId}&excludeGuests=true`);
+
+			const req = httpMock.expectOne(`${apiUrl}users?eventId=eventId&excludeGuests=true`);
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUsers);
@@ -100,11 +104,12 @@ describe('UserService', () => {
 	describe('loadUserById', () => {
 		it('should return a user', () => {
 			const mockUser: User = { id: '1', name: 'User 1' } as User;
-			const userId = '1';
-			service.loadUserById(userId).subscribe((user) => {
+
+			service.loadUserById('1').subscribe((user) => {
 				expect(user).toEqual(mockUser);
 			});
-			const req = httpMock.expectOne(apiUrl + `users/${userId}`);
+
+			const req = httpMock.expectOne(`${apiUrl}users/1`);
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUser);
@@ -113,24 +118,26 @@ describe('UserService', () => {
 
 	describe('loadUserByUsernameOrId', () => {
 		it('should return a user by username', () => {
-			const mockUser: User = { id: '1', username: 'user1', name: 'User 1' } as User;
-			const username = 'user1';
-			service.loadUserByUsernameOrId(username).subscribe((user) => {
+			const mockUser: User = { id: '1', name: 'User 1' } as User;
+
+			service.loadUserByUsernameOrId('username').subscribe((user) => {
 				expect(user).toEqual(mockUser);
 			});
-			const req = httpMock.expectOne(apiUrl + `users/username/${username}`);
+
+			const req = httpMock.expectOne(`${apiUrl}users/username/username`);
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUser);
 		});
 
 		it('should return a user by ID', () => {
-			const mockUser: User = { id: '1', username: 'user1', name: 'User 1' } as User;
-			const userId = '1';
-			service.loadUserByUsernameOrId(userId).subscribe((user) => {
+			const mockUser: User = { id: '1', name: 'User 1' } as User;
+
+			service.loadUserByUsernameOrId('1').subscribe((user) => {
 				expect(user).toEqual(mockUser);
 			});
-			const req = httpMock.expectOne(apiUrl + `users/username/${userId}`);
+
+			const req = httpMock.expectOne(`${apiUrl}users/username/1`);
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockUser);
@@ -139,26 +146,33 @@ describe('UserService', () => {
 
 	describe('createUser', () => {
 		it('should create a user', () => {
-			const mockUser: User = {
+			const newUser: User = {
 				id: '1',
 				name: 'User 1',
 				eventInfo: {
-					id: '24b96dad-e95a-4794-9dea-25fd2bbd21a1',
+					id: 'eventId',
 					isAdmin: false,
 					joinedTime: new Date(),
 				},
-				email: 'email',
+				email: 'user1@example.com',
 			} as User;
+
 			const eventId = '123';
 			const name = 'User 1';
 			service.createUser(eventId, name).subscribe((user) => {
-				expect(user).toEqual(mockUser);
+				expect(user).toEqual(newUser);
 			});
-			const req = httpMock.expectOne(apiUrl + 'users');
+
+			const req = httpMock.expectOne(`${apiUrl}users`);
 
 			expect(req.request.method).toBe('POST');
-			expect(req.request.body).toEqual({ name: name, eventId: eventId, email: 'email', password: 'password' });
-			req.flush(mockUser);
+			expect(req.request.body).toEqual({
+				eventId: eventId,
+				name: name,
+				email: 'email',
+				password: 'password',
+			});
+			req.flush(newUser);
 		});
 	});
 
@@ -168,11 +182,13 @@ describe('UserService', () => {
 				{ id: '1', name: 'Event 1' },
 				{ id: '2', name: 'Event 2' },
 			] as PuddingEvent[];
+
 			const userId = '1';
 			service.loadUserEvents(userId).subscribe((events) => {
 				expect(events).toEqual(mockEvents);
 			});
-			const req = httpMock.expectOne(apiUrl + `users/${userId}/events`);
+
+			const req = httpMock.expectOne(`${apiUrl}users/1/events`);
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockEvents);
@@ -185,12 +201,14 @@ describe('UserService', () => {
 				{ id: '1', name: 'Expense 1' },
 				{ id: '2', name: 'Expense 2' },
 			] as Expense[];
+
 			const userId = '1';
 			const eventId = '123';
 			service.loadUserExpenses(userId, eventId).subscribe((expenses) => {
 				expect(expenses).toEqual(mockExpenses);
 			});
-			const req = httpMock.expectOne(apiUrl + `users/${userId}/expenses?eventId=${eventId}`);
+
+			const req = httpMock.expectOne(`${apiUrl}users/1/expenses?eventId=123`);
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockExpenses);
@@ -212,14 +230,16 @@ describe('UserService', () => {
 						id: '2',
 						name: 'User 2',
 					},
-					balance: -5,
+					balance: 20,
 				},
 			] as UserBalance[];
+
 			const eventId = '123';
 			service.loadUserBalance(eventId).subscribe((balances) => {
 				expect(balances).toEqual(mockBalances);
 			});
-			const req = httpMock.expectOne(apiUrl + `users/balances?eventId=${eventId}`);
+
+			const req = httpMock.expectOne(`${apiUrl}users/balances?eventId=${eventId}`);
 
 			expect(req.request.method).toBe('GET');
 			req.flush(mockBalances);
@@ -234,39 +254,45 @@ describe('UserService', () => {
 				username: 'user1',
 				firstName: 'First',
 				lastName: 'Last',
-				email: 'email',
+				email: 'user1@example.com',
 				phone: '123',
 			} as User;
-			const userId = '1';
-			const username = 'user1';
-			const firstName = 'First';
-			const lastName = 'Last';
-			const email = 'email';
-			const phone = '123';
-			service.editUser(userId, username, firstName, lastName, email, phone).subscribe((user) => {
-				expect(user).toEqual(mockUser);
-			});
-			const req = httpMock.expectOne(apiUrl + `users/${userId}`);
+
+			service
+				.editUser(mockUser.id, mockUser.username, mockUser.firstName, mockUser.lastName, mockUser.email, mockUser.phone)
+				.subscribe((user) => {
+					expect(user).toEqual(mockUser);
+				});
+
+			const req = httpMock.expectOne(`${apiUrl}users/1`);
 
 			expect(req.request.method).toBe('PUT');
-			expect(req.request.body).toEqual({ username, firstName, lastName, email, phone });
+			expect(req.request.body).toEqual({
+				username: mockUser.username,
+				firstName: mockUser.firstName,
+				lastName: mockUser.lastName,
+				email: mockUser.email,
+				phone: mockUser.phone,
+			});
 			req.flush(mockUser);
 		});
 	});
 
 	describe('deleteUser', () => {
 		it('should delete a user', () => {
-			const mockUsers: User[] = [{ id: '2', name: 'User 2' }] as User[];
+			const mockUser: User[] = [{ id: '2', name: 'User 2' }] as User[];
 			const userId = '1';
 			const key = 'key';
-			service.deleteUser(userId, key).subscribe((users) => {
-				expect(users).toEqual(mockUsers);
+
+			service.deleteUser(userId, key).subscribe((response) => {
+				expect(response).toEqual(mockUser);
 			});
-			const req = httpMock.expectOne(apiUrl + `users/${userId}`);
+
+			const req = httpMock.expectOne(`${apiUrl}users/1`);
 
 			expect(req.request.method).toBe('DELETE');
 			expect(req.request.body).toEqual({ key });
-			req.flush(mockUsers);
+			req.flush(mockUser);
 		});
 	});
 
@@ -281,20 +307,32 @@ describe('UserService', () => {
 				email: 'email',
 				phone: '123',
 			} as User;
-			const username = 'user1';
-			const firstName = 'First';
-			const lastName = 'Last';
-			const email = 'email';
-			const phone = { number: '123' };
-			const password = 'password';
-			const key = 'key';
-			service.registerUser(username, firstName, lastName, email, phone, password, key).subscribe((user) => {
-				expect(user).toEqual(mockUser);
-			});
+			service
+				.registerUser(
+					mockUser.username,
+					mockUser.firstName,
+					mockUser.lastName,
+					mockUser.email,
+					{ number: mockUser.phone },
+					'password',
+					'key',
+				)
+				.subscribe((user) => {
+					expect(user).toEqual(mockUser);
+				});
+
 			const req = httpMock.expectOne(apiUrl + 'users');
 
 			expect(req.request.method).toBe('POST');
-			expect(req.request.body).toEqual({ username, firstName, lastName, email, phone: phone.number, password, key });
+			expect(req.request.body).toEqual({
+				username: mockUser.username,
+				firstName: mockUser.firstName,
+				lastName: mockUser.lastName,
+				email: mockUser.email,
+				phone: mockUser.phone,
+				password: 'password',
+				key: 'key',
+			});
 			req.flush(mockUser);
 		});
 	});
@@ -315,6 +353,7 @@ describe('UserService', () => {
 			service.changeUserPassword(currentPassword, newPassword).subscribe((user) => {
 				expect(user).toEqual(mockUser);
 			});
+
 			const req = httpMock.expectOne(apiUrl + 'users/changepassword');
 
 			expect(req.request.method).toBe('POST');

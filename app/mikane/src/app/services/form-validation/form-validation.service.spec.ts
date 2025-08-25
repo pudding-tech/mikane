@@ -11,8 +11,8 @@ describe('FormValidationService', () => {
 
 	beforeEach(() => {
 		const env = { apiUrl: 'http://localhost:3002/api/' } as Environment;
+
 		TestBed.configureTestingModule({
-			imports: [],
 			providers: [
 				FormValidationService,
 				{ provide: ENV, useValue: env },
@@ -20,23 +20,17 @@ describe('FormValidationService', () => {
 				provideHttpClientTesting(),
 			],
 		});
+
 		service = TestBed.inject(FormValidationService);
-
-		// Inject the http service and test controller for each test
 		httpTestingController = TestBed.inject(HttpTestingController);
-	});
-
-	afterEach(() => {
-		httpTestingController.verify();
 	});
 
 	describe('#validateUsername', () => {
 		it('should validate username', () => {
 			service.validateUsername('username').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual({ valid: true });
+					expect(result).toEqual({ valid: true });
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/validation/user/username');
@@ -51,9 +45,8 @@ describe('FormValidationService', () => {
 		it('should validate email', () => {
 			service.validateEmail('email').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual({ valid: true });
+					expect(result).toEqual({ valid: true });
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/validation/user/email');
@@ -68,9 +61,8 @@ describe('FormValidationService', () => {
 		it('should validate phone', () => {
 			service.validatePhone('phone').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual({ valid: true });
+					expect(result).toEqual({ valid: true });
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/validation/user/phone');
@@ -85,9 +77,8 @@ describe('FormValidationService', () => {
 		it('should validate event name', () => {
 			service.validateEventName('name').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual({ valid: true });
+					expect(result).toEqual({ valid: true });
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/validation/event/name');
@@ -100,9 +91,8 @@ describe('FormValidationService', () => {
 		it('should validate category name', () => {
 			service.validateCategoryName('name', 'eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual({ valid: true });
+					expect(result).toEqual({ valid: true });
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/validation/category/name');

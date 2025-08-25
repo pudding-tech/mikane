@@ -3,12 +3,12 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
+import { FormValidationService } from '../form-validation/form-validation.service';
 import { Expense, ExpenseService } from './expense.service';
 
 describe('ExpenseService', () => {
 	let service: ExpenseService;
 	let httpTestingController: HttpTestingController;
-
 	const mockExpense = {
 		id: 'id',
 		name: 'name',
@@ -38,23 +38,29 @@ describe('ExpenseService', () => {
 		TestBed.configureTestingModule({
 			imports: [],
 			providers: [
-				ExpenseService,
+				FormValidationService,
 				{ provide: ENV, useValue: env },
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
 			],
 		});
-
 		service = TestBed.inject(ExpenseService);
+
+		// Inject the http service and test controller for each test
 		httpTestingController = TestBed.inject(HttpTestingController);
+	});
+
+	afterEach(() => {
+		httpTestingController.verify();
 	});
 
 	describe('#loadExpenses', () => {
 		it('should load expenses', () => {
 			service.loadExpenses('eventId').subscribe({
 				next: (result) => {
-					expect(result).toEqual([mockExpense]);
+					expect(result).withContext('should return result').toEqual([mockExpense]);
 				},
+				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/expenses?eventId=eventId');
@@ -69,8 +75,9 @@ describe('ExpenseService', () => {
 		it('should get expense', () => {
 			service.getExpense('id').subscribe({
 				next: (result) => {
-					expect(result).toEqual(mockExpense);
+					expect(result).withContext('should return result').toEqual(mockExpense);
 				},
+				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/expenses/id');
@@ -85,8 +92,9 @@ describe('ExpenseService', () => {
 		it('should create expense', () => {
 			service.createExpense('expenseName', 'expenseDescription', 1, 'categoryId', 'payerId', undefined).subscribe({
 				next: (result) => {
-					expect(result).toEqual(mockExpense);
+					expect(result).withContext('should return result').toEqual(mockExpense);
 				},
+				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/expenses');
@@ -109,8 +117,9 @@ describe('ExpenseService', () => {
 		it('should edit expense', () => {
 			service.editExpense('expenseId', 'name', 'description', 1, 'categoryId', 'payerId', undefined).subscribe({
 				next: (result) => {
-					expect(result).toEqual(mockExpense);
+					expect(result).withContext('should return result').toEqual(mockExpense);
 				},
+				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/expenses/expenseId');
@@ -131,7 +140,9 @@ describe('ExpenseService', () => {
 
 	describe('#deleteExpense', () => {
 		it('should delete expense', () => {
-			service.deleteExpense('expenseId').subscribe();
+			service.deleteExpense('expenseId').subscribe({
+				error: fail,
+			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/expenses/expenseId');
 

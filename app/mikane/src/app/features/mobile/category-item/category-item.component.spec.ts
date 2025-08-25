@@ -1,7 +1,8 @@
 import { ElementRef } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Category } from 'src/app/services/category/category.service';
 import { User } from 'src/app/services/user/user.service';
 import { CategoryIcon } from 'src/app/types/enums';
@@ -65,10 +66,10 @@ describe('CategoryItemComponent', () => {
 		component.dropdownOpen = false;
 		component.toggleDropdown();
 
-		expect(component.dropdownOpen).toBeTrue();
+		expect(component.dropdownOpen).toBeTruthy();
 		component.toggleDropdown();
 
-		expect(component.dropdownOpen).toBeFalse();
+		expect(component.dropdownOpen).toBeFalsy();
 	});
 
 	it('should set lowerHeight to scrollHeight when toggleDropdown is called', () => {
@@ -88,35 +89,39 @@ describe('CategoryItemComponent', () => {
 		expect(component.lowerHeight).toEqual(0);
 	});
 
-	it('should set lowerHeight after 100ms when addUserToCategory is called', fakeAsync(() => {
+	it('should set lowerHeight after 100ms when addUserToCategory is called', async () => {
+		vi.useFakeTimers();
+
 		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
 		component.addUserToCategory(category.id);
 
 		expect(component.lowerHeight).toEqual(0);
-		tick(100);
+		vi.advanceTimersByTime(100);
+		vi.runAllTimers();
 
 		expect(component.lowerHeight).toEqual(100);
-	}));
+		vi.useRealTimers();
+	});
 
 	it('should emit addUser event when addUserToCategory is called', () => {
-		spyOn(component.addUser, 'emit');
+		const spy = vi.spyOn(component.addUser, 'emit');
 		component.addUserToCategory(category.id);
 
-		expect(component.addUser.emit).toHaveBeenCalledWith({ categoryId: category.id });
+		expect(spy).toHaveBeenCalledWith({ categoryId: category.id });
 	});
 
 	it('should emit removeUser event when removeUserFromCategory is called', () => {
-		spyOn(component.removeUser, 'emit');
+		const spy = vi.spyOn(component.removeUser, 'emit');
 		component.removeUserFromCategory(category.id, user.id);
 
-		expect(component.removeUser.emit).toHaveBeenCalledWith({ categoryId: category.id, userId: user.id });
+		expect(spy).toHaveBeenCalledWith({ categoryId: category.id, userId: user.id });
 	});
 
 	it('should emit openEditCategoryDialog event when openEditCategoryDialog is called', () => {
-		spyOn(component.openEditCategoryDialog, 'emit');
+		const spy = vi.spyOn(component.openEditCategoryDialog, 'emit');
 		component.openEdit(category.id, category.name, category.icon);
 
-		expect(component.openEditCategoryDialog.emit).toHaveBeenCalledWith({
+		expect(spy).toHaveBeenCalledWith({
 			categoryId: category.id,
 			name: category.name,
 			icon: category.icon,
@@ -124,10 +129,10 @@ describe('CategoryItemComponent', () => {
 	});
 
 	it('should emit openWeightEditDialog event when openEditWeight is called', () => {
-		spyOn(component.openWeightEditDialog, 'emit');
+		const spy = vi.spyOn(component.openWeightEditDialog, 'emit');
 		component.openEditWeight(category.id, user.id, 1);
 
-		expect(component.openWeightEditDialog.emit).toHaveBeenCalledWith({
+		expect(spy).toHaveBeenCalledWith({
 			categoryId: category.id,
 			userId: user.id,
 			weight: 1,
@@ -135,16 +140,16 @@ describe('CategoryItemComponent', () => {
 	});
 
 	it('should emit toggleWeighted event when toggleWeightedCategory is called', () => {
-		spyOn(component.toggleWeighted, 'emit');
+		const spy = vi.spyOn(component.toggleWeighted, 'emit');
 		component.toggleWeightedCategory(category.id, true);
 
-		expect(component.toggleWeighted.emit).toHaveBeenCalledWith({ categoryId: category.id, weighted: true });
+		expect(spy).toHaveBeenCalledWith({ categoryId: category.id, weighted: true });
 	});
 
 	it('should emit deleteCategoryDialog event when deleteCategory is called', () => {
-		spyOn(component.deleteCategoryDialog, 'emit');
+		const spy = vi.spyOn(component.deleteCategoryDialog, 'emit');
 		component.deleteCategory(category.id);
 
-		expect(component.deleteCategoryDialog.emit).toHaveBeenCalledWith({ categoryId: category.id });
+		expect(spy).toHaveBeenCalledWith({ categoryId: category.id });
 	});
 });

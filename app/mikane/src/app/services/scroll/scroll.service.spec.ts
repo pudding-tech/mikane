@@ -1,4 +1,5 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { afterEach, beforeEach, vi } from 'vitest';
 import { ScrollService } from './scroll.service';
 
 describe('ScrollService', () => {
@@ -10,13 +11,23 @@ describe('ScrollService', () => {
 		});
 
 		service = TestBed.inject(ScrollService);
+
+		// Stub requestAnimationFrame to run the callback immediately
+		vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+			cb(performance.now());
+			return 0;
+		});
+	});
+
+	afterEach(() => {
+		vi.unstubAllGlobals();
 	});
 
 	it('should be created', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('should emit scroll position on scroll event', fakeAsync(() => {
+	it('should emit scroll position on scroll event', () => {
 		let emittedScrollPosition: number | undefined;
 
 		service.scrollPosition$.subscribe((scrollPosition) => {
@@ -26,13 +37,10 @@ describe('ScrollService', () => {
 		// Simulate a scroll event
 		window.dispatchEvent(new Event('scroll'));
 
-		// Advance the clock to allow for the debounce time in the handleScroll function
-		tick(100);
-
 		expect(emittedScrollPosition).toBeDefined();
-	}));
+	});
 
-	it('should emit scroll position on resize event', fakeAsync(() => {
+	it('should emit scroll position on resize event', () => {
 		let emittedScrollPosition: number | undefined;
 
 		service.scrollPosition$.subscribe((scrollPosition) => {
@@ -42,9 +50,6 @@ describe('ScrollService', () => {
 		// Simulate a resize event
 		window.dispatchEvent(new Event('resize'));
 
-		// Advance the clock to allow for the debounce time in the handleScroll function
-		tick(100);
-
 		expect(emittedScrollPosition).toBeDefined();
-	}));
+	});
 });

@@ -9,6 +9,7 @@ import { EventService, EventStatusType, Payment, PuddingEvent } from './event.se
 describe('EventService', () => {
 	let service: EventService;
 	let httpTestingController: HttpTestingController;
+
 	const mockEvent = {
 		id: 'eventId',
 		name: 'name',
@@ -21,6 +22,7 @@ describe('EventService', () => {
 			name: 'Active',
 		},
 	} as PuddingEvent;
+
 	const mockUserBalance = {
 		user: {
 			id: 'id',
@@ -33,6 +35,7 @@ describe('EventService', () => {
 		expenses: 0,
 		balance: 0,
 	} as UserBalance;
+
 	const mockPayment = {
 		sender: {
 			id: 'id',
@@ -51,8 +54,8 @@ describe('EventService', () => {
 
 	beforeEach(() => {
 		const env = { apiUrl: 'http://localhost:3002/api/' } as Environment;
+
 		TestBed.configureTestingModule({
-			imports: [],
 			providers: [
 				EventService,
 				{ provide: ENV, useValue: env },
@@ -60,9 +63,8 @@ describe('EventService', () => {
 				provideHttpClientTesting(),
 			],
 		});
-		service = TestBed.inject(EventService);
 
-		// Inject the http service and test controller for each test
+		service = TestBed.inject(EventService);
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
@@ -74,9 +76,8 @@ describe('EventService', () => {
 		it('should load events', () => {
 			service.loadEvents().subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual([mockEvent]);
+					expect(result).toEqual([mockEvent]);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events');
@@ -91,9 +92,8 @@ describe('EventService', () => {
 		it('should load balances', () => {
 			service.loadBalances('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual([mockUserBalance]);
+					expect(result).toEqual([mockUserBalance]);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId/balances');
@@ -108,9 +108,8 @@ describe('EventService', () => {
 		it('should load payments', () => {
 			service.loadPayments('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual([mockPayment]);
+					expect(result).toEqual([mockPayment]);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId/payments');
@@ -125,9 +124,8 @@ describe('EventService', () => {
 		it('should get event', () => {
 			service.getEvent('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
+					expect(result).toEqual(mockEvent);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId');
@@ -142,9 +140,8 @@ describe('EventService', () => {
 		it('should get event name', () => {
 			service.getEventName('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual('name');
+					expect(result).toEqual('name');
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId');
@@ -157,9 +154,8 @@ describe('EventService', () => {
 		it('should cache event name', () => {
 			service.getEventName('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual('name');
+					expect(result).toEqual('name');
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId');
@@ -170,9 +166,8 @@ describe('EventService', () => {
 			// Name should be cached this time
 			service.getEventName('eventId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual('name');
+					expect(result).toEqual('name');
 				},
-				error: fail,
 			});
 
 			httpTestingController.expectNone('http://localhost:3002/api/events/eventId');
@@ -183,9 +178,8 @@ describe('EventService', () => {
 		it('should create event', () => {
 			service.createEvent({ name: 'name', description: 'description', privateEvent: false }).subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
+					expect(result).toEqual(mockEvent);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events');
@@ -203,9 +197,8 @@ describe('EventService', () => {
 				.editEvent({ id: 'eventId', name: 'name', description: 'description', privateEvent: false, status: EventStatusType.ACTIVE })
 				.subscribe({
 					next: (result) => {
-						expect(result).withContext('should return result').toEqual(mockEvent);
+						expect(result).toEqual(mockEvent);
 					},
-					error: fail,
 				});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId');
@@ -219,7 +212,7 @@ describe('EventService', () => {
 
 	describe('#deleteEvent', () => {
 		it('should delete event', () => {
-			service.deleteEvent('eventId').subscribe({ error: fail });
+			service.deleteEvent('eventId').subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId');
 
@@ -233,9 +226,8 @@ describe('EventService', () => {
 		it('should add user', () => {
 			service.addUser('eventId', 'userId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
+					expect(result).toEqual(mockEvent);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId/user/userId');
@@ -251,9 +243,8 @@ describe('EventService', () => {
 		it('should remove user', () => {
 			service.removeUser('eventId', 'userId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
+					expect(result).toEqual(mockEvent);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId/user/userId');
@@ -268,9 +259,8 @@ describe('EventService', () => {
 		it('should set user as admin', () => {
 			service.setUserAsAdmin('eventId', 'userId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
+					expect(result).toEqual(mockEvent);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId/admin/userId');
@@ -285,9 +275,8 @@ describe('EventService', () => {
 		it('should remove user as admin', () => {
 			service.removeUserAsAdmin('eventId', 'userId').subscribe({
 				next: (result) => {
-					expect(result).withContext('should return result').toEqual(mockEvent);
+					expect(result).toEqual(mockEvent);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events/eventId/admin/userId');
@@ -300,7 +289,7 @@ describe('EventService', () => {
 
 	describe('#sendAddExpensesReminderEmails', () => {
 		it('should send sendAddExpensesReminderEmails API call', () => {
-			service.sendAddExpensesReminderEmails('eventId', new Date('2025-08-01')).subscribe({ error: fail });
+			service.sendAddExpensesReminderEmails('eventId', new Date('2025-08-01')).subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/notifications/eventId/reminder');
 
@@ -313,7 +302,7 @@ describe('EventService', () => {
 
 	describe('#sendReadyToSettleEmails', () => {
 		it('should send sendReadyToSettleEmails API call', () => {
-			service.sendReadyToSettleEmails('eventId').subscribe({ error: fail });
+			service.sendReadyToSettleEmails('eventId').subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/notifications/eventId/settle');
 
