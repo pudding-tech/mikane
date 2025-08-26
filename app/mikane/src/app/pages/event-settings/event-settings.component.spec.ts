@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -74,7 +74,13 @@ describe('EventSettingsComponent', () => {
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				{ provide: FormValidationService, useValue: {} },
 			],
-		}).compileComponents();
+		})
+		.overrideComponent(EventSettingsComponent, {
+			remove: {
+				imports: [MatDialogModule],
+			},
+		})
+		.compileComponents();
 
 		vi.clearAllMocks();
 	});
