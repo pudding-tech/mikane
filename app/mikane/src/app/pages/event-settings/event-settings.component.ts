@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -36,7 +36,6 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 		MatButtonModule,
 		MatCardModule,
 		MatDatepickerModule,
-		MatDialogModule,
 		MatIconModule,
 		MatListModule,
 		MatInputModule,
@@ -66,8 +65,8 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	event: PuddingEvent;
 	loading = new BehaviorSubject<boolean>(false);
 	eventData: { id?: string; name: string; description: string; private: boolean } = { name: '', description: '', private: false };
-	adminsInEvent: User[];
-	otherUsersInEvent: User[];
+	adminsInEvent: User[] = [];
+	otherUsersInEvent: User[] = [];
 	currentUser: User;
 
 	addExpensesCutoffDate = signal<Date | null>(null);
