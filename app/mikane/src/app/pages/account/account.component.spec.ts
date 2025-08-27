@@ -81,9 +81,7 @@ describe('AccountComponent', () => {
 				provideHttpClientTesting()
 			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(AccountComponent);
 		component = fixture.componentInstance;
 		page = new AccountComponentPage(fixture);

@@ -1,14 +1,15 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MockBuilder, MockRender, MockedComponentFixture } from 'ng-mocks';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 import { CategoryIcon } from 'src/app/types/enums';
 import { CategoryDialogComponent } from './category-dialog.component';
 
 describe('CategoryDialogComponent', () => {
 	let component: CategoryDialogComponent;
-	let fixture: MockedComponentFixture<CategoryDialogComponent>;
-
-	let matDialogRefSpy: jasmine.SpyObj<MatDialogRef<CategoryDialogComponent>>;
+	let fixture: ComponentFixture<CategoryDialogComponent>;
+	let matDialogRefSpy: { close: ReturnType<typeof vi.fn> };
+	let formValidationServiceSpy: { validateCategoryName: ReturnType<typeof vi.fn> };
 
 	const data = {
 		name: 'Test',
@@ -19,18 +20,20 @@ describe('CategoryDialogComponent', () => {
 	};
 
 	beforeEach(async () => {
-		matDialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+		matDialogRefSpy = { close: vi.fn() };
+		formValidationServiceSpy = { validateCategoryName: vi.fn() };
 
-		return MockBuilder(CategoryDialogComponent)
-			.provide({ provide: MatDialogRef, useValue: matDialogRefSpy })
-			.provide({ provide: MAT_DIALOG_DATA, useValue: data })
-			.provide({ provide: FormValidationService, useValue: jasmine.createSpyObj('FormValidationService', ['validateCategoryName']) });
-	});
+		TestBed.configureTestingModule({
+			imports: [CategoryDialogComponent],
+			providers: [
+				{ provide: MatDialogRef, useValue: matDialogRefSpy },
+				{ provide: MAT_DIALOG_DATA, useValue: data },
+				{ provide: FormValidationService, useValue: formValidationServiceSpy },
+			],
+		}).compileComponents();
 
-	beforeEach(() => {
-		fixture = MockRender(CategoryDialogComponent);
-		component = fixture.point.componentInstance;
-
+		fixture = TestBed.createComponent(CategoryDialogComponent);
+		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
 
@@ -54,7 +57,7 @@ describe('CategoryDialogComponent', () => {
 			fixture.detectChanges();
 
 			expect(component.addCategoryForm.value).toEqual(
-				jasmine.objectContaining({
+				expect.objectContaining({
 					categoryName: data.name,
 					weighted: false,
 					selectedIcon: data.icon,
@@ -92,13 +95,15 @@ describe('CategoryDialogComponent', () => {
 		});
 
 		it('should open the icon overlay', () => {
-			fixture.point.nativeElement.querySelector('button').click();
+			const button = fixture.nativeElement.querySelector('button');
+			button.click();
 
 			expect(component.isOpen).toBeTruthy();
 		});
 
 		it('should close the icon overlay', () => {
-			fixture.point.nativeElement.querySelector('button').click();
+			const button = fixture.nativeElement.querySelector('button');
+			button.click();
 
 			const icon = CategoryIcon.FOOD;
 			component.iconChange(icon);
