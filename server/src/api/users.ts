@@ -1,7 +1,7 @@
 import express from "express";
+import RateLimit from "express-rate-limit";
 import env from "../env.ts";
 import * as db from "../db/dbUsers.ts";
-import * as dbAuth from "../db/dbAuthentication.ts";
 import * as ec from "../types/errorCodes.ts";
 import { authCheck } from "../middlewares/authCheck.ts";
 import { authenticate, createHash } from "../utils/auth.ts";
@@ -16,6 +16,12 @@ import { sendRegisterAccountEmail } from "../email-services/registerAccount.ts";
 import { sendDeleteAccountEmail } from "../email-services/deleteAccount.ts";
 import { Event, Expense, User } from "../types/types.ts";
 import { ErrorExt } from "../types/errorExt.ts";
+// Apply a rate limiter to sensitive endpoints (e.g., account deletion)
+const deleteAccountLimiter = RateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // max 5 requests per windowMs per IP
+  message: "Too many account deletion attempts from this IP, please try again later.",
+});
 const router = express.Router();
 
 /* --- */
@@ -433,7 +439,7 @@ router.put("/users/:id/preferences", authCheck, async (req, res) => {
 /*
 * Delete user
 */
-router.delete("/users/:id", authCheck, async (req, res) => {
+router.delete("/users/:id", deleteAccountLimiter, authCheck, async (req, res) => {
   const key: string = req.body.key;
   const userId = req.params.id;
   if (!isUUID(userId)) {
