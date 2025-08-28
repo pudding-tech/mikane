@@ -43,6 +43,8 @@ jobs:
   bump:
     needs: [test-frontend, test-backend]
     uses: ./.github/workflows/bump.yml
+    permissions:
+      contents: write
     with:
       bump: ${{ inputs.bump }}
       node-version: ${{ inputs.node-version }}
