@@ -1,4 +1,6 @@
 name: "~ Build frontend"
+permissions:
+  contents: read
 on:
   workflow_call:
     inputs:
