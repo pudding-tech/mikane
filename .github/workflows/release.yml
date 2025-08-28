@@ -1,4 +1,6 @@
 name: Bump and deploy release
+permissions:
+  contents: read
 on:
   workflow_dispatch:
     inputs:
