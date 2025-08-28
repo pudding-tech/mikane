@@ -24,7 +24,8 @@
     "helmet": "^8.1.0",
     "pg": "^8.16.3",
     "postmark": "^4.0.5",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "lusca": "^1.7.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",

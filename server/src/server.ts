@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import session from "express-session";
+import lusca from "lusca";
 import swaggerUi from "swagger-ui-express";
 import cors from "cors";
 import helmet from "helmet";
@@ -104,6 +105,9 @@ app.use(session({
   rolling: true,
   unset: "destroy"
 }));
+
+// CSRF protection
+app.use(lusca.csrf());
 
 app.post("/{*any}", (req, res, next) => {
   if (req.headers["content-type"] !== undefined && !req.is("application/json")) {
