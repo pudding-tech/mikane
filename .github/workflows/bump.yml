@@ -1,4 +1,6 @@
 name: "~ Bump version"
+permissions:
+  contents: write
 on:
   workflow_call:
     inputs:
