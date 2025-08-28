@@ -1,4 +1,6 @@
 name: Post Merge Snapshot
+permissions:
+  contents: write
 
 on:
   pull_request:
