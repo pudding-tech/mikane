@@ -1,5 +1,8 @@
 name: Status Checks
 
+permissions:
+    contents: read
+    pull-requests: write
 on:
     pull_request:
         branches: ["develop"]
