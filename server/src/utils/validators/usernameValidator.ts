@@ -1,4 +1,4 @@
-const usernameRegex = /^(?![_-])[a-zA-Z0-9]+(?:[_-]?[a-zA-Z0-9]+)*(?![_-])$/;
+const usernameRegex = /^[a-zA-Z0-9]+(?:[_-][a-zA-Z0-9]+)*$/;
 
 /**
  * Username must match URL-safe characters: alphanumeric, dashes, and underscores,
