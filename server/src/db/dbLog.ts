@@ -9,8 +9,8 @@ import { PUD146, PUD147 } from "../types/errorCodes.ts";
  */
 export const logServerToDatabase = async (log: LogEntryServer) => {
   const query = {
-    text: "SELECT * FROM log_server_to_db($1, $2, $3);",
-    values: [log.timestamp, log.level, log.message],
+    text: "SELECT * FROM log_server_to_db($1, $2, $3, $4, $5);",
+    values: [log.timestamp, log.level, log.message, log.userId, log.sessionId],
   };
   await pool.query(query)
     .catch(err => {

@@ -74,7 +74,7 @@ export const sendReadyToSettleEmails = async (paymentsInput: Payment[], event: E
 
     const sentMessageInfo = await sendEmail(senderPayment.sender.email, subjectSenders, html);
     if (sentMessageInfo.To) {
-      logger.info(`'Ready to settle' email for event ${event.name} sent to ${sentMessageInfo.To}: ${sentMessageInfo.Message}`);
+      logger.info(`'Ready to settle' (payer) email for event ${event.name} sent to ${sentMessageInfo.To}: ${sentMessageInfo.Message}`);
     }
   }
 
@@ -90,7 +90,7 @@ export const sendReadyToSettleEmails = async (paymentsInput: Payment[], event: E
 
     const sentMessageInfo = await sendEmail(receiverPayment.receiver.email, subjectReceivers, html);
     if (sentMessageInfo.To) {
-      logger.info(`'Ready to settle' email for event ${event.name} sent to ${sentMessageInfo.To}: ${sentMessageInfo.Message}`);
+      logger.info(`'Ready to settle' (receiver) email for event ${event.name} sent to ${sentMessageInfo.To}: ${sentMessageInfo.Message}`);
     }
   }
 };

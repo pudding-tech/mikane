@@ -3,6 +3,7 @@ import env from "../env.ts";
 import { getEvent, getEventPayments } from "../db/dbEvents.ts";
 import { getUsers } from "../db/dbUsers.ts";
 import { authCheck } from "../middlewares/authCheck.ts";
+import { csrfCheck } from "../middlewares/csrf.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
 import { EventStatusType } from "../types/enums.ts";
 import { ErrorExt } from "../types/errorExt.ts";
@@ -15,7 +16,7 @@ const router = express.Router();
 /*
 * Send 'add expenses reminder' email to all participants in an event
 */
-router.post("/notifications/:eventId/reminder", authCheck, async (req, res) => {
+router.post("/notifications/:eventId/reminder", authCheck, csrfCheck, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
     throw new ErrorExt(ec.PUD073);
   }
@@ -49,7 +50,7 @@ router.post("/notifications/:eventId/reminder", authCheck, async (req, res) => {
 /*
 * Send 'ready-to-settle' email to all participants in an event
 */
-router.post("/notifications/:eventId/settle", authCheck, async (req, res) => {
+router.post("/notifications/:eventId/settle", authCheck, csrfCheck, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
     throw new ErrorExt(ec.PUD073);
   }

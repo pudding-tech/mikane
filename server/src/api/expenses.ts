@@ -1,6 +1,7 @@
 import express from "express";
 import * as db from "../db/dbExpenses.ts";
 import { authCheck } from "../middlewares/authCheck.ts";
+import { csrfCheck } from "../middlewares/csrf.ts";
 import { createDate } from "../utils/dateCreator.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
 import { Expense } from "../types/types.ts";
@@ -15,7 +16,7 @@ const router = express.Router();
 /*
 * Get a list of all expenses for a given event
 */
-router.get("/expenses", authCheck, async (req, res) => {
+router.get("/expenses", authCheck, csrfCheck, async (req, res) => {
   const eventId = req.query.eventId as string;
   if (!isUUID(eventId)) {
     throw new ErrorExt(ec.PUD013);
@@ -33,7 +34,7 @@ router.get("/expenses", authCheck, async (req, res) => {
 /*
 * Get a specific expense
 */
-router.get("/expenses/:id", authCheck, async (req, res) => {
+router.get("/expenses/:id", authCheck, csrfCheck, async (req, res) => {
   const expenseId = req.params.id;
   if (!isUUID(expenseId)) {
     throw new ErrorExt(ec.PUD056);
@@ -58,7 +59,7 @@ router.get("/expenses/:id", authCheck, async (req, res) => {
 /*
 * Create a new expense
 */
-router.post("/expenses", authCheck, async (req, res) => {
+router.post("/expenses", authCheck, csrfCheck, async (req, res) => {
   if (!req.body.name || [null, undefined].includes(req.body.amount) || !req.body.categoryId || !req.body.payerId) {
     throw new ErrorExt(ec.PUD057);
   }
@@ -102,7 +103,7 @@ router.post("/expenses", authCheck, async (req, res) => {
 /*
 * Edit (replace) expense
 */
-router.put("/expenses/:id", authCheck, async (req, res) => {
+router.put("/expenses/:id", authCheck, csrfCheck, async (req, res) => {
   const expenseId = req.params.id;
   if (!isUUID(expenseId)) {
     throw new ErrorExt(ec.PUD056);
@@ -158,7 +159,7 @@ router.put("/expenses/:id", authCheck, async (req, res) => {
 /*
 * Edit (patch) expense
 */
-router.patch("/expenses/:id", authCheck, async (req, res) => {
+router.patch("/expenses/:id", authCheck, csrfCheck, async (req, res) => {
   const expenseId = req.params.id;
   if (!isUUID(expenseId)) {
     throw new ErrorExt(ec.PUD056);
@@ -218,7 +219,7 @@ router.patch("/expenses/:id", authCheck, async (req, res) => {
 /*
 * Delete an expense
 */
-router.delete("/expenses/:id", authCheck, async (req, res) => {
+router.delete("/expenses/:id", authCheck, csrfCheck, async (req, res) => {
   const expenseId = req.params.id;
   if (!isUUID(expenseId)) {
     throw new ErrorExt(ec.PUD056);

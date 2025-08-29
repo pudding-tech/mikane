@@ -1,5 +1,9 @@
 alter table "log" rename to "log_server";
 
+alter table "log_server"
+  add user_id uuid,
+  add session_id varchar(255);
+
 create table log_client (
   id uuid primary key default gen_random_uuid(),
   "timestamp" timestamp not null,
