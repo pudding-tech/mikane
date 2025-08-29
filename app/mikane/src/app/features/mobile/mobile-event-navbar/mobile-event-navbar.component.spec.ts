@@ -1,35 +1,38 @@
+import { inputBinding, signal, twoWayBinding } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatRippleModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ContextService } from 'src/app/services/context/context.service';
 import { MobileEventNavbarComponent } from './mobile-event-navbar.component';
+import { of } from 'rxjs';
 
 describe('MobileEventNavbarComponent', () => {
 	let component: MobileEventNavbarComponent;
 	let fixture: ComponentFixture<MobileEventNavbarComponent>;
+	const activeLink = signal('/participants');
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MobileEventNavbarComponent, MatIconModule, MatRippleModule, RouterTestingModule],
+			imports: [MobileEventNavbarComponent],
 			providers: [
-				{ provide: ContextService, useValue: { isIos: () => false } },
-				{ provide: ActivatedRoute, useValue: {} },
+				{ provide: ContextService, useValue: { isIosPwaStandalone: () => false } },
+				{ provide: ActivatedRoute, useValue: { snapshot: { params: {} }, params: of({}) } },
 			],
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(MobileEventNavbarComponent);
+		fixture = TestBed.createComponent(MobileEventNavbarComponent, {
+			bindings: [
+				twoWayBinding('activeLink', activeLink),
+				inputBinding('links', () => [
+					{ name: 'Link 1', icon: 'person', location: '/participants' },
+					{ name: 'Link 2', icon: 'payment', location: '/expenses' },
+				]),
+			]
+		});
 		component = fixture.componentInstance;
-		fixture.componentRef.setInput('activeLink', '/events');
-		fixture.componentRef.setInput('links', [
-			{ name: 'Link 1', icon: 'icon1', location: '/link1' },
-			{ name: 'Link 2', icon: 'icon2', location: '/link2' },
-		]);
 		fixture.detectChanges();
 	});
 

@@ -1,4 +1,4 @@
-import { ElementRef } from '@angular/core';
+import { ElementRef, inputBinding } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -21,8 +21,6 @@ describe('CategoryItemComponent', () => {
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(CategoryItemComponent);
-		component = fixture.componentInstance;
 		user = { id: '1', name: 'Test User' } as User;
 		category = {
 			id: '1',
@@ -33,10 +31,16 @@ describe('CategoryItemComponent', () => {
 			numberOfExpenses: 0,
 			created: new Date(),
 		} as Category;
-		fixture.componentRef.setInput('category', category);
-		fixture.componentRef.setInput('eventActive', true);
-		fixture.componentRef.setInput('addUserForm', {} as FormGroup);
-		fixture.componentRef.setInput('filterUsers', () => ([] as User[]));
+
+		fixture = TestBed.createComponent(CategoryItemComponent, {
+			bindings: [
+				inputBinding('category', () => category),
+				inputBinding('eventActive', () => true),
+				inputBinding('addUserForm', () => ({} as FormGroup)),
+				inputBinding('filterUsers', () => (_categoryId: string) => ([] as User[]))
+			]
+		});
+		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
 

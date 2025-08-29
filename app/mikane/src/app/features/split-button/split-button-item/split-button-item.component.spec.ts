@@ -1,8 +1,7 @@
+import { inputBinding } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatRippleModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
-import { describe, it, beforeEach, expect, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SplitButtonItemComponent } from './split-button-item.component';
 
 describe('SplitButtonItemComponent', () => {
@@ -11,15 +10,18 @@ describe('SplitButtonItemComponent', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [SplitButtonItemComponent, MatIconModule, MatRippleModule],
+			imports: [SplitButtonItemComponent],
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(SplitButtonItemComponent);
+		fixture = TestBed.createComponent(SplitButtonItemComponent, {
+			bindings: [
+				inputBinding('icon', () => 'person'),
+				inputBinding('text', () => 'test-text')
+			]
+		});
 		component = fixture.componentInstance;
-		fixture.componentRef.setInput('icon', 'test-icon');
-		fixture.componentRef.setInput('text', 'test-text');
 		fixture.detectChanges();
 	});
 
@@ -46,7 +48,7 @@ describe('SplitButtonItemComponent', () => {
 	it('should display the correct icon', () => {
 		const iconEl = fixture.debugElement.query(By.css('.icon')).nativeElement;
 
-		expect(iconEl.textContent).toContain('test-icon');
+		expect(iconEl.textContent).toContain('person');
 	});
 
 	it('should display the correct text', () => {

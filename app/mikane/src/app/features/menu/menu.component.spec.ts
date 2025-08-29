@@ -1,6 +1,5 @@
-import { CommonModule } from '@angular/common';
+import { Component, Directive } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -8,44 +7,60 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { SplitButtonComponent } from 'src/app/features/split-button/split-button.component';
+import { SplitButtonItemComponent } from 'src/app/features/split-button/split-button-item/split-button-item.component';
+import { SplitButtonItemDirective } from 'src/app/features/split-button/split-button-item/split-button-item.directive';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { MenuComponent } from './menu.component';
+
+@Component({ selector: 'app-split-button', template: '<div id="mock-split-button"></div>', standalone: true })
+class MockSplitButtonComponent {
+	toggled = false;
+}
+
+@Component({ selector: 'app-split-button-item', template: '<div id="mock-split-button-item"></div>', standalone: true })
+class MockSplitButtonItemComponent {}
+
+@Directive({ selector: '[appSplitButtonItem]', standalone: true })
+class MockSplitButtonItemDirective {}
 
 describe('MenuComponent', () => {
 	let component: MenuComponent;
 	let fixture: ComponentFixture<MenuComponent>;
 
-	const routerSpy = {
-		navigate: vi.fn(),
-		get url() { return '/' }
-	};
-	const authServiceSpy = {
-		getCurrentUser: vi.fn(),
-		logout: vi.fn()
-	};
-	const breakpointServiceSpy = {
-		isMobile: () => false
-	};
-	const messageServiceSpy = {
-		showError: vi.fn()
-	};
-	const logServiceSpy = {
-		info: vi.fn(),
-		error: vi.fn()
-	};
+	const authServiceSpy = { getCurrentUser: vi.fn(),	logout: vi.fn() };
+	const messageServiceSpy = {	showError: vi.fn() };
+	const routerSpy = {	navigate: vi.fn(), get url() { return '/' }	};
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MenuComponent, CommonModule, MatIconModule],
+			imports: [MenuComponent, MockSplitButtonComponent, MockSplitButtonItemComponent, MockSplitButtonItemDirective],
 			providers: [
-				{ provide: BreakpointService, useValue: breakpointServiceSpy },
-				{ provide: Router, useValue: routerSpy },
 				{ provide: AuthService, useValue: authServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
-				{ provide: LogService, useValue: logServiceSpy },
+				{ provide: Router, useValue: routerSpy },
+				{ provide: BreakpointService, useValue: { isMobile: () => false } },
+				{ provide: LogService, useValue: { info: vi.fn(), error: vi.fn() } },
 			],
-		}).compileComponents();
+		})
+		.overrideComponent(MenuComponent, {
+			remove: {
+				imports: [
+					SplitButtonComponent,
+					SplitButtonItemComponent,
+					SplitButtonItemDirective
+				],
+			},
+			add: {
+				imports: [
+					MockSplitButtonComponent,
+					MockSplitButtonItemComponent,
+					MockSplitButtonItemDirective,
+				],
+			},
+		})
+		.compileComponents();
 	});
 
 	beforeEach(() => {
@@ -58,6 +73,13 @@ describe('MenuComponent', () => {
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
+	});
+
+	it('should use the mock split button', () => {
+		fixture.detectChanges();
+		const mock = fixture.nativeElement.querySelector('#mock-split-button');
+
+		expect(mock).toBeTruthy();
 	});
 
 	it('should get the current user on init', () => {

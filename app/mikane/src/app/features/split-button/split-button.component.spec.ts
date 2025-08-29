@@ -1,8 +1,5 @@
-import { CommonModule } from '@angular/common';
 import { Directive, QueryList } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatIconModule } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -22,7 +19,7 @@ describe('SplitButtonComponent', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [SplitButtonComponent, CommonModule, MatButtonToggleModule, MatIconModule, MockSplitButtonItemDirective],
+			imports: [SplitButtonComponent, MockSplitButtonItemDirective],
 			providers: [
 				{
 					provide: BreakpointService,
@@ -31,7 +28,20 @@ describe('SplitButtonComponent', () => {
 					},
 				},
 			],
-		}).compileComponents();
+		})
+		.overrideComponent(SplitButtonComponent, {
+			remove: {
+				imports: [
+					SplitButtonItemDirective
+				]
+			},
+			add: {
+				imports: [
+					MockSplitButtonItemDirective
+				]
+			}
+		})
+		.compileComponents();
 	});
 
 	beforeEach(() => {

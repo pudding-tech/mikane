@@ -1,56 +1,60 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { InviteComponent } from './invite.component';
-import { of, throwError } from 'rxjs';
 import { FormGroupDirective } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { vi, describe, it, beforeEach, expect } from 'vitest';
+import { of, throwError } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { LogService } from 'src/app/services/log/log.service';
+import { MenuComponent } from 'src/app/features/menu/menu.component';
+import { InviteComponent } from './invite.component';
 
-const authServiceSpy = {
-  getCurrentUser: vi.fn(),
-  logout: vi.fn(),
-};
-const userServiceSpy = {
-  loadGuestUsers: vi.fn(),
-  inviteUser: vi.fn(),
-};
-const messageServiceSpy = {
-  showError: vi.fn(),
-  showSuccess: vi.fn(),
-};
-const breakpointServiceSpy = {
-  isMobile: () => false,
-};
-const logServiceSpy = {
-  error: vi.fn(),
-};
-const activatedRouteSpy = {
-  snapshot: { params: {} },
-  params: of({}),
-};
+@Component({ selector: 'app-menu', template: '<div id="mock-app-menu"></div>', standalone: true })
+class MockMenuComponent {
+	toggled = false;
+}
 
 describe('InviteComponent', () => {
   let component: InviteComponent;
   let fixture: ComponentFixture<InviteComponent>;
 
+  const authServiceSpy = { getCurrentUser: vi.fn(), logout: vi.fn(), };
+  const userServiceSpy = { loadGuestUsers: vi.fn(), inviteUser: vi.fn(), };
+  const messageServiceSpy = { showError: vi.fn(), showSuccess: vi.fn(), };
+  const logServiceSpy = { error: vi.fn(), info: vi.fn() };
+  const activatedRouteSpy = { snapshot: { params: {} }, params: of({}) };
+
   beforeEach(() => {
     userServiceSpy.loadGuestUsers.mockReturnValue(of([]));
 
     TestBed.configureTestingModule({
-      imports: [InviteComponent],
+      imports: [InviteComponent, MockMenuComponent],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         { provide: UserService, useValue: userServiceSpy },
         { provide: MessageService, useValue: messageServiceSpy },
-        { provide: BreakpointService, useValue: breakpointServiceSpy },
         { provide: LogService, useValue: logServiceSpy },
         { provide: ActivatedRoute, useValue: activatedRouteSpy },
+        { provide: BreakpointService, useValue: { isMobile: () => false } },
       ],
-    });
+    })
+    .overrideComponent(InviteComponent, {
+      remove: {
+        imports: [
+          MenuComponent
+        ]
+      },
+      add: {
+        imports: [
+          MockMenuComponent
+        ]
+      }
+    })
+    .compileComponents();
+
     fixture = TestBed.createComponent(InviteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -60,6 +64,13 @@ describe('InviteComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should use the mock menu', () => {
+    fixture.detectChanges();
+    const mock = fixture.nativeElement.querySelector('#mock-app-menu');
+
+    expect(mock).toBeTruthy();
   });
 
   it('should load guest users on init', () => {
