@@ -1,15 +1,16 @@
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { Expense } from 'src/app/services/expense/expense.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { ExpenseDataSource } from './expense.datasource';
 
 describe('ExpenseDataSource', () => {
 	let dataSource: ExpenseDataSource;
-	let userServiceSpy: jasmine.SpyObj<UserService>;
+	let userServiceSpy: Partial<UserService>;
 
 	beforeEach(() => {
-		userServiceSpy = jasmine.createSpyObj('UserService', ['loadUserExpenses']);
-		userServiceSpy.loadUserExpenses.and.returnValue(
+		userServiceSpy = { loadUserExpenses: vi.fn() as Mock };
+		(userServiceSpy.loadUserExpenses as Mock).mockReturnValue(
 			of([
 				{
 					id: 'expenseId',
@@ -35,7 +36,7 @@ describe('ExpenseDataSource', () => {
 				},
 			] as Expense[]),
 		);
-		dataSource = new ExpenseDataSource(userServiceSpy);
+		dataSource = new ExpenseDataSource(userServiceSpy as UserService);
 	});
 
 	it('should be created', () => {
@@ -45,7 +46,7 @@ describe('ExpenseDataSource', () => {
 	it('should load expenses', () => {
 		dataSource.loadExpenses('userId', 'eventId');
 
-		expect(userServiceSpy.loadUserExpenses).toHaveBeenCalledOnceWith('userId', 'eventId');
+		expect(userServiceSpy.loadUserExpenses).toHaveBeenCalledWith('userId', 'eventId');
 	});
 
 	it('should remove expense', () => {
@@ -53,14 +54,14 @@ describe('ExpenseDataSource', () => {
 		dataSource.addExpense({ id: expenseId } as Expense);
 		dataSource.removeExpense(expenseId);
 
-		expect(dataSource.notEmpty.value).toBeFalse();
+		expect(dataSource.notEmpty.value).toBeFalsy();
 	});
 
 	it('should add expense', () => {
 		const expenseId = 'expenseId';
 		dataSource.addExpense({ id: expenseId } as Expense);
 
-		expect(dataSource.notEmpty.value).toBeTrue();
+		expect(dataSource.notEmpty.value).toBeTruthy();
 	});
 
 	it('should connect and get expenses', () => {
@@ -94,17 +95,17 @@ describe('ExpenseDataSource', () => {
 	});
 
 	it('should set not empty to false when expenses are empty', () => {
-		userServiceSpy.loadUserExpenses.and.returnValue(of([]));
+		(userServiceSpy.loadUserExpenses as Mock).mockReturnValue(of([]));
 		dataSource.loadExpenses('userId', 'eventId');
 		dataSource.connect().subscribe(() => {
-			expect(dataSource.notEmpty.value).toBeFalse();
+			expect(dataSource.notEmpty.value).toBeFalsy();
 		});
 	});
 
 	it('should set not empty to true when expenses are not empty', () => {
 		dataSource.addExpense({ id: 'expenseId' } as Expense);
 		dataSource.connect().subscribe(() => {
-			expect(dataSource.notEmpty.value).toBeTrue();
+			expect(dataSource.notEmpty.value).toBeTruthy();
 		});
 	});
 
@@ -112,7 +113,7 @@ describe('ExpenseDataSource', () => {
 		dataSource.addExpense({ id: 'expenseId' } as Expense);
 		dataSource.removeExpense('expenseId');
 		dataSource.connect().subscribe(() => {
-			expect(dataSource.notEmpty.value).toBeFalse();
+			expect(dataSource.notEmpty.value).toBeFalsy();
 		});
 	});
 
