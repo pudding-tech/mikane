@@ -1,6 +1,7 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AsyncPipe } from '@angular/common';
-import { MockBuilder, MockRender, MockedComponentFixture } from 'ng-mocks';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { PuddingEvent } from 'src/app/services/event/event.service';
 import { LogService } from 'src/app/services/log/log.service';
@@ -10,56 +11,44 @@ import { EventInfoComponent } from './event-info.component';
 
 describe('EventInfoComponent', () => {
 	let component: EventInfoComponent;
-	let fixture: MockedComponentFixture<EventInfoComponent, { $event: Observable<PuddingEvent> }>;
-	let loadUsersByEventSpy: jasmine.Spy;
-	let getCurrentUserSpy: jasmine.Spy;
-	let showErrorSpy: jasmine.Spy;
+	let fixture: ComponentFixture<EventInfoComponent>;
+	let loadUsersByEventSpy: ReturnType<typeof vi.fn>;
+	let getCurrentUserSpy: ReturnType<typeof vi.fn>;
+	let showErrorSpy: ReturnType<typeof vi.fn>;
 
-	async function createComponent() {
-		await MockBuilder(EventInfoComponent)
-			.mock(AsyncPipe)
-			.provide({
-				provide: UserService,
-				useValue: {
-					loadUsersByEvent: loadUsersByEventSpy,
-				},
-			})
-			.provide({
-				provide: AuthService,
-				useValue: {
-					getCurrentUser: getCurrentUserSpy,
-				},
-			})
-			.provide({
-				provide: MessageService,
-				useValue: {
-					showError: showErrorSpy,
-				},
-			})
-			.mock(LogService);
-
-		fixture = MockRender(EventInfoComponent, {
-			$event: of({
-				id: 'test',
-				name: 'test',
-				description: 'test',
-				adminIds: [],
-			} as PuddingEvent),
-		});
-		component = fixture.point.componentInstance;
+	function createComponent(event$ = of({
+		id: 'test',
+		name: 'test',
+		description: 'test',
+		adminIds: [],
+		status: { id: 1, name: 'Active' }
+	} as PuddingEvent)) {
+		fixture = TestBed.createComponent(EventInfoComponent);
+		component = fixture.componentInstance;
+		fixture.componentRef.setInput('$event', event$);
 		fixture.detectChanges();
 	}
 
 	describe('', () => {
 		beforeEach(() => {
-			loadUsersByEventSpy = jasmine.createSpy('loadUsersByEvent').and.returnValue(
+			loadUsersByEventSpy = vi.fn().mockReturnValue(
 				of([
-					{ id: 'test', name: 'test', eventInfo: { isAdmin: true } },
-					{ id: 'test2', name: 'test2', eventInfo: { isAdmin: false } },
+					{ id: 'test', name: 'test', eventInfo: { isAdmin: true }, avatarURL: 'test-avatar.png' },
+					{ id: 'test2', name: 'test2', eventInfo: { isAdmin: false }, avatarURL: 'test2-avatar.png' },
 				] as User[]),
 			);
-			getCurrentUserSpy = jasmine.createSpy('getCurrentUser').and.returnValue(of({ id: 'test' } as User));
-			showErrorSpy = jasmine.createSpy('showError');
+			getCurrentUserSpy = vi.fn().mockReturnValue(of({ id: 'test' } as User));
+			showErrorSpy = vi.fn();
+
+			TestBed.configureTestingModule({
+				imports: [EventInfoComponent, AsyncPipe],
+				providers: [
+					{ provide: UserService, useValue: { loadUsersByEvent: loadUsersByEventSpy } },
+					{ provide: AuthService, useValue: { getCurrentUser: getCurrentUserSpy } },
+					{ provide: MessageService, useValue: { showError: showErrorSpy } },
+					{ provide: LogService, useValue: { error: vi.fn() } },
+				],
+			}).compileComponents();
 
 			return createComponent();
 		});
@@ -74,6 +63,7 @@ describe('EventInfoComponent', () => {
 				name: 'test',
 				description: 'test',
 				adminIds: [],
+				status: { id: 1, name: 'Active' }
 			} as PuddingEvent);
 		});
 
@@ -82,14 +72,26 @@ describe('EventInfoComponent', () => {
 		});
 
 		it('should filter users by admin', () => {
-			expect(component.adminsInEvent).toEqual([{ id: 'test', name: 'test', eventInfo: { isAdmin: true } }] as User[]);
+			expect(component.adminsInEvent).toEqual([{ id: 'test', name: 'test', eventInfo: { isAdmin: true }, avatarURL: 'test-avatar.png' }] as User[]);
 		});
 	});
 
 	describe('from user service', () => {
 		beforeEach(() => {
-			loadUsersByEventSpy = jasmine.createSpy('loadUsersByEvent').and.returnValue(throwError(() => 'test error'));
-			showErrorSpy = jasmine.createSpy('showError');
+			loadUsersByEventSpy = vi.fn().mockReturnValue(throwError(() => 'test error'));
+			getCurrentUserSpy = vi.fn().mockReturnValue(of({ id: 'test' } as User));
+			showErrorSpy = vi.fn();
+
+			TestBed.configureTestingModule({
+				imports: [EventInfoComponent, AsyncPipe],
+				providers: [
+					{ provide: UserService, useValue: { loadUsersByEvent: loadUsersByEventSpy } },
+					{ provide: AuthService, useValue: { getCurrentUser: getCurrentUserSpy } },
+					{ provide: MessageService, useValue: { showError: showErrorSpy } },
+					{ provide: LogService, useValue: { error: vi.fn() } },
+				],
+			}).compileComponents();
+
 			return createComponent();
 		});
 
@@ -100,8 +102,23 @@ describe('EventInfoComponent', () => {
 
 	describe('from auth service', () => {
 		beforeEach(() => {
-			getCurrentUserSpy = jasmine.createSpy('getCurrentUser').and.returnValue(throwError(() => 'test error'));
-			showErrorSpy = jasmine.createSpy('showError');
+			loadUsersByEventSpy = vi.fn().mockReturnValue(of([
+				{ id: 'test', name: 'test', eventInfo: { isAdmin: true }, avatarURL: 'test-avatar.png' },
+				{ id: 'test2', name: 'test2', eventInfo: { isAdmin: false }, avatarURL: 'test2-avatar.png' },
+			] as User[]));
+			getCurrentUserSpy = vi.fn().mockReturnValue(throwError(() => 'test error'));
+			showErrorSpy = vi.fn();
+
+			TestBed.configureTestingModule({
+				imports: [EventInfoComponent, AsyncPipe],
+				providers: [
+					{ provide: UserService, useValue: { loadUsersByEvent: loadUsersByEventSpy } },
+					{ provide: AuthService, useValue: { getCurrentUser: getCurrentUserSpy } },
+					{ provide: MessageService, useValue: { showError: showErrorSpy } },
+					{ provide: LogService, useValue: { error: vi.fn() } },
+				],
+			}).compileComponents();
+
 			return createComponent();
 		});
 

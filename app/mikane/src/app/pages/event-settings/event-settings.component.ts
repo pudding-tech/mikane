@@ -66,8 +66,8 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	event: PuddingEvent;
 	loading = new BehaviorSubject<boolean>(false);
 	eventData: { id?: string; name: string; description: string; private: boolean } = { name: '', description: '', private: false };
-	adminsInEvent: User[];
-	otherUsersInEvent: User[];
+	adminsInEvent: User[] = [];
+	otherUsersInEvent: User[] = [];
 	currentUser: User;
 
 	addExpensesCutoffDate = signal<Date | null>(null);

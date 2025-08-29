@@ -7,8 +7,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MockModule, MockService } from 'ng-mocks';
 import { of, throwError } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 import { LogService } from 'src/app/services/log/log.service';
@@ -20,29 +20,29 @@ import { UserSettingsComponent } from './user-settings.component';
 describe('UserSettingsComponent', () => {
 	let component: UserSettingsComponent;
 	let fixture: ComponentFixture<UserSettingsComponent>;
-	let userServiceSpy: jasmine.SpyObj<UserService>;
-	let messageServiceSpy: jasmine.SpyObj<MessageService>;
-	let formValidationServiceSpy: jasmine.SpyObj<FormValidationService>;
-	let breakpointServiceSpy: jasmine.SpyObj<BreakpointService>;
-	let matDialogSpy: jasmine.SpyObj<MatDialog>;
+	let userServiceSpy: { editUser: ReturnType<typeof vi.fn> };
+	let messageServiceSpy: { showSuccess: ReturnType<typeof vi.fn>; showError: ReturnType<typeof vi.fn> };
+	let formValidationServiceSpy: { usernameRegex: RegExp };
+	let breakpointServiceSpy: { isMobile: ReturnType<typeof vi.fn> };
+	let matDialogSpy: { open: ReturnType<typeof vi.fn> };
 
 	beforeEach(() => {
-		userServiceSpy = jasmine.createSpyObj('UserService', ['editUser']);
-		messageServiceSpy = jasmine.createSpyObj('MessageService', ['showSuccess', 'showError']);
-		formValidationServiceSpy = jasmine.createSpyObj('FormValidationService', [], { usernameRegex: /^[\dA-Za-z]+$/ });
-		breakpointServiceSpy = jasmine.createSpyObj('BreakpointService', ['isMobile']);
-		matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+		userServiceSpy = { editUser: vi.fn() };
+		messageServiceSpy = { showSuccess: vi.fn(), showError: vi.fn() };
+		formValidationServiceSpy = { usernameRegex: /^[\dA-Za-z]+$/ };
+		breakpointServiceSpy = { isMobile: vi.fn() };
+		matDialogSpy = { open: vi.fn() };
 
 		TestBed.configureTestingModule({
 			imports: [
 				UserSettingsComponent,
 				CommonModule,
-				MockModule(MatCardModule),
-				MockModule(MatIconModule),
+				MatCardModule,
+				MatIconModule,
 				ReactiveFormsModule,
-				MockModule(MatFormFieldModule),
-				MockModule(MatInputModule),
-				MockModule(MatButtonModule),
+				MatFormFieldModule,
+				MatInputModule,
+				MatButtonModule,
 			],
 			providers: [
 				{ provide: UserService, useValue: userServiceSpy },
@@ -50,7 +50,7 @@ describe('UserSettingsComponent', () => {
 				{ provide: FormValidationService, useValue: formValidationServiceSpy },
 				{ provide: BreakpointService, useValue: breakpointServiceSpy },
 				{ provide: MatDialog, useValue: matDialogSpy },
-				{ provide: LogService, useValue: MockService(LogService) },
+				{ provide: LogService, useValue: { error: vi.fn() } },
 			],
 		}).compileComponents();
 
@@ -87,21 +87,21 @@ describe('UserSettingsComponent', () => {
 		});
 
 		it('should add async validators to the form controls', () => {
-			spyOn(component.editUserForm.get('username'), 'addAsyncValidators');
-			spyOn(component.editUserForm.get('email'), 'addAsyncValidators');
-			spyOn(component.editUserForm.get('phone'), 'addAsyncValidators');
+			vi.spyOn(component.editUserForm.get('username'), 'addAsyncValidators');
+			vi.spyOn(component.editUserForm.get('email'), 'addAsyncValidators');
+			vi.spyOn(component.editUserForm.get('phone'), 'addAsyncValidators');
 
 			component.ngOnInit();
 
-			expect(component.editUserForm.get('username').addAsyncValidators).toHaveBeenCalledWith(jasmine.any(Function));
-			expect(component.editUserForm.get('email').addAsyncValidators).toHaveBeenCalledWith(jasmine.any(Function));
-			expect(component.editUserForm.get('phone').addAsyncValidators).toHaveBeenCalledWith(jasmine.any(Function));
+			expect(component.editUserForm.get('username').addAsyncValidators).toHaveBeenCalledWith(expect.any(Function));
+			expect(component.editUserForm.get('email').addAsyncValidators).toHaveBeenCalledWith(expect.any(Function));
+			expect(component.editUserForm.get('phone').addAsyncValidators).toHaveBeenCalledWith(expect.any(Function));
 		});
 	});
 
 	describe('editUser', () => {
 		it('should call the UserService.editUser method with the correct parameters', () => {
-			userServiceSpy.editUser.and.returnValue(of(component.user));
+			userServiceSpy.editUser.mockReturnValue(of(component.user));
 
 			component.editUserForm.patchValue({
 				username: 'newusername',
@@ -124,7 +124,7 @@ describe('UserSettingsComponent', () => {
 
 		it('should show a success message and toggle edit mode on success', () => {
 			component.editMode = true;
-			userServiceSpy.editUser.and.returnValue(of(component.user));
+			userServiceSpy.editUser.mockReturnValue(of(component.user));
 
 			component.editUserForm.patchValue({
 				username: 'newusername',
@@ -141,7 +141,7 @@ describe('UserSettingsComponent', () => {
 
 		it('should show an error message on error', () => {
 			const error: ApiError = { error: { message: 'Error' } } as ApiError;
-			userServiceSpy.editUser.and.returnValue(throwError(() => error));
+			userServiceSpy.editUser.mockReturnValue(throwError(() => error));
 
 			component.editUserForm.patchValue({
 				username: 'newusername',

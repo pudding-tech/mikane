@@ -12,8 +12,8 @@ describe('AuthService', () => {
 
 	beforeEach(() => {
 		const env = { apiUrl: 'http://localhost:3002/api/' } as Environment;
+
 		TestBed.configureTestingModule({
-			imports: [],
 			providers: [
 				AuthService,
 				{ provide: ENV, useValue: env },
@@ -21,9 +21,8 @@ describe('AuthService', () => {
 				provideHttpClientTesting(),
 			],
 		});
-		service = TestBed.inject(AuthService);
 
-		// Inject the http service and test controller for each test
+		service = TestBed.inject(AuthService);
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
@@ -60,9 +59,8 @@ describe('AuthService', () => {
 		it('should return user after login', () => {
 			service.login('testuser', 'secret').subscribe({
 				next: (user) => {
-					expect(user).withContext('should return user').toEqual(expectedLoginResponse);
+					expect(user).toEqual(expectedLoginResponse);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
@@ -76,7 +74,7 @@ describe('AuthService', () => {
 
 	describe('#logout', () => {
 		it('should call logout', () => {
-			service.logout().subscribe({ error: fail });
+			service.logout().subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/logout');
 
@@ -88,7 +86,7 @@ describe('AuthService', () => {
 
 	describe('#sendResetPasswordEmail', () => {
 		it('should send email', () => {
-			service.sendResetPasswordEmail('test@test.test').subscribe({ error: fail });
+			service.sendResetPasswordEmail('test@test.test').subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/requestpasswordreset');
 
@@ -120,9 +118,8 @@ describe('AuthService', () => {
 		it('should return current user', () => {
 			service.getCurrentUser().subscribe({
 				next: (user) => {
-					expect(user).withContext('should return user').toEqual(expectedLoginResponse);
+					expect(user).toEqual(expectedLoginResponse);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
@@ -145,21 +142,19 @@ describe('AuthService', () => {
 			// Should hit cache
 			service.getCurrentUser().subscribe({
 				next: (user) => {
-					expect(user).withContext('should return cached user').toEqual(expectedLoginResponse);
+					expect(user).toEqual(expectedLoginResponse);
 				},
-				error: fail,
 			});
 		});
 
 		it('should return authenticated status', () => {
-			expect(service.authenticated).toBeFalse();
+			expect(service.authenticated).toBeFalsy();
 
 			service.getCurrentUser().subscribe({
 				next: (user) => {
-					expect(user).withContext('should return user').not.toBeNull();
-					expect(service.authenticated).toBeTrue();
+					expect(user).not.toBeNull();
+					expect(service.authenticated).toBeTruthy();
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
@@ -172,7 +167,7 @@ describe('AuthService', () => {
 
 	describe('#resetPassword', () => {
 		it('should make reset password request', () => {
-			service.resetPassword('key', 'newsecret').subscribe({ error: fail });
+			service.resetPassword('key', 'newsecret').subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/resetpassword');
 
@@ -204,9 +199,8 @@ describe('AuthService', () => {
 		it('should clear current user', () => {
 			service.getCurrentUser().subscribe({
 				next: (user) => {
-					expect(user).withContext('should return user').not.toBeNull();
+					expect(user).not.toBeNull();
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
@@ -219,9 +213,8 @@ describe('AuthService', () => {
 
 			service.getCurrentUser().subscribe({
 				next: (user) => {
-					expect(user).withContext('should return user').not.toBeNull();
+					expect(user).not.toBeNull();
 				},
-				error: fail,
 			});
 
 			const req2 = httpTestingController.expectOne('http://localhost:3002/api/login');

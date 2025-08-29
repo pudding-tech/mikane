@@ -6,41 +6,41 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { MockModule, MockService } from 'ng-mocks';
 import { of, throwError } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ChangePasswordComponent } from './change-password.component';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('ChangePasswordComponent', () => {
 	let component: ChangePasswordComponent;
 	let fixture: ComponentFixture<ChangePasswordComponent>;
-	let userServiceSpy: jasmine.SpyObj<UserService>;
-	let messageServiceSpy: jasmine.SpyObj<MessageService>;
-	let routerSpy: jasmine.SpyObj<Router>;
+	let userServiceSpy: { changeUserPassword: ReturnType<typeof vi.fn> };
+	let messageServiceSpy: { showSuccess: ReturnType<typeof vi.fn>; showError: ReturnType<typeof vi.fn> };
+	let routerSpy: { navigate: ReturnType<typeof vi.fn> };
 
 	beforeEach(() => {
-		userServiceSpy = jasmine.createSpyObj('UserService', ['changeUserPassword']);
-		messageServiceSpy = jasmine.createSpyObj('MessageService', ['showSuccess', 'showError']);
-		routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+		userServiceSpy = { changeUserPassword: vi.fn() };
+		messageServiceSpy = { showSuccess: vi.fn(), showError: vi.fn() };
+		routerSpy = { navigate: vi.fn() };
 
 		TestBed.configureTestingModule({
 			imports: [
 				ChangePasswordComponent,
 				ReactiveFormsModule,
-				MockModule(MatCardModule),
-				MockModule(MatIconModule),
-				MockModule(MatFormFieldModule),
-				MockModule(MatInputModule),
-				MockModule(MatButtonModule),
+				MatCardModule,
+				MatIconModule,
+				MatFormFieldModule,
+				MatInputModule,
+				MatButtonModule,
 			],
 			providers: [
 				{ provide: UserService, useValue: userServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
 				{ provide: Router, useValue: routerSpy },
-				{ provide: LogService, useValue: MockService(LogService) },
+				{ provide: LogService, useValue: { error: vi.fn() } },
 				BreakpointService,
 			],
 		}).compileComponents();
@@ -55,15 +55,15 @@ describe('ChangePasswordComponent', () => {
 	});
 
 	it('should add compare validator to form', () => {
-		const formSpy = spyOn(component.changePasswordForm, 'addValidators');
+		const formSpy = vi.spyOn(component.changePasswordForm, 'addValidators');
 		component.ngOnInit();
 
-		expect(formSpy).toHaveBeenCalledWith([jasmine.any(Function)]);
+		expect(formSpy).toHaveBeenCalledWith([expect.any(Function)]);
 	});
 
 	it('should call changeUserPassword when form is submitted', () => {
 		const user: User = { id: '1', name: 'John Doe' } as User;
-		userServiceSpy.changeUserPassword.and.returnValue(of(user));
+		userServiceSpy.changeUserPassword.mockReturnValue(of(user));
 		component.changePasswordForm.setValue({
 			currentPassword: 'password',
 			newPassword: 'newpassword',
@@ -79,7 +79,7 @@ describe('ChangePasswordComponent', () => {
 
 	it('should show error message when changeUserPassword fails', () => {
 		const error = { error: { message: 'Error' } };
-		userServiceSpy.changeUserPassword.and.returnValue(throwError(error));
+		userServiceSpy.changeUserPassword.mockReturnValue(throwError(error));
 		component.changePasswordForm.setValue({
 			currentPassword: 'password',
 			newPassword: 'newpassword',

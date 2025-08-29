@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { User } from 'src/app/services/user/user.service';
 
-interface CategoryInfo {
+export interface CategoryInfo {
 	id: string;
 	name: string;
 	icon: string;

@@ -1,26 +1,38 @@
-import { CurrencyPipe } from '@angular/common';
+import { registerLocaleData } from '@angular/common';
+import localeNo from '@angular/common/locales/no';
+import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { MockPipe } from 'ng-mocks';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Expense } from 'src/app/services/expense/expense.service';
 import { ExpenseItemComponent } from './expense-item.component';
+
+// Simple mock pipe for CurrencyPipe
+@Pipe({ name: 'currency' })
+class MockCurrencyPipe implements PipeTransform {
+	transform(...args: unknown[]) {
+		return JSON.stringify(args);
+	}
+}
 
 describe('ExpenseItemComponent', () => {
 	let component: ExpenseItemComponent;
 	let fixture: ComponentFixture<ExpenseItemComponent>;
 	let expense: Expense;
-	let routerSpy: jasmine.SpyObj<Router>;
-	let routeSpy: jasmine.SpyObj<ActivatedRoute>;
+	let routerSpy: { navigate: ReturnType<typeof vi.fn> };
+	let routeSpy: { snapshot: ActivatedRouteSnapshot };
+
+	beforeAll(() => {
+		registerLocaleData(localeNo);
+	});
 
 	beforeEach(() => {
-		routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
-		const activatedRouteSnapshot = new ActivatedRouteSnapshot();
-		routeSpy = jasmine.createSpyObj<ActivatedRoute>('ActivatedRoute', [], { snapshot: activatedRouteSnapshot });
-		const fakeTransform = (...args: string[]) => JSON.stringify(args);
+		routerSpy = { navigate: vi.fn() };
+		routeSpy = { snapshot: new ActivatedRouteSnapshot() };
+
 		TestBed.configureTestingModule({
-			declarations: [MockPipe(CurrencyPipe, jasmine.createSpy().and.callFake(fakeTransform))],
-			imports: [ExpenseItemComponent],
+			imports: [ExpenseItemComponent, MockCurrencyPipe],
 			providers: [
 				{ provide: Router, useValue: routerSpy },
 				{ provide: ActivatedRoute, useValue: routeSpy },
@@ -75,7 +87,7 @@ describe('ExpenseItemComponent', () => {
 	it('should display the expense amount', () => {
 		const amountEl = fixture.debugElement.query(By.css('.amount-color-darker')).nativeElement;
 
-		expect(amountEl.textContent).toContain(expense.amount);
+		expect(amountEl.textContent).toContain(expense.amount.toString());
 	});
 
 	it('should show expense icon', () => {
@@ -95,6 +107,9 @@ describe('ExpenseItemComponent', () => {
 	it('should navigate to expense details when gotoExpense is called', () => {
 		component.gotoExpense();
 
-		expect(routerSpy.navigate).toHaveBeenCalledWith([expense.id], { relativeTo: routeSpy, queryParams: jasmine.any(Object) });
+		expect(routerSpy.navigate).toHaveBeenCalledWith(
+			[expense.id],
+			{ relativeTo: routeSpy, queryParams: expect.any(Object) }
+		);
 	});
 });

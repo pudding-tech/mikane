@@ -2,25 +2,37 @@ import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EventService } from '../event/event.service';
 import { MikaneTitleStrategy } from './title-strategy';
 
-describe('MikaneTitleStrategy', () => {
+describe('Mikane Title Strategy', () => {
 	let titleStrategy: MikaneTitleStrategy;
-	let titleService: jasmine.SpyObj<Title>;
-	let eventService: jasmine.SpyObj<EventService>;
+	let titleService: Title;
+	let eventService: EventService;
 
 	beforeEach(() => {
-		const titleSpy = jasmine.createSpyObj('Title', ['setTitle']);
-		const eventServiceSpy = jasmine.createSpyObj('EventService', ['getEventName']);
-
 		TestBed.configureTestingModule({
-			providers: [MikaneTitleStrategy, { provide: Title, useValue: titleSpy }, { provide: EventService, useValue: eventServiceSpy }],
+			providers: [
+				MikaneTitleStrategy,
+				{
+					provide: Title,
+					useValue: {
+						setTitle: vi.fn(),
+					},
+				},
+				{
+					provide: EventService,
+					useValue: {
+						getEventName: vi.fn(),
+					},
+				},
+			],
 		});
 
 		titleStrategy = TestBed.inject(MikaneTitleStrategy);
-		titleService = TestBed.inject(Title) as jasmine.SpyObj<Title>;
-		eventService = TestBed.inject(EventService) as jasmine.SpyObj<EventService>;
+		titleService = TestBed.inject(Title);
+		eventService = TestBed.inject(EventService);
 	});
 
 	describe('updateTitle', () => {
@@ -38,114 +50,92 @@ describe('MikaneTitleStrategy', () => {
 			} as RouterStateSnapshot;
 		});
 
-		it('should set title with event name when eventId is present', () => {
-			// Arrange
-			const eventId = 'test-event-id';
+		it('should set titlel with event name when eventId is present', () => {
+			const eventId = 'test-id';
 			const eventName = 'Test Event';
 			const routeTitle = 'Expenditures';
 			mockSnapshot.root.firstChild!.firstChild!.params = { eventId };
-			spyOn(titleStrategy, 'buildTitle').and.returnValue(routeTitle);
-			eventService.getEventName.and.returnValue(of(eventName));
+			vi.spyOn(titleStrategy, 'buildTitle').mockReturnValue(routeTitle);
+			vi.spyOn(eventService, 'getEventName').mockReturnValue(of(eventName));
 
-			// Act
 			titleStrategy.updateTitle(mockSnapshot);
 
-			// Assert
 			expect(eventService.getEventName).toHaveBeenCalledWith(eventId);
 			expect(titleService.setTitle).toHaveBeenCalledWith(`${routeTitle} - ${eventName} | Mikane`);
 		});
 
 		it('should set title without event name when eventName is empty', () => {
-			// Arrange
-			const eventId = 'test-event-id';
+			const eventId = 'test-id';
 			const eventName = '';
 			const routeTitle = 'Expenditures';
 			mockSnapshot.root.firstChild!.firstChild!.params = { eventId };
-			spyOn(titleStrategy, 'buildTitle').and.returnValue(routeTitle);
-			eventService.getEventName.and.returnValue(of(eventName));
+			vi.spyOn(titleStrategy, 'buildTitle').mockReturnValue(routeTitle);
+			vi.spyOn(eventService, 'getEventName').mockReturnValue(of(eventName));
 
-			// Act
 			titleStrategy.updateTitle(mockSnapshot);
 
-			// Assert
 			expect(eventService.getEventName).toHaveBeenCalledWith(eventId);
 			expect(titleService.setTitle).toHaveBeenCalledWith(routeTitle);
 		});
 
 		it('should set title without event name when eventName is null', () => {
-			// Arrange
-			const eventId = 'test-event-id';
+			const eventId = 'test-id';
 			const eventName: string | null = null;
 			const routeTitle = 'Expenditures';
 			mockSnapshot.root.firstChild!.firstChild!.params = { eventId };
-			spyOn(titleStrategy, 'buildTitle').and.returnValue(routeTitle);
-			eventService.getEventName.and.returnValue(of(eventName));
+			vi.spyOn(titleStrategy, 'buildTitle').mockReturnValue(routeTitle);
+			vi.spyOn(eventService, 'getEventName').mockReturnValue(of(eventName));
 
-			// Act
 			titleStrategy.updateTitle(mockSnapshot);
 
-			// Assert
 			expect(eventService.getEventName).toHaveBeenCalledWith(eventId);
 			expect(titleService.setTitle).toHaveBeenCalledWith(routeTitle);
 		});
 
 		it('should set basic title when no eventId is present', () => {
-			// Arrange
-			const routeTitle = 'Dashboard';
-			spyOn(titleStrategy, 'buildTitle').and.returnValue(routeTitle);
+			const routeTitle = 'Expenditures';
+			vi.spyOn(titleStrategy, 'buildTitle').mockReturnValue(routeTitle);
 
-			// Act
 			titleStrategy.updateTitle(mockSnapshot);
 
-			// Assert
 			expect(eventService.getEventName).not.toHaveBeenCalled();
 			expect(titleService.setTitle).toHaveBeenCalledWith(`${routeTitle} | Mikane`);
 		});
 
 		it('should set default title when no route title is present and no eventId', () => {
-			// Arrange
-			spyOn(titleStrategy, 'buildTitle').and.returnValue('');
+			vi.spyOn(titleStrategy, 'buildTitle').mockReturnValue('');
 
-			// Act
 			titleStrategy.updateTitle(mockSnapshot);
 
-			// Assert
 			expect(eventService.getEventName).not.toHaveBeenCalled();
 			expect(titleService.setTitle).toHaveBeenCalledWith('Mikane');
 		});
 
-		it('should set default title when buildTitle returns null and no eventId', () => {
-			// Arrange
-			spyOn(titleStrategy, 'buildTitle').and.returnValue(null);
+		it('should set default title when buildTitle returns null and no eventId is present', () => {
+			vi.spyOn(titleStrategy, 'buildTitle').mockReturnValue(null);
 
-			// Act
 			titleStrategy.updateTitle(mockSnapshot);
 
-			// Assert
 			expect(eventService.getEventName).not.toHaveBeenCalled();
 			expect(titleService.setTitle).toHaveBeenCalledWith('Mikane');
 		});
 
 		it('should handle missing firstChild gracefully', () => {
-			// Arrange
 			const mockSnapshotWithoutChild = {
 				root: {
 					firstChild: null,
 				},
 			} as RouterStateSnapshot;
-			const routeTitle = 'Dashboard';
-			spyOn(titleStrategy, 'buildTitle').and.returnValue(routeTitle);
+			const routeTitle = 'Expenditures';
+			vi.spyOn(titleStrategy, 'buildTitle').mockReturnValue(routeTitle);
 
-			// Act
 			titleStrategy.updateTitle(mockSnapshotWithoutChild);
 
-			// Assert
 			expect(eventService.getEventName).not.toHaveBeenCalled();
 			expect(titleService.setTitle).toHaveBeenCalledWith(`${routeTitle} | Mikane`);
 		});
 
 		it('should handle missing nested firstChild gracefully', () => {
-			// Arrange
 			const mockSnapshotWithoutNestedChild = {
 				root: {
 					firstChild: {
@@ -153,48 +143,40 @@ describe('MikaneTitleStrategy', () => {
 					},
 				},
 			} as RouterStateSnapshot;
-			const routeTitle = 'Dashboard';
-			spyOn(titleStrategy, 'buildTitle').and.returnValue(routeTitle);
+			const routeTitle = 'Expenditures';
+			vi.spyOn(titleStrategy, 'buildTitle').mockReturnValue(routeTitle);
 
-			// Act
 			titleStrategy.updateTitle(mockSnapshotWithoutNestedChild);
 
-			// Assert
 			expect(eventService.getEventName).not.toHaveBeenCalled();
 			expect(titleService.setTitle).toHaveBeenCalledWith(`${routeTitle} | Mikane`);
 		});
 
 		it('should extract eventId from deeply nested route params', () => {
-			// Arrange
-			const eventId = 'deep-event-id';
-			const eventName = 'Deep Event';
-			const routeTitle = 'Categories';
+			const eventId = 'test-id';
+			const eventName = 'Test Event';
+			const routeTitle = 'Expenditures';
 			mockSnapshot.root.firstChild!.firstChild!.params = { eventId, otherId: 'other' };
-			spyOn(titleStrategy, 'buildTitle').and.returnValue(routeTitle);
-			eventService.getEventName.and.returnValue(of(eventName));
+			vi.spyOn(titleStrategy, 'buildTitle').mockReturnValue(routeTitle);
+			vi.spyOn(eventService, 'getEventName').mockReturnValue(of(eventName));
 
-			// Act
 			titleStrategy.updateTitle(mockSnapshot);
 
-			// Assert
 			expect(eventService.getEventName).toHaveBeenCalledWith(eventId);
 			expect(titleService.setTitle).toHaveBeenCalledWith(`${routeTitle} - ${eventName} | Mikane`);
 		});
 
 		it('should work with empty route title and event name', () => {
-			// Arrange
-			const eventId = 'test-event-id';
+			const eventId = 'test-id';
 			const eventName = 'Test Event';
 			mockSnapshot.root.firstChild!.firstChild!.params = { eventId };
-			spyOn(titleStrategy, 'buildTitle').and.returnValue('');
-			eventService.getEventName.and.returnValue(of(eventName));
+			vi.spyOn(eventService, 'getEventName').mockReturnValue(of(eventName));
 
-			// Act
+			vi.spyOn(titleStrategy, 'buildTitle').mockReturnValue('');
 			titleStrategy.updateTitle(mockSnapshot);
 
-			// Assert
 			expect(eventService.getEventName).toHaveBeenCalledWith(eventId);
-			expect(titleService.setTitle).toHaveBeenCalledWith(' - Test Event | Mikane');
+			expect(titleService.setTitle).toHaveBeenCalledWith(` - ${eventName} | Mikane`);
 		});
 	});
 });
