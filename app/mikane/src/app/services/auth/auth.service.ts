@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, of, tap } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, of, ReplaySubject, tap } from 'rxjs';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { User } from '../user/user.service';
@@ -18,7 +18,7 @@ export class AuthService {
 	private _redirectUrl: string;
 
 	public authenticated$ = new BehaviorSubject<boolean | null>(false);
-	public csrfToken$ = new BehaviorSubject<string | null>(null);
+	public csrfToken$ = new ReplaySubject<string>();
 
 	get authenticated(): boolean {
 		return !!this.currentUser;
@@ -71,6 +71,7 @@ export class AuthService {
 			return this.httpClient.get<User>(this.apiUrl + 'login').pipe(
 				tap((user) => {
 					this.currentUser = user;
+					this.csrfToken$.next(user.csrfToken);
 					this.authenticated$.next(true);
 				}),
 			);

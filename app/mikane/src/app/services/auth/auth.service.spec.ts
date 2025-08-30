@@ -71,6 +71,24 @@ describe('AuthService', () => {
 
 			req.flush(expectedLoginResponse);
 		});
+
+		it('should set POST request CSRF token', () => {
+			service.getCurrentUser().subscribe({
+				next: (user) => {
+					expect(user).not.toBeNull();
+				},
+			});
+
+			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
+
+			expect(req.request.method).toEqual('GET');
+
+			req.flush(expectedLoginResponse);
+
+			service.csrfToken$.subscribe((token) => {
+				expect(token).toBe('testToken');
+			});
+		});
 	});
 
 	describe('#logout', () => {
@@ -164,6 +182,24 @@ describe('AuthService', () => {
 			expect(req.request.method).toEqual('GET');
 
 			req.flush(expectedLoginResponse);
+		});
+
+		it('should set GET request CSRF token', () => {
+			service.getCurrentUser().subscribe({
+				next: (user) => {
+					expect(user).not.toBeNull();
+				},
+			});
+
+			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
+
+			expect(req.request.method).toEqual('GET');
+
+			req.flush(expectedLoginResponse);
+
+			service.csrfToken$.subscribe((token) => {
+				expect(token).toBe('testToken');
+			});
 		});
 	});
 
