@@ -29,7 +29,11 @@ export class LogService implements OnDestroy {
 
 	private sendLog(log: LogPayload): void {
 		if (this.authService?.authenticated) {
-			this.httpSubscription = this.httpClient.post<LogPayload>(`${this.apiUrl}log`, log).subscribe();
+			this.httpSubscription = this.httpClient.post<LogPayload>(`${this.apiUrl}log`, log).subscribe({
+				error: (err) => {
+					console.error('Error sending log:', err);
+				},
+			});
 		} else {
 			if (!this.logStashSubscription) {
 				this.setupStashPopper();

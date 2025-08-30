@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
-import { ExpenseBottomSheetComponent } from './expense-bottom-sheet.component';
-import { describe, expect, it, vi } from 'vitest';
-import { User } from 'src/app/services/user/user.service';
 import { CategoryInfo } from 'src/app/pages/expenditures/expense-bottom-sheet/expense-bottom-sheet.component';
+import { User } from 'src/app/services/user/user.service';
+import { describe, expect, it, vi } from 'vitest';
+import { ExpenseBottomSheetComponent } from './expense-bottom-sheet.component';
 
 class EBSC extends ExpenseBottomSheetComponent {
 	public override searchValue: string;
@@ -13,8 +13,8 @@ class EBSC extends ExpenseBottomSheetComponent {
 }
 
 const mockPayers = [
-	{ id: 'u1', name: 'Alice', avatarURL: 'alice.png', guest: false, username: '', authenticated: false },
-	{ id: 'u2', name: 'Bob', avatarURL: 'bob.png', guest: false, username: '', authenticated: false },
+	{ id: 'u1', name: 'Alice', avatarURL: 'alice.png', guest: false, username: '', authenticated: false, csrfToken: 'testToken' },
+	{ id: 'u2', name: 'Bob', avatarURL: 'bob.png', guest: false, username: '', authenticated: false, csrfToken: 'testToken' },
 ];
 
 const mockCategories = [
@@ -22,12 +22,14 @@ const mockCategories = [
 	{ id: 'c2', name: 'Travel', icon: 'flight' },
 ];
 
-function createComponent(data: { type: 'search' | 'payers' | 'categories'; filterData?: User[] | CategoryInfo[]; currentFilter: string[] }) {
+function createComponent(data: {
+	type: 'search' | 'payers' | 'categories';
+	filterData?: User[] | CategoryInfo[];
+	currentFilter: string[];
+}) {
 	TestBed.configureTestingModule({
 		imports: [ExpenseBottomSheetComponent],
-		providers: [
-			{ provide: MAT_BOTTOM_SHEET_DATA, useValue: data },
-		],
+		providers: [{ provide: MAT_BOTTOM_SHEET_DATA, useValue: data }],
 	}).compileComponents();
 
 	const fixture = TestBed.createComponent(ExpenseBottomSheetComponent);

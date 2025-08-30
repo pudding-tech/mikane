@@ -18,6 +18,7 @@ export class AuthService {
 	private _redirectUrl: string;
 
 	public authenticated$ = new BehaviorSubject<boolean | null>(false);
+	public csrfToken$ = new BehaviorSubject<string | null>(null);
 
 	get authenticated(): boolean {
 		return !!this.currentUser;
@@ -43,6 +44,7 @@ export class AuthService {
 			.pipe(
 				tap((user) => {
 					this.currentUser = user;
+					this.csrfToken$.next(user.csrfToken);
 					this.authenticated$.next(true);
 				}),
 			);

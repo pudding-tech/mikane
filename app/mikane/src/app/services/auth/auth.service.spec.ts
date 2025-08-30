@@ -53,6 +53,7 @@ describe('AuthService', () => {
 				created: new Date('2023-01-20T18:00:00'),
 				guest: false,
 				avatarURL: 'https://gravatar.com/avatar/aaaa',
+				csrfToken: 'testToken',
 			};
 		});
 
@@ -112,6 +113,7 @@ describe('AuthService', () => {
 				created: new Date('2023-01-20T18:00:00'),
 				guest: false,
 				avatarURL: 'https://gravatar.com/avatar/aaaa',
+				csrfToken: 'testToken',
 			};
 		});
 
@@ -193,6 +195,7 @@ describe('AuthService', () => {
 				created: new Date('2023-01-20T18:00:00'),
 				guest: false,
 				avatarURL: 'https://gravatar.com/avatar/aaaa',
+				csrfToken: 'testToken',
 			};
 		});
 
