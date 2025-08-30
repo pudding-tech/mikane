@@ -1,7 +1,7 @@
 import { HttpEvent, HttpHandlerFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, NEVER, Observable, throwError } from 'rxjs';
+import { catchError, NEVER, Observable, switchMap, throwError } from 'rxjs';
 import { MessageService } from '../message/message.service';
 import { AuthService } from './auth.service';
 
@@ -10,25 +10,30 @@ export function csrfInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
 	const router = inject(Router);
 	const messageService = inject(MessageService);
 
-	const csrfToken = authService.csrfToken$.getValue();
+	if (authService.authenticated) {
+		return authService.csrfToken$.pipe(
+			switchMap((token) => {
+				req = req.clone({
+					setHeaders: {
+						'X-XSRF-TOKEN': token,
+					},
+				});
 
-	if (csrfToken) {
-		req = req.clone({
-			setHeaders: {
-				'X-XSRF-TOKEN': csrfToken,
-			},
-		});
+				return next(req).pipe(
+					catchError((error) => {
+						if (error.status === 403 && error?.error?.code === 'PUD-148') {
+							messageService.showError('CSRF Token invalid, please log in again.');
+							authService.redirectUrl = router.url;
+							authService.logout().subscribe();
+							router.navigate(['/login']);
+							return NEVER;
+						}
+						return throwError(() => error);
+					}),
+				);
+			}),
+		);
+	} else {
+		return next(req);
 	}
-	return next(req).pipe(
-		catchError((error) => {
-			if (error.status === 403 && error?.error?.code === 'PUD-148') {
-				messageService.showError('CSRF Token invalid, please log in again.');
-				authService.redirectUrl = router.url;
-				authService.logout().subscribe();
-				router.navigate(['/login']);
-				return NEVER;
-			}
-			return throwError(() => error);
-		}),
-	);
 }

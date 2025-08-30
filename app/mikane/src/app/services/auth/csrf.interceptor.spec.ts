@@ -2,7 +2,7 @@ import { HttpHandlerFn, HttpRequest, provideHttpClient, withInterceptors } from 
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of, ReplaySubject, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { MessageService } from '../message/message.service';
 import { AuthService } from './auth.service';
@@ -22,8 +22,9 @@ describe('csrfInterceptor', () => {
 				{
 					provide: AuthService,
 					useValue: {
-						csrfToken$: { getValue: vi.fn() },
+						csrfToken$: vi.fn(),
 						redirectUrl: '',
+						authenticated: true,
 						clearCurrentUser: vi.fn(),
 						logout: vi.fn().mockReturnValue(of(void 0)),
 					},
@@ -57,6 +58,8 @@ describe('csrfInterceptor', () => {
 		mockRouter = TestBed.inject(Router);
 		mockMessageService = TestBed.inject(MessageService);
 		httpTestingController = TestBed.inject(HttpTestingController);
+
+		vi.spyOn(mockAuthService, 'csrfToken$', 'get').mockReturnValue(of('test-token') as ReplaySubject<string>);
 	});
 
 	afterEach(() => {
@@ -64,8 +67,6 @@ describe('csrfInterceptor', () => {
 	});
 
 	it('should add X-XSRF-TOKEN header if csrfToken exists', () => {
-		const csrfToken = 'test-token';
-		(mockAuthService.csrfToken$.getValue as unknown as Mock).mockReturnValue(csrfToken);
 		const req = new HttpRequest('POST', '/api/test', {});
 		next.mockReturnValue(of(req));
 		executeHandler(req, next).subscribe();
@@ -80,22 +81,10 @@ describe('csrfInterceptor', () => {
 		);
 		const calledReq = (next as Mock).mock.calls[0][0] as HttpRequest<unknown>;
 
-		expect(calledReq.headers.get('X-XSRF-TOKEN')).toBe(csrfToken);
-	});
-
-	it('should not add X-XSRF-TOKEN header if csrfToken is falsy', () => {
-		(mockAuthService.csrfToken$.getValue as unknown as Mock).mockReturnValue('');
-		const req = new HttpRequest('POST', '/api/test', {});
-		next.mockReturnValue(of(req));
-		executeHandler(req, next).subscribe();
-
-		const calledReq = (next as Mock).mock.calls[0][0] as HttpRequest<unknown>;
-
-		expect(calledReq.headers.has('X-XSRF-TOKEN')).toBe(false);
+		expect(calledReq.headers.get('X-XSRF-TOKEN')).toBe('test-token');
 	});
 
 	it('should propagate error if not 403/PUD-148', () => {
-		(mockAuthService.csrfToken$.getValue as unknown as Mock).mockReturnValue('token');
 		const req = new HttpRequest('GET', '/api/test');
 		const error = { status: 500, error: { code: 'OTHER' } };
 		next.mockReturnValue(throwError(() => error));
@@ -108,7 +97,6 @@ describe('csrfInterceptor', () => {
 	});
 
 	it('should handle 403 with code PUD-148: show error, clear user, redirect, never complete', () => {
-		(mockAuthService.csrfToken$.getValue as unknown as Mock).mockReturnValue('token');
 		const req = new HttpRequest('GET', '/api/test');
 		const error = { status: 403, error: { code: 'PUD-148' } };
 		next.mockReturnValue(throwError(() => error));
@@ -122,5 +110,15 @@ describe('csrfInterceptor', () => {
 		expect(mockAuthService.logout).toHaveBeenCalledWith();
 		expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
 		expect(completed).toBe(false); // NEVER does not complete
+	});
+
+	it('should not check CSRF token if not authenticated', () => {
+		const req = new HttpRequest('GET', '/api/test');
+		vi.spyOn(mockAuthService, 'authenticated', 'get').mockReturnValue(false);
+
+		next.mockReturnValue(of(req));
+		executeHandler(req, next).subscribe();
+
+		expect(next).toHaveBeenCalledWith(req);
 	});
 });
