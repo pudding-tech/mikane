@@ -1,6 +1,7 @@
 import express from "express";
 import * as db from "../db/dbCategories.ts";
 import { authCheck } from "../middlewares/authCheck.ts";
+import { csrfCheck } from "../middlewares/csrf.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
 import { Category } from "../types/types.ts";
 import { CategoryIcon } from "../types/enums.ts";
@@ -15,7 +16,7 @@ const router = express.Router();
 /*
 * Get a list of all categories for a given event
 */
-router.get("/categories", authCheck, async (req, res) => {
+router.get("/categories", authCheck, csrfCheck, async (req, res) => {
   const eventId = req.query.eventId as string;
   const activeUserId = req.session.userId;
 
@@ -33,7 +34,7 @@ router.get("/categories", authCheck, async (req, res) => {
 /*
 * Get a specific category
 */
-router.get("/categories/:id", authCheck, async (req, res) => {
+router.get("/categories/:id", authCheck, csrfCheck, async (req, res) => {
   const id = req.params.id;
   const activeUserId = req.session.userId;
 
@@ -58,7 +59,7 @@ router.get("/categories/:id", authCheck, async (req, res) => {
 /*
 * Create a new category
 */
-router.post("/categories", authCheck, async (req, res) => {
+router.post("/categories", authCheck, csrfCheck, async (req, res) => {
   const name: string = req.body.name;
   if (!name || !req.body.eventId || req.body.weighted === undefined) {
     throw new ErrorExt(ec.PUD046);
@@ -87,7 +88,7 @@ router.post("/categories", authCheck, async (req, res) => {
 /*
 * Add a user to a category
 */
-router.post("/categories/:id/user/:userId", authCheck, async (req, res) => {
+router.post("/categories/:id/user/:userId", authCheck, csrfCheck, async (req, res) => {
   const catId = req.params.id;
   const userId = req.params.userId;
   const weight = req.body.weight ? Number(req.body.weight) : undefined;
@@ -118,7 +119,7 @@ router.post("/categories/:id/user/:userId", authCheck, async (req, res) => {
 /*
 * Edit a category
 */
-router.put("/categories/:id", authCheck, async (req, res) => {
+router.put("/categories/:id", authCheck, csrfCheck, async (req, res) => {
   const catId = req.params.id;
   if (!isUUID(catId)) {
     throw new ErrorExt(ec.PUD045);
@@ -156,7 +157,7 @@ router.put("/categories/:id", authCheck, async (req, res) => {
 /*
 * Change weight status for a category (weighted or non-weighted)
 */
-router.put("/categories/:id/weighted", authCheck, async (req, res) => {
+router.put("/categories/:id/weighted", authCheck, csrfCheck, async (req, res) => {
   const catId = req.params.id;
   if (!isUUID(catId)) {
     throw new ErrorExt(ec.PUD045);
@@ -177,7 +178,7 @@ router.put("/categories/:id/weighted", authCheck, async (req, res) => {
 /*
 * Edit a user's weight for a category
 */
-router.put("/categories/:id/user/:userId", authCheck, async (req, res) => {
+router.put("/categories/:id/user/:userId", authCheck, csrfCheck, async (req, res) => {
   const catId = req.params.id;
   const userId = req.params.userId;
   const weight = req.body.weight ? Number(req.body.weight) : undefined;
@@ -208,7 +209,7 @@ router.put("/categories/:id/user/:userId", authCheck, async (req, res) => {
 /*
 * Delete a category
 */
-router.delete("/categories/:id", authCheck, async (req, res) => {
+router.delete("/categories/:id", authCheck, csrfCheck, async (req, res) => {
   const catId = req.params.id;
   if (!isUUID(catId)) {
     throw new ErrorExt(ec.PUD045);
@@ -226,7 +227,7 @@ router.delete("/categories/:id", authCheck, async (req, res) => {
 /*
 * Remove a user from a category
 */
-router.delete("/categories/:id/user/:userId", authCheck, async (req, res) => {
+router.delete("/categories/:id/user/:userId", authCheck, csrfCheck, async (req, res) => {
   const catId = req.params.id;
   const userId = req.params.userId;
   if (!isUUID(catId) || !isUUID(userId)) {

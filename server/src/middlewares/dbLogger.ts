@@ -1,6 +1,8 @@
 import Log, { Middleware } from "adze";
 import env from "../env.js";
+import { requestContext } from "./requestContext.ts";
 import { logServerToDatabase } from "../db/dbLog.ts";
+import type { Request } from "express";
 
 const levelMap = { alert: 0, error: 1, warn: 2, info: 3, fail: 4, success: 5, log: 6, debug: 7, verbose: 8 } as const;
 
@@ -27,10 +29,17 @@ export class DbLogger extends Middleware {
       return;
     }
 
+    // Retrieve user and session IDs from request context
+    const store = requestContext.getStore() as { req?: Request } | undefined;
+    const userId = store?.req?.session?.userId;
+    const sessionId = store?.req?.sessionID;
+
     logServerToDatabase({
       timestamp: new Date(timestamp),
       level: levelName,
       message: args.join(" "),
+      userId,
+      sessionId
     });
   }
 }

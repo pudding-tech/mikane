@@ -2,6 +2,7 @@ import express from "express";
 import * as ec from "../types/errorCodes.ts";
 import * as db from "../db/dbValidation.ts";
 import { authCheck } from "../middlewares/authCheck.ts";
+import { csrfCheck } from "../middlewares/csrf.ts";
 import { isEmail } from "../utils/validators/emailValidator.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
 import { ErrorExt } from "../types/errorExt.ts";
@@ -84,7 +85,7 @@ router.post("/validation/user/phone", async (req, res) => {
 /*
 * Event: Name validation
 */
-router.post("/validation/event/name", authCheck, async (req, res) => {
+router.post("/validation/event/name", authCheck, csrfCheck, async (req, res) => {
   const name: string = req.body.name;
   const eventId: string | undefined = req.body.eventId;
   if (!name) {
@@ -107,7 +108,7 @@ router.post("/validation/event/name", authCheck, async (req, res) => {
 /*
 * Category: Name validation
 */
-router.post("/validation/category/name", authCheck, async (req, res) => {
+router.post("/validation/category/name", authCheck, csrfCheck, async (req, res) => {
   const name: string = req.body.name;
   const eventId: string = req.body.eventId;
   const categoryId: string | undefined = req.body.categoryId;

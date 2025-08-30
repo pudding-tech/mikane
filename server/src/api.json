@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "2.3.0",
+    "version": "2.5.0",
     "title": "Mikane API",
     "description": "Documentation for all endpoints in the Mikane API"
   },
@@ -349,7 +349,8 @@
         "description": "Get a list of all users, optionally in an event",
         "operationId": "getUsers",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -401,6 +402,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -477,7 +488,8 @@
         "description": "Get information about a specific user. If the requester is not the signed-in user, some sensitive information may be excluded.",
         "operationId": "getUser",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -522,6 +534,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "User not found",
             "content": {
@@ -542,7 +564,8 @@
         "description": "Edit a user",
         "operationId": "putUser",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -597,6 +620,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "User not found",
             "content": {
@@ -627,7 +660,8 @@
         "description": "Delete a user. A delete account key is required, and the key must be for the correct user.",
         "operationId": "deleteUser",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -688,6 +722,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "User not found",
             "content": {
@@ -710,7 +754,8 @@
         "description": "Edit a user's preferences",
         "operationId": "putUserPreferences",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -765,6 +810,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "User not found",
             "content": {
@@ -787,7 +842,8 @@
         "description": "Get a list of a user's events",
         "operationId": "getUserEvents",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -835,6 +891,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "User not found",
             "content": {
@@ -857,7 +923,8 @@
         "description": "Get a list of a user's expenses, optionally in an event",
         "operationId": "getUserExpenses",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -915,6 +982,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "User/event not found",
             "content": {
@@ -937,7 +1014,8 @@
         "description": "Get information about a specific user by username (also accepts user ID). If the requester is not the signed-in user, some sensitive information may be excluded.",
         "operationId": "getUserByUsernameId",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -982,6 +1060,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "User not found",
             "content": {
@@ -1004,7 +1092,8 @@
         "description": "Change signed in user's password",
         "operationId": "postChangePassword",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "requestBody": {
           "description": "Current password and new password",
@@ -1052,6 +1141,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1065,7 +1164,8 @@
         "description": "Invite a new user to Mikane (optionally link to an existing guest user)",
         "operationId": "postInvite",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "requestBody": {
           "description": "Email to send invitation to, and optionally a guest ID if wanting to convert a guest to a normal user",
@@ -1113,6 +1213,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1126,7 +1236,8 @@
         "description": "Request an account deletion email",
         "operationId": "postRequestDeleteAccount",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "responses": {
           "200": {
@@ -1144,6 +1255,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1157,7 +1278,8 @@
         "description": "Get a list of all guest users",
         "operationId": "getGuests",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "responses": {
           "200": {
@@ -1182,6 +1304,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -1193,7 +1325,8 @@
         "description": "Create a new guest user.",
         "operationId": "postGuests",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "requestBody": {
           "description": "Guest details",
@@ -1235,6 +1368,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1248,7 +1391,8 @@
         "description": "Edit a guest user",
         "operationId": "putGuest",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -1303,6 +1447,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Guest user not found",
             "content": {
@@ -1323,7 +1477,8 @@
         "description": "Delete a guest user.",
         "operationId": "deleteGuest",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -1368,6 +1523,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Guest user not found",
             "content": {
@@ -1390,7 +1555,8 @@
         "description": "Get all events",
         "operationId": "getEvents",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "responses": {
           "200": {
@@ -1415,6 +1581,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -1426,7 +1602,8 @@
         "description": "Create a new event",
         "operationId": "postEvent",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "requestBody": {
           "description": "Event details",
@@ -1483,6 +1660,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "User not found",
             "content": {
@@ -1515,7 +1702,8 @@
         "description": "Get an event",
         "operationId": "getEvent",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -1560,6 +1748,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Event not found",
             "content": {
@@ -1580,7 +1778,8 @@
         "description": "Edit an event. Only allowed for event admins.",
         "operationId": "putEvent",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -1693,7 +1892,8 @@
         "description": "Delete an event. Only allowed for event admins.",
         "operationId": "deleteEvent",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -1770,7 +1970,8 @@
         "description": "Get an event's balance information for all users (includes 'eventInfo' information)",
         "operationId": "getEventBalances",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -1818,6 +2019,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Event not found",
             "content": {
@@ -1841,6 +2052,7 @@
         "operationId": "getEventPayments",
         "security": [
           { "cookieAuth": [] },
+          { "csrfToken": [] },
           { "apiKeyAuth": [] }
         ],
         "parameters": [
@@ -1911,7 +2123,8 @@
         "description": "Add a user to an event",
         "operationId": "postUserToEvent",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -1962,6 +2175,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1996,7 +2219,8 @@
         "description": "Remove a user from an event",
         "operationId": "deleteUserFromEvent",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -2047,6 +2271,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2073,7 +2307,8 @@
         "description": "Set a user as admin for an event (user must be in event already). Only allowed for existing event admins.",
         "operationId": "postAdminToEvent",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -2124,6 +2359,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2158,7 +2403,8 @@
         "description": "Remove a user as an admin for an event. Only allowed for existing event admins.",
         "operationId": "deleteAdminFromEvent",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -2213,6 +2459,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Event/user not found",
             "content": {
@@ -2236,6 +2492,7 @@
         "operationId": "getEventByName",
         "security": [
           { "cookieAuth": [] },
+          { "csrfToken": [] },
           { "apiKeyAuth": [] }
         ],
         "requestBody": {
@@ -2297,7 +2554,8 @@
         "description": "Get all categories in an event",
         "operationId": "getCategories",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -2335,6 +2593,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "400": {
             "description": "Bad request",
             "content": {
@@ -2365,7 +2633,8 @@
         "description": "Create a new category",
         "operationId": "postCategory",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "requestBody": {
           "description": "Category details",
@@ -2426,6 +2695,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Category not found",
             "content": {
@@ -2448,7 +2727,8 @@
         "description": "Get a specific category",
         "operationId": "getCategory",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -2493,6 +2773,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Category not found",
             "content": {
@@ -2513,7 +2803,8 @@
         "description": "Edit a category",
         "operationId": "putCategory",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -2578,6 +2869,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Category not found",
             "content": {
@@ -2598,7 +2899,8 @@
         "description": "Delete a category",
         "operationId": "deleteCategory",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -2643,6 +2945,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Category not found",
             "content": {
@@ -2665,7 +2977,8 @@
         "description": "Change weight status for a category (weighted or non-weighted)",
         "operationId": "putCategoryWeighted",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -2726,6 +3039,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Category not found",
             "content": {
@@ -2748,7 +3071,8 @@
         "description": "Add a user to a category",
         "operationId": "postUserToCategory",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -2819,6 +3143,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Category/user not found",
             "content": {
@@ -2849,7 +3183,8 @@
         "description": "Edit a user's weight for a category",
         "operationId": "PutUserCategoryWeight",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -2921,6 +3256,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Category/user not found",
             "content": {
@@ -2941,7 +3286,8 @@
         "description": "Remove a user from a category",
         "operationId": "deleteUserFromCategory",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -2996,6 +3342,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Category/user not found",
             "content": {
@@ -3018,7 +3374,8 @@
         "description": "Get all expenses for an event",
         "operationId": "getExpenses",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -3066,6 +3423,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Event not found",
             "content": {
@@ -3086,7 +3453,8 @@
         "description": "Create a new expense",
         "operationId": "postExpense",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "requestBody": {
           "description": "Expense details",
@@ -3156,6 +3524,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Event not found",
             "content": {
@@ -3178,7 +3556,8 @@
         "description": "Get a specific expense",
         "operationId": "getExpense",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -3223,6 +3602,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Expense not found",
             "content": {
@@ -3243,7 +3632,8 @@
         "description": "Edit an expense",
         "operationId": "putExpense",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -3324,6 +3714,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Expense not found",
             "content": {
@@ -3344,7 +3744,8 @@
         "description": "Edit any property of an expense (does not support unsetting properties)",
         "operationId": "patchExpense",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -3409,6 +3810,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Expense not found",
             "content": {
@@ -3429,7 +3840,8 @@
         "description": "Delete an expense. You can only delete your own expenses (unless event admin).",
         "operationId": "deleteExpense",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -3605,7 +4017,8 @@
         "description": "Verify that a delete account key exists and is valid",
         "operationId": "getVerifyDeleteAccount",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -3625,6 +4038,16 @@
           },
           "400": {
             "description": "Invalid key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
             "content": {
               "application/json": {
                 "schema": {
@@ -3858,7 +4281,8 @@
         "description": "Check if a given event name is available for use. Event ID in body is optional, and used when validating against a specific event.",
         "operationId": "getValidateEventName",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "requestBody": {
           "description": "Event name",
@@ -3910,6 +4334,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3932,7 +4366,8 @@
         "description": "Check if a given category name is available for use within an event. Category ID in body is optional, and used when validating against a specific category.",
         "operationId": "getValidateCategoryName",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "requestBody": {
           "description": "Category name",
@@ -3989,6 +4424,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4011,7 +4456,8 @@
         "description": "Send an 'add expenses reminder' email to all participants in an event",
         "operationId": "postAddExpensesReminderEmail",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -4065,6 +4511,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Event not found",
             "content": {
@@ -4087,7 +4543,8 @@
         "description": "Send a 'ready-to-settle' email to all participants that should send or receive payments in an event",
         "operationId": "postReadyToSettleEmail",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "parameters": [
           {
@@ -4125,6 +4582,16 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Event not found",
             "content": {
@@ -4147,7 +4614,8 @@
         "description": "Save a client log message to the database. Message must be a non-empty string up to 1000 characters. Level and timestamp are optional, and if not provided will default to 'info' and the current time respectively.",
         "operationId": "postLogMessage",
         "security": [
-          { "cookieAuth": [] }
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
         ],
         "requestBody": {
           "description": "Log message",
@@ -4196,6 +4664,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4853,6 +5331,11 @@
         "type": "apiKey",
         "in": "header",
         "name": "Authorization"
+      },
+      "csrfToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-Token"
       }
     }
   }

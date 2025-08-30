@@ -86,7 +86,11 @@ export const calculateBalance = (
 };
 
 /**
- * Calculate payments for an event
+ * Calculate payments for an event.
+
+ * Uses a greedy settlement algorithm: at each step, the largest debtor pays the largest lender as much as possible,
+ * reducing their balances until all debts are settled.
+ * This minimizes the number of transactions but does not guarantee the absolute minimum possible.
  * @param expenses List of expenses in event
  * @param categories List of categories in event
  * @param users List of users in event
@@ -117,25 +121,25 @@ export const calculatePayments = (
   while (lenders.length > 0 && debtors.length > 0) {
     lenders.sort((a, b) => (a.amount > b.amount ? 1 : -1));
     debtors.sort((a, b) => (a.amount > b.amount ? 1 : -1));
-    const largestLeander = lenders.pop();
+    const largestLender = lenders.pop();
     const largestDebtor = debtors.pop();
 
-    if (!largestLeander || !largestDebtor) {
+    if (!largestLender || !largestDebtor) {
       break;
     }
 
     let paymentAmount = 0;
-    if (largestLeander.amount > largestDebtor.amount) {
+    if (largestLender.amount > largestDebtor.amount) {
       paymentAmount = largestDebtor.amount;
       lenders.push({
-        user: largestLeander.user,
-        amount: largestLeander.amount - largestDebtor.amount,
+        user: largestLender.user,
+        amount: largestLender.amount - largestDebtor.amount,
       });
-    } else if (largestLeander.amount < largestDebtor.amount) {
-      paymentAmount = largestLeander.amount;
+    } else if (largestLender.amount < largestDebtor.amount) {
+      paymentAmount = largestLender.amount;
       debtors.push({
         user: largestDebtor.user,
-        amount: largestDebtor.amount - largestLeander.amount,
+        amount: largestDebtor.amount - largestLender.amount,
       });
     } else {
       paymentAmount = largestDebtor.amount;
@@ -143,7 +147,7 @@ export const calculatePayments = (
 
     payments.push({
       sender: largestDebtor.user,
-      receiver: largestLeander.user,
+      receiver: largestLender.user,
       amount: roundAmount(paymentAmount),
     });
   }

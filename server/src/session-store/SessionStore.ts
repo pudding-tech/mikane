@@ -18,6 +18,12 @@ export default class SessionStore extends Store {
     this.timeToLive = options?.timeToLive ?? 1000 * 60 * 60 * 24;
     this.autoDestroy = options?.autoDestroy ?? false;
     this.autoDestroyInterval = options?.autoDestroyInterval ?? 1000 * 60 * 60 * 24;
+
+    if (this.autoDestroy) {
+      setInterval(() => {
+        this.destroyExpired();
+      }, this.autoDestroyInterval);
+    }
   }
 
   /**
@@ -26,14 +32,8 @@ export default class SessionStore extends Store {
   async checkConnection() {
     try {
       const client = await this.pool.connect();
-      logger.info("Session store connected");
+      logger.success("Session store connected");
       client.release();
-
-      if (this.autoDestroy) {
-        setInterval(() => {
-          this.destroyExpired();
-        }, this.autoDestroyInterval);
-      }
     }
     catch (err) {
       logger.error("Something went wrong connecting to session store");
@@ -154,7 +154,7 @@ export default class SessionStore extends Store {
   async destroyExpired() {
     try {
       const query = `
-        DELETE FROM ${this.table} WHERE expires <= CURRENT_TIMESTAMP()
+        DELETE FROM ${this.table} WHERE expires <= CURRENT_TIMESTAMP;
       `;
       await this.pool.query(query);
     }

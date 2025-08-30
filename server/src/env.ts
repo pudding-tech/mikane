@@ -18,6 +18,7 @@ interface EnvVariables {
   LOG_LEVEL: LogLevelType;
   COOKIE_NAME?: string;
   COOKIE_DOMAIN?: string;
+  SKIP_CSRF_CHECK: boolean;
 
   DB_HOST: string;
   DB_PORT: number;
@@ -87,9 +88,10 @@ const validateEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
     PORT: parseInt(env.PORT ?? "") || 3002,
     ALLOWED_ORIGIN: env.ALLOWED_ORIGIN || "http://localhost:4200",
     SESSION_SECRET: env.SESSION_SECRET || "abcdef",
+    LOG_LEVEL: isLogLevelType(env.LOG_LEVEL) ? (env.LOG_LEVEL) : "log",
     COOKIE_NAME: env.COOKIE_NAME,
     COOKIE_DOMAIN: env.COOKIE_DOMAIN,
-    LOG_LEVEL: isLogLevelType(env.LOG_LEVEL) ? (env.LOG_LEVEL) : "log",
+    SKIP_CSRF_CHECK: env.SKIP_CSRF_CHECK === "true",
 
     DB_HOST: env.DB_HOST as string,
     DB_PORT: parseInt(env.DB_PORT ?? "") || 5432,

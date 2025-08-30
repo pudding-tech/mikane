@@ -4,6 +4,7 @@ import logger from "../utils/logger.ts";
 import * as dbUsers from "../db/dbUsers.ts";
 import * as dbAuth from "../db/dbAuthentication.ts";
 import * as ec from "../types/errorCodes.ts";
+import { generateCsrfToken } from "../middlewares/csrf.ts";
 import { authenticate, createHash, generateApiKey } from "../utils/auth.ts";
 import { generateKey } from "../utils/generateKey.ts";
 import { User } from "../types/types.ts";
@@ -26,6 +27,7 @@ router.get("/login", (req, res) => {
   }
   res.status(200).json({
     authenticated: req.session.authenticated,
+    csrfToken: req.session.csrfToken,
     id: req.session.userId,
     username: req.session.username,
     avatarURL: req.session.avatarURL,
@@ -66,6 +68,7 @@ router.post("/login", async (req, res) => {
     }
     res.status(200).json({
       authenticated: req.session.authenticated,
+      csrfToken: req.session.csrfToken,
       ...user
     });
     return;
@@ -85,14 +88,18 @@ router.post("/login", async (req, res) => {
   if (!user) {
     throw new ErrorExt(ec.PUD054);
   }
+
+  const csrfToken = generateCsrfToken(req, true);
   req.session.authenticated = true;
   req.session.userId = user.id;
   req.session.username = user.username;
   req.session.avatarURL = user.avatarURL;
   req.session.superAdmin = user.superAdmin;
-  logger.info(`User ${user.username} signing in - sessionId: `, req.sessionID);
+
+  logger.info(`User ${user.username} signing in`);
   res.status(200).json({
     authenticated: req.session.authenticated,
+    csrfToken: csrfToken,
     ...user
   });
 });

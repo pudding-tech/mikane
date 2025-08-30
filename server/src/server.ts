@@ -17,6 +17,7 @@ import apiDocument from "./api.json" with { type: "json" };
 import env from "./env.ts";
 import logger from "./utils/logger.ts";
 import { pool } from "./db.ts";
+import { requestContext } from "./middlewares/requestContext.ts";
 import { errorHandler } from "./errorHandler.ts";
 
 const app = express();
@@ -104,6 +105,11 @@ app.use(session({
   rolling: true,
   unset: "destroy"
 }));
+
+// Save request context (for logging purposes)
+app.use((req, _res, next) => {
+  requestContext.run({ req }, next);
+});
 
 app.post("/{*any}", (req, res, next) => {
   if (req.headers["content-type"] !== undefined && !req.is("application/json")) {

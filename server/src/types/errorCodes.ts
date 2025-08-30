@@ -1395,3 +1395,12 @@ export const PUD147: ErrorCode = {
   status: 500,
   log: true
 };
+
+/**
+ * PUD-148: Invalid CSRF token (403)
+ */
+export const PUD148: ErrorCode = {
+  code: "PUD-148",
+  message: "Invalid CSRF token",
+  status: 403
+};
