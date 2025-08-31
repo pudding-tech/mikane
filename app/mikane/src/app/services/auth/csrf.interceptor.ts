@@ -1,7 +1,7 @@
 import { HttpEvent, HttpHandlerFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, NEVER, Observable, switchMap, throwError } from 'rxjs';
+import { catchError, NEVER, filter, Observable, switchMap, take, throwError } from 'rxjs';
 import { MessageService } from '../message/message.service';
 import { AuthService } from './auth.service';
 
@@ -12,6 +12,8 @@ export function csrfInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
 
 	if (authService.authenticated) {
 		return authService.csrfToken$.pipe(
+			filter((token) => !!token),
+			take(1),
 			switchMap((token) => {
 				req = req.clone({
 					setHeaders: {
