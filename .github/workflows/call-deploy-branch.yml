@@ -1,0 +1,45 @@
+name: Deploy Specific Branch to Test
+permissions:
+  contents: read
+on:
+  workflow_dispatch:
+    inputs:
+      node-version:
+        description: "Node version"
+        required: true
+        type: choice
+        default: 22.x
+        options:
+          - 20.x
+          - 22.x
+      dry-run:
+        description: "Run the workflow in dry-run mode"
+        required: false
+        type: boolean
+        default: false
+jobs:
+  build-frontend:
+    uses: ./.github/workflows/frontend-build.yml
+    with:
+      node-version: ${{ inputs.node-version }}
+      dry-run: ${{ inputs.dry-run }}
+      upload-artifact: true
+      environment: test
+  build-backend:
+    uses: ./.github/workflows/backend-build.yml
+    with:
+      node-version: ${{ inputs.node-version }}
+      dry-run: ${{ inputs.dry-run }}
+      upload-artifact: true
+  deploy:
+    needs: [build-frontend, build-backend]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      dry-run: ${{ inputs.dry-run }}
+      environment: test
+      artifact-frontend: ${{ needs.build-frontend.outputs.artifact }}
+      artifact-backend: ${{ needs.build-backend.outputs.artifact }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
