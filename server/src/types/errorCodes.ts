@@ -1404,3 +1404,12 @@ export const PUD148: ErrorCode = {
   message: "Invalid CSRF token",
   status: 403
 };
+
+/**
+ * PUD-149: You have exceeded the allowed number of requests, please try again later (429)
+ */
+export const PUD149: ErrorCode = {
+  code: "PUD-149",
+  message: "You have exceeded the allowed number of requests, please try again later",
+  status: 429
+};

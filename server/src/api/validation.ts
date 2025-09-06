@@ -3,6 +3,7 @@ import * as ec from "../types/errorCodes.ts";
 import * as db from "../db/dbValidation.ts";
 import { authCheck } from "../middlewares/authCheck.ts";
 import { csrfCheck } from "../middlewares/csrf.ts";
+import { useRateLimit } from "../middlewares/rateLimiter.ts";
 import { isEmail } from "../utils/validators/emailValidator.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
 import { ErrorExt } from "../types/errorExt.ts";
@@ -13,7 +14,7 @@ const router = express.Router();
 /*
 * User: Username validation
 */
-router.post("/validation/user/username", async (req, res) => {
+router.post("/validation/user/username", useRateLimit(), async (req, res) => {
   const username: string = req.body.username;
   const userId: string | undefined = req.body.userId;
   if (!username) {
@@ -39,7 +40,7 @@ router.post("/validation/user/username", async (req, res) => {
 /*
 * User: Email validation
 */
-router.post("/validation/user/email", async (req, res) => {
+router.post("/validation/user/email", useRateLimit(), async (req, res) => {
   const email: string = req.body.email;
   const userId: string | undefined = req.body.userId;
   if (!email) {
@@ -62,7 +63,7 @@ router.post("/validation/user/email", async (req, res) => {
 /*
 * User: Phone number validation
 */
-router.post("/validation/user/phone", async (req, res) => {
+router.post("/validation/user/phone", useRateLimit(), async (req, res) => {
   const phoneNumber: string = req.body.phone;
   const userId: string | undefined = req.body.userId;
   if (!phoneNumber) {
@@ -85,7 +86,7 @@ router.post("/validation/user/phone", async (req, res) => {
 /*
 * Event: Name validation
 */
-router.post("/validation/event/name", authCheck, csrfCheck, async (req, res) => {
+router.post("/validation/event/name", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const name: string = req.body.name;
   const eventId: string | undefined = req.body.eventId;
   if (!name) {
@@ -108,7 +109,7 @@ router.post("/validation/event/name", authCheck, csrfCheck, async (req, res) => 
 /*
 * Category: Name validation
 */
-router.post("/validation/category/name", authCheck, csrfCheck, async (req, res) => {
+router.post("/validation/category/name", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const name: string = req.body.name;
   const eventId: string = req.body.eventId;
   const categoryId: string | undefined = req.body.categoryId;
