@@ -5031,7 +5031,7 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "eventId",
             "in": "path",
             "description": "Event ID",
             "required": true,
@@ -5128,7 +5128,7 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "eventId",
             "in": "path",
             "description": "Event ID",
             "required": true,

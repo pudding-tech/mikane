@@ -6,6 +6,7 @@ import * as ec from "../types/errorCodes.ts";
 import { authCheck } from "../middlewares/authCheck.ts";
 import { csrfCheck } from "../middlewares/csrf.ts";
 import { useRateLimit } from "../middlewares/rateLimiter.ts";
+import { singleRequestLimiter } from "../middlewares/singleRequestLimiter.ts";
 import { authenticate, createHash } from "../utils/auth.ts";
 import { generateKey } from "../utils/generateKey.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
@@ -318,7 +319,7 @@ router.post("/users/invite", useRateLimit("strict"), authCheck, csrfCheck, async
 /*
 * Request an account deletion confirmation email
 */
-router.post("/users/requestdeleteaccount", useRateLimit("strict"), authCheck, csrfCheck, async (req, res) => {
+router.post("/users/requestdeleteaccount", singleRequestLimiter, authCheck, csrfCheck, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
     throw new ErrorExt(ec.PUD073);
   }

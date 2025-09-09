@@ -13,7 +13,7 @@ export const errorHandler = (err: ErrorExt | Error, _req: Request, res: Response
   }
   else if (err instanceof ErrorExt) {
     if (err.log) {
-      logger.error(err.error || err);
+      logger.error(err.error ?? err);
     }
     res.status(err.status).json({
       code: err.code,

@@ -24,6 +24,7 @@ interface EnvVariables {
   RATE_LIMIT_MAX_REQUESTS?: number;
   RATE_LIMIT_STRICT_WINDOW_SEC?: number;
   RATE_LIMIT_STRICT_MAX_REQUESTS?: number;
+  RATE_LIMIT_SINGLE_WINDOW_SEC?: number;
 
   DB_HOST: string;
   DB_PORT: number;
@@ -127,6 +128,13 @@ const createEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
     }
   }
 
+  if (env.RATE_LIMIT_SINGLE_WINDOW_SEC !== undefined) {
+    const rateLimitWindow = Number(env.RATE_LIMIT_SINGLE_WINDOW_SEC);
+    if (isNaN(rateLimitWindow) || rateLimitWindow <= 0) {
+      throw new Error(`Environment variable RATE_LIMIT_SINGLE_WINDOW_SEC (${env.RATE_LIMIT_SINGLE_WINDOW_SEC}) must be a valid positive number`);
+    }
+  }
+
   if (env.MIKANE_EMAIL && !isEmail(env.MIKANE_EMAIL)) {
     throw new Error(`Environment variable MIKANE_EMAIL (${env.MIKANE_EMAIL}) is not a valid email`);
   }
@@ -151,6 +159,7 @@ const createEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
     RATE_LIMIT_MAX_REQUESTS: env.RATE_LIMIT_MAX_REQUESTS ? Number(env.RATE_LIMIT_MAX_REQUESTS) : undefined,
     RATE_LIMIT_STRICT_WINDOW_SEC: env.RATE_LIMIT_STRICT_WINDOW_SEC ? Number(env.RATE_LIMIT_STRICT_WINDOW_SEC) : undefined,
     RATE_LIMIT_STRICT_MAX_REQUESTS: env.RATE_LIMIT_STRICT_MAX_REQUESTS ? Number(env.RATE_LIMIT_STRICT_MAX_REQUESTS) : undefined,
+    RATE_LIMIT_SINGLE_WINDOW_SEC: env.RATE_LIMIT_SINGLE_WINDOW_SEC ? Number(env.RATE_LIMIT_SINGLE_WINDOW_SEC) : undefined,
 
     DB_HOST: env.DB_HOST as string,
     DB_PORT: Number(env.DB_PORT) || 5432,

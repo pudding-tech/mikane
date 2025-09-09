@@ -6,6 +6,7 @@ import * as dbAuth from "../db/dbAuthentication.ts";
 import * as ec from "../types/errorCodes.ts";
 import { generateCsrfToken } from "../middlewares/csrf.ts";
 import { useRateLimit } from "../middlewares/rateLimiter.ts";
+import { singleRequestLimiter } from "../middlewares/singleRequestLimiter.ts";
 import { authenticate, createHash, generateApiKey } from "../utils/auth.ts";
 import { generateKey } from "../utils/generateKey.ts";
 import { User } from "../types/types.ts";
@@ -14,13 +15,6 @@ import { isValidPassword } from "../utils/validators/passwordValidator.ts";
 import { sendPasswordResetEmail } from "../email-services/passwordReset.ts";
 import { ErrorExt } from "../types/errorExt.ts";
 const router = express.Router();
-
-router.get("/ip", useRateLimit("strict"), (req, res) => {
-  res.status(200).json({
-    ip: req.ip,
-    xForwardedFor: req.headers["x-forwarded-for"] ?? null
-  });
-});
 
 /* --- */
 /* GET */
@@ -148,7 +142,7 @@ router.post("/generatekey", useRateLimit("strict"), masterKeyCheck, async (req, 
 /*
 * Request a password reset
 */
-router.post("/requestpasswordreset", useRateLimit("strict"), async (req, res) => {
+router.post("/requestpasswordreset", singleRequestLimiter, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
     throw new ErrorExt(ec.PUD073);
   }
