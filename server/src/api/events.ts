@@ -2,6 +2,7 @@ import express from "express";
 import * as db from "../db/dbEvents.ts";
 import { authCheck, authKeyCheck } from "../middlewares/authCheck.ts";
 import { csrfCheck } from "../middlewares/csrf.ts";
+import { useRateLimit } from "../middlewares/rateLimiter.ts";
 import { removeUserInfoFromPayments, removeUserInfoFromUserBalances } from "../parsers/parseUserInfo.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
 import { Event, Payment, UserBalance } from "../types/types.ts";
@@ -16,7 +17,7 @@ const router = express.Router();
 /*
 * Get a list of all events
 */
-router.get("/events", authCheck, csrfCheck, async (req, res) => {
+router.get("/events", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const activeUserId = req.session.userId;
   const events: Event[] = await db.getEvents(activeUserId);
   res.status(200).send(events);
@@ -25,7 +26,7 @@ router.get("/events", authCheck, csrfCheck, async (req, res) => {
 /*
 * Get specific event
 */
-router.get("/events/:id", authCheck, csrfCheck, async (req, res) => {
+router.get("/events/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const eventId = req.params.id;
   const activeUserId = req.session.userId;
   if (!isUUID(eventId)) {
@@ -42,7 +43,7 @@ router.get("/events/:id", authCheck, csrfCheck, async (req, res) => {
 /*
 * Get specific event by name
 */
-router.get("/eventbyname", authKeyCheck, async (req, res) => {
+router.get("/eventbyname", useRateLimit(), authKeyCheck, async (req, res) => {
   const eventName = req.body.name;
   const activeUserId = req.session.userId;
   const authIsApiKey = req.authIsApiKey;
@@ -57,7 +58,7 @@ router.get("/eventbyname", authKeyCheck, async (req, res) => {
 /*
 * Get a list of all users' balance information for an event
 */
-router.get("/events/:id/balances", authCheck, csrfCheck, async (req, res) => {
+router.get("/events/:id/balances", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const eventId = req.params.id;
   const activeUserId = req.session.userId;
   if (!isUUID(eventId)) {
@@ -84,7 +85,7 @@ router.get("/events/:id/balances", authCheck, csrfCheck, async (req, res) => {
 /*
 * Get a list of all payments for a given event
 */
-router.get("/events/:id/payments", authKeyCheck, async (req, res) => {
+router.get("/events/:id/payments", useRateLimit(), authKeyCheck, async (req, res) => {
   const eventId = req.params.id;
   const activeUserId = req.session.userId;
   if (!isUUID(eventId)) {
@@ -115,7 +116,7 @@ router.get("/events/:id/payments", authKeyCheck, async (req, res) => {
 /*
 * Create new event
 */
-router.post("/events", authCheck, csrfCheck, async (req, res) => {
+router.post("/events", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const name: string = req.body.name;
   if (!name || (req.body.private === null || req.body.private === undefined)) {
     throw new ErrorExt(ec.PUD014);
@@ -136,7 +137,7 @@ router.post("/events", authCheck, csrfCheck, async (req, res) => {
 /*
 * Add a user to an event
 */
-router.post("/events/:id/user/:userId", authCheck, csrfCheck, async (req, res) => {
+router.post("/events/:id/user/:userId", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const eventId = req.params.id;
   const userId = req.params.userId;
   if (!isUUID(eventId) || !isUUID(userId)) {
@@ -155,7 +156,7 @@ router.post("/events/:id/user/:userId", authCheck, csrfCheck, async (req, res) =
 /*
 * Set a user as admin for an event
 */
-router.post("/events/:id/admin/:userId", authCheck, csrfCheck, async (req, res) => {
+router.post("/events/:id/admin/:userId", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const eventId = req.params.id;
   const userId = req.params.userId;
   if (!isUUID(eventId) || !isUUID(userId)) {
@@ -177,7 +178,7 @@ router.post("/events/:id/admin/:userId", authCheck, csrfCheck, async (req, res) 
 /*
 * Edit event
 */
-router.put("/events/:id", authCheck, csrfCheck, async (req, res) => {
+router.put("/events/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const eventId = req.params.id;
   if (!isUUID(eventId)) {
     throw new ErrorExt(ec.PUD013);
@@ -204,7 +205,7 @@ router.put("/events/:id", authCheck, csrfCheck, async (req, res) => {
 /*
 * Delete event
 */
-router.delete("/events/:id", authCheck, csrfCheck, async (req, res) => {
+router.delete("/events/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const eventId = req.params.id;
   if (!isUUID(eventId)) {
     throw new ErrorExt(ec.PUD013);
@@ -221,7 +222,7 @@ router.delete("/events/:id", authCheck, csrfCheck, async (req, res) => {
 /*
 * Remove a user from an event
 */
-router.delete("/events/:id/user/:userId", authCheck, csrfCheck, async (req, res) => {
+router.delete("/events/:id/user/:userId", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const eventId = req.params.id;
   const userId = req.params.userId;
   if (!isUUID(eventId) || !isUUID(userId)) {
@@ -240,7 +241,7 @@ router.delete("/events/:id/user/:userId", authCheck, csrfCheck, async (req, res)
 /*
 * Remove a user as event admin
 */
-router.delete("/events/:id/admin/:userId", authCheck, csrfCheck, async (req, res) => {
+router.delete("/events/:id/admin/:userId", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const eventId = req.params.id;
   const userId = req.params.userId;
   if (!isUUID(eventId) || !isUUID(userId)) {

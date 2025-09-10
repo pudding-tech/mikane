@@ -1,6 +1,7 @@
 import express from "express";
 import { authCheck } from "../middlewares/authCheck.ts";
 import { csrfCheck } from "../middlewares/csrf.ts";
+import { useRateLimit } from "../middlewares/rateLimiter.ts";
 import { logClientToDatabase } from "../db/dbLog.ts";
 import { createDate } from "../utils/dateCreator.ts";
 import { ALLOWED_LOG_LEVELS, type LogLevelType } from "../env.ts";
@@ -11,7 +12,7 @@ const router = express.Router();
 /*
 * Save client log message in database
 */
-router.post("/log", authCheck, csrfCheck, async (req, res) => {
+router.post("/log", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const msg: string = req.body.message;
   const level: LogLevelType | undefined = req.body.level;
   const timestamp = req.body.timestamp ? createDate(req.body.timestamp) : new Date();

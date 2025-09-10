@@ -1,4 +1,5 @@
 import { ALLOWED_LOG_LEVELS } from "../env.ts";
+import { RATE_LIMIT_SINGLE_WINDOW_SEC } from "../middlewares/singleRequestLimiter.ts";
 
 export type ErrorCode = {
   code: string,
@@ -1403,4 +1404,22 @@ export const PUD148: ErrorCode = {
   code: "PUD-148",
   message: "Invalid CSRF token",
   status: 403
+};
+
+/**
+ * PUD-149: You have exceeded the allowed number of requests, please try again later (429)
+ */
+export const PUD149: ErrorCode = {
+  code: "PUD-149",
+  message: "You have exceeded the allowed number of requests, please try again later",
+  status: 429
+};
+
+/**
+ * PUD-150: You can only call this endpoint once every X seconds, please wait before trying again (429)
+ */
+export const PUD150: ErrorCode = {
+  code: "PUD-150",
+  message: `You can only call this endpoint once every ${RATE_LIMIT_SINGLE_WINDOW_SEC} seconds, please wait before trying again`,
+  status: 429
 };

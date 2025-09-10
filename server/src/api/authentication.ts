@@ -5,6 +5,8 @@ import * as dbUsers from "../db/dbUsers.ts";
 import * as dbAuth from "../db/dbAuthentication.ts";
 import * as ec from "../types/errorCodes.ts";
 import { generateCsrfToken } from "../middlewares/csrf.ts";
+import { useRateLimit } from "../middlewares/rateLimiter.ts";
+import { singleRequestLimiter } from "../middlewares/singleRequestLimiter.ts";
 import { authenticate, createHash, generateApiKey } from "../utils/auth.ts";
 import { generateKey } from "../utils/generateKey.ts";
 import { User } from "../types/types.ts";
@@ -21,7 +23,7 @@ const router = express.Router();
 /*
 * Check if user is signed in
 */
-router.get("/login", (req, res) => {
+router.get("/login", useRateLimit("strict"), (req, res) => {
   if (!req.session.authenticated) {
     throw new ErrorExt(ec.PUD000);
   }
@@ -38,7 +40,7 @@ router.get("/login", (req, res) => {
 /*
 * Verify that a password reset key is valid
 */
-router.get("/verifykey/passwordreset/:key", async (req, res) => {
+router.get("/verifykey/passwordreset/:key", useRateLimit("strict"), async (req, res) => {
   const key = req.params.key;
   const valid = await dbAuth.verifyPasswordResetKey(key);
   if (!valid) {
@@ -54,7 +56,7 @@ router.get("/verifykey/passwordreset/:key", async (req, res) => {
 /*
 * User sign in
 */
-router.post("/login", async (req, res) => {
+router.post("/login", useRateLimit("strict"), async (req, res) => {
   const { usernameEmail, password } = req.body;
   if (!usernameEmail || !password) {
     throw new ErrorExt(ec.PUD002);
@@ -107,7 +109,7 @@ router.post("/login", async (req, res) => {
 /*
 * User sign out of session
 */
-router.post("/logout", (req, res) => {
+router.post("/logout", useRateLimit("strict"), (req, res) => {
   if (!req.session.authenticated) {
     throw new ErrorExt(ec.PUD001);
   }
@@ -125,7 +127,7 @@ router.post("/logout", (req, res) => {
 /*
 * Generate API key
 */
-router.post("/generatekey", masterKeyCheck, async (req, res) => {
+router.post("/generatekey", useRateLimit("strict"), masterKeyCheck, async (req, res) => {
   const name = req.body.name as string;
   if (!name) {
     throw new ErrorExt(ec.PUD068);
@@ -140,7 +142,7 @@ router.post("/generatekey", masterKeyCheck, async (req, res) => {
 /*
 * Request a password reset
 */
-router.post("/requestpasswordreset", async (req, res) => {
+router.post("/requestpasswordreset", singleRequestLimiter, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
     throw new ErrorExt(ec.PUD073);
   }
@@ -170,7 +172,7 @@ router.post("/requestpasswordreset", async (req, res) => {
 /*
 * Reset a password
 */
-router.post("/resetpassword", async (req, res) => {
+router.post("/resetpassword", useRateLimit("strict"), async (req, res) => {
   const key: string = req.body.key;
   const valid = await dbAuth.verifyPasswordResetKey(key);
   if (!valid) {

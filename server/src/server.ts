@@ -52,8 +52,8 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   }
 });
 
-// Trust proxy
-app.enable("trust proxy");
+// Trust proxies (number of proxies set through env variable)
+app.set("trust proxy", env.TRUSTED_PROXIES);
 
 // Helmet protection
 app.use(helmet());
