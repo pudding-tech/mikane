@@ -2825,22 +2825,18 @@
           { "csrfToken": [] },
           { "apiKeyAuth": [] }
         ],
-        "requestBody": {
-          "description": "Event name",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "example": "Example Event"
-                  }
-                }
-              }
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Event name",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Example event"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Success - 'userInfo' property is only present when a logged in user makes the request",

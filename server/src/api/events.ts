@@ -44,7 +44,7 @@ router.get("/events/:id", useRateLimit(), authCheck, csrfCheck, async (req, res)
 * Get specific event by name
 */
 router.get("/eventbyname", useRateLimit(), authKeyCheck, async (req, res) => {
-  const eventName = req.body.name;
+  const eventName = req.query.name as string;
   const activeUserId = req.session.userId;
   const authIsApiKey = req.authIsApiKey;
 
