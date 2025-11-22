@@ -1,18 +1,18 @@
 import { registerLocaleData } from '@angular/common';
 import localeNo from '@angular/common/locales/no';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, of, Subject, throwError,  } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, of, Subject, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { PuddingEvent } from 'src/app/services/event/event.service';
+import { Expense } from 'src/app/services/expense/expense.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ProfileComponent } from './profile.component';
-import { PuddingEvent } from 'src/app/services/event/event.service';
-import { Expense } from 'src/app/services/expense/expense.service';
 
 class PC extends ProfileComponent {
 	public override user: User;
@@ -22,10 +22,20 @@ class PC extends ProfileComponent {
 
 describe('ProfileComponent', () => {
 	registerLocaleData(localeNo);
-	let userServiceSpy: { loadUserByUsernameOrId: ReturnType<typeof vi.fn>, loadUserById: ReturnType<typeof vi.fn>, loadUserEvents: ReturnType<typeof vi.fn>, loadUserExpenses: ReturnType<typeof vi.fn> };
+	let userServiceSpy: {
+		loadUserByUsernameOrId: ReturnType<typeof vi.fn>;
+		loadUserById: ReturnType<typeof vi.fn>;
+		loadUserEvents: ReturnType<typeof vi.fn>;
+		loadUserExpenses: ReturnType<typeof vi.fn>;
+	};
 	let authServiceSpy: { getCurrentUser: ReturnType<typeof vi.fn> };
 	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>; showSuccess: ReturnType<typeof vi.fn> };
-	let routerSpy: { navigate: ReturnType<typeof vi.fn>, createUrlTree: ReturnType<typeof vi.fn>, serializeUrl: ReturnType<typeof vi.fn>, events: Subject<Event> };
+	let routerSpy: {
+		navigate: ReturnType<typeof vi.fn>;
+		createUrlTree: ReturnType<typeof vi.fn>;
+		serializeUrl: ReturnType<typeof vi.fn>;
+		events: Subject<Event>;
+	};
 	let activatedRouteSpy: { paramMap: Observable<{ get: (key: string) => string | null }> };
 	let titleSpy: { setTitle: ReturnType<typeof vi.fn> };
 
@@ -42,10 +52,26 @@ describe('ProfileComponent', () => {
 		avatarURL: '',
 	};
 	const mockEvents = [
-		{ id: 'e1', name: 'Event 1', description: '', adminIds: ['u1'], userInfo: { inEvent: true, id: 'u1' }, status: { id: 1 }, private: false },
+		{
+			id: 'e1',
+			name: 'Event 1',
+			description: '',
+			adminIds: ['u1'],
+			userInfo: { inEvent: true, id: 'u1' },
+			status: { id: 1 },
+			private: false,
+		},
 	];
 	const mockExpenses = [
-		{ id: 'ex1', name: 'Expense 1', amount: 100, categoryInfo: { icon: 'shopping_cart' }, eventInfo: { id: 'e1', name: 'Event 1' }, payer: { id: 'u1' }, created: new Date() },
+		{
+			id: 'ex1',
+			name: 'Expense 1',
+			amount: 100,
+			categoryInfo: { icon: 'shopping_cart' },
+			eventInfo: { id: 'e1', name: 'Event 1' },
+			payer: { id: 'u1' },
+			created: new Date(),
+		},
 	];
 
 	beforeEach(() => {
@@ -63,10 +89,11 @@ describe('ProfileComponent', () => {
 			serializeUrl: vi.fn(),
 			events: new Subject(),
 		};
-		activatedRouteSpy = { paramMap: of({ get: (key: string) => key === 'usernameOrId' ? 'testuser' : null }) };
+		activatedRouteSpy = { paramMap: of({ get: (key: string) => (key === 'usernameOrId' ? 'testuser' : null) }) };
 		titleSpy = { setTitle: vi.fn() };
 
 		userServiceSpy.loadUserByUsernameOrId.mockReturnValue(of(mockUser));
+		userServiceSpy.loadUserById.mockReturnValue(of(mockUser));
 		userServiceSpy.loadUserEvents.mockReturnValue(of(mockEvents));
 		userServiceSpy.loadUserExpenses.mockReturnValue(of(mockExpenses));
 		authServiceSpy.getCurrentUser.mockReturnValue(of(mockUser));

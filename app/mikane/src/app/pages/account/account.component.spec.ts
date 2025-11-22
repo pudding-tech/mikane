@@ -11,7 +11,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
-import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { LogService } from 'src/app/services/log/log.service';
@@ -19,24 +18,25 @@ import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccountComponent } from './account.component';
 
 // eslint-disable-next-line @angular-eslint/component-selector
-@Component({selector: 'user-settings', template: '', standalone: true})
+@Component({ selector: 'user-settings', template: '', standalone: true })
 class MockUserSettingsComponent {}
 
 // eslint-disable-next-line @angular-eslint/component-selector
-@Component({selector: 'change-password', template: '', standalone: true})
+@Component({ selector: 'change-password', template: '', standalone: true })
 class MockChangePasswordComponent {}
 
 // eslint-disable-next-line @angular-eslint/component-selector
-@Component({selector: 'danger-zone', template: '', standalone: true})
+@Component({ selector: 'danger-zone', template: '', standalone: true })
 class MockDangerZoneComponent {}
 
-@Component({selector: 'app-menu', template: '', standalone: true})
+@Component({ selector: 'app-menu', template: '', standalone: true })
 class MockMenuComponent {}
 
-@Component({selector: 'app-loading-spinner', template: '', standalone: true})
+@Component({ selector: 'app-loading-spinner', template: '', standalone: true })
 class MockProgressSpinnerComponent {}
 
 describe('AccountComponent', () => {
@@ -78,7 +78,7 @@ describe('AccountComponent', () => {
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				{ provide: ENV, useValue: env },
 				provideHttpClient(withInterceptorsFromDi()),
-				provideHttpClientTesting()
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
 

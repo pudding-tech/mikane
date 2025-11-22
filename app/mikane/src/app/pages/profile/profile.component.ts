@@ -9,7 +9,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Subscription, catchError, combineLatest, map, of, switchMap, tap } from 'rxjs';
+import { EMPTY, Subscription, catchError, combineLatest, map, switchMap, tap } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -102,13 +102,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 					} else {
 						this.messageService.showError('User not found');
 						this.logService.error('User not found on profile page');
-						return of(undefined);
+						return EMPTY;
 					}
 				}),
 				catchError((err: ApiError) => {
 					this.messageService.showError('Something went wrong');
 					this.logService.error('Something went wrong while getting user on profile page: ' + err);
-					return of(undefined);
+					return EMPTY;
 				}),
 			)
 			.subscribe({

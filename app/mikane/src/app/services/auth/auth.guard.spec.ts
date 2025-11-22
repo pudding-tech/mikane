@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { CanActivateFn, provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { User } from '../user/user.service';
 import { authGuard } from './auth.guard';
 import { AuthService } from './auth.service';

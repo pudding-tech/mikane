@@ -11,7 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable, of } from 'rxjs';
 import { User } from 'src/app/services/user/user.service';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ParticipantDialogComponent } from './participant-dialog.component';
 
 describe('ParticipantDialogComponent', () => {
