@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '../auth/auth.service';
 import { LOG_LEVEL, LoggerLevel } from './log-level.config';
 import { LogService } from './log.service';
@@ -164,6 +164,7 @@ describe('LogService', () => {
 
 		it('should not log trace messages', () => {
 			const consoleTraceSpy = vi.spyOn(console, 'trace');
+			consoleTraceSpy.mockClear();
 
 			service.trace('Test trace message');
 
@@ -172,6 +173,7 @@ describe('LogService', () => {
 
 		it('should log info level messages', () => {
 			const consoleInfoSpy = vi.spyOn(console, 'info');
+			consoleInfoSpy.mockClear();
 
 			service.info('Test info message');
 

@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 import { ApiError } from 'src/app/types/apiError.type';
-import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { MessageService } from '../message/message.service';
 import { authInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';

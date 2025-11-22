@@ -98,29 +98,13 @@
 						"buildTarget": "mikane:build"
 					}
 				},
-				"karma": {
-					"builder": "@angular/build:karma",
-					"options": {
-						"main": "src/test.ts",
-						"polyfills": ["src/polyfills.ts"],
-						"tsConfig": "tsconfig.spec.json",
-						"karmaConfig": "karma.conf.js",
-						"codeCoverage": true,
-						"inlineStyleLanguage": "scss",
-						"assets": ["src/favicon.png", "src/assets", "src/manifest.webmanifest"],
-						"styles": ["./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css", "src/styles.scss"],
-						"scripts": []
-					}
-				},
 				"test": {
 					"builder": "@angular/build:unit-test",
 					"options": {
-						"tsConfig": "tsconfig.spec.json",
-						"runner": "vitest",
 						"buildTarget": "::development",
-						"reporters": ["default"],
-						"codeCoverage": true,
-						"codeCoverageReporters": ["json", "html"]
+						"coverage": true,
+						"runnerConfig": true,
+						"include": ["src/**/*.spec.ts", "src/**/*.d.ts"]
 					}
 				},
 				"lint": {

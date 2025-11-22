@@ -3,13 +3,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { KeyValidationService } from 'src/app/services/key-validation/key-validation.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ApiError } from 'src/app/types/apiError.type';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ResetPasswordComponent } from './reset-password.component';
 
 describe('ResetPasswordComponent', () => {
@@ -18,7 +18,7 @@ describe('ResetPasswordComponent', () => {
 	let page: PageObject;
 
 	const routerSpy = {
-		navigate: vi.fn()
+		navigate: vi.fn(),
 	};
 	const authServiceSpy = {
 		resetPassword: vi.fn(),
@@ -31,9 +31,11 @@ describe('ResetPasswordComponent', () => {
 		showSuccess: vi.fn(),
 	};
 	const breakpointServiceSpy = {
-		isMobile: () => false
+		isMobile: () => false,
 	};
-	const logServiceSpy = {};
+	const logServiceSpy = {
+		error: vi.fn(),
+	};
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
@@ -53,7 +55,7 @@ describe('ResetPasswordComponent', () => {
 						},
 					},
 				},
-			]
+			],
 		}).compileComponents();
 	});
 

@@ -3,17 +3,17 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, of, throwError } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { LogService } from 'src/app/services/log/log.service';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
+import { LogService } from 'src/app/services/log/log.service';
+import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { CategoryIcon } from 'src/app/types/enums';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
 import { CategoryComponent } from './category.component';
@@ -37,18 +37,18 @@ function createComponent(eventData?: Partial<PuddingEvent>) {
 
 describe('CategoryComponent', () => {
 	let categoryServiceSpy: {
-		loadCategories: ReturnType<typeof vi.fn>,
-		createCategory: ReturnType<typeof vi.fn>,
-		editCategory: ReturnType<typeof vi.fn>,
-		addUser: ReturnType<typeof vi.fn>,
-		deleteUser: ReturnType<typeof vi.fn>,
-		editUser: ReturnType<typeof vi.fn>,
-		setWeighted: ReturnType<typeof vi.fn>,
-		deleteCategory: ReturnType<typeof vi.fn>,
+		loadCategories: ReturnType<typeof vi.fn>;
+		createCategory: ReturnType<typeof vi.fn>;
+		editCategory: ReturnType<typeof vi.fn>;
+		addUser: ReturnType<typeof vi.fn>;
+		deleteUser: ReturnType<typeof vi.fn>;
+		editUser: ReturnType<typeof vi.fn>;
+		setWeighted: ReturnType<typeof vi.fn>;
+		deleteCategory: ReturnType<typeof vi.fn>;
 	};
 	let userServiceSpy: { loadUsersByEvent: ReturnType<typeof vi.fn> };
 	let dialogSpy: { open: ReturnType<typeof vi.fn> };
-	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>, showSuccess: ReturnType<typeof vi.fn> };
+	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>; showSuccess: ReturnType<typeof vi.fn> };
 	let breakpointServiceSpy: { isMobile: () => boolean };
 	let contextServiceSpy: { isIos: () => boolean };
 	let formValidationServiceSpy: object;
@@ -56,7 +56,7 @@ describe('CategoryComponent', () => {
 
 	beforeEach(() => {
 		categoryServiceSpy = {
-			loadCategories: vi.fn(),
+			loadCategories: vi.fn().mockReturnValue(of([])),
 			createCategory: vi.fn(),
 			editCategory: vi.fn(),
 			addUser: vi.fn(),
@@ -65,7 +65,7 @@ describe('CategoryComponent', () => {
 			setWeighted: vi.fn(),
 			deleteCategory: vi.fn(),
 		};
-		userServiceSpy = { loadUsersByEvent: vi.fn() };
+		userServiceSpy = { loadUsersByEvent: vi.fn().mockReturnValue(of([])) };
 		dialogSpy = { open: vi.fn() };
 		messageServiceSpy = { showError: vi.fn(), showSuccess: vi.fn() };
 		breakpointServiceSpy = { isMobile: () => false };
@@ -73,11 +73,7 @@ describe('CategoryComponent', () => {
 		formValidationServiceSpy = {};
 
 		TestBed.configureTestingModule({
-			imports: [
-				CategoryComponent,
-				MatCardModule,
-				MatIconModule,
-			],
+			imports: [CategoryComponent, MatCardModule, MatIconModule],
 			providers: [
 				{ provide: CategoryService, useValue: categoryServiceSpy },
 				{ provide: UserService, useValue: userServiceSpy },
@@ -89,12 +85,12 @@ describe('CategoryComponent', () => {
 				{ provide: FormValidationService, useValue: formValidationServiceSpy },
 			],
 		})
-		.overrideComponent(CategoryComponent, {
-			remove: {
-				imports: [MatDialogModule],
-			}
-		})
-		.compileComponents();
+			.overrideComponent(CategoryComponent, {
+				remove: {
+					imports: [MatDialogModule],
+				},
+			})
+			.compileComponents();
 
 		vi.clearAllMocks();
 	});
@@ -155,19 +151,21 @@ describe('CategoryComponent', () => {
 	describe('#loadCategories', () => {
 		beforeEach(() => {
 			categoryServiceSpy.loadCategories.mockReturnValue(
-				of([{
-					id: '1',
-					name: 'name',
-					weighted: false,
-					users: [
-						{
-							id: '1',
-							name: 'name',
-							avatarURL: 'avatarURL',
-							weight: 1,
-						},
-					],
-				}])
+				of([
+					{
+						id: '1',
+						name: 'name',
+						weighted: false,
+						users: [
+							{
+								id: '1',
+								name: 'name',
+								avatarURL: 'avatarURL',
+								weight: 1,
+							},
+						],
+					},
+				]),
 			);
 			userServiceSpy.loadUsersByEvent.mockReturnValue(of([]));
 		});
@@ -361,9 +359,7 @@ describe('CategoryComponent', () => {
 			const { component } = createComponent();
 			component.openDialog();
 
-			expect(categoryServiceSpy.createCategory).toHaveBeenCalledWith(
-				'name', component.event.id, false, CategoryIcon.SHOPPING
-			);
+			expect(categoryServiceSpy.createCategory).toHaveBeenCalledWith('name', component.event.id, false, CategoryIcon.SHOPPING);
 		});
 	});
 

@@ -10,13 +10,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { By } from '@angular/platform-browser';
 import { Router, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { LoginComponent } from './login.component';
 
 @Component({ selector: 'app-events', template: '' })
@@ -30,245 +30,294 @@ describe('Login Component', () => {
 	let fixture: ComponentFixture<LoginComponent>;
 	let page: PageObject;
 
-	let authService: { login: ReturnType<typeof vi.fn>, logout: ReturnType<typeof vi.fn>, sendResetPasswordEmail: ReturnType<typeof vi.fn>, getCurrentUser: ReturnType<typeof vi.fn>, redirectUrl: string | null };
-	let messageService: { showSuccess: ReturnType<typeof vi.fn>, showError: ReturnType<typeof vi.fn> };
+	let authService: {
+		login: ReturnType<typeof vi.fn>;
+		logout: ReturnType<typeof vi.fn>;
+		sendResetPasswordEmail: ReturnType<typeof vi.fn>;
+		getCurrentUser: ReturnType<typeof vi.fn>;
+		redirectUrl: string | null;
+	};
+	let messageService: { showSuccess: ReturnType<typeof vi.fn>; showError: ReturnType<typeof vi.fn> };
 	let breakpointService: { isMobile: ReturnType<typeof vi.fn> };
 
-	beforeEach(async () => {
-		authService = { login: vi.fn(), logout: vi.fn(), sendResetPasswordEmail: vi.fn(), getCurrentUser: vi.fn(), redirectUrl: null };
-		messageService = { showSuccess: vi.fn(), showError: vi.fn() };
-		breakpointService = { isMobile: vi.fn() };
+	describe('', () => {
+		beforeEach(async () => {
+			authService = { login: vi.fn(), logout: vi.fn(), sendResetPasswordEmail: vi.fn(), getCurrentUser: vi.fn(), redirectUrl: null };
+			messageService = { showSuccess: vi.fn(), showError: vi.fn() };
+			breakpointService = { isMobile: vi.fn() };
 
-		TestBed.configureTestingModule({
-			imports: [LoginComponent, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatButtonModule, MatToolbarModule, MatCardModule, MatIconModule],
-			providers: [
-				{ provide: AuthService, useValue: authService },
-				{ provide: MessageService, useValue: messageService },
-				{ provide: BreakpointService, useValue: breakpointService },
-				{ provide: LogService, useValue: { log: vi.fn(), error: vi.fn() } },
-				provideRouter([
-					{ path: 'login', loadComponent: () => import('./login.component').then((m) => m.LoginComponent) },
-					{ path: 'events', component: MockEventsComponent },
-					{ path: 'account', component: MockAccountComponent },
-				]),
-			],
-		}).compileComponents();
+			TestBed.configureTestingModule({
+				imports: [
+					LoginComponent,
+					MatFormFieldModule,
+					MatInputModule,
+					MatProgressSpinnerModule,
+					MatButtonModule,
+					MatToolbarModule,
+					MatCardModule,
+					MatIconModule,
+				],
+				providers: [
+					{ provide: AuthService, useValue: authService },
+					{ provide: MessageService, useValue: messageService },
+					{ provide: BreakpointService, useValue: breakpointService },
+					{ provide: LogService, useValue: { log: vi.fn(), error: vi.fn() } },
+					provideRouter([
+						{ path: 'login', loadComponent: () => import('./login.component').then((m) => m.LoginComponent) },
+						{ path: 'events', component: MockEventsComponent },
+						{ path: 'account', component: MockAccountComponent },
+					]),
+				],
+			}).compileComponents();
 
-		fixture = TestBed.createComponent(LoginComponent);
-		component = fixture.componentInstance;
-		page = new PageObject(fixture);
+			fixture = TestBed.createComponent(LoginComponent);
+			component = fixture.componentInstance;
+			page = new PageObject(fixture);
 
-		breakpointService.isMobile.mockReturnValue(of(false));
-		fixture.detectChanges();
-	});
-
-	it('should show login form', () => {
-		component.breakpointService.isMobile().subscribe((isMobile) => {
-			expect(isMobile).toBe(false);
+			breakpointService.isMobile.mockReturnValue(of(false));
+			fixture.detectChanges();
 		});
 
-		expect(page.loginForm.nativeElement).toBeDefined();
-		expect(page.mobileContent).toBeFalsy();
-		expect(page.resetForm).toBeFalsy();
-	});
+		it('should show login form', () => {
+			component.breakpointService.isMobile().subscribe((isMobile) => {
+				expect(isMobile).toBe(false);
+			});
 
-	it('should login user', () => {
-		authService.login.mockReturnValue(of({} as User));
-
-		page.usernameInput.value = 'username';
-		page.passwordInput.value = 'password';
-		page.usernameInput.dispatchEvent(new Event('input'));
-		page.passwordInput.dispatchEvent(new Event('input'));
-
-		page.loginButton.nativeElement.click();
-		fixture.detectChanges();
-
-		expect(authService.login).toHaveBeenCalledWith('username', 'password');
-		expect(messageService.showSuccess).toHaveBeenCalledWith('Login successful');
-		expect(messageService.showError).not.toHaveBeenCalled();
-	});
-
-	it('should fail to login user if login info is wrong', () => {
-		authService.login.mockReturnValue(
-			throwError(() => {
-				return { error: { code: 'PUD-003' } } as ApiError;
-			}),
-		);
-
-		page.usernameInput.value = 'wrong username';
-		page.passwordInput.value = 'wrong password';
-		page.usernameInput.dispatchEvent(new Event('input'));
-		page.passwordInput.dispatchEvent(new Event('input'));
-		page.loginButton.nativeElement.click();
-		fixture.detectChanges();
-
-		expect(authService.login).toHaveBeenCalledWith('wrong username', 'wrong password');
-		expect(messageService.showError).toHaveBeenCalledWith('Wrong username or password');
-		expect(messageService.showSuccess).not.toHaveBeenCalled();
-	});
-
-	it('should show error if no user returned', () => {
-		authService.login.mockReturnValue(of(undefined));
-
-		page.usernameInput.value = 'username';
-		page.passwordInput.value = 'password';
-		page.usernameInput.dispatchEvent(new Event('input'));
-		page.passwordInput.dispatchEvent(new Event('input'));
-
-		page.loginButton.nativeElement.click();
-		fixture.detectChanges();
-
-		expect(messageService.showError).toHaveBeenCalledWith('Login failed');
-	});
-
-	it('should focus on username field if fields empty', () => {
-		expect(page.focus).toBeFalsy();
-		page.loginButton.nativeElement.click();
-		fixture.detectChanges();
-
-		expect(page.focus.nativeElement).toBe(page.usernameInput);
-	});
-
-	it('should redirect to events page after login', async () => {
-		authService.login.mockReturnValue(of({} as User));
-		authService.getCurrentUser.mockReturnValue(of({} as User));
-
-		page.usernameInput.value = 'username';
-		page.passwordInput.value = 'password';
-		page.usernameInput.dispatchEvent(new Event('input'));
-		page.passwordInput.dispatchEvent(new Event('input'));
-
-		page.loginButton.nativeElement.click();
-		await fixture.whenStable();
-
-		expect(TestBed.inject(Router).url).toEqual('/events');
-	});
-
-	it('should redirect to stored redirect url after login', async () => {
-		authService.login.mockReturnValue(of({} as User));
-		Object.defineProperty(authService, 'redirectUrl', {
-			get: () => '/account',
-			set: vi.fn(),
+			expect(page.loginForm.nativeElement).toBeDefined();
+			expect(page.mobileContent).toBeFalsy();
+			expect(page.resetForm).toBeFalsy();
 		});
 
-		page.usernameInput.value = 'username';
-		page.passwordInput.value = 'password';
-		page.usernameInput.dispatchEvent(new Event('input'));
-		page.passwordInput.dispatchEvent(new Event('input'));
+		it('should login user', () => {
+			authService.login.mockReturnValue(of({} as User));
 
-		page.loginButton.nativeElement.click();
-		await fixture.whenStable();
+			page.usernameInput.value = 'username';
+			page.passwordInput.value = 'password';
+			page.usernameInput.dispatchEvent(new Event('input'));
+			page.passwordInput.dispatchEvent(new Event('input'));
 
-		expect(TestBed.inject(Router).url).toEqual('/account');
-	});
+			page.loginButton.nativeElement.click();
+			fixture.detectChanges();
 
-	it('should toggle forgot password view', () => {
-		expect(page.loginForm).toBeDefined();
-		expect(page.resetForm).toBeFalsy();
-		expect(page.forgotPasswordButton.textContent).toBe('Forgot password?');
+			expect(authService.login).toHaveBeenCalledWith('username', 'password');
+			expect(messageService.showSuccess).toHaveBeenCalledWith('Login successful');
+			expect(messageService.showError).not.toHaveBeenCalled();
+		});
 
-		page.forgotPasswordButton.click();
-		fixture.detectChanges();
+		it('should fail to login user if login info is wrong', () => {
+			authService.login.mockReturnValue(
+				throwError(() => {
+					return { error: { code: 'PUD-003' } } as ApiError;
+				}),
+			);
 
-		expect(page.resetForm).toBeDefined();
-		expect(page.loginForm).toBeFalsy();
-		expect(page.forgotPasswordButton.textContent).toBe('Back');
+			page.usernameInput.value = 'wrong username';
+			page.passwordInput.value = 'wrong password';
+			page.usernameInput.dispatchEvent(new Event('input'));
+			page.passwordInput.dispatchEvent(new Event('input'));
+			page.loginButton.nativeElement.click();
+			fixture.detectChanges();
 
-		page.forgotPasswordButton.click();
-		fixture.detectChanges();
+			expect(authService.login).toHaveBeenCalledWith('wrong username', 'wrong password');
+			expect(messageService.showError).toHaveBeenCalledWith('Wrong username or password');
+			expect(messageService.showSuccess).not.toHaveBeenCalled();
+		});
 
-		expect(page.loginForm).toBeDefined();
-		expect(page.resetForm).toBeFalsy();
-	});
+		it('should show error if no user returned', () => {
+			authService.login.mockReturnValue(of(undefined));
 
-	it('should request password reset', () => {
-		authService.sendResetPasswordEmail.mockReturnValue(of(undefined));
-		page.forgotPasswordButton.click();
-		fixture.detectChanges();
+			page.usernameInput.value = 'username';
+			page.passwordInput.value = 'password';
+			page.usernameInput.dispatchEvent(new Event('input'));
+			page.passwordInput.dispatchEvent(new Event('input'));
 
-		expect(page.infoText).toBeFalsy();
+			page.loginButton.nativeElement.click();
+			fixture.detectChanges();
 
-		page.emailInput.value = 'email@email.com';
-		page.emailInput.dispatchEvent(new Event('input'));
+			expect(messageService.showError).toHaveBeenCalledWith('Login failed');
+		});
 
-		page.passwordButton.click();
-		fixture.detectChanges();
+		it('should focus on username field if fields empty', () => {
+			expect(page.focus).toBeFalsy();
+			page.loginButton.nativeElement.click();
+			fixture.detectChanges();
 
-		expect(authService.sendResetPasswordEmail).toHaveBeenCalledWith('email@email.com');
-		expect(page.infoText).toBeDefined();
-	});
+			expect(page.focus.nativeElement).toBe(page.usernameInput);
+		});
 
-	it('should show error response if request fails', () => {
-		authService.sendResetPasswordEmail.mockReturnValue(
-			throwError(() => {
-				return {
-					status: 400,
-				};
-			}),
-		);
+		it('should redirect to events page after login', async () => {
+			authService.login.mockReturnValue(of({} as User));
+			authService.getCurrentUser.mockReturnValue(of({} as User));
 
-		page.forgotPasswordButton.click();
-		fixture.detectChanges();
+			page.usernameInput.value = 'username';
+			page.passwordInput.value = 'password';
+			page.usernameInput.dispatchEvent(new Event('input'));
+			page.passwordInput.dispatchEvent(new Event('input'));
 
-		expect(page.errorText).toBeFalsy();
+			page.loginButton.nativeElement.click();
+			await fixture.whenStable();
 
-		page.emailInput.value = 'email@email.com';
-		page.emailInput.dispatchEvent(new Event('input'));
+			expect(TestBed.inject(Router).url).toEqual('/events');
+		});
 
-		page.passwordButton.click();
-		fixture.detectChanges();
+		it('should redirect to stored redirect url after login', async () => {
+			authService.login.mockReturnValue(of({} as User));
+			Object.defineProperty(authService, 'redirectUrl', {
+				get: () => '/account',
+				set: vi.fn(),
+			});
 
-		expect(page.errorText).toBeDefined();
-		expect(page.errorText.nativeElement.textContent).toContain('Server not configured for sending email');
+			page.usernameInput.value = 'username';
+			page.passwordInput.value = 'password';
+			page.usernameInput.dispatchEvent(new Event('input'));
+			page.passwordInput.dispatchEvent(new Event('input'));
 
-		authService.sendResetPasswordEmail.mockReturnValue(
-			throwError(() => {
-				return {
-					status: 500,
-				};
-			}),
-		);
+			page.loginButton.nativeElement.click();
+			await fixture.whenStable();
 
-		page.emailInput.value = 'email@email.com';
-		page.emailInput.dispatchEvent(new Event('input'));
+			expect(TestBed.inject(Router).url).toEqual('/account');
+		});
 
-		page.passwordButton.click();
-		fixture.detectChanges();
+		it('should toggle forgot password view', () => {
+			expect(page.loginForm).toBeDefined();
+			expect(page.resetForm).toBeFalsy();
+			expect(page.forgotPasswordButton.textContent).toBe('Forgot password?');
 
-		expect(page.errorText).toBeDefined();
-		expect(page.errorText.nativeElement.textContent.trim()).toBe('Something went wrong while sending email :(');
-	});
+			page.forgotPasswordButton.click();
+			fixture.detectChanges();
 
-	it('should reset error text when toggling forgot password view', () => {
-		authService.sendResetPasswordEmail.mockReturnValue(
-			throwError(() => {
-				return {
-					status: 400,
-				};
-			}),
-		);
+			expect(page.resetForm).toBeDefined();
+			expect(page.loginForm).toBeFalsy();
+			expect(page.forgotPasswordButton.textContent).toBe('Back');
 
-		page.forgotPasswordButton.click();
-		fixture.detectChanges();
+			page.forgotPasswordButton.click();
+			fixture.detectChanges();
 
-		expect(page.errorText).toBeFalsy();
+			expect(page.loginForm).toBeDefined();
+			expect(page.resetForm).toBeFalsy();
+		});
 
-		page.emailInput.value = 'email@email.com';
-		page.emailInput.dispatchEvent(new Event('input'));
+		it('should request password reset', () => {
+			authService.sendResetPasswordEmail.mockReturnValue(of(undefined));
+			page.forgotPasswordButton.click();
+			fixture.detectChanges();
 
-		page.passwordButton.click();
-		fixture.detectChanges();
+			expect(page.infoText).toBeFalsy();
 
-		expect(page.errorText).toBeDefined();
+			page.emailInput.value = 'email@email.com';
+			page.emailInput.dispatchEvent(new Event('input'));
 
-		page.forgotPasswordButton.click();
-		fixture.detectChanges();
+			page.passwordButton.click();
+			fixture.detectChanges();
 
-		expect(page.errorText).toBeFalsy();
+			expect(authService.sendResetPasswordEmail).toHaveBeenCalledWith('email@email.com');
+			expect(page.infoText).toBeDefined();
+		});
+
+		it('should show error response if request fails', () => {
+			authService.sendResetPasswordEmail.mockReturnValue(
+				throwError(() => {
+					return {
+						status: 400,
+					};
+				}),
+			);
+
+			page.forgotPasswordButton.click();
+			fixture.detectChanges();
+
+			expect(page.errorText).toBeFalsy();
+
+			page.emailInput.value = 'email@email.com';
+			page.emailInput.dispatchEvent(new Event('input'));
+
+			page.passwordButton.click();
+			fixture.detectChanges();
+
+			expect(page.errorText).toBeDefined();
+			expect(page.errorText.nativeElement.textContent).toContain('Server not configured for sending email');
+
+			authService.sendResetPasswordEmail.mockReturnValue(
+				throwError(() => {
+					return {
+						status: 500,
+					};
+				}),
+			);
+
+			page.emailInput.value = 'email@email.com';
+			page.emailInput.dispatchEvent(new Event('input'));
+
+			page.passwordButton.click();
+			fixture.detectChanges();
+
+			expect(page.errorText).toBeDefined();
+			expect(page.errorText.nativeElement.textContent.trim()).toBe('Something went wrong while sending email :(');
+		});
+
+		it('should reset error text when toggling forgot password view', () => {
+			authService.sendResetPasswordEmail.mockReturnValue(
+				throwError(() => {
+					return {
+						status: 400,
+					};
+				}),
+			);
+
+			page.forgotPasswordButton.click();
+			fixture.detectChanges();
+
+			expect(page.errorText).toBeFalsy();
+
+			page.emailInput.value = 'email@email.com';
+			page.emailInput.dispatchEvent(new Event('input'));
+
+			page.passwordButton.click();
+			fixture.detectChanges();
+
+			expect(page.errorText).toBeDefined();
+
+			page.forgotPasswordButton.click();
+			fixture.detectChanges();
+
+			expect(page.errorText).toBeFalsy();
+		});
 	});
 
 	describe('on mobile', () => {
-		beforeEach(() => {
+		beforeEach(async () => {
+			authService = { login: vi.fn(), logout: vi.fn(), sendResetPasswordEmail: vi.fn(), getCurrentUser: vi.fn(), redirectUrl: null };
+			messageService = { showSuccess: vi.fn(), showError: vi.fn() };
+			breakpointService = { isMobile: vi.fn() };
+
+			TestBed.configureTestingModule({
+				imports: [
+					LoginComponent,
+					MatFormFieldModule,
+					MatInputModule,
+					MatProgressSpinnerModule,
+					MatButtonModule,
+					MatToolbarModule,
+					MatCardModule,
+					MatIconModule,
+				],
+				providers: [
+					{ provide: AuthService, useValue: authService },
+					{ provide: MessageService, useValue: messageService },
+					{ provide: BreakpointService, useValue: breakpointService },
+					{ provide: LogService, useValue: { log: vi.fn(), error: vi.fn() } },
+					provideRouter([
+						{ path: 'login', loadComponent: () => import('./login.component').then((m) => m.LoginComponent) },
+						{ path: 'events', component: MockEventsComponent },
+						{ path: 'account', component: MockAccountComponent },
+					]),
+				],
+			}).compileComponents();
+
+			fixture = TestBed.createComponent(LoginComponent);
+			component = fixture.componentInstance;
+			page = new PageObject(fixture);
+
 			breakpointService.isMobile.mockReturnValue(of(true));
 			fixture.detectChanges();
 		});
