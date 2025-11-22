@@ -1,4 +1,4 @@
-import { Component, provideZonelessChangeDetection } from '@angular/core';
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn, provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -39,7 +39,6 @@ describe('loggedInGuard', () => {
 					{ path: 'events', component: MockEventComponent },
 					{ path: 'login', canActivate: [executeGuard], component: MockLoginComponent },
 				]),
-				provideZonelessChangeDetection(),
 			],
 		});
 

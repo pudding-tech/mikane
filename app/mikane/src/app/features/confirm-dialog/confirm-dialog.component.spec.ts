@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -21,7 +20,6 @@ describe('ConfirmDialogComponent', () => {
 					provide: MAT_DIALOG_DATA,
 					useValue: { title: 'Test Title', content: 'Test Content', confirm: 'Test Confirm' },
 				},
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 	});

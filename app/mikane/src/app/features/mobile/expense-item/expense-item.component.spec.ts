@@ -1,6 +1,6 @@
 import { registerLocaleData } from '@angular/common';
 import localeNo from '@angular/common/locales/no';
-import { Pipe, PipeTransform, provideZonelessChangeDetection } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
@@ -36,7 +36,6 @@ describe('ExpenseItemComponent', () => {
 			providers: [
 				{ provide: Router, useValue: routerSpy },
 				{ provide: ActivatedRoute, useValue: routeSpy },
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 	});

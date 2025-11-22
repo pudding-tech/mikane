@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -20,7 +19,6 @@ describe('MessageService', () => {
 						openFromComponent: vi.fn(),
 					},
 				},
-				provideZonelessChangeDetection(),
 			],
 		});
 

@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -55,7 +54,6 @@ describe('GuestsComponent', () => {
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				{ provide: BreakpointService, useValue: { isMobile: vi.fn(() => of(false)) } },
 				{ provide: ActivatedRoute, useValue: activatedRouteStub },
-				provideZonelessChangeDetection(),
 			],
 		})
 			.overrideComponent(GuestsComponent, {

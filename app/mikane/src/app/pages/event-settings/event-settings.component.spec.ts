@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -79,7 +78,6 @@ describe('EventSettingsComponent', () => {
 				{ provide: Router, useValue: routerSpy },
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				{ provide: FormValidationService, useValue: {} },
-				provideZonelessChangeDetection(),
 			],
 		})
 			.overrideComponent(EventSettingsComponent, {

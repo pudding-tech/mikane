@@ -1,4 +1,4 @@
-import { inputBinding, provideZonelessChangeDetection } from '@angular/core';
+import { inputBinding } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -11,7 +11,7 @@ describe('SplitButtonItemComponent', () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [SplitButtonItemComponent],
-			providers: [provideZonelessChangeDetection()],
+			providers: [],
 		}).compileComponents();
 	});
 

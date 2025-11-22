@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +27,6 @@ describe('CategoryEditDialogComponent', () => {
 			providers: [
 				{ provide: MAT_DIALOG_DATA, useValue: data },
 				{ provide: MatDialogRef, useValue: matDialogRefSpy },
-				provideZonelessChangeDetection(),
 			],
 			imports: [
 				CategoryEditDialogComponent,

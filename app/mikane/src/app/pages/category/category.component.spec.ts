@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -84,7 +83,6 @@ describe('CategoryComponent', () => {
 				{ provide: ContextService, useValue: contextServiceSpy },
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				{ provide: FormValidationService, useValue: formValidationServiceSpy },
-				provideZonelessChangeDetection(),
 			],
 		})
 			.overrideComponent(CategoryComponent, {

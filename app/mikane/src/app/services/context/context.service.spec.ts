@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
@@ -19,7 +18,7 @@ describe('ContextService', () => {
 		} as Environment;
 
 		TestBed.configureTestingModule({
-			providers: [ContextService, { provide: ENV, useValue: env }, provideZonelessChangeDetection()],
+			providers: [ContextService, { provide: ENV, useValue: env }],
 		});
 	});
 

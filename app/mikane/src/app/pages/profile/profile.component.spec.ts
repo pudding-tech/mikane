@@ -1,6 +1,5 @@
 import { registerLocaleData } from '@angular/common';
 import localeNo from '@angular/common/locales/no';
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -110,7 +109,6 @@ describe('ProfileComponent', () => {
 				{ provide: Router, useValue: routerSpy },
 				{ provide: ActivatedRoute, useValue: activatedRouteSpy },
 				{ provide: Title, useValue: titleSpy },
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 	});

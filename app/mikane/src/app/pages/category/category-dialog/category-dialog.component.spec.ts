@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
@@ -30,7 +29,6 @@ describe('CategoryDialogComponent', () => {
 				{ provide: MatDialogRef, useValue: matDialogRefSpy },
 				{ provide: MAT_DIALOG_DATA, useValue: data },
 				{ provide: FormValidationService, useValue: formValidationServiceSpy },
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 

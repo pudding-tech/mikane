@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -52,7 +51,6 @@ describe('UserSettingsComponent', () => {
 				{ provide: BreakpointService, useValue: breakpointServiceSpy },
 				{ provide: MatDialog, useValue: matDialogSpy },
 				{ provide: LogService, useValue: { error: vi.fn() } },
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 

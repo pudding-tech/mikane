@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -16,7 +15,6 @@ describe('ErrorMessageComponent', () => {
 					provide: MAT_SNACK_BAR_DATA,
 					useValue: '',
 				},
-				provideZonelessChangeDetection(),
 			],
 		});
 

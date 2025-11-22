@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ScrollService } from './scroll.service';
@@ -8,7 +7,7 @@ describe('ScrollService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			providers: [ScrollService, provideZonelessChangeDetection()],
+			providers: [ScrollService],
 		});
 
 		service = TestBed.inject(ScrollService);

@@ -1,6 +1,5 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -33,7 +32,6 @@ describe('ExpendituresComponent', () => {
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 

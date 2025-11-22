@@ -1,4 +1,4 @@
-import { Component, provideZonelessChangeDetection } from '@angular/core';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroupDirective } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -39,7 +39,6 @@ describe('InviteComponent', () => {
 				{ provide: LogService, useValue: logServiceSpy },
 				{ provide: ActivatedRoute, useValue: activatedRouteSpy },
 				{ provide: BreakpointService, useValue: { isMobile: () => false } },
-				provideZonelessChangeDetection(),
 			],
 		})
 			.overrideComponent(InviteComponent, {

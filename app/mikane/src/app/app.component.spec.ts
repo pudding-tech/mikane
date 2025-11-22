@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatIconRegistry } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
@@ -31,7 +30,6 @@ describe('AppComponent', () => {
 						version: '1.0.0',
 					} as Environment,
 				},
-				provideZonelessChangeDetection(),
 			],
 			imports: [RouterModule, FooterComponent, AppComponent],
 		}).compileComponents();

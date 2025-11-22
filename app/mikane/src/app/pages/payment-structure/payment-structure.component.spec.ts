@@ -1,6 +1,5 @@
 import { registerLocaleData } from '@angular/common';
 import no from '@angular/common/locales/no';
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Params } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -64,7 +63,6 @@ describe('PaymentStructureComponent', () => {
 						error: vi.fn(),
 					},
 				},
-				provideZonelessChangeDetection(),
 			],
 		});
 	});

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, DebugElement, provideZonelessChangeDetection } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -79,7 +79,6 @@ describe('AccountComponent', () => {
 				{ provide: ENV, useValue: env },
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 

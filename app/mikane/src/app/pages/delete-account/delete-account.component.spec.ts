@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -46,7 +45,6 @@ describe('DeleteAccountComponent', () => {
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				{ provide: BreakpointService, useValue: { isMobile: () => false } },
 				{ provide: ActivatedRoute, useValue: activatedRouteSpy },
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 

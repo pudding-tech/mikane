@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
@@ -66,7 +65,6 @@ describe('RegisterUserComponent', () => {
 				{ provide: BreakpointService, useValue: { isMobile: vi.fn(() => of(false)) } },
 				{ provide: ActivatedRoute, useValue: activatedRouteSpy },
 				{ provide: FormValidationService, useValue: {} },
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 

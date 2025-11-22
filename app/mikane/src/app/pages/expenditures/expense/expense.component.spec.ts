@@ -1,6 +1,5 @@
 import { registerLocaleData } from '@angular/common';
 import localeNo from '@angular/common/locales/no';
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -92,7 +91,6 @@ describe('ExpenseComponent', () => {
 				{ provide: ActivatedRoute, useValue: routeSpy },
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				{ provide: BreakpointService, useValue: { isMobile: vi.fn(() => of(false)) } },
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 	});

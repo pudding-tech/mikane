@@ -1,4 +1,4 @@
-import { Component, Directive, provideZonelessChangeDetection } from '@angular/core';
+import { Component, Directive } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -47,7 +47,6 @@ describe('MenuComponent', () => {
 				{ provide: Router, useValue: routerSpy },
 				{ provide: BreakpointService, useValue: { isMobile: () => false } },
 				{ provide: LogService, useValue: { info: vi.fn(), error: vi.fn() } },
-				provideZonelessChangeDetection(),
 			],
 		})
 			.overrideComponent(MenuComponent, {

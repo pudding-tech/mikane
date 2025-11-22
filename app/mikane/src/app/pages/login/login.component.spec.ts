@@ -1,4 +1,4 @@
-import { Component, provideZonelessChangeDetection } from '@angular/core';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -67,7 +67,6 @@ describe('Login Component', () => {
 						{ path: 'events', component: MockEventsComponent },
 						{ path: 'account', component: MockAccountComponent },
 					]),
-					provideZonelessChangeDetection(),
 				],
 			}).compileComponents();
 

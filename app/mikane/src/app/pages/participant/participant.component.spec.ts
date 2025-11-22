@@ -1,6 +1,5 @@
 import { registerLocaleData } from '@angular/common';
 import localeNo from '@angular/common/locales/no';
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -85,7 +84,6 @@ describe('ParticipantComponent', () => {
 				{ provide: ContextService, useValue: contextServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
 				{ provide: LogService, useValue: { error: vi.fn() } },
-				provideZonelessChangeDetection(),
 			],
 		})
 			.overrideComponent(ParticipantComponent, {

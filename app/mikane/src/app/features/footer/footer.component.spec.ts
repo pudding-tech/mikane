@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -27,7 +26,6 @@ describe('FooterComponent', () => {
 						url: '/events',
 					},
 				},
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 	});

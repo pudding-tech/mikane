@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -37,7 +36,6 @@ describe('PreferencesComponent', () => {
 				{ provide: UserService, useValue: userServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
 				{ provide: LogService, useValue: { error: vi.fn() } },
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 	});

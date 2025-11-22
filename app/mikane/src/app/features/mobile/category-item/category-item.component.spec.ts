@@ -1,4 +1,4 @@
-import { ElementRef, inputBinding, provideZonelessChangeDetection } from '@angular/core';
+import { ElementRef, inputBinding } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -17,7 +17,6 @@ describe('CategoryItemComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [CategoryItemComponent],
-			providers: [provideZonelessChangeDetection()],
 		}).compileComponents();
 	});
 

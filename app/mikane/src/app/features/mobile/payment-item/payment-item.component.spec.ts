@@ -1,6 +1,6 @@
 import { CommonModule, CurrencyPipe, registerLocaleData } from '@angular/common';
 import localeNo from '@angular/common/locales/no';
-import { ElementRef, provideZonelessChangeDetection } from '@angular/core';
+import { ElementRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,7 +36,7 @@ describe('PaymentItemComponent', () => {
 				FormControlPipe,
 				ReactiveFormsModule,
 			],
-			providers: [CurrencyPipe, provideZonelessChangeDetection()],
+			providers: [CurrencyPipe],
 		}).compileComponents();
 	});
 

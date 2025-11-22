@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -43,7 +42,6 @@ describe('ChangePasswordComponent', () => {
 				{ provide: Router, useValue: routerSpy },
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				BreakpointService,
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 

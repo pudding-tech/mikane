@@ -1,4 +1,4 @@
-import { inputBinding, provideZonelessChangeDetection, signal, twoWayBinding } from '@angular/core';
+import { inputBinding, signal, twoWayBinding } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -18,7 +18,6 @@ describe('MobileEventNavbarComponent', () => {
 			providers: [
 				{ provide: ContextService, useValue: { isIosPwaStandalone: () => false } },
 				{ provide: ActivatedRoute, useValue: { snapshot: { params: {} }, params: of({}) } },
-				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 	});

@@ -1,6 +1,5 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
@@ -23,7 +22,6 @@ describe('UserService', () => {
 				{ provide: ENV, useValue: env },
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
-				provideZonelessChangeDetection(),
 			],
 		});
 
