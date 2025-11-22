@@ -25,7 +25,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
 	providers: [
-		provideZoneChangeDetection(),importProvidersFrom(
+		provideZoneChangeDetection(), importProvidersFrom(
 			BrowserModule,
 			AppRoutingModule,
 			ServiceWorkerModule.register('ngsw-worker.js', {
