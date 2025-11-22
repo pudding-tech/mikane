@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -55,6 +56,7 @@ describe('ResetPasswordComponent', () => {
 						},
 					},
 				},
+				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 	});

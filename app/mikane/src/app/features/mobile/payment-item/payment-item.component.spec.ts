@@ -1,6 +1,6 @@
 import { CommonModule, CurrencyPipe, registerLocaleData } from '@angular/common';
 import localeNo from '@angular/common/locales/no';
-import { ElementRef } from '@angular/core';
+import { ElementRef, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,9 +9,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { User } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PaymentItemComponent } from './payment-item.component';
 
 describe('PaymentItemComponent', () => {
@@ -36,7 +36,7 @@ describe('PaymentItemComponent', () => {
 				FormControlPipe,
 				ReactiveFormsModule,
 			],
-			providers: [CurrencyPipe],
+			providers: [CurrencyPipe, provideZonelessChangeDetection()],
 		}).compileComponents();
 	});
 
@@ -114,7 +114,7 @@ describe('PaymentItemComponent', () => {
 		fixture.componentRef.setInput('self', true);
 		fixture.componentRef.setInput('expanded', true);
 		fixture.detectChanges();
-		
+
 		vi.advanceTimersByTime(100);
 		vi.runAllTicks();
 

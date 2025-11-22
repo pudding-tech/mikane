@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormControl, ValidationErrors } from '@angular/forms';
 import { of, throwError } from 'rxjs';
@@ -19,6 +20,7 @@ describe('asyncEmailValidator', () => {
 						validateEmail: vi.fn(),
 					},
 				},
+				provideZonelessChangeDetection(),
 			],
 		});
 

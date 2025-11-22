@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,8 +12,8 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
-import { ChangePasswordComponent } from './change-password.component';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ChangePasswordComponent } from './change-password.component';
 
 describe('ChangePasswordComponent', () => {
 	let component: ChangePasswordComponent;
@@ -42,6 +43,7 @@ describe('ChangePasswordComponent', () => {
 				{ provide: Router, useValue: routerSpy },
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				BreakpointService,
+				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 

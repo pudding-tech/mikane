@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormControl, ValidationErrors } from '@angular/forms';
 import { Observable, of, throwError } from 'rxjs';
@@ -18,6 +19,7 @@ describe('eventNameValidator', () => {
 						validateEventName: vi.fn(),
 					},
 				},
+				provideZonelessChangeDetection(),
 			],
 		});
 

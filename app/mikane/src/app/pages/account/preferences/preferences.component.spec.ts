@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -6,10 +7,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { of, throwError } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PreferencesComponent } from './preferences.component';
 
 describe('PreferencesComponent', () => {
@@ -36,6 +37,7 @@ describe('PreferencesComponent', () => {
 				{ provide: UserService, useValue: userServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
 				{ provide: LogService, useValue: { error: vi.fn() } },
+				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 	});
@@ -63,11 +65,11 @@ describe('PreferencesComponent', () => {
 	it('should toggle email setting', async () => {
 		userServiceSpy.editUserPreferences.mockReturnValue(of(component.user));
 		const emailToggleButton = fixture.nativeElement.querySelector('#emailToggle-button');
-	
+
 		expect(emailToggleButton).toBeTruthy();
 
 		emailToggleButton.click();
-    fixture.detectChanges();
+		fixture.detectChanges();
 
 		expect(userServiceSpy.editUserPreferences).toHaveBeenCalledWith('1', true, undefined);
 	});
@@ -96,8 +98,8 @@ describe('PreferencesComponent', () => {
 		messageServiceSpy.showError.mockClear();
 		const phoneToggleButton = fixture.nativeElement.querySelector('#phoneToggle-button');
 
-    phoneToggleButton.click();
-    fixture.detectChanges();
+		phoneToggleButton.click();
+		fixture.detectChanges();
 
 		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to change user preferences');
 	});

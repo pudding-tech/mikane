@@ -1,15 +1,15 @@
-import { Directive, QueryList } from '@angular/core';
+import { Directive, provideZonelessChangeDetection, QueryList } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SplitButtonItemDirective } from './split-button-item/split-button-item.directive';
 import { SplitButtonComponent } from './split-button.component';
 
 @Directive({
-  selector: '[appSplitButtonItem]',
-  standalone: true,
+	selector: '[appSplitButtonItem]',
+	standalone: true,
 })
 class MockSplitButtonItemDirective {}
 
@@ -27,21 +27,18 @@ describe('SplitButtonComponent', () => {
 						isMobile: () => of(false),
 					},
 				},
+				provideZonelessChangeDetection(),
 			],
 		})
-		.overrideComponent(SplitButtonComponent, {
-			remove: {
-				imports: [
-					SplitButtonItemDirective
-				]
-			},
-			add: {
-				imports: [
-					MockSplitButtonItemDirective
-				]
-			}
-		})
-		.compileComponents();
+			.overrideComponent(SplitButtonComponent, {
+				remove: {
+					imports: [SplitButtonItemDirective],
+				},
+				add: {
+					imports: [MockSplitButtonItemDirective],
+				},
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

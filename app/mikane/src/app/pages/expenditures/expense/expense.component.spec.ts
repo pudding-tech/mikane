@@ -1,8 +1,9 @@
 import { registerLocaleData } from '@angular/common';
 import localeNo from '@angular/common/locales/no';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { of, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { CategoryService } from 'src/app/services/category/category.service';
@@ -10,17 +11,29 @@ import { EventService } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExpenseComponent } from './expense.component';
-import { vi, describe, it, beforeEach, expect } from 'vitest';
 
 describe('ExpenseComponent', () => {
 	let eventServiceSpy: { getEvent: ReturnType<typeof vi.fn> };
-	let expenseServiceSpy: { getExpense: ReturnType<typeof vi.fn>, editExpense: ReturnType<typeof vi.fn>, deleteExpense: ReturnType<typeof vi.fn> };
+	let expenseServiceSpy: {
+		getExpense: ReturnType<typeof vi.fn>;
+		editExpense: ReturnType<typeof vi.fn>;
+		deleteExpense: ReturnType<typeof vi.fn>;
+	};
 	let categoryServiceSpy: { findOrCreate: ReturnType<typeof vi.fn> };
 	let authServiceSpy: { getCurrentUser: ReturnType<typeof vi.fn> };
-	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>, showSuccess: ReturnType<typeof vi.fn> };
-	let routerSpy: { navigate: ReturnType<typeof vi.fn>, createUrlTree: ReturnType<typeof vi.fn>, serializeUrl: ReturnType<typeof vi.fn>, getCurrentNavigation: ReturnType<typeof vi.fn> };
-	let routeSpy: { snapshot: { paramMap: { get: ReturnType<typeof vi.fn> } }, parent: { parent: { snapshot: { paramMap: { get: ReturnType<typeof vi.fn> } } } } };
+	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>; showSuccess: ReturnType<typeof vi.fn> };
+	let routerSpy: {
+		navigate: ReturnType<typeof vi.fn>;
+		createUrlTree: ReturnType<typeof vi.fn>;
+		serializeUrl: ReturnType<typeof vi.fn>;
+		getCurrentNavigation: ReturnType<typeof vi.fn>;
+	};
+	let routeSpy: {
+		snapshot: { paramMap: { get: ReturnType<typeof vi.fn> } };
+		parent: { parent: { snapshot: { paramMap: { get: ReturnType<typeof vi.fn> } } } };
+	};
 
 	registerLocaleData(localeNo);
 	const eventMock = { id: 'event1', status: { id: 1, name: 'Active' }, userInfo: { isAdmin: true } };
@@ -79,6 +92,7 @@ describe('ExpenseComponent', () => {
 				{ provide: ActivatedRoute, useValue: routeSpy },
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				{ provide: BreakpointService, useValue: { isMobile: vi.fn(() => of(false)) } },
+				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 	});

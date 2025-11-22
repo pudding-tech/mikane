@@ -1,11 +1,11 @@
-import { ElementRef, inputBinding } from '@angular/core';
+import { ElementRef, inputBinding, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Category } from 'src/app/services/category/category.service';
 import { User } from 'src/app/services/user/user.service';
 import { CategoryIcon } from 'src/app/types/enums';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CategoryItemComponent } from './category-item.component';
 
 describe('CategoryItemComponent', () => {
@@ -17,6 +17,7 @@ describe('CategoryItemComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [CategoryItemComponent],
+			providers: [provideZonelessChangeDetection()],
 		}).compileComponents();
 	});
 
@@ -36,9 +37,9 @@ describe('CategoryItemComponent', () => {
 			bindings: [
 				inputBinding('category', () => category),
 				inputBinding('eventActive', () => true),
-				inputBinding('addUserForm', () => ({} as FormGroup)),
-				inputBinding('filterUsers', () => (_categoryId: string) => ([] as User[]))
-			]
+				inputBinding('addUserForm', () => ({}) as FormGroup),
+				inputBinding('filterUsers', () => (_categoryId: string) => [] as User[]),
+			],
 		});
 		component = fixture.componentInstance;
 		fixture.detectChanges();

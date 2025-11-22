@@ -1,13 +1,14 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Observable, of, throwError,  } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Observable, of, throwError } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { RegisterUserComponent } from './register-user.component';
 
 class RUC extends RegisterUserComponent {
@@ -21,9 +22,9 @@ describe('RegisterUserComponent', () => {
 	const alwaysValidAsyncValidator = () => of(null);
 
 	let userServiceSpy: { registerUser: ReturnType<typeof vi.fn> };
-	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>, showSuccess: ReturnType<typeof vi.fn> };
+	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>; showSuccess: ReturnType<typeof vi.fn> };
 	let routerSpy: { navigate: ReturnType<typeof vi.fn> };
-	let activatedRouteSpy: { data: Observable<{ res: { key: string, user: typeof mockUser } }> };
+	let activatedRouteSpy: { data: Observable<{ res: { key: string; user: typeof mockUser } }> };
 
 	const mockUser = {
 		id: 'u1',
@@ -65,6 +66,7 @@ describe('RegisterUserComponent', () => {
 				{ provide: BreakpointService, useValue: { isMobile: vi.fn(() => of(false)) } },
 				{ provide: ActivatedRoute, useValue: activatedRouteSpy },
 				{ provide: FormValidationService, useValue: {} },
+				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 
@@ -96,7 +98,15 @@ describe('RegisterUserComponent', () => {
 		fillForm();
 		component.register();
 
-		expect(userServiceSpy.registerUser).toHaveBeenCalledWith("testuser", "Test", "User", "test@example.com", { number: "12345678" }, "abc123", "abc123");
+		expect(userServiceSpy.registerUser).toHaveBeenCalledWith(
+			'testuser',
+			'Test',
+			'User',
+			'test@example.com',
+			{ number: '12345678' },
+			'abc123',
+			'abc123',
+		);
 		expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Registered successfully. You can now log in');
 		expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
 	});

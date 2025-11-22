@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormControl, ValidationErrors } from '@angular/forms';
 import { of, throwError } from 'rxjs';
@@ -21,6 +22,7 @@ describe('categoryNameValidator', () => {
 						validateCategoryName: vi.fn(),
 					},
 				},
+				provideZonelessChangeDetection(),
 			],
 		});
 

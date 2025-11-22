@@ -1,8 +1,9 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BehaviorSubject, of, throwError } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
@@ -11,8 +12,8 @@ import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EventSettingsComponent } from './event-settings.component';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 
 function createComponent(eventData?: Partial<PuddingEvent>) {
 	const $event = new BehaviorSubject<PuddingEvent>({
@@ -35,13 +36,18 @@ function createComponent(eventData?: Partial<PuddingEvent>) {
 }
 
 describe('EventSettingsComponent', () => {
-	let eventServiceSpy: { editEvent: ReturnType<typeof vi.fn>, deleteEvent: ReturnType<typeof vi.fn>, setUserAsAdmin: ReturnType<typeof vi.fn>, removeUserAsAdmin: ReturnType<typeof vi.fn> };
+	let eventServiceSpy: {
+		editEvent: ReturnType<typeof vi.fn>;
+		deleteEvent: ReturnType<typeof vi.fn>;
+		setUserAsAdmin: ReturnType<typeof vi.fn>;
+		removeUserAsAdmin: ReturnType<typeof vi.fn>;
+	};
 	let userServiceSpy: { loadUsersByEvent: ReturnType<typeof vi.fn> };
 	let authServiceSpy: { getCurrentUser: ReturnType<typeof vi.fn> };
 	let contextServiceSpy: { isMobileDevice: () => boolean };
-	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>, showSuccess: ReturnType<typeof vi.fn> };
+	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>; showSuccess: ReturnType<typeof vi.fn> };
 	let dialogSpy: { open: ReturnType<typeof vi.fn> };
-	let routerSpy: { navigate: ReturnType<typeof vi.fn>, navigateByUrl: ReturnType<typeof vi.fn> };
+	let routerSpy: { navigate: ReturnType<typeof vi.fn>; navigateByUrl: ReturnType<typeof vi.fn> };
 
 	beforeEach(() => {
 		eventServiceSpy = {
@@ -58,7 +64,7 @@ describe('EventSettingsComponent', () => {
 		dialogSpy = { open: vi.fn() };
 		routerSpy = {
 			navigate: vi.fn(),
-			navigateByUrl: vi.fn().mockResolvedValue(undefined)
+			navigateByUrl: vi.fn().mockResolvedValue(undefined),
 		};
 
 		TestBed.configureTestingModule({
@@ -73,14 +79,15 @@ describe('EventSettingsComponent', () => {
 				{ provide: Router, useValue: routerSpy },
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				{ provide: FormValidationService, useValue: {} },
+				provideZonelessChangeDetection(),
 			],
 		})
-		.overrideComponent(EventSettingsComponent, {
-			remove: {
-				imports: [MatDialogModule],
-			},
-		})
-		.compileComponents();
+			.overrideComponent(EventSettingsComponent, {
+				remove: {
+					imports: [MatDialogModule],
+				},
+			})
+			.compileComponents();
 
 		vi.clearAllMocks();
 	});
@@ -124,7 +131,7 @@ describe('EventSettingsComponent', () => {
 		});
 
 		it('should show error message if loading users fails', () => {
-			userServiceSpy.loadUsersByEvent.mockReturnValue(throwError(() => ({ error: { message: 'error' } } as ApiError)));
+			userServiceSpy.loadUsersByEvent.mockReturnValue(throwError(() => ({ error: { message: 'error' } }) as ApiError));
 			const { component } = createComponent();
 			component.ngOnInit();
 
@@ -132,17 +139,17 @@ describe('EventSettingsComponent', () => {
 		});
 
 		it('should show error message if loading current user fails', () => {
-			authServiceSpy.getCurrentUser.mockReturnValue(throwError(() => ({ error: { message: 'error' } } as ApiError)));
+			authServiceSpy.getCurrentUser.mockReturnValue(throwError(() => ({ error: { message: 'error' } }) as ApiError));
 			const { component } = createComponent();
 			component.ngOnInit();
-	
+
 			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error loading event settings');
 		});
 	});
 
 	describe('editEvent', () => {
 		it('should show error message if editing event fails', () => {
-			eventServiceSpy.editEvent.mockReturnValue(throwError(() => ({ error: { message: 'error' } } as ApiError)));
+			eventServiceSpy.editEvent.mockReturnValue(throwError(() => ({ error: { message: 'error' } }) as ApiError));
 			const { component } = createComponent();
 			component.editEvent();
 
@@ -192,7 +199,7 @@ describe('EventSettingsComponent', () => {
 		});
 
 		it('should show error message if setting event as ready to settle fails', () => {
-			eventServiceSpy.editEvent.mockReturnValue(throwError(() => ({ error: { message: 'error' } } as ApiError)));
+			eventServiceSpy.editEvent.mockReturnValue(throwError(() => ({ error: { message: 'error' } }) as ApiError));
 			const { component } = createComponent();
 			component.setStatus(EventStatusType.READY_TO_SETTLE);
 
@@ -200,7 +207,7 @@ describe('EventSettingsComponent', () => {
 		});
 
 		it('should show error message if settling event fails', () => {
-			eventServiceSpy.editEvent.mockReturnValue(throwError(() => ({ error: { message: 'error' } } as ApiError)));
+			eventServiceSpy.editEvent.mockReturnValue(throwError(() => ({ error: { message: 'error' } }) as ApiError));
 			const { component } = createComponent();
 			component.setStatus(EventStatusType.SETTLED);
 
@@ -230,7 +237,7 @@ describe('EventSettingsComponent', () => {
 		});
 
 		it('should show error message if deleting event fails', async () => {
-			eventServiceSpy.deleteEvent.mockReturnValue(throwError(() => ({ error: { message: 'error' } } as ApiError)));
+			eventServiceSpy.deleteEvent.mockReturnValue(throwError(() => ({ error: { message: 'error' } }) as ApiError));
 			dialogSpy.open.mockReturnValue({ afterClosed: () => of(true) } as MatDialogRef<boolean>);
 			const { component } = createComponent();
 			await component.deleteEvent();
@@ -253,10 +260,12 @@ describe('EventSettingsComponent', () => {
 	describe('addAdmin', () => {
 		it('should add admin', async () => {
 			eventServiceSpy.setUserAsAdmin.mockReturnValue(of({ id: '1', status: {}, adminIds: ['1', '2'] }));
-			userServiceSpy.loadUsersByEvent.mockReturnValue(of([
+			userServiceSpy.loadUsersByEvent.mockReturnValue(
+				of([
 					{ id: '1', eventInfo: { isAdmin: true }, avatarURL: 'url1' },
 					{ id: '2', eventInfo: { isAdmin: false }, avatarURL: 'url2' },
-			] as User[]));
+				] as User[]),
+			);
 
 			const { component } = createComponent({ adminIds: ['1'] });
 
@@ -279,7 +288,7 @@ describe('EventSettingsComponent', () => {
 		});
 
 		it('should show error message if adding admin fails', async () => {
-			eventServiceSpy.setUserAsAdmin.mockReturnValue(throwError(() => ({ error: { message: 'error' } } as ApiError)));
+			eventServiceSpy.setUserAsAdmin.mockReturnValue(throwError(() => ({ error: { message: 'error' } }) as ApiError));
 			const { component } = createComponent({ adminIds: ['1'] });
 			component.addAdminForm.controls['userId'].setValue('1');
 			await component.addAdmin();
@@ -291,16 +300,20 @@ describe('EventSettingsComponent', () => {
 	describe('removeAdmin', () => {
 		it('should remove admin', async () => {
 			eventServiceSpy.removeUserAsAdmin.mockReturnValue(of({ id: '1', status: {}, adminIds: ['1'] }));
-			userServiceSpy.loadUsersByEvent.mockReturnValue(of([
+			userServiceSpy.loadUsersByEvent.mockReturnValue(
+				of([
 					{ id: '1', eventInfo: { isAdmin: true }, avatarURL: 'url1' },
 					{ id: '2', eventInfo: { isAdmin: true }, avatarURL: 'url2' },
-			] as User[]));
+				] as User[]),
+			);
 			const { component } = createComponent({ adminIds: ['1', '2'] });
 
-			expect(component.event).toEqual(expect.objectContaining({
-				id: '1',
-				adminIds: ['1', '2'],
-			}));
+			expect(component.event).toEqual(
+				expect.objectContaining({
+					id: '1',
+					adminIds: ['1', '2'],
+				}),
+			);
 
 			expect(component.adminsInEvent).toEqual([
 				{ id: '1', eventInfo: { isAdmin: true }, avatarURL: 'url1' },
@@ -311,7 +324,7 @@ describe('EventSettingsComponent', () => {
 
 			await component.removeAdmin('2');
 
-			expect(component.event).toEqual({	id: '1', status: {}, adminIds: ['1'] });
+			expect(component.event).toEqual({ id: '1', status: {}, adminIds: ['1'] });
 			expect(component.adminsInEvent).toEqual([{ id: '1', eventInfo: { isAdmin: true }, avatarURL: 'url1' }]);
 			expect(component.otherUsersInEvent).toEqual([{ id: '2', eventInfo: { isAdmin: true }, avatarURL: 'url2' }]);
 			expect(eventServiceSpy.removeUserAsAdmin).toHaveBeenCalledWith('1', '2');
@@ -338,7 +351,7 @@ describe('EventSettingsComponent', () => {
 		});
 
 		it('should show error message if removing admin fails', async () => {
-			eventServiceSpy.removeUserAsAdmin.mockReturnValue(throwError(() => ({ error: { message: 'error' } } as ApiError)));
+			eventServiceSpy.removeUserAsAdmin.mockReturnValue(throwError(() => ({ error: { message: 'error' } }) as ApiError));
 			const { component } = createComponent({ adminIds: ['1', '2'] });
 			await component.removeAdmin('2');
 

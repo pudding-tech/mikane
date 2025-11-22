@@ -1,7 +1,7 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, provideZonelessChangeDetection, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { SplitButtonItemDirective } from './split-button-item.directive';
-import { describe, it, beforeEach, expect } from 'vitest';
 
 @Component({
 	template: `<ng-template appSplitButtonItem>Test Item</ng-template>`,
@@ -18,6 +18,7 @@ describe('SplitButtonItemDirective', () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [TestHostComponent],
+			providers: [provideZonelessChangeDetection()],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(TestHostComponent);

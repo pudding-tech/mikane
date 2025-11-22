@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { CategoryInfo } from 'src/app/pages/expenditures/expense-bottom-sheet/expense-bottom-sheet.component';
@@ -29,7 +30,7 @@ function createComponent(data: {
 }) {
 	TestBed.configureTestingModule({
 		imports: [ExpenseBottomSheetComponent],
-		providers: [{ provide: MAT_BOTTOM_SHEET_DATA, useValue: data }],
+		providers: [{ provide: MAT_BOTTOM_SHEET_DATA, useValue: data }, provideZonelessChangeDetection()],
 	}).compileComponents();
 
 	const fixture = TestBed.createComponent(ExpenseBottomSheetComponent);

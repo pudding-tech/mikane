@@ -1,12 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AsyncPipe } from '@angular/common';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { PuddingEvent } from 'src/app/services/event/event.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EventInfoComponent } from './event-info.component';
 
 describe('EventInfoComponent', () => {
@@ -16,13 +17,15 @@ describe('EventInfoComponent', () => {
 	let getCurrentUserSpy: ReturnType<typeof vi.fn>;
 	let showErrorSpy: ReturnType<typeof vi.fn>;
 
-	function createComponent(event$ = of({
-		id: 'test',
-		name: 'test',
-		description: 'test',
-		adminIds: [],
-		status: { id: 1, name: 'Active' }
-	} as PuddingEvent)) {
+	function createComponent(
+		event$ = of({
+			id: 'test',
+			name: 'test',
+			description: 'test',
+			adminIds: [],
+			status: { id: 1, name: 'Active' },
+		} as PuddingEvent),
+	) {
 		fixture = TestBed.createComponent(EventInfoComponent);
 		component = fixture.componentInstance;
 		fixture.componentRef.setInput('$event', event$);
@@ -47,6 +50,7 @@ describe('EventInfoComponent', () => {
 					{ provide: AuthService, useValue: { getCurrentUser: getCurrentUserSpy } },
 					{ provide: MessageService, useValue: { showError: showErrorSpy } },
 					{ provide: LogService, useValue: { error: vi.fn() } },
+					provideZonelessChangeDetection(),
 				],
 			}).compileComponents();
 
@@ -63,7 +67,7 @@ describe('EventInfoComponent', () => {
 				name: 'test',
 				description: 'test',
 				adminIds: [],
-				status: { id: 1, name: 'Active' }
+				status: { id: 1, name: 'Active' },
 			} as PuddingEvent);
 		});
 
@@ -72,7 +76,9 @@ describe('EventInfoComponent', () => {
 		});
 
 		it('should filter users by admin', () => {
-			expect(component.adminsInEvent).toEqual([{ id: 'test', name: 'test', eventInfo: { isAdmin: true }, avatarURL: 'test-avatar.png' }] as User[]);
+			expect(component.adminsInEvent).toEqual([
+				{ id: 'test', name: 'test', eventInfo: { isAdmin: true }, avatarURL: 'test-avatar.png' },
+			] as User[]);
 		});
 	});
 
@@ -102,10 +108,12 @@ describe('EventInfoComponent', () => {
 
 	describe('from auth service', () => {
 		beforeEach(() => {
-			loadUsersByEventSpy = vi.fn().mockReturnValue(of([
-				{ id: 'test', name: 'test', eventInfo: { isAdmin: true }, avatarURL: 'test-avatar.png' },
-				{ id: 'test2', name: 'test2', eventInfo: { isAdmin: false }, avatarURL: 'test2-avatar.png' },
-			] as User[]));
+			loadUsersByEventSpy = vi.fn().mockReturnValue(
+				of([
+					{ id: 'test', name: 'test', eventInfo: { isAdmin: true }, avatarURL: 'test-avatar.png' },
+					{ id: 'test2', name: 'test2', eventInfo: { isAdmin: false }, avatarURL: 'test2-avatar.png' },
+				] as User[]),
+			);
 			getCurrentUserSpy = vi.fn().mockReturnValue(throwError(() => 'test error'));
 			showErrorSpy = vi.fn();
 

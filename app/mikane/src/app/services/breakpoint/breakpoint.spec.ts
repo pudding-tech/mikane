@@ -1,4 +1,5 @@
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { throwError } from 'rxjs/internal/observable/throwError';
@@ -19,6 +20,7 @@ describe('BreakpointService', () => {
 						observe: vi.fn(),
 					},
 				},
+				provideZonelessChangeDetection(),
 			],
 		});
 

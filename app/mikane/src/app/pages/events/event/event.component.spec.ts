@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject, throwError } from 'rxjs';
@@ -52,6 +53,7 @@ describe('EventComponent', () => {
 				{ provide: MessageService, useValue: messageServiceSpy },
 				{ provide: BreakpointService, useValue: { isMobile: () => of(false) } },
 				{ provide: ContextService, useValue: { isIosPwaStandalone: false } },
+				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 

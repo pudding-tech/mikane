@@ -1,11 +1,11 @@
-import { inputBinding, signal, twoWayBinding } from '@angular/core';
+import { inputBinding, provideZonelessChangeDetection, signal, twoWayBinding } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { ContextService } from 'src/app/services/context/context.service';
-import { MobileEventNavbarComponent } from './mobile-event-navbar.component';
 import { of } from 'rxjs';
+import { ContextService } from 'src/app/services/context/context.service';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { MobileEventNavbarComponent } from './mobile-event-navbar.component';
 
 describe('MobileEventNavbarComponent', () => {
 	let component: MobileEventNavbarComponent;
@@ -18,6 +18,7 @@ describe('MobileEventNavbarComponent', () => {
 			providers: [
 				{ provide: ContextService, useValue: { isIosPwaStandalone: () => false } },
 				{ provide: ActivatedRoute, useValue: { snapshot: { params: {} }, params: of({}) } },
+				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 	});
@@ -30,7 +31,7 @@ describe('MobileEventNavbarComponent', () => {
 					{ name: 'Link 1', icon: 'person', location: '/participants' },
 					{ name: 'Link 2', icon: 'payment', location: '/expenses' },
 				]),
-			]
+			],
 		});
 		component = fixture.componentInstance;
 		fixture.detectChanges();

@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot } from '@angular/router';
@@ -27,6 +28,7 @@ describe('Mikane Title Strategy', () => {
 						getEventName: vi.fn(),
 					},
 				},
+				provideZonelessChangeDetection(),
 			],
 		});
 

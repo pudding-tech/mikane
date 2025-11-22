@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -6,8 +7,8 @@ import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { UserService } from 'src/app/services/user/user.service';
-import { DangerZoneComponent } from './danger-zone.component';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { DangerZoneComponent } from './danger-zone.component';
 
 describe('DangerZoneComponent', () => {
 	let component: DangerZoneComponent;
@@ -28,6 +29,7 @@ describe('DangerZoneComponent', () => {
 				{ provide: MatDialog, useValue: dialogSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
 				{ provide: LogService, useValue: { error: vi.fn() } },
+				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 

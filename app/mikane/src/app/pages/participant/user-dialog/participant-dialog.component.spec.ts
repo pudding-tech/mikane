@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -50,6 +51,7 @@ describe('ParticipantDialogComponent', () => {
 					},
 				},
 				{ provide: MAT_DIALOG_DATA, useValue: data },
+				provideZonelessChangeDetection(),
 			],
 		});
 

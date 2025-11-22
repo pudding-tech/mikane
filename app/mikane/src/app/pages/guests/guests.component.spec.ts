@@ -1,20 +1,26 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { vi, describe, it, beforeEach, expect } from 'vitest';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GuestDialogComponent } from './guest-dialog/guest-dialog.component';
 import { GuestsComponent } from './guests.component';
 
 describe('GuestsComponent', () => {
-	let userServiceSpy: { loadGuestUsers: ReturnType<typeof vi.fn>, createGuestUser: ReturnType<typeof vi.fn>, editGuestUser: ReturnType<typeof vi.fn>, deleteGuestUser: ReturnType<typeof vi.fn> };
+	let userServiceSpy: {
+		loadGuestUsers: ReturnType<typeof vi.fn>;
+		createGuestUser: ReturnType<typeof vi.fn>;
+		editGuestUser: ReturnType<typeof vi.fn>;
+		deleteGuestUser: ReturnType<typeof vi.fn>;
+	};
 	let authServiceSpy: { getCurrentUser: ReturnType<typeof vi.fn> };
-	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>, showSuccess: ReturnType<typeof vi.fn> };
+	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>; showSuccess: ReturnType<typeof vi.fn> };
 	let dialogSpy: { open: ReturnType<typeof vi.fn> };
 	let activatedRouteStub: Partial<ActivatedRoute>;
 
@@ -49,14 +55,15 @@ describe('GuestsComponent', () => {
 				{ provide: LogService, useValue: { error: vi.fn() } },
 				{ provide: BreakpointService, useValue: { isMobile: vi.fn(() => of(false)) } },
 				{ provide: ActivatedRoute, useValue: activatedRouteStub },
+				provideZonelessChangeDetection(),
 			],
 		})
-		.overrideComponent(GuestsComponent, {
-			remove: {
-				imports: [MatDialogModule],
-			}
-		})
-		.compileComponents();
+			.overrideComponent(GuestsComponent, {
+				remove: {
+					imports: [MatDialogModule],
+				},
+			})
+			.compileComponents();
 	});
 
 	it('should create', () => {

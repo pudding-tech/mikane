@@ -1,8 +1,9 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 import { CategoryIcon } from 'src/app/types/enums';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CategoryDialogComponent } from './category-dialog.component';
 
 describe('CategoryDialogComponent', () => {
@@ -29,6 +30,7 @@ describe('CategoryDialogComponent', () => {
 				{ provide: MatDialogRef, useValue: matDialogRefSpy },
 				{ provide: MAT_DIALOG_DATA, useValue: data },
 				{ provide: FormValidationService, useValue: formValidationServiceSpy },
+				provideZonelessChangeDetection(),
 			],
 		}).compileComponents();
 
