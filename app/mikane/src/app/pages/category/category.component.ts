@@ -279,8 +279,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
 					if (res) {
 						const index = this.categories().findIndex((category) => category?.id === res?.id);
 						if (index > -1) {
-							this.categories()[index].users = res.users;
-							this.categories.set(this.categories());
+							this.categories.update(categories =>
+								categories.map((category, i) =>
+									i === index ? { ...category, users: res.users } : category
+								)
+							);
 							this.cd.detectChanges();
 						}
 						this.messageService.showSuccess('User removed from category "' + this.categories()[index].name + '"');
