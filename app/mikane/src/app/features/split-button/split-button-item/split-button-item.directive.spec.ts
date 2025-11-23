@@ -18,7 +18,6 @@ describe('SplitButtonItemDirective', () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [TestHostComponent],
-			providers: [],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(TestHostComponent);

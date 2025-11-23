@@ -245,12 +245,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
 						if (res) {
 							const index = this.categories().findIndex((category) => category.id === res.id);
 							if (index > -1) {
-								this.categories.update(categories => {
+								this.categories.update((categories) => {
 									const updated = [...categories];
 									updated[index] = { ...updated[index], users: res.users };
 									return updated;
 								});
-								this.cd.detectChanges();
 							}
 							this.addUserForm.get('participantName')?.setValue('');
 							this.addUserForm.get('participantName')?.markAsUntouched();
@@ -279,12 +278,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
 					if (res) {
 						const index = this.categories().findIndex((category) => category?.id === res?.id);
 						if (index > -1) {
-							this.categories.update(categories =>
-								categories.map((category, i) =>
-									i === index ? { ...category, users: res.users } : category
-								)
+							this.categories.update((categories) =>
+								categories.map((category, i) => (i === index ? { ...category, users: res.users } : category)),
 							);
-							this.cd.detectChanges();
 						}
 						this.messageService.showSuccess('User removed from category "' + this.categories()[index].name + '"');
 					} else {
