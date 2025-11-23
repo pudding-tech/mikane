@@ -245,8 +245,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
 						if (res) {
 							const index = this.categories().findIndex((category) => category.id === res.id);
 							if (index > -1) {
-								this.categories()[index].users = res.users;
-								this.categories.set(this.categories());
+								this.categories.update(categories => {
+									const updated = [...categories];
+									updated[index] = { ...updated[index], users: res.users };
+									return updated;
+								});
 								this.cd.detectChanges();
 							}
 							this.addUserForm.get('participantName')?.setValue('');
