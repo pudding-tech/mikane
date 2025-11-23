@@ -110,7 +110,7 @@ describe('ExpenseComponent', () => {
 		expect(eventServiceSpy.getEvent).toHaveBeenCalledWith('event1');
 		expect(expenseServiceSpy.getExpense).toHaveBeenCalledWith('expense1');
 		expect(component.event).toEqual(eventMock);
-		expect(component.expense).toEqual(expenseMock);
+		expect(component.expense()).toEqual(expenseMock);
 	});
 
 	it('should show error if expense fails to load', () => {
@@ -120,7 +120,7 @@ describe('ExpenseComponent', () => {
 		component.ngOnInit();
 
 		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error loading expense');
-		expect(component.expense).toBeUndefined();
+		expect(component.expense()).toBeNull();
 	});
 
 	it('should show error if user fails to load', () => {

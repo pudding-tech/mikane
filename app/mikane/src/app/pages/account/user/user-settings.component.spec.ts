@@ -56,14 +56,14 @@ describe('UserSettingsComponent', () => {
 
 		fixture = TestBed.createComponent(UserSettingsComponent);
 		component = fixture.componentInstance;
-		component.user = {
+		component.user.set({
 			id: '1',
 			username: 'johndoe',
 			firstName: 'John',
 			lastName: 'Doe',
 			email: 'johndoe@example.com',
 			phone: '1234567890',
-		} as User;
+		} as User);
 		fixture.detectChanges();
 	});
 
@@ -101,7 +101,7 @@ describe('UserSettingsComponent', () => {
 
 	describe('editUser', () => {
 		it('should call the UserService.editUser method with the correct parameters', () => {
-			userServiceSpy.editUser.mockReturnValue(of(component.user));
+			userServiceSpy.editUser.mockReturnValue(of(component.user()));
 
 			component.editUserForm.patchValue({
 				username: 'newusername',
@@ -113,7 +113,7 @@ describe('UserSettingsComponent', () => {
 			component.editUser();
 
 			expect(userServiceSpy.editUser).toHaveBeenCalledWith(
-				component.user.id,
+				component.user().id,
 				'newusername',
 				'New',
 				'Name',
@@ -123,8 +123,8 @@ describe('UserSettingsComponent', () => {
 		});
 
 		it('should show a success message and toggle edit mode on success', () => {
-			component.editMode = true;
-			userServiceSpy.editUser.mockReturnValue(of(component.user));
+			component.editMode.set(true);
+			userServiceSpy.editUser.mockReturnValue(of(component.user()));
 
 			component.editUserForm.patchValue({
 				username: 'newusername',
@@ -136,7 +136,7 @@ describe('UserSettingsComponent', () => {
 			component.editUser();
 
 			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('User edited');
-			expect(component.editMode).toBeFalsy();
+			expect(component.editMode()).toBeFalsy();
 		});
 
 		it('should show an error message on error', () => {
@@ -158,15 +158,15 @@ describe('UserSettingsComponent', () => {
 
 	describe('toggleEditMode', () => {
 		it('should toggle the editMode property', () => {
-			component.editMode = false;
+			component.editMode.set(false);
 			component.toggleEditMode();
 
-			expect(component.editMode).toBeTruthy();
+			expect(component.editMode()).toBeTruthy();
 
-			component.editMode = true;
+			component.editMode.set(true);
 			component.toggleEditMode();
 
-			expect(component.editMode).toBeFalsy();
+			expect(component.editMode()).toBeFalsy();
 		});
 	});
 });

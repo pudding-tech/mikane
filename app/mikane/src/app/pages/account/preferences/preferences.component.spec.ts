@@ -43,11 +43,11 @@ describe('PreferencesComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(PreferencesComponent);
 		component = fixture.componentInstance;
-		component.user = {
+		component.user.set({
 			id: '1',
 			publicEmail: false,
 			publicPhone: true,
-		} as User;
+		} as User);
 		fixture.detectChanges();
 	});
 
@@ -56,12 +56,12 @@ describe('PreferencesComponent', () => {
 	});
 
 	it('should initialize publicEmail and publicPhone from user', () => {
-		expect(component.user.publicEmail).toEqual(false);
-		expect(component.user.publicPhone).toEqual(true);
+		expect(component.user().publicEmail).toEqual(false);
+		expect(component.user().publicPhone).toEqual(true);
 	});
 
 	it('should toggle email setting', async () => {
-		userServiceSpy.editUserPreferences.mockReturnValue(of(component.user));
+		userServiceSpy.editUserPreferences.mockReturnValue(of(component.user()));
 		const emailToggleButton = fixture.nativeElement.querySelector('#emailToggle-button');
 
 		expect(emailToggleButton).toBeTruthy();

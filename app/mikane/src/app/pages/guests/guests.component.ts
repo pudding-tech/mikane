@@ -11,7 +11,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { EMPTY, Subscription, combineLatest, switchMap } from 'rxjs';
+import { BehaviorSubject, EMPTY, Subscription, combineLatest, switchMap } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -52,7 +52,7 @@ export class GuestsComponent implements OnInit, OnDestroy {
 	dialog = inject(MatDialog);
 	private logService = inject(LogService);
 
-	loading = false;
+	loading = new BehaviorSubject<boolean>(false);
 	guests: User[] = [];
 	pagedGuests: User[] = [];
 	currentUser: User;
@@ -70,17 +70,17 @@ export class GuestsComponent implements OnInit, OnDestroy {
 	}
 
 	loadUsers() {
-		this.loading = true;
+		this.loading.next(true);
 		this.guestsSubscription = combineLatest([this.userService.loadGuestUsers(), this.authService.getCurrentUser()]).subscribe({
 			next: ([guests, currentUser]) => {
 				this.guests = guests;
 				this.pagedGuests = guests.slice(0, this.pageSize);
 				this.length = guests.length;
 				this.currentUser = currentUser;
-				this.loading = false;
+				this.loading.next(false);
 			},
 			error: (err: ApiError) => {
-				this.loading = false;
+				this.loading.next(false);
 				this.messageService.showError('Failed to load guest users');
 				this.logService.error('Something went wrong while loading guest users: ' + err);
 			},

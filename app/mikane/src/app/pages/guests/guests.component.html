@@ -7,7 +7,7 @@
 	<app-menu />
 </mat-toolbar>
 
-@if (loading === false) {
+@if ((loading | async) === false) {
 	<div>
 		@if ((breakpointService.isMobile() | async) === false) {
 			<div class="guests-section">

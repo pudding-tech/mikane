@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, ElementRef, inject, input, output, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, input, output, Renderer2, signal, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -46,22 +46,22 @@ export class CategoryItemComponent {
 	gotoUser = output<{ user: { id: string; guest: boolean; username: string } }>();
 
 	dropdownOpen = false;
-	lowerHeight = 0;
+	lowerHeight = signal<number>(0);
 
 	toggleDropdown = () => {
 		this.dropdownOpen = !this.dropdownOpen;
 
-		if (this.lowerHeight === 0) {
-			this.lowerHeight = this.lower.nativeElement.scrollHeight;
+		if (this.lowerHeight() === 0) {
+			this.lowerHeight.set(this.lower.nativeElement.scrollHeight);
 		} else {
-			this.lowerHeight = 0;
+			this.lowerHeight.set(0);
 		}
 	};
 
 	addUserToCategory = (categoryId: string) => {
 		this.addUser.emit({ categoryId });
 		setTimeout(() => {
-			this.lowerHeight = this.lower.nativeElement.scrollHeight;
+			this.lowerHeight.set(this.lower.nativeElement.scrollHeight);
 		}, 100);
 	};
 

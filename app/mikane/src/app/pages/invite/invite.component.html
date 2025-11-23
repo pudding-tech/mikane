@@ -60,7 +60,14 @@
 			}
 		</mat-form-field>
 		<br />
-		<button type="submit" [class.spinner]="loading" [disabled]="loading" mat-raised-button color="primary" class="invite-button">
+		<button
+			type="submit"
+			[class.spinner]="loading | async"
+			[disabled]="loading | async"
+			mat-raised-button
+			color="primary"
+			class="invite-button"
+		>
 			Send Invite <mat-icon>send</mat-icon>
 		</button>
 	</form>
@@ -75,7 +82,7 @@
 		<div class="add-admin" [ngClass]="{ mobile: breakpointService.isMobile() | async }">
 			<mat-form-field>
 				<mat-select formControlName="guestId" name="guestId" placeholder="Select guest" required>
-					@for (guest of guests; track guest.id) {
+					@for (guest of guests(); track guest.id) {
 						<mat-option [value]="guest.id">
 							<span class="name">
 								<img [ngSrc]="guest.avatarURL" height="24" width="24" alt="Guest user avatar" class="avatar" />
@@ -105,8 +112,8 @@
 		<br />
 		<button
 			type="submit"
-			[class.spinner]="guestLoading"
-			[disabled]="guestLoading"
+			[class.spinner]="guestLoading | async"
+			[disabled]="guestLoading | async"
 			mat-raised-button
 			color="primary"
 			class="invite-button"

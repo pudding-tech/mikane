@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -52,8 +52,8 @@ export class ExpenditureDialogComponent implements OnInit {
 	edit = false;
 	categoryIcons = CategoryIcon;
 
-	categories: Category[] = [];
-	users: User[] = [];
+	categories = signal<Category[]>([]);
+	users = signal<User[]>([]);
 
 	addExpenseForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
@@ -67,11 +67,11 @@ export class ExpenditureDialogComponent implements OnInit {
 
 	ngOnInit() {
 		this.categoryService.loadCategories(this.data.eventId).subscribe((categories) => {
-			this.categories = categories;
+			this.categories.set(categories);
 		});
 
 		this.userService.loadUsersByEvent(this.data.eventId).subscribe((users) => {
-			this.users = users;
+			this.users.set(users);
 		});
 
 		if (this.data.expense) {
@@ -94,7 +94,7 @@ export class ExpenditureDialogComponent implements OnInit {
 	}
 
 	findCategory(categoryName: string) {
-		return this.categories.find((c) => c.name === categoryName);
+		return this.categories().find((c) => c.name === categoryName);
 	}
 
 	clearDate(event: MouseEvent) {

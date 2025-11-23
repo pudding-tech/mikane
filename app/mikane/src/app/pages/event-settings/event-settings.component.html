@@ -187,7 +187,7 @@
 <ng-template #adminsContent>
 	<div class="admins-content" [ngClass]="{ 'full-view': (breakpointService.isMobile() | async) === false }">
 		<mat-nav-list>
-			@for (admin of adminsInEvent; track admin.id) {
+			@for (admin of adminsInEvent(); track admin.id) {
 				<mat-list-item class="list-item">
 					<div class="admin">
 						<div class="name">
@@ -202,7 +202,7 @@
 							/>
 							{{ admin.name }}
 						</div>
-						<button mat-icon-button (click)="removeAdmin(admin.id)" [disabled]="adminsInEvent.length < 2">
+						<button mat-icon-button (click)="removeAdmin(admin.id)" [disabled]="adminsInEvent().length < 2">
 							<mat-icon>remove</mat-icon>
 						</button>
 					</div>
@@ -210,10 +210,10 @@
 			}
 		</mat-nav-list>
 		<div class="add-admin" [ngClass]="{ mobile: breakpointService.isMobile() | async }">
-			@if (otherUsersInEvent.length !== 0) {
+			@if (otherUsersInEvent().length !== 0) {
 				<mat-form-field>
 					<mat-select [formControl]="addAdminForm.get('userId') | formControl" name="userId" placeholder="Add admin" required>
-						@for (user of otherUsersInEvent; track user.id) {
+						@for (user of otherUsersInEvent(); track user.id) {
 							<mat-option [value]="user.id">
 								<span class="name">
 									<img [ngSrc]="user.avatarURL" width="24" height="24" alt="User avatar" class="avatar" />
@@ -242,8 +242,8 @@
 <ng-template #notificationsReadyToSettleContent>
 	@if (event?.status.id === EventStatusType.READY_TO_SETTLE) {
 		<div class="event-settings-text">
-			As the event is ready to be settled, you can email all participants to inform them of their expenses — how much they owe or are owed,
-			and who to pay or receive payments from.
+			As the event is ready to be settled, you can email all participants to inform them of their expenses — how much they owe or are
+			owed, and who to pay or receive payments from.
 		</div>
 	} @else {
 		<div class="event-settings-text">Only events that are ready to be settled can send this email.</div>

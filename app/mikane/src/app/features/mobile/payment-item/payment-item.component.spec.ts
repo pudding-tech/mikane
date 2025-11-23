@@ -83,10 +83,10 @@ describe('PaymentItemComponent', () => {
 	});
 
 	it('should toggle the dropdown when the toggleDropdown method is called', () => {
-		const initialDropdownOpen = component.dropdownOpen;
+		const initialDropdownOpen = component.dropdownOpen();
 		component.toggleDropdown();
 
-		expect(component.dropdownOpen).toEqual(!initialDropdownOpen);
+		expect(component.dropdownOpen()).toEqual(!initialDropdownOpen);
 	});
 
 	it('should set lowerHeight to 0 when dropdown is closed', () => {

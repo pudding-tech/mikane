@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -9,7 +9,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { EMPTY, Subscription, catchError, combineLatest, map, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, EMPTY, Subscription, catchError, combineLatest, map, switchMap, tap } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -49,13 +49,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	private router = inject(Router);
 	private logService = inject(LogService);
 
-	protected loading = true;
-	protected loadingEvents = false;
-	protected loadingExpenses = false;
+	protected loading = new BehaviorSubject<boolean>(false);
+	protected loadingEvents = new BehaviorSubject<boolean>(false);
+	protected loadingExpenses = new BehaviorSubject<boolean>(false);
 
 	protected user: User;
-	protected events: PuddingEvent[];
-	protected expenses: Expense[];
+	protected events = signal<PuddingEvent[]>([]);
+	protected expenses = signal<Expense[]>([]);
 
 	private eventsOffset = 5;
 	private expensesOffset = 5;
@@ -71,7 +71,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		this.subscription = this.route.paramMap
 			.pipe(
 				tap(() => {
-					this.loading = true;
+					this.loading.next(true);
 					this.eventsOffset = 5;
 					this.expensesOffset = 5;
 					this.showMoreEvents = true;
@@ -113,12 +113,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: ([events, expenses]) => {
-					this.events = events;
-					this.expenses = expenses.map((expense) => ({
-						...expense,
-						created: new Date(expense.created),
-					}));
-					this.loading = false;
+					this.events.set(events);
+					this.expenses.set(
+						expenses.map((expense) => ({
+							...expense,
+							created: new Date(expense.created),
+						})),
+					);
+					this.loading.next(false);
 				},
 				error: (error: ApiError) => {
 					this.messageService.showError('Something went wrong');
@@ -129,10 +131,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	}
 
 	loadMoreEvents() {
-		this.loadingEvents = true;
+		this.loadingEvents.next(true);
 		this.userService.loadUserEvents(this.user.id, 5, this.eventsOffset).subscribe({
 			next: (events) => {
-				this.events = [...this.events, ...events];
+				this.events.set([...this.events(), ...events]);
 				this.eventsOffset += 5;
 				if (events.length < 5) {
 					this.showMoreEvents = false;
@@ -140,10 +142,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 						this.hideEventsText = true;
 					}, 2000);
 				}
-				this.loadingEvents = false;
+				this.loadingEvents.next(false);
 			},
 			error: (err: ApiError) => {
-				this.loadingEvents = false;
+				this.loadingEvents.next(false);
 				this.messageService.showError('Failed to get more events');
 				this.logService.error('Something went wrong while retrieving more events: ' + err?.error?.message);
 			},
@@ -151,10 +153,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	}
 
 	loadMoreExpenses() {
-		this.loadingExpenses = true;
+		this.loadingExpenses.next(true);
 		this.userService.loadUserExpenses(this.user.id, null, 5, this.expensesOffset).subscribe({
 			next: (expenses) => {
-				this.expenses = [...this.expenses, ...expenses];
+				this.expenses.set([...this.expenses(), ...expenses]);
 				this.expensesOffset += 5;
 				if (expenses.length < 5) {
 					this.showMoreExpenses = false;
@@ -162,10 +164,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 						this.hideExpensesText = true;
 					}, 2000);
 				}
-				this.loadingExpenses = false;
+				this.loadingExpenses.next(false);
 			},
 			error: (err: ApiError) => {
-				this.loadingExpenses = false;
+				this.loadingExpenses.next(false);
 				this.messageService.showError('Failed to get more expenses');
 				this.logService.error('Something went wrong while retrieving more expenses: ' + err?.error?.message);
 			},

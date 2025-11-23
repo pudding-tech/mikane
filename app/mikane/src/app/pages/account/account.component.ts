@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -47,7 +47,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 	private logService = inject(LogService);
 
 	protected loading = new BehaviorSubject<boolean>(true);
-	protected user: User;
+	protected user = signal<User>(null);
 
 	private subscription: Subscription;
 
@@ -61,7 +61,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: (user) => {
-					this.user = user;
+					this.user.set(user);
 					this.loading.next(false);
 				},
 				error: (error: ApiError) => {

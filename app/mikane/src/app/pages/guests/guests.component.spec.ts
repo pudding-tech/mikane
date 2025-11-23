@@ -80,7 +80,7 @@ describe('GuestsComponent', () => {
 		expect(authServiceSpy.getCurrentUser).toHaveBeenCalledWith();
 		expect(component.guests).toEqual(mockGuests);
 		expect(component.currentUser).toEqual(mockCurrentUser);
-		expect(component.loading).toBe(false);
+		expect(component.loading.value).toBe(false);
 	});
 
 	it('should show error if loading guests fails', () => {

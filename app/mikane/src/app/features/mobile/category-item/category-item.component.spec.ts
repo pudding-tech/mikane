@@ -80,17 +80,17 @@ describe('CategoryItemComponent', () => {
 		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
 		component.toggleDropdown();
 
-		expect(component.lowerHeight).toEqual(100);
+		expect(component.lowerHeight()).toEqual(100);
 	});
 
 	it('should set lowerHeight to 0 when toggleDropdown is called and dropdown is open', () => {
 		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
 		component.toggleDropdown();
 
-		expect(component.lowerHeight).toEqual(100);
+		expect(component.lowerHeight()).toEqual(100);
 		component.toggleDropdown();
 
-		expect(component.lowerHeight).toEqual(0);
+		expect(component.lowerHeight()).toEqual(0);
 	});
 
 	it('should set lowerHeight after 100ms when addUserToCategory is called', async () => {
@@ -99,11 +99,11 @@ describe('CategoryItemComponent', () => {
 		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
 		component.addUserToCategory(category.id);
 
-		expect(component.lowerHeight).toEqual(0);
+		expect(component.lowerHeight()).toEqual(0);
 		vi.advanceTimersByTime(100);
 		vi.runAllTimers();
 
-		expect(component.lowerHeight).toEqual(100);
+		expect(component.lowerHeight()).toEqual(100);
 		vi.useRealTimers();
 	});
 

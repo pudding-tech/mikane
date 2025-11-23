@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe, NgOptimizedImage } from '@angular/common';
-import { Component, ElementRef, inject, input, output, effect, ViewChild } from '@angular/core';
+import { Component, effect, ElementRef, inject, input, output, signal, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -40,24 +40,23 @@ export class PaymentItemComponent {
 	self = input.required<boolean>();
 	currentUser = input.required<User>();
 	expanded = input<boolean>(false);
-	dropdownToggled = output<{ senderId: string, expanded: boolean, self: boolean }>();
+	dropdownToggled = output<{ senderId: string; expanded: boolean; self: boolean }>();
 
-	dropdownOpen: boolean;
+	dropdownOpen = signal<boolean>(false);
 	lowerHeight: number | string;
 	private initialized = false;
 
 	constructor() {
 		effect(() => {
-			this.dropdownOpen = this.expanded();
-			this.lowerHeight = this.dropdownOpen ? 'auto' : 0;
+			this.dropdownOpen.set(this.expanded());
+			this.lowerHeight = this.dropdownOpen() ? 'auto' : 0;
 			if (this.lowerHeight === 'auto') {
 				if (!this.initialized) {
 					setTimeout(() => {
 						this.lowerHeight = this.lower.nativeElement.scrollHeight;
 						this.initialized = true;
 					});
-				}
-				else {
+				} else {
 					this.lowerHeight = this.lower.nativeElement.scrollHeight;
 				}
 			}
@@ -65,7 +64,7 @@ export class PaymentItemComponent {
 	}
 
 	toggleDropdown = () => {
-		this.dropdownOpen = !this.dropdownOpen;
+		this.dropdownOpen.set(!this.dropdownOpen());
 
 		if (this.lowerHeight === 0) {
 			this.lowerHeight = this.lower.nativeElement.scrollHeight;
@@ -73,7 +72,7 @@ export class PaymentItemComponent {
 			this.lowerHeight = 0;
 		}
 
-		this.dropdownToggled.emit({ senderId: this.payment().sender.id, expanded: this.dropdownOpen, self: this.self() });
+		this.dropdownToggled.emit({ senderId: this.payment().sender.id, expanded: this.dropdownOpen(), self: this.self() });
 	};
 
 	gotoUserProfile(user: User) {

@@ -114,8 +114,8 @@ describe('EventSettingsComponent', () => {
 		const { component } = createComponent();
 		component.ngOnInit();
 
-		expect(component.adminsInEvent).toEqual([users[0]]);
-		expect(component.otherUsersInEvent).toEqual([users[1]]);
+		expect(component.adminsInEvent()).toEqual([users[0]]);
+		expect(component.otherUsersInEvent()).toEqual([users[1]]);
 	});
 
 	describe('onInit', () => {
@@ -125,7 +125,7 @@ describe('EventSettingsComponent', () => {
 			const { component } = createComponent({ adminIds: ['1'] });
 			component.ngOnInit();
 
-			expect(component.currentUser).toEqual(currentUser);
+			expect(component.currentUser()).toEqual(currentUser);
 		});
 
 		it('should show error message if loading users fails', () => {
@@ -267,8 +267,8 @@ describe('EventSettingsComponent', () => {
 
 			const { component } = createComponent({ adminIds: ['1'] });
 
-			expect(component.adminsInEvent).toEqual([{ id: '1', eventInfo: { isAdmin: true }, avatarURL: 'url1' }]);
-			expect(component.otherUsersInEvent).toEqual([{ id: '2', eventInfo: { isAdmin: false }, avatarURL: 'url2' }]);
+			expect(component.adminsInEvent()).toEqual([{ id: '1', eventInfo: { isAdmin: true }, avatarURL: 'url1' }]);
+			expect(component.otherUsersInEvent()).toEqual([{ id: '2', eventInfo: { isAdmin: false }, avatarURL: 'url2' }]);
 
 			component.addAdminForm.controls['userId'].setValue('2');
 			await component.addAdmin();
@@ -277,12 +277,12 @@ describe('EventSettingsComponent', () => {
 			expect(eventServiceSpy.setUserAsAdmin).toHaveBeenCalledWith('1', '2');
 			expect(userServiceSpy.loadUsersByEvent).toHaveBeenCalledWith('1', true);
 			expect(component.addAdminForm.controls['userId'].value).toEqual('');
-			expect(component.adminsInEvent).toEqual([
+			expect(component.adminsInEvent()).toEqual([
 				{ id: '1', eventInfo: { isAdmin: true }, avatarURL: 'url1' },
 				{ id: '2', eventInfo: { isAdmin: false }, avatarURL: 'url2' },
 			]);
 
-			expect(component.otherUsersInEvent).toEqual([] as User[]);
+			expect(component.otherUsersInEvent()).toEqual([] as User[]);
 		});
 
 		it('should show error message if adding admin fails', async () => {
@@ -313,18 +313,18 @@ describe('EventSettingsComponent', () => {
 				}),
 			);
 
-			expect(component.adminsInEvent).toEqual([
+			expect(component.adminsInEvent()).toEqual([
 				{ id: '1', eventInfo: { isAdmin: true }, avatarURL: 'url1' },
 				{ id: '2', eventInfo: { isAdmin: true }, avatarURL: 'url2' },
 			]);
 
-			expect(component.otherUsersInEvent).toEqual([]);
+			expect(component.otherUsersInEvent()).toEqual([]);
 
 			await component.removeAdmin('2');
 
 			expect(component.event).toEqual({ id: '1', status: {}, adminIds: ['1'] });
-			expect(component.adminsInEvent).toEqual([{ id: '1', eventInfo: { isAdmin: true }, avatarURL: 'url1' }]);
-			expect(component.otherUsersInEvent).toEqual([{ id: '2', eventInfo: { isAdmin: true }, avatarURL: 'url2' }]);
+			expect(component.adminsInEvent()).toEqual([{ id: '1', eventInfo: { isAdmin: true }, avatarURL: 'url1' }]);
+			expect(component.otherUsersInEvent()).toEqual([{ id: '2', eventInfo: { isAdmin: true }, avatarURL: 'url2' }]);
 			expect(eventServiceSpy.removeUserAsAdmin).toHaveBeenCalledWith('1', '2');
 			expect(userServiceSpy.loadUsersByEvent).toHaveBeenCalledWith('1', true);
 		});

@@ -104,7 +104,7 @@ describe('CategoryComponent', () => {
 	it('should set event', () => {
 		const { component } = createComponent();
 
-		expect(component.event).toEqual({
+		expect(component.event()).toEqual({
 			id: '1',
 			status: {
 				id: EventStatusType.ACTIVE,
@@ -121,13 +121,13 @@ describe('CategoryComponent', () => {
 		fixture.componentRef.setInput('$event', $event);
 		fixture.detectChanges();
 
-		expect(component.event).toBeUndefined();
+		expect(component.event()).toBeUndefined();
 	});
 
 	it('should set event to undefined if no id', () => {
 		const { component } = createComponent({ id: undefined });
 
-		expect(component.event).toBeUndefined();
+		expect(component.event()).toBeUndefined();
 	});
 
 	it('should push save on displayedColumns if event active', () => {
@@ -145,7 +145,7 @@ describe('CategoryComponent', () => {
 	it('should load categories', () => {
 		const { component } = createComponent();
 
-		expect(categoryServiceSpy.loadCategories).toHaveBeenCalledWith(component.event.id);
+		expect(categoryServiceSpy.loadCategories).toHaveBeenCalledWith(component.event().id);
 	});
 
 	describe('#loadCategories', () => {
@@ -174,7 +174,7 @@ describe('CategoryComponent', () => {
 			const { component } = createComponent();
 			component.loadCategories();
 
-			expect(component.categories).toEqual([
+			expect(component.categories()).toEqual([
 				{
 					id: '1',
 					name: 'name',
@@ -195,7 +195,7 @@ describe('CategoryComponent', () => {
 			const { component } = createComponent();
 			component.loadCategories();
 
-			expect(userServiceSpy.loadUsersByEvent).toHaveBeenCalledWith(component.event.id);
+			expect(userServiceSpy.loadUsersByEvent).toHaveBeenCalledWith(component.event().id);
 		});
 
 		it('should set categories to empty array', () => {
@@ -204,7 +204,7 @@ describe('CategoryComponent', () => {
 			const { component } = createComponent();
 			component.loadCategories();
 
-			expect(component.categories).toEqual([]);
+			expect(component.categories()).toEqual([]);
 		});
 
 		it('should show error if categories fail to load', () => {
@@ -232,7 +232,7 @@ describe('CategoryComponent', () => {
 			const { component } = createComponent();
 			component.loadUsers();
 
-			expect(component.users).toEqual([
+			expect(component.users()).toEqual([
 				{
 					id: '1',
 					name: 'name',
@@ -247,7 +247,7 @@ describe('CategoryComponent', () => {
 			const { component } = createComponent();
 			component.loadUsers();
 
-			expect(component.users).toBeUndefined();
+			expect(component.users()).toBeUndefined();
 		});
 
 		it('should show error if users fail to load', () => {
@@ -321,7 +321,7 @@ describe('CategoryComponent', () => {
 
 		it('should return empty', () => {
 			const { component } = createComponent();
-			component.users = [];
+			component.users.set([]);
 
 			component.filterUsers('1');
 
@@ -349,7 +349,7 @@ describe('CategoryComponent', () => {
 			expect(dialogSpy.open).toHaveBeenCalledWith(CategoryDialogComponent, {
 				width: '380px',
 				data: {
-					eventId: component.event.id,
+					eventId: component.event().id,
 					weighted: false,
 				},
 			});
@@ -359,7 +359,7 @@ describe('CategoryComponent', () => {
 			const { component } = createComponent();
 			component.openDialog();
 
-			expect(categoryServiceSpy.createCategory).toHaveBeenCalledWith('name', component.event.id, false, CategoryIcon.SHOPPING);
+			expect(categoryServiceSpy.createCategory).toHaveBeenCalledWith('name', component.event().id, false, CategoryIcon.SHOPPING);
 		});
 	});
 
@@ -385,7 +385,7 @@ describe('CategoryComponent', () => {
 					categoryId: '1',
 					name: 'category',
 					icon: CategoryIcon.SHOPPING,
-					eventId: component.event.id,
+					eventId: component.event().id,
 				},
 			});
 		});
@@ -414,14 +414,14 @@ describe('CategoryComponent', () => {
 			const { component } = createComponent();
 			component.createCategory('name', false, CategoryIcon.SHOPPING);
 
-			expect(categoryServiceSpy.createCategory).toHaveBeenCalledWith('name', component.event.id, false, CategoryIcon.SHOPPING);
+			expect(categoryServiceSpy.createCategory).toHaveBeenCalledWith('name', component.event().id, false, CategoryIcon.SHOPPING);
 		});
 
 		it('should push category and show success message', () => {
 			const { component } = createComponent();
 			component.createCategory('name', false, CategoryIcon.SHOPPING);
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
 			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Category created');
 		});
 
@@ -477,10 +477,10 @@ describe('CategoryComponent', () => {
 		it('should push edited category and show success message', () => {
 			const { component } = createComponent();
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
 			component.editCategory('1', 'name', CategoryIcon.SHOPPING);
 
-			expect(component.categories).toEqual([{ id: '1', name: 'new name', weighted: false, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'new name', weighted: false, users: [] }] as Category[]);
 			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Category edited');
 		});
 
@@ -548,11 +548,11 @@ describe('CategoryComponent', () => {
 			component.addUserForm.get('participantName').setValue('name');
 			component.addUserForm.get('weight').setValue(2);
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
 
 			component.addUser('1');
 
-			expect(component.categories).toEqual([
+			expect(component.categories()).toEqual([
 				{
 					id: '1',
 					name: 'name',
@@ -648,7 +648,7 @@ describe('CategoryComponent', () => {
 		it('should remove user from category and show success message', () => {
 			const { component } = createComponent();
 
-			expect(component.categories).toEqual([
+			expect(component.categories()).toEqual([
 				{
 					id: '1',
 					name: 'name',
@@ -666,7 +666,7 @@ describe('CategoryComponent', () => {
 
 			component.removeUser('1', '1');
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
 			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('User removed from category "' + 'name' + '"');
 		});
 
@@ -780,7 +780,7 @@ describe('CategoryComponent', () => {
 		it('should edit user and show success message', () => {
 			const { component } = createComponent();
 
-			expect(component.categories).toEqual([
+			expect(component.categories()).toEqual([
 				{
 					id: '1',
 					name: 'name',
@@ -798,7 +798,7 @@ describe('CategoryComponent', () => {
 
 			component.editCategoryWeight('1', '1', 2);
 
-			expect(component.categories).toEqual([
+			expect(component.categories()).toEqual([
 				{
 					id: '1',
 					name: 'name',
@@ -869,11 +869,11 @@ describe('CategoryComponent', () => {
 		it('should toggle weighted and show success message', () => {
 			const { component } = createComponent();
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
 
 			component.toggleWeighted('1', false);
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: true, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: true, users: [] }] as Category[]);
 		});
 
 		it('should show error if category fails to toggle weighted', () => {
@@ -962,11 +962,11 @@ describe('CategoryComponent', () => {
 		it('should delete category and show success message', () => {
 			const { component } = createComponent();
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
 
 			component.deleteCategory('1');
 
-			expect(component.categories).toEqual([]);
+			expect(component.categories()).toEqual([]);
 			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Category deleted');
 		});
 

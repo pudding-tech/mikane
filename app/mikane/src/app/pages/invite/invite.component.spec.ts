@@ -74,7 +74,7 @@ describe('InviteComponent', () => {
 		userServiceSpy.loadGuestUsers.mockReturnValue(of(guests));
 		component.ngOnInit();
 
-		expect(component.guests).toEqual(guests);
+		expect(component.guests()).toEqual(guests);
 	});
 
 	it('should show error if loading guests fails', () => {

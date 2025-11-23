@@ -95,7 +95,7 @@ describe('DangerZoneComponent', () => {
 
 		component.deleteUser();
 
-		expect(component['loading']).toBeFalsy();
+		expect(component['loading'].value).toBeFalsy();
 		expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Email sent!');
 		expect(routerSpy).toHaveBeenCalledWith(['/login']);
 	});
@@ -111,7 +111,7 @@ describe('DangerZoneComponent', () => {
 
 		component.deleteUser();
 
-		expect(component['loading']).toBeFalsy();
+		expect(component['loading'].value).toBeFalsy();
 		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to send email!');
 		expect(routerSpy).not.toHaveBeenCalled();
 	});

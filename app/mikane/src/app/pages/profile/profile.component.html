@@ -7,7 +7,7 @@
 	<app-menu />
 </mat-toolbar>
 
-@if (loading === false) {
+@if ((loading | async) === false) {
 	@if ((breakpointService.isMobile() | async) === false) {
 		<div class="profile-page">
 			<mat-card class="profile-content">
@@ -147,7 +147,7 @@
 <ng-template #userEvents>
 	<div class="profile-events">
 		<h3 class="title">Participating in events</h3>
-		@for (event of events; track event.id) {
+		@for (event of events(); track event.id) {
 			<div matRipple (click)="gotoEvent(event.id)" [ngClass]="{ isMobile: breakpointService.isMobile() | async }" class="event">
 				<div class="event-left">
 					@if (event.adminIds.includes(user?.id)) {
@@ -212,7 +212,7 @@
 <ng-template #latestExpenses>
 	<div class="profile-expenses">
 		<h3 class="title">Latest expenses</h3>
-		@for (expense of expenses; track expense.id) {
+		@for (expense of expenses(); track expense.id) {
 			<div class="expense">
 				<div class="expense-left">
 					<div class="circle-container">
