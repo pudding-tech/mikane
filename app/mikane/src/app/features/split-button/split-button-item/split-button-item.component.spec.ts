@@ -11,7 +11,6 @@ describe('SplitButtonItemComponent', () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [SplitButtonItemComponent],
-			providers: [],
 		}).compileComponents();
 	});
 
