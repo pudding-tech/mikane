@@ -71,7 +71,11 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 						}
 					},
 					error: (err: ApiError) => {
-						this.messageService.showError('Failed to change password');
+						if (err?.error?.code === 'PUD-081') {
+							this.changePasswordForm.get('currentPassword')?.setErrors({ incorrect: true });
+						} else {
+							this.messageService.showError('Failed to change password');
+						}
 						this.logService.error('Error occurred while changing password: ' + err?.error?.message);
 					},
 				});

@@ -92,6 +92,21 @@ describe('ChangePasswordComponent', () => {
 		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to change password');
 	});
 
+	it('should set incorrect error on currentPassword when error code is PUD-081', () => {
+		const error = { error: { code: 'PUD-081', message: 'Incorrect password' } };
+		userServiceSpy.changeUserPassword.mockReturnValue(throwError(error));
+		component.changePasswordForm.setValue({
+			currentPassword: 'wrongpassword',
+			newPassword: 'newpassword',
+			newPasswordRetype: 'newpassword',
+		});
+
+		component.submit();
+
+		expect(userServiceSpy.changeUserPassword).toHaveBeenCalledWith('wrongpassword', 'newpassword');
+		expect(component.changePasswordForm.get('currentPassword')?.errors).toEqual({ incorrect: true });
+	});
+
 	it('should not call changeUserPassword when form is invalid', () => {
 		component.changePasswordForm.setValue({ currentPassword: '', newPassword: '', newPasswordRetype: '' });
 
