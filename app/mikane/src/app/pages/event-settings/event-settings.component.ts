@@ -341,7 +341,12 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.emailReminderSentLoading.next(false);
-					this.messageService.showError('Failed to send emails');
+					if (err?.error?.code === 'PUD-150') {
+						this.messageService.showError(err?.error?.message);
+					} else {
+						this.messageService.showError('Failed to send emails');
+					}
+
 					this.logService.error('Something went wrong while sending emails: ' + err?.error?.message);
 				},
 			});
