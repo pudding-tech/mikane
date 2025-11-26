@@ -10,6 +10,7 @@ export default defineConfig({
 			enabled: true,
 			reportsDirectory: './coverage/mikane',
 			reporter: 'cobertura',
+			exclude: ['*.html'],
 		},
 	},
 });
