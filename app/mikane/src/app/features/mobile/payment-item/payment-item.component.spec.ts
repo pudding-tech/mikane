@@ -9,9 +9,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { User } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PaymentItemComponent } from './payment-item.component';
 
 describe('PaymentItemComponent', () => {
@@ -83,10 +83,10 @@ describe('PaymentItemComponent', () => {
 	});
 
 	it('should toggle the dropdown when the toggleDropdown method is called', () => {
-		const initialDropdownOpen = component.dropdownOpen;
+		const initialDropdownOpen = component.dropdownOpen();
 		component.toggleDropdown();
 
-		expect(component.dropdownOpen).toEqual(!initialDropdownOpen);
+		expect(component.dropdownOpen()).toEqual(!initialDropdownOpen);
 	});
 
 	it('should set lowerHeight to 0 when dropdown is closed', () => {
@@ -114,7 +114,7 @@ describe('PaymentItemComponent', () => {
 		fixture.componentRef.setInput('self', true);
 		fixture.componentRef.setInput('expanded', true);
 		fixture.detectChanges();
-		
+
 		vi.advanceTimersByTime(100);
 		vi.runAllTicks();
 

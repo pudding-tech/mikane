@@ -2,10 +2,10 @@ import { ElementRef, inputBinding } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Category } from 'src/app/services/category/category.service';
 import { User } from 'src/app/services/user/user.service';
 import { CategoryIcon } from 'src/app/types/enums';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CategoryItemComponent } from './category-item.component';
 
 describe('CategoryItemComponent', () => {
@@ -36,9 +36,9 @@ describe('CategoryItemComponent', () => {
 			bindings: [
 				inputBinding('category', () => category),
 				inputBinding('eventActive', () => true),
-				inputBinding('addUserForm', () => ({} as FormGroup)),
-				inputBinding('filterUsers', () => (_categoryId: string) => ([] as User[]))
-			]
+				inputBinding('addUserForm', () => ({}) as FormGroup),
+				inputBinding('filterUsers', () => (_categoryId: string) => [] as User[]),
+			],
 		});
 		component = fixture.componentInstance;
 		fixture.detectChanges();
@@ -80,17 +80,17 @@ describe('CategoryItemComponent', () => {
 		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
 		component.toggleDropdown();
 
-		expect(component.lowerHeight).toEqual(100);
+		expect(component.lowerHeight()).toEqual(100);
 	});
 
 	it('should set lowerHeight to 0 when toggleDropdown is called and dropdown is open', () => {
 		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
 		component.toggleDropdown();
 
-		expect(component.lowerHeight).toEqual(100);
+		expect(component.lowerHeight()).toEqual(100);
 		component.toggleDropdown();
 
-		expect(component.lowerHeight).toEqual(0);
+		expect(component.lowerHeight()).toEqual(0);
 	});
 
 	it('should set lowerHeight after 100ms when addUserToCategory is called', async () => {
@@ -99,11 +99,11 @@ describe('CategoryItemComponent', () => {
 		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
 		component.addUserToCategory(category.id);
 
-		expect(component.lowerHeight).toEqual(0);
+		expect(component.lowerHeight()).toEqual(0);
 		vi.advanceTimersByTime(100);
 		vi.runAllTimers();
 
-		expect(component.lowerHeight).toEqual(100);
+		expect(component.lowerHeight()).toEqual(100);
 		vi.useRealTimers();
 	});
 

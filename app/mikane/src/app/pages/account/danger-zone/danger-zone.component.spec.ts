@@ -6,8 +6,8 @@ import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { UserService } from 'src/app/services/user/user.service';
-import { DangerZoneComponent } from './danger-zone.component';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { DangerZoneComponent } from './danger-zone.component';
 
 describe('DangerZoneComponent', () => {
 	let component: DangerZoneComponent;
@@ -95,7 +95,7 @@ describe('DangerZoneComponent', () => {
 
 		component.deleteUser();
 
-		expect(component['loading']).toBeFalsy();
+		expect(component['loading'].value).toBeFalsy();
 		expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Email sent!');
 		expect(routerSpy).toHaveBeenCalledWith(['/login']);
 	});
@@ -111,7 +111,7 @@ describe('DangerZoneComponent', () => {
 
 		component.deleteUser();
 
-		expect(component['loading']).toBeFalsy();
+		expect(component['loading'].value).toBeFalsy();
 		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to send email!');
 		expect(routerSpy).not.toHaveBeenCalled();
 	});

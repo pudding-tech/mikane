@@ -7,8 +7,6 @@ import { MatAccordion } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { MessageService } from 'src/app/services/message/message.service';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
@@ -16,12 +14,14 @@ import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { LogService } from 'src/app/services/log/log.service';
+import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
 import { CategoryIcon } from 'src/app/types/enums';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExpenditureDialogComponent } from '../expenditures/expenditure-dialog/expenditure-dialog.component';
 import { ExpenseDataSource } from './expense.datasource';
-import { ParticipantDialogComponent } from './user-dialog/participant-dialog.component';
 import { ParticipantComponent } from './participant.component';
+import { ParticipantDialogComponent } from './user-dialog/participant-dialog.component';
 
 function createComponent(eventData?: Partial<PuddingEvent>) {
 	const $event = new BehaviorSubject<PuddingEvent>({
@@ -46,18 +46,22 @@ function createComponent(eventData?: Partial<PuddingEvent>) {
 
 describe('ParticipantComponent', () => {
 	registerLocaleData(localeNo);
-	let userServiceSpy: { loadUsers: ReturnType<typeof vi.fn>, createUser: ReturnType<typeof vi.fn> };
-	let eventServiceSpy: { loadBalances: ReturnType<typeof vi.fn>, addUser: ReturnType<typeof vi.fn>, removeUser: ReturnType<typeof vi.fn> };
+	let userServiceSpy: { loadUsers: ReturnType<typeof vi.fn>; createUser: ReturnType<typeof vi.fn> };
+	let eventServiceSpy: {
+		loadBalances: ReturnType<typeof vi.fn>;
+		addUser: ReturnType<typeof vi.fn>;
+		removeUser: ReturnType<typeof vi.fn>;
+	};
 	let routerSpy: { navigate: ReturnType<typeof vi.fn> };
 	let dialogSpy: { open: ReturnType<typeof vi.fn> };
-	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>, showSuccess: ReturnType<typeof vi.fn> };
-	let expenseServiceSpy: { createExpense: ReturnType<typeof vi.fn>, deleteExpense: ReturnType<typeof vi.fn> };
+	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>; showSuccess: ReturnType<typeof vi.fn> };
+	let expenseServiceSpy: { createExpense: ReturnType<typeof vi.fn>; deleteExpense: ReturnType<typeof vi.fn> };
 	let categoryServiceSpy: { findOrCreate: ReturnType<typeof vi.fn> };
 	let authServiceSpy: { getCurrentUser: ReturnType<typeof vi.fn> };
 	let contextServiceSpy: { isMobileDevice: ReturnType<typeof vi.fn> };
 
 	beforeEach(() => {
-		userServiceSpy = { loadUsers: vi.fn(), createUser: vi.fn()};
+		userServiceSpy = { loadUsers: vi.fn(), createUser: vi.fn() };
 		eventServiceSpy = { loadBalances: vi.fn(), addUser: vi.fn(), removeUser: vi.fn() };
 		routerSpy = { navigate: vi.fn() };
 		dialogSpy = { open: vi.fn() };
@@ -68,11 +72,7 @@ describe('ParticipantComponent', () => {
 		contextServiceSpy = { isMobileDevice: vi.fn() };
 
 		TestBed.configureTestingModule({
-			imports: [
-        ParticipantComponent,
-        MatCardModule,
-        MatIconModule,
-      ],
+			imports: [ParticipantComponent, MatCardModule, MatIconModule],
 			providers: [
 				{ provide: UserService, useValue: userServiceSpy },
 				{ provide: EventService, useValue: eventServiceSpy },
@@ -83,15 +83,15 @@ describe('ParticipantComponent', () => {
 				{ provide: AuthService, useValue: authServiceSpy },
 				{ provide: ContextService, useValue: contextServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
-				{ provide: LogService, useValue: { error: vi.fn() }}
+				{ provide: LogService, useValue: { error: vi.fn() } },
 			],
 		})
-		.overrideComponent(ParticipantComponent, {
-			remove: {
-				imports: [MatDialogModule]
-			}
-		})
-		.compileComponents();
+			.overrideComponent(ParticipantComponent, {
+				remove: {
+					imports: [MatDialogModule],
+				},
+			})
+			.compileComponents();
 	});
 
 	it('should create', () => {

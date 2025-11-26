@@ -6,10 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { of, throwError } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PreferencesComponent } from './preferences.component';
 
 describe('PreferencesComponent', () => {
@@ -43,11 +43,11 @@ describe('PreferencesComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(PreferencesComponent);
 		component = fixture.componentInstance;
-		component.user = {
+		component.user.set({
 			id: '1',
 			publicEmail: false,
 			publicPhone: true,
-		} as User;
+		} as User);
 		fixture.detectChanges();
 	});
 
@@ -56,18 +56,18 @@ describe('PreferencesComponent', () => {
 	});
 
 	it('should initialize publicEmail and publicPhone from user', () => {
-		expect(component.user.publicEmail).toEqual(false);
-		expect(component.user.publicPhone).toEqual(true);
+		expect(component.user().publicEmail).toEqual(false);
+		expect(component.user().publicPhone).toEqual(true);
 	});
 
 	it('should toggle email setting', async () => {
-		userServiceSpy.editUserPreferences.mockReturnValue(of(component.user));
+		userServiceSpy.editUserPreferences.mockReturnValue(of(component.user()));
 		const emailToggleButton = fixture.nativeElement.querySelector('#emailToggle-button');
-	
+
 		expect(emailToggleButton).toBeTruthy();
 
 		emailToggleButton.click();
-    fixture.detectChanges();
+		fixture.detectChanges();
 
 		expect(userServiceSpy.editUserPreferences).toHaveBeenCalledWith('1', true, undefined);
 	});
@@ -96,8 +96,8 @@ describe('PreferencesComponent', () => {
 		messageServiceSpy.showError.mockClear();
 		const phoneToggleButton = fixture.nativeElement.querySelector('#phoneToggle-button');
 
-    phoneToggleButton.click();
-    fixture.detectChanges();
+		phoneToggleButton.click();
+		fixture.detectChanges();
 
 		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to change user preferences');
 	});

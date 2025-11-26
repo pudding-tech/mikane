@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, model } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -24,51 +24,51 @@ export class PreferencesComponent implements OnInit, OnDestroy {
 	breakpointService = inject(BreakpointService);
 	private logService = inject(LogService);
 
-	@Input() user: User;
+	user = model<User>();
 	private editPreferencesSubscription = new Subscription();
 	protected publicEmail: boolean;
 	protected publicPhone: boolean;
-	protected loadingEmail: boolean;
-	protected loadingPhone: boolean;
 	protected updatedEmail: boolean;
 	protected updatedPhone: boolean;
+	protected loadingEmail = new BehaviorSubject<boolean>(false);
+	protected loadingPhone = new BehaviorSubject<boolean>(false);
 
 	ngOnInit(): void {
-		this.publicEmail = this.user.publicEmail;
-		this.publicPhone = this.user.publicPhone;
+		this.publicEmail = this.user().publicEmail;
+		this.publicPhone = this.user().publicPhone;
 	}
 
 	toggleEmail() {
-		this.loadingEmail = true;
+		this.loadingEmail.next(true);
 		this.editPreferencesSubscription.add(
-			this.userService.editUserPreferences(this.user.id, this.publicEmail, undefined).subscribe({
+			this.userService.editUserPreferences(this.user().id, this.publicEmail, undefined).subscribe({
 				next: (user) => {
-					this.user = user;
-					this.loadingEmail = false;
+					this.user.set(user);
+					this.loadingEmail.next(false);
 				},
 				error: (err: ApiError) => {
 					this.publicEmail = !this.publicEmail;
 					this.messageService.showError('Failed to change user preferences');
 					this.logService.error('something went wrong while changing user email preference: ' + err?.error?.message);
-					this.loadingEmail = false;
+					this.loadingEmail.next(false);
 				},
 			}),
 		);
 	}
 
 	togglePhone() {
-		this.loadingPhone = true;
+		this.loadingPhone.next(true);
 		this.editPreferencesSubscription.add(
-			this.userService.editUserPreferences(this.user.id, undefined, this.publicPhone).subscribe({
+			this.userService.editUserPreferences(this.user().id, undefined, this.publicPhone).subscribe({
 				next: (user) => {
-					this.user = user;
-					this.loadingPhone = false;
+					this.user.set(user);
+					this.loadingPhone.next(false);
 				},
 				error: (err: ApiError) => {
 					this.publicPhone = !this.publicPhone;
 					this.messageService.showError('Failed to change user preferences');
 					this.logService.error('something went wrong while changing user phone preference: ' + err?.error?.message);
-					this.loadingPhone = false;
+					this.loadingPhone.next(false);
 				},
 			}),
 		);

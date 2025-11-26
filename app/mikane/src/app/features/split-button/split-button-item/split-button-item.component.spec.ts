@@ -16,10 +16,7 @@ describe('SplitButtonItemComponent', () => {
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(SplitButtonItemComponent, {
-			bindings: [
-				inputBinding('icon', () => 'person'),
-				inputBinding('text', () => 'test-text')
-			]
+			bindings: [inputBinding('icon', () => 'person'), inputBinding('text', () => 'test-text')],
 		});
 		component = fixture.componentInstance;
 		fixture.detectChanges();

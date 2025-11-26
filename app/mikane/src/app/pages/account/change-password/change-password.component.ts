@@ -13,6 +13,7 @@ import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { createCompareValidator } from 'src/app/shared/forms/validators/compare.validator';
+import { ApiError } from 'src/app/types/apiError.type';
 
 @Component({
 	selector: 'app-change-password',
@@ -69,9 +70,9 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 							this.logService.error('Something went wrong while getting user');
 						}
 					},
-					error: (err) => {
+					error: (err: ApiError) => {
 						this.messageService.showError('Failed to change password');
-						this.logService.error('Error occurred while changing password: ' + err?.error);
+						this.logService.error('Error occurred while changing password: ' + err?.error?.message);
 					},
 				});
 		}

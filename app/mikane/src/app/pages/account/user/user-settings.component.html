@@ -10,7 +10,7 @@
 			<div>
 				<form [formGroup]="editUserForm" (ngSubmit)="editUser()">
 					<div class="setting-row">
-						@if (editMode) {
+						@if (editMode()) {
 							<mat-form-field appearance="fill" class="input-field">
 								<mat-label>Username</mat-label>
 								<input type="text" matInput placeholder="Username" formControlName="username" />
@@ -24,8 +24,7 @@
 									<mat-error>Between 3-40 characters - only letters, numbers, hyphens, underscores</mat-error>
 								}
 							</mat-form-field>
-						}
-						@else {
+						} @else {
 							<span class="user-padding"> Username: </span>
 							<span class="user-details">
 								{{ editUserForm.get("username").value }}
@@ -33,7 +32,7 @@
 						}
 					</div>
 					<div class="setting-row">
-						@if (editMode) {
+						@if (editMode()) {
 							<mat-form-field appearance="fill" class="input-field">
 								<mat-label>First Name</mat-label>
 								<input
@@ -47,8 +46,7 @@
 									<mat-error>First name required</mat-error>
 								}
 							</mat-form-field>
-						}
-						@else {
+						} @else {
 							<span class="user-padding"> First name: </span>
 							<span class="user-details">
 								{{ editUserForm.get("firstName").value }}
@@ -56,7 +54,7 @@
 						}
 					</div>
 					<div class="setting-row">
-						@if (editMode) {
+						@if (editMode()) {
 							<mat-form-field class="input-field">
 								<mat-label>Last Name</mat-label>
 								<input type="text" matInput placeholder="Last name" autocomplete="family-name" formControlName="lastName" />
@@ -64,8 +62,7 @@
 									<mat-error>Last name invalid</mat-error>
 								}
 							</mat-form-field>
-						}
-						@else {
+						} @else {
 							<span class="user-padding"> Last name: </span>
 							<span class="user-details">
 								{{ editUserForm.get("lastName").value }}
@@ -73,7 +70,7 @@
 						}
 					</div>
 					<div class="setting-row">
-						@if (editMode) {
+						@if (editMode()) {
 							<mat-form-field class="input-field">
 								<mat-label>Email</mat-label>
 								<input type="text" matInput placeholder="Email" autocomplete="email" formControlName="email" />
@@ -87,8 +84,7 @@
 									<mat-error>Invalid email</mat-error>
 								}
 							</mat-form-field>
-						}
-						@else {
+						} @else {
 							<span class="user-padding"> Email: </span>
 							<span class="user-details">
 								{{ editUserForm.get("email").value }}
@@ -96,7 +92,7 @@
 						}
 					</div>
 					<div class="setting-row">
-						@if (editMode) {
+						@if (editMode()) {
 							<mat-form-field class="input-field">
 								<mat-label>Phone Number</mat-label>
 								<input type="text" matInput placeholder="Phonenumber" autocomplete="tel" formControlName="phone" />
@@ -110,15 +106,14 @@
 									<mat-error>Phone number already in use</mat-error>
 								}
 							</mat-form-field>
-						}
-						@else {
+						} @else {
 							<span class="user-padding"> Phone number: </span>
 							<span class="user-details">
 								{{ editUserForm.get("phone").value }}
 							</span>
 						}
 					</div>
-					@if (!editMode) {
+					@if (!editMode()) {
 						<div class="setting-row">
 							<span class="user-padding"> Avatar: </span>
 							<span class="account-avatar-link user-details">
@@ -128,18 +123,22 @@
 					}
 					<br />
 					<mat-card-actions class="setting-row">
-						@if (editMode) {
+						@if (editMode()) {
 							<div>
 								<button type="button" mat-button color="accent" (click)="cancelEditMode()" class="user-settings-actions">
 									Cancel
 								</button>
-								<button type="submit" mat-raised-button [disabled]="editUserForm.invalid || editUserForm.pending" color="primary">
+								<button
+									type="submit"
+									mat-raised-button
+									[disabled]="editUserForm.invalid || editUserForm.pending"
+									color="primary"
+								>
 									<mat-icon>check_cirle</mat-icon>
 									Save changes
 								</button>
 							</div>
-						}
-						@else {
+						} @else {
 							<button type="button" mat-raised-button color="primary" (click)="toggleEditMode()">
 								<mat-icon>edit</mat-icon>
 								Edit
@@ -155,7 +154,7 @@
 	<div class="user-settings-mobile">
 		<form [formGroup]="editUserForm" (ngSubmit)="editUser()">
 			<div>
-				@if (editMode) {
+				@if (editMode()) {
 					<mat-form-field appearance="fill" class="input-field">
 						<mat-label>Username</mat-label>
 						<input type="text" matInput placeholder="Username" autocomplete="username" formControlName="username" />
@@ -169,8 +168,7 @@
 							<mat-error>Between 3-40 characters - only letters, numbers, hyphens, underscores</mat-error>
 						}
 					</mat-form-field>
-				}
-				@else {
+				} @else {
 					<span class="user-property-title"> Username: </span>
 					<span class="user-details">
 						{{ editUserForm.get("username").value }}
@@ -178,7 +176,7 @@
 				}
 			</div>
 			<div>
-				@if (editMode) {
+				@if (editMode()) {
 					<mat-form-field appearance="fill" class="input-field">
 						<mat-label>First Name</mat-label>
 						<input type="text" matInput placeholder="First name" autocomplete="given-name" formControlName="firstName" />
@@ -186,8 +184,7 @@
 							<mat-error>First name required</mat-error>
 						}
 					</mat-form-field>
-				}
-				@else {
+				} @else {
 					<span class="user-property-title"> First name: </span>
 					<span class="user-details">
 						{{ editUserForm.get("firstName").value }}
@@ -195,7 +192,7 @@
 				}
 			</div>
 			<div>
-				@if (editMode) {
+				@if (editMode()) {
 					<mat-form-field class="input-field">
 						<mat-label>Last Name</mat-label>
 						<input type="text" matInput placeholder="Last name" autocomplete="family-name" formControlName="lastName" />
@@ -203,8 +200,7 @@
 							<mat-error>Last name invalid</mat-error>
 						}
 					</mat-form-field>
-				}
-				@else {
+				} @else {
 					<span class="user-property-title"> Last name: </span>
 					<span class="user-details">
 						{{ editUserForm.get("lastName").value }}
@@ -212,7 +208,7 @@
 				}
 			</div>
 			<div>
-				@if (editMode) {
+				@if (editMode()) {
 					<mat-form-field class="input-field">
 						<mat-label>Email</mat-label>
 						<input type="text" matInput placeholder="Email" autocomplete="email" formControlName="email" />
@@ -226,8 +222,7 @@
 							<mat-error>Invalid email</mat-error>
 						}
 					</mat-form-field>
-				}
-				@else {
+				} @else {
 					<span class="user-property-title"> Email: </span>
 					<span class="user-details">
 						{{ editUserForm.get("email").value }}
@@ -235,7 +230,7 @@
 				}
 			</div>
 			<div>
-				@if (editMode) {
+				@if (editMode()) {
 					<mat-form-field class="input-field">
 						<mat-label>Phone Number</mat-label>
 						<input type="text" matInput placeholder="Phone number" autocomplete="tel" formControlName="phone" />
@@ -249,15 +244,14 @@
 							<mat-error>Phone number already in use</mat-error>
 						}
 					</mat-form-field>
-				}
-				@else {
+				} @else {
 					<span class="user-property-title"> Phone number: </span>
 					<span class="user-details">
 						{{ editUserForm.get("phone").value }}
 					</span>
 				}
 			</div>
-			@if (!editMode) {
+			@if (!editMode()) {
 				<div>
 					<span class="user-property-title"> Avatar: </span>
 					<span class="account-avatar-link user-details">
@@ -266,7 +260,7 @@
 				</div>
 			}
 			<span class="buttons">
-				@if (editMode) {
+				@if (editMode()) {
 					<div>
 						<button type="button" mat-button color="accent" (click)="cancelEditMode()" class="user-settings-actions">
 							Cancel
@@ -276,8 +270,7 @@
 							Save changes
 						</button>
 					</div>
-				}
-				@else {
+				} @else {
 					<button type="button" mat-raised-button color="primary" (click)="toggleEditMode()">
 						<mat-icon>edit</mat-icon>
 						Edit

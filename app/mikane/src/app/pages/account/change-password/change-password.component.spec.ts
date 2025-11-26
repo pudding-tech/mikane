@@ -11,8 +11,8 @@ import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.servic
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
-import { ChangePasswordComponent } from './change-password.component';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ChangePasswordComponent } from './change-password.component';
 
 describe('ChangePasswordComponent', () => {
 	let component: ChangePasswordComponent;

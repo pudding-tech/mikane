@@ -3,6 +3,7 @@ import localeNo from '@angular/common/locales/no';
 import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { WritableSignal } from 'node_modules/@angular/core/types/_chrome_dev_tools_performance-chunk';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
@@ -16,8 +17,8 @@ import { ProfileComponent } from './profile.component';
 
 class PC extends ProfileComponent {
 	public override user: User;
-	public override events: PuddingEvent[];
-	public override expenses: Expense[];
+	public override events: WritableSignal<PuddingEvent[]>;
+	public override expenses: WritableSignal<Expense[]>;
 }
 
 describe('ProfileComponent', () => {
@@ -130,8 +131,9 @@ describe('ProfileComponent', () => {
 		expect(userServiceSpy.loadUserEvents).toHaveBeenCalledWith('u1', 5);
 		expect(userServiceSpy.loadUserExpenses).toHaveBeenCalledWith('u1', null, 5);
 		expect((component as PC).user).toEqual(mockUser);
-		expect((component as PC).events).toEqual(mockEvents);
-		expect((component as PC).expenses[0].name).toBe('Expense 1');
+		expect((component as PC).events()).toEqual(mockEvents);
+		expect((component as PC).expenses().length).toBe(1);
+		expect((component as PC).expenses()[0].name).toBe('Expense 1');
 	});
 
 	it('should show error if user not found', () => {

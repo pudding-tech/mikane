@@ -14,7 +14,7 @@
 					<mat-icon aria-hidden="false">account_circle</mat-icon>
 				</div>
 				<mat-card-title>
-					@if (!resetPasswordView) {
+					@if (!resetPasswordView()) {
 						<div>Login</div>
 					} @else {
 						<div>Reset password</div>
@@ -22,7 +22,7 @@
 				</mat-card-title>
 			</mat-card-header>
 			<mat-card-content class="card-content">
-				@if (!resetPasswordView) {
+				@if (!resetPasswordView()) {
 					<ng-container *ngTemplateOutlet="loginContent" />
 				} @else {
 					<ng-container *ngTemplateOutlet="resetPasswordContent" />
@@ -41,7 +41,7 @@
 				</span>
 				<span class="logo-text"> MIKANE </span>
 			</h1>
-			@if (!resetPasswordView) {
+			@if (!resetPasswordView()) {
 				<ng-container *ngTemplateOutlet="loginContent" />
 			} @else {
 				<h2 class="reset-password-title">Reset password</h2>
@@ -76,8 +76,8 @@
 				</button>
 			</mat-form-field>
 		</div>
-		<button type="submit" [disabled]="loading" mat-raised-button color="primary" id="login-button" class="login-input button">
-			@if (!loading) {
+		<button type="submit" [disabled]="loading | async" mat-raised-button color="primary" id="login-button" class="login-input button">
+			@if ((loading | async) === false) {
 				<ng-container matButtonIcon>
 					<mat-icon aria-hidden="false">login</mat-icon>
 					<span>Log in</span>
@@ -103,7 +103,7 @@
 			}
 		</mat-form-field>
 		<button type="submit" id="password-button" mat-raised-button color="primary" class="login-input button">
-			@if (!loading) {
+			@if ((loading | async) === false) {
 				<ng-container matButtonIcon>
 					<mat-icon aria-hidden="false">email</mat-icon>
 					<span>Send instructions</span>
@@ -112,7 +112,7 @@
 				<mat-spinner diameter="20" class="mat-spinner" />
 			}
 		</button>
-		@if (resetPasswordRequestSent) {
+		@if (resetPasswordRequestSent()) {
 			<div class="info-text">
 				Your password reset request has been received and is being processed. You will receive an email with password reset
 				instructions shortly.

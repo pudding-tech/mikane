@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { NEVER, Subscription, switchMap } from 'rxjs';
+import { BehaviorSubject, NEVER, Subscription, switchMap } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { LogService } from 'src/app/services/log/log.service';
@@ -40,7 +40,7 @@ export class DangerZoneComponent implements OnDestroy {
 	private logService = inject(LogService);
 
 	private deleteSubscription: Subscription;
-	protected loading = false;
+	protected loading = new BehaviorSubject<boolean>(false);
 
 	deleteUser() {
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -58,7 +58,7 @@ export class DangerZoneComponent implements OnDestroy {
 			.pipe(
 				switchMap((confirm) => {
 					if (confirm) {
-						this.loading = true;
+						this.loading.next(true);
 						return this.userService.requestDeleteAccount();
 					} else {
 						return NEVER;
@@ -67,12 +67,12 @@ export class DangerZoneComponent implements OnDestroy {
 			)
 			.subscribe({
 				next: () => {
-					this.loading = false;
+					this.loading.next(false);
 					this.messageService.showSuccess('Email sent!');
 					this.router.navigate(['/login']);
 				},
 				error: (err: ApiError) => {
-					this.loading = false;
+					this.loading.next(false);
 					this.messageService.showError('Failed to send email!');
 					this.logService.error('something went wrong while sending account deletion email: ' + err?.error?.message);
 				},
