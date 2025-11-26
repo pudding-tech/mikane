@@ -72,8 +72,8 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 
 	addExpensesCutoffDate = signal<Date | null>(null);
 	notificationsMinDate = new Date();
-	emailReadyToSettleSentLoading = false;
-	emailReminderSentLoading = false;
+	emailReadyToSettleSentLoading = new BehaviorSubject<boolean>(false);
+	emailReminderSentLoading = new BehaviorSubject<boolean>(false);
 
 	addAdminForm = new FormGroup({
 		userId: new FormControl('', [Validators.required]),
@@ -290,7 +290,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			.pipe(
 				switchMap((confirm) => {
 					if (confirm) {
-						this.emailReadyToSettleSentLoading = true;
+						this.emailReadyToSettleSentLoading.next(true);
 						return this.eventService.sendReadyToSettleEmails(this.event.id);
 					} else {
 						return NEVER;
@@ -299,10 +299,11 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: () => {
-					this.emailReadyToSettleSentLoading = false;
+					this.emailReadyToSettleSentLoading.next(false);
 					this.messageService.showSuccess('Emails successfully sent');
 				},
 				error: (err: ApiError) => {
+					this.emailReadyToSettleSentLoading.next(false);
 					this.messageService.showError('Failed to send emails');
 					this.logService.error('Something went wrong while sending emails: ' + err?.error?.message);
 				},
@@ -325,7 +326,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			.pipe(
 				switchMap((confirm) => {
 					if (confirm) {
-						this.emailReminderSentLoading = true;
+						this.emailReminderSentLoading.next(true);
 						return this.eventService.sendAddExpensesReminderEmails(this.event.id, this.addExpensesCutoffDate());
 					} else {
 						return NEVER;
@@ -334,11 +335,12 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: () => {
-					this.emailReminderSentLoading = false;
+					this.emailReminderSentLoading.next(false);
 					this.addExpensesCutoffDate.set(null);
 					this.messageService.showSuccess('Emails successfully sent');
 				},
 				error: (err: ApiError) => {
+					this.emailReminderSentLoading.next(false);
 					this.messageService.showError('Failed to send emails');
 					this.logService.error('Something went wrong while sending emails: ' + err?.error?.message);
 				},

@@ -251,8 +251,8 @@
 	<button
 		mat-raised-button
 		color="primary"
-		[disabled]="event?.status.id !== EventStatusType.READY_TO_SETTLE || emailReadyToSettleSentLoading"
-		[class.spinner]="emailReadyToSettleSentLoading"
+		[disabled]="event?.status.id !== EventStatusType.READY_TO_SETTLE || (emailReadyToSettleSentLoading | async) === true"
+		[class.spinner]="emailReadyToSettleSentLoading | async"
 		(click)="sendReadyToSettleEmails()"
 	>
 		<mat-icon>email</mat-icon>
@@ -276,7 +276,7 @@
 				readonly
 				[matDatepicker]="picker"
 				[(ngModel)]="addExpensesCutoffDate"
-				[disabled]="event?.status.id !== EventStatusType.ACTIVE || emailReminderSentLoading"
+				[disabled]="event?.status.id !== EventStatusType.ACTIVE || (emailReminderSentLoading | async) === true"
 				[min]="notificationsMinDate"
 				(click)="picker.open()"
 				class="mat-datepicker-input"
@@ -289,8 +289,8 @@
 	<button
 		mat-raised-button
 		color="primary"
-		[disabled]="event?.status.id !== EventStatusType.ACTIVE || emailReminderSentLoading"
-		[class.spinner]="emailReminderSentLoading"
+		[disabled]="event?.status.id !== EventStatusType.ACTIVE || (emailReminderSentLoading | async) === true"
+		[class.spinner]="emailReminderSentLoading | async"
 		(click)="sendAddExpensesReminderEmails()"
 	>
 		<mat-icon>email</mat-icon>
