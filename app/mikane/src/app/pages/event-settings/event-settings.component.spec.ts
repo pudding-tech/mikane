@@ -40,6 +40,8 @@ describe('EventSettingsComponent', () => {
 		deleteEvent: ReturnType<typeof vi.fn>;
 		setUserAsAdmin: ReturnType<typeof vi.fn>;
 		removeUserAsAdmin: ReturnType<typeof vi.fn>;
+		sendReadyToSettleEmails: ReturnType<typeof vi.fn>;
+		sendAddExpensesReminderEmails: ReturnType<typeof vi.fn>;
 	};
 	let userServiceSpy: { loadUsersByEvent: ReturnType<typeof vi.fn> };
 	let authServiceSpy: { getCurrentUser: ReturnType<typeof vi.fn> };
@@ -54,6 +56,8 @@ describe('EventSettingsComponent', () => {
 			deleteEvent: vi.fn().mockReturnValue(of({})),
 			setUserAsAdmin: vi.fn().mockReturnValue(of({})),
 			removeUserAsAdmin: vi.fn().mockReturnValue(of({})),
+			sendReadyToSettleEmails: vi.fn().mockReturnValue(of(null)),
+			sendAddExpensesReminderEmails: vi.fn().mockReturnValue(of(null)),
 		};
 		userServiceSpy = { loadUsersByEvent: vi.fn().mockReturnValue(of([])) };
 		authServiceSpy = { getCurrentUser: vi.fn().mockReturnValue(of({ id: '1' })) };
@@ -359,6 +363,167 @@ describe('EventSettingsComponent', () => {
 			await component.removeAdmin('1');
 
 			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to remove current user as admin');
+		});
+	});
+
+	describe('gotoUserProfile', () => {
+		it('should navigate to user profile for non-guest user', () => {
+			const { component } = createComponent();
+			const user = { id: '1', username: 'testuser', guest: false } as User;
+			component.gotoUserProfile(user);
+
+			expect(routerSpy.navigate).toHaveBeenCalledWith(['u', 'testuser']);
+		});
+
+		it('should not navigate for guest user', () => {
+			const { component } = createComponent();
+			const user = { id: '1', username: 'guestuser', guest: true } as User;
+			component.gotoUserProfile(user);
+
+			expect(routerSpy.navigate).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('sendReadyToSettleEmails', () => {
+		it('should send ready to settle emails when confirmed', async () => {
+			dialogSpy.open.mockReturnValue({ afterClosed: () => of(true) } as MatDialogRef<boolean>);
+			const { component } = createComponent();
+			component.sendReadyToSettleEmails();
+
+			expect(dialogSpy.open).toHaveBeenCalledWith(ConfirmDialogComponent, {
+				width: '420px',
+				data: {
+					title: "Send 'ready to settle' email",
+					content:
+						"Are you sure you want to send the 'ready to settle' email? Emails will be sent to all participants in the event.",
+					confirm: 'Yes, I am sure',
+				},
+			});
+
+			expect(eventServiceSpy.sendReadyToSettleEmails).toHaveBeenCalledWith('1');
+			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Emails successfully sent');
+		});
+
+		it('should not send ready to settle emails when user cancels', () => {
+			dialogSpy.open.mockReturnValue({ afterClosed: () => of(false) } as MatDialogRef<boolean>);
+			const { component } = createComponent();
+			component.sendReadyToSettleEmails();
+
+			expect(eventServiceSpy.sendReadyToSettleEmails).not.toHaveBeenCalled();
+		});
+
+		it('should show error message if sending ready to settle emails fails', () => {
+			eventServiceSpy.sendReadyToSettleEmails.mockReturnValue(throwError(() => ({ error: { message: 'error' } }) as ApiError));
+			dialogSpy.open.mockReturnValue({ afterClosed: () => of(true) } as MatDialogRef<boolean>);
+			const { component } = createComponent();
+			component.sendReadyToSettleEmails();
+
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to send emails');
+		});
+	});
+
+	describe('sendAddExpensesReminderEmails', () => {
+		it('should send add expenses reminder emails when confirmed', async () => {
+			dialogSpy.open.mockReturnValue({ afterClosed: () => of(true) } as MatDialogRef<boolean>);
+			const { component } = createComponent();
+			const cutoffDate = new Date('2025-12-01');
+			component.addExpensesCutoffDate.set(cutoffDate);
+			component.sendAddExpensesReminderEmails();
+
+			expect(dialogSpy.open).toHaveBeenCalledWith(ConfirmDialogComponent, {
+				width: '420px',
+				data: {
+					title: "Send 'add expenses reminder' email",
+					content:
+						"Are you sure you want to send the 'add expenses reminder' email? Emails will be sent to all participants in the event.",
+					confirm: 'Yes, I am sure',
+				},
+			});
+
+			expect(eventServiceSpy.sendAddExpensesReminderEmails).toHaveBeenCalledWith('1', cutoffDate);
+			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Emails successfully sent');
+			expect(component.addExpensesCutoffDate()).toBeNull();
+		});
+
+		it('should not send add expenses reminder emails when user cancels', () => {
+			dialogSpy.open.mockReturnValue({ afterClosed: () => of(false) } as MatDialogRef<boolean>);
+			const { component } = createComponent();
+			component.sendAddExpensesReminderEmails();
+
+			expect(eventServiceSpy.sendAddExpensesReminderEmails).not.toHaveBeenCalled();
+		});
+
+		it('should show error message if sending add expenses reminder emails fails', () => {
+			eventServiceSpy.sendAddExpensesReminderEmails.mockReturnValue(throwError(() => ({ error: { message: 'error' } }) as ApiError));
+			dialogSpy.open.mockReturnValue({ afterClosed: () => of(true) } as MatDialogRef<boolean>);
+			const { component } = createComponent();
+			component.sendAddExpensesReminderEmails();
+
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to send emails');
+		});
+
+		it('should show specific error message for PUD-150 error code', () => {
+			eventServiceSpy.sendAddExpensesReminderEmails.mockReturnValue(
+				throwError(() => ({ error: { code: 'PUD-150', message: 'Specific error message' } }) as ApiError),
+			);
+			dialogSpy.open.mockReturnValue({ afterClosed: () => of(true) } as MatDialogRef<boolean>);
+			const { component } = createComponent();
+			component.sendAddExpensesReminderEmails();
+
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Specific error message');
+		});
+	});
+
+	describe('ngOnDestroy', () => {
+		it('should unsubscribe from all subscriptions', () => {
+			const { component } = createComponent();
+			component.ngOnInit();
+
+			const eventSubscriptionSpy = vi.spyOn(component['eventSubscription'], 'unsubscribe');
+
+			component.ngOnDestroy();
+
+			expect(eventSubscriptionSpy).toHaveBeenCalledWith();
+		});
+
+		it('should handle undefined subscriptions gracefully', () => {
+			const { component } = createComponent();
+
+			expect(() => component.ngOnDestroy()).not.toThrow();
+		});
+	});
+
+	describe('addAdmin success message', () => {
+		it('should show success message when admin is added', async () => {
+			eventServiceSpy.setUserAsAdmin.mockReturnValue(of({ id: '1', status: {}, adminIds: ['1', '2'] }));
+			userServiceSpy.loadUsersByEvent.mockReturnValue(
+				of([
+					{ id: '1', eventInfo: { isAdmin: true }, avatarURL: 'url1' },
+					{ id: '2', eventInfo: { isAdmin: false }, avatarURL: 'url2' },
+				] as User[]),
+			);
+
+			const { component } = createComponent({ adminIds: ['1'] });
+			component.addAdminForm.controls['userId'].setValue('2');
+			await component.addAdmin();
+
+			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Admin added successfully');
+		});
+	});
+
+	describe('removeAdmin success message', () => {
+		it('should show success message when admin is removed', async () => {
+			eventServiceSpy.removeUserAsAdmin.mockReturnValue(of({ id: '1', status: {}, adminIds: ['1'] }));
+			userServiceSpy.loadUsersByEvent.mockReturnValue(
+				of([
+					{ id: '1', eventInfo: { isAdmin: true }, avatarURL: 'url1' },
+					{ id: '2', eventInfo: { isAdmin: true }, avatarURL: 'url2' },
+				] as User[]),
+			);
+			const { component } = createComponent({ adminIds: ['1', '2'] });
+			await component.removeAdmin('2');
+
+			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Admin removed successfully');
 		});
 	});
 });
