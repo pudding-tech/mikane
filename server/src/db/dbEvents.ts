@@ -16,7 +16,7 @@ import * as ec from "../types/errorCodes.ts";
  */
 export const getEvents = async (userId?: string) => {
   const query = {
-    text: "SELECT * FROM get_events(null, $1, false, false);",
+    text: "SELECT * FROM get_events(null, $1, false);",
     values: [userId]
   };
   const events: Event[] = await pool.query(query)
@@ -41,7 +41,7 @@ export const getEvents = async (userId?: string) => {
  */
 export const getEvent = async (eventId: string, userId?: string) => {
   const query = {
-    text: "SELECT * FROM get_events($1, $2, false, false);",
+    text: "SELECT * FROM get_events($1, $2, false);",
     values: [eventId, userId]
   };
   const events: Event[] = await pool.query(query)
@@ -69,13 +69,12 @@ export const getEvent = async (eventId: string, userId?: string) => {
  * DB interface: Get specific event by name
  * @param eventId Event name
  * @param userId Get user specific information about event (optional)
- * @param authIsApiKey True if auth uses an API key instead of signing in
  * @returns Event
  */
-export const getEventByName = async (eventName: string, userId?: string, authIsApiKey?: boolean) => {
+export const getEventByName = async (eventName: string, userId?: string) => {
   const query = {
-    text: "SELECT * FROM get_event_by_name($1, $2, $3);",
-    values: [eventName, userId, authIsApiKey]
+    text: "SELECT * FROM get_event_by_name($1, $2);",
+    values: [eventName, userId]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {
@@ -86,8 +85,6 @@ export const getEventByName = async (eventName: string, userId?: string, authIsA
         throw new ErrorExt(ec.PUD006, err);
       else if (err.code === "P0008")
         throw new ErrorExt(ec.PUD008, err);
-      else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
       else
         throw new ErrorExt(ec.PUD031, err);
     });

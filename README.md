@@ -71,8 +71,8 @@ Option B:
 Use this method if you only want to work with the frontend (a database will be automatically set up, and the backend will be non-editable).
 
 1. Create a `.env` file and populate the required variables:
-     - Add `POSTGRES_USER` and `POSTGRES_PASSWORD` to the `.env` file to be used for the database setup, and ensure these values are reflected in the `DB_USER` and `DB_PASSWORD` variables, respectively.
-     - The remaining database variables should be set as follows: `DB_HOST=db`, `DB_PORT=5432`, and `DB_DATABASE=mikane`.
+    - Add `POSTGRES_USER` and `POSTGRES_PASSWORD` to the `.env` file to be used for the database setup, and ensure these values are reflected in the `DB_USER` and `DB_PASSWORD` variables, respectively.
+    - The remaining database variables should be set as follows: `DB_HOST=db`, `DB_PORT=5432`, and `DB_DATABASE=mikane`.
 
 3. Run the backend server, which will automatically create and connect to a ready-to-use database:
     ```bash

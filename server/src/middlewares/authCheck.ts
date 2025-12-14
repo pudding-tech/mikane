@@ -5,6 +5,8 @@ import { authenticate } from "../utils/auth.ts";
 import { APIKey } from "../types/types.ts";
 import { ErrorExt } from "../types/errorExt.ts";
 
+type KeyOutput = { valid: true } | { valid: false, reason: ErrorCode };
+
 /**
  * Only allow authenticated users to progress
  * @param req Request object
@@ -12,20 +14,10 @@ import { ErrorExt } from "../types/errorExt.ts";
  * @param next NextFunction
  */
 export const authCheck = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    if (!req.session.authenticated) {
-      throw new ErrorExt(PUD001);
-    }
-    next();
+  if (!req.session.authenticated) {
+    throw new ErrorExt(PUD001);
   }
-  catch (err) {
-    next(err);
-  }
-};
-
-type KeyOutput = {
-  valid: boolean,
-  reason?: ErrorCode
+  next();
 };
 
 /**
@@ -35,29 +27,24 @@ type KeyOutput = {
  * @param next NextFunction
  */
 export const authKeyCheck = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    if (req.session.authenticated) {
-      return next();
-    }
-
-    const authKey = req.get("Authorization");
-    if (!authKey) {
-      throw new ErrorExt(PUD065);
-    }
-
-    const keys = await getApiKeys("all");
-    const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
-
-    if (!isAuthenticated.valid && isAuthenticated.reason) {
-      throw new ErrorExt(isAuthenticated.reason);
-    }
-
-    req.authIsApiKey = true;
-    next();
+  if (req.session.authenticated) {
+    return next();
   }
-  catch (err) {
-    next(err);
+
+  const authKey = req.get("X-Api-Key") || req.get("Api-Key");
+  if (!authKey) {
+    throw new ErrorExt(PUD065);
   }
+
+  const keys = await getApiKeys("all");
+  const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
+
+  if (!isAuthenticated.valid) {
+    throw new ErrorExt(isAuthenticated.reason);
+  }
+
+  req.authIsApiKey = true;
+  next();
 };
 
 /**
@@ -67,25 +54,20 @@ export const authKeyCheck = async (req: Request, res: Response, next: NextFuncti
  * @param next NextFunction
  */
 export const masterKeyCheck = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const authKey = req.get("Authorization");
-    if (!authKey) {
-      throw new ErrorExt(PUD069);
-    }
-
-    const keys = await getApiKeys("master");
-    const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
-
-    if (!isAuthenticated.valid && isAuthenticated.reason) {
-      throw new ErrorExt(isAuthenticated.reason);
-    }
-
-    req.authIsApiKey = true;
-    next();
+  const authKey = req.get("X-Api-Key") || req.get("Api-Key");
+  if (!authKey) {
+    throw new ErrorExt(PUD069);
   }
-  catch (err) {
-    next(err);
+
+  const keys = await getApiKeys("master");
+  const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
+
+  if (!isAuthenticated.valid) {
+    throw new ErrorExt(isAuthenticated.reason);
   }
+
+  req.authIsApiKey = true;
+  next();
 };
 
 /**

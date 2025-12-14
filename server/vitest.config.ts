@@ -3,7 +3,9 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     include: ["tests/**/*.test.ts"],
-    reporters: ["verbose"],
+    maxWorkers: 1,
+		isolate: false,
+    reporters: ["tree"],
     setupFiles: ["./tests/setup.ts"],
     coverage: {
       provider: "v8",

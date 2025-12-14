@@ -175,7 +175,7 @@ describe("events", async () => {
       const res = await request(app)
         .get("/api/eventbyname")
         .query("name=" + "Example event")
-        .set("Authorization", "886a2ef41eedfa5bb9978268965a645e");
+        .set("X-Api-Key", "886a2ef41eedfa5bb9978268965a645e");
 
       expect(res.status).toEqual(200);
       expect(res.body.name).toEqual("Example event");
@@ -185,7 +185,7 @@ describe("events", async () => {
       const res = await request(app)
         .get("/api/eventbyname")
         .query("name=" + "Example event")
-        .set("Authorization", "886a2ef41eedfa5bb9978268965a6450");
+        .set("X-Api-Key", "886a2ef41eedfa5bb9978268965a6450");
 
       expect(res.status).toEqual(401);
       expect(res.body.code).toEqual(ec.PUD066.code);

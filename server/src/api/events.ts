@@ -42,13 +42,13 @@ router.get("/events/:id", useRateLimit(), authCheck, csrfCheck, async (req, res)
 
 /*
 * Get specific event by name
+* Note: Will respond with PUD006 if event is private and user has no access
 */
 router.get("/eventbyname", useRateLimit(), authKeyCheck, async (req, res) => {
   const eventName = req.query.name as string;
   const activeUserId = req.session.userId;
-  const authIsApiKey = req.authIsApiKey;
 
-  const event = await db.getEventByName(eventName, activeUserId, authIsApiKey);
+  const event = await db.getEventByName(eventName, activeUserId);
   if (!event) {
     throw new ErrorExt(ec.PUD006);
   }

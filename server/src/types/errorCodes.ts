@@ -624,29 +624,29 @@ export const PUD064: ErrorCode = {
 };
 
 /**
- * PUD-065: No user authenticated and no 'Authorization' header (401)
+ * PUD-065: No user authenticated and no 'X-Api-Key' header (401)
  */
 export const PUD065: ErrorCode = {
   code: "PUD-065",
-  message: "No user authenticated and no 'Authorization' header",
+  message: "No user authenticated and no 'X-Api-Key' header",
   status: 401
 };
 
 /**
- * PUD-066: Authorization key is not correct (401)
+ * PUD-066: X-Api-Key key is not correct (401)
  */
 export const PUD066: ErrorCode = {
   code: "PUD-066",
-  message: "Authorization key is not correct",
+  message: "X-Api-Key key is not correct",
   status: 401
 };
 
 /**
- * PUD-067: Authorization key is outside valid time range (401)
+ * PUD-067: X-Api-Key key is outside valid time range (401)
  */
 export const PUD067: ErrorCode = {
   code: "PUD-067",
-  message: "Authorization key is outside valid time range",
+  message: "X-Api-Key key is outside valid time range",
   status: 401
 };
 
@@ -660,11 +660,11 @@ export const PUD068: ErrorCode = {
 };
 
 /**
- * PUD-069: Missing 'Authorization' header (401)
+ * PUD-069: Missing 'X-Api-Key' header (401)
  */
 export const PUD069: ErrorCode = {
   code: "PUD-069",
-  message: "Missing 'Authorization' header",
+  message: "Missing 'X-Api-Key' header",
   status: 401
 };
 
