@@ -324,7 +324,7 @@
           "Authentication"
         ],
         "summary": "Generate API key",
-        "description": "Generate a new API key and save it in the database. This endpoint requires a master key in the Authorization header.",
+        "description": "Generate a new API key and save it in the database. This endpoint requires a master key in the X-Api-Key header.",
         "operationId": "postKey",
         "security": [
           { "apiKeyAuth": [] }
@@ -5926,7 +5926,7 @@
       "apiKeyAuth": {
         "type": "apiKey",
         "in": "header",
-        "name": "Authorization"
+        "name": "X-Api-Key"
       },
       "csrfToken": {
         "type": "apiKey",

@@ -251,7 +251,7 @@ describe("authentication", async () => {
     test("should create new API key", async () => {
       const res = await request(app)
         .post("/api/generatekey")
-        .set("Authorization", "886a2ef41eedfa5bb9978268965a645e")
+        .set("X-Api-Key", "886a2ef41eedfa5bb9978268965a645e")
         .send({
           name: "Common key for testing"
         });
