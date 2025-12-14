@@ -5,6 +5,8 @@ import { authenticate } from "../utils/auth.ts";
 import { APIKey } from "../types/types.ts";
 import { ErrorExt } from "../types/errorExt.ts";
 
+type KeyOutput = { valid: true } | { valid: false, reason: ErrorCode };
+
 /**
  * Only allow authenticated users to progress
  * @param req Request object
@@ -16,11 +18,6 @@ export const authCheck = (req: Request, res: Response, next: NextFunction) => {
     throw new ErrorExt(PUD001);
   }
   next();
-};
-
-type KeyOutput = {
-  valid: boolean,
-  reason?: ErrorCode
 };
 
 /**
@@ -42,7 +39,7 @@ export const authKeyCheck = async (req: Request, res: Response, next: NextFuncti
   const keys = await getApiKeys("all");
   const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
 
-  if (!isAuthenticated.valid && isAuthenticated.reason) {
+  if (!isAuthenticated.valid) {
     throw new ErrorExt(isAuthenticated.reason);
   }
 
@@ -66,7 +63,7 @@ export const masterKeyCheck = async (req: Request, res: Response, next: NextFunc
   const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
 
   if (!isAuthenticated.valid) {
-    throw new ErrorExt(isAuthenticated.reason ?? PUD066);
+    throw new ErrorExt(isAuthenticated.reason);
   }
 
   req.authIsApiKey = true;
