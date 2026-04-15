@@ -13,6 +13,7 @@ interface EnvVariables {
   IN_PROD: boolean;
   DEPLOYED: boolean;
   PORT: number;
+  LOCALE: string;
   ALLOWED_ORIGIN: string;
   SESSION_SECRET: string;
   LOG_LEVEL: LogLevelType;
@@ -42,6 +43,9 @@ const ALLOWED_LOG_LEVELS = ["alert", "error", "warn", "info", "fail", "success",
 type EnvType = typeof ALLOWED_ENVIRONMENTS[number];
 type LogLevelType = typeof ALLOWED_LOG_LEVELS[number];
 
+/**
+ * Type guard to validate that a given environment string is one of the allowed environment types.
+ */
 const isEnvType = (environement: any): environement is EnvType => {
   if (ALLOWED_ENVIRONMENTS.includes(environement)) {
     return true;
@@ -51,6 +55,10 @@ const isEnvType = (environement: any): environement is EnvType => {
   } 
   return false;
 };
+
+/**
+ * Type guard to validate that a given log level string is one of the allowed log level types.
+ */
 const isLogLevelType = (logLevel: any): logLevel is LogLevelType => {
   if (ALLOWED_LOG_LEVELS.includes(logLevel)) {
     return true;
@@ -61,6 +69,30 @@ const isLogLevelType = (logLevel: any): logLevel is LogLevelType => {
   return false;
 };
 
+/**
+ * Validate and return a locale string.
+ * If the provided locale is not a well-formed BCP 47 language tag, returns a default locale.
+ */
+const getValidLocale = (locale: string | undefined): string => {
+  const DEFAULT_LOCALE = "nb-NO";
+  if (!locale) {
+    console.warn(`No locale provided for LOCALE. Defaulting to '${DEFAULT_LOCALE}'.`);
+    return DEFAULT_LOCALE;
+  }
+
+  try {
+    const canonicalLocale = Intl.getCanonicalLocales(locale)[0];
+    return canonicalLocale;
+  }
+  catch {
+    console.warn(`Invalid locale '${locale}' provided for LOCALE. Defaulting to '${DEFAULT_LOCALE}'.`);
+    return DEFAULT_LOCALE;
+  }
+};
+
+/**
+ * Create and validate environment variables.
+ */
 const createEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
 
   const missing: string[] = [];
@@ -148,6 +180,7 @@ const createEnvVariables = (env: NodeJS.ProcessEnv): EnvVariables => {
     IN_PROD: env.NODE_ENV === "production",
     DEPLOYED: env.DEPLOYED === "true",
     PORT: Number(env.PORT) || 3002,
+    LOCALE: getValidLocale(env.LOCALE),
     ALLOWED_ORIGIN: env.ALLOWED_ORIGIN || "http://localhost:4200",
     SESSION_SECRET: env.SESSION_SECRET || "abcdef",
     LOG_LEVEL: isLogLevelType(env.LOG_LEVEL) ? (env.LOG_LEVEL) : "log",
