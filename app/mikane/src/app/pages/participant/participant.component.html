@@ -83,7 +83,7 @@
 									<!-- Deferred initialization until the panel is open. -->
 									@if (dataSources[i].loading$ | async) {
 										<div class="spinner-container">
-											<mat-spinner class="spinner" />
+											<mat-spinner class="participant-spinner" />
 										</div>
 									}
 									@if (dataSources[i].notEmpty | async) {
