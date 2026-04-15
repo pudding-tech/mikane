@@ -18,13 +18,13 @@ jobs:
       backend-artifact: ${{ steps.bump-snapshot.outputs.artifact-backend }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ssh-key: ${{ secrets.COMMIT_KEY }}
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22.x
+          node-version: 24.x
       - name: Bump frontend version
         run: |
           cd ./app/mikane/
@@ -54,11 +54,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22.x
+          node-version: 24.x
       - name: Install frontend dependencies
         run: |
           cd ./app/mikane/
@@ -69,7 +69,7 @@ jobs:
           npm run build:test --if-present
       - name: Upload frontend artifact
         id: upload-artifact-frontend
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ needs.snapshot.outputs.frontend-artifact }}
           path: ./app/mikane/dist/mikane/browser/
@@ -78,11 +78,11 @@ jobs:
     needs: snapshot
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22.x
+          node-version: 24.x
       - name: Install backend dependencies
         run: |
           cd ./server/
@@ -93,7 +93,7 @@ jobs:
           npm run esbuild --if-present
       - name: Upload backend artifact
         id: upload-artifact-backend
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           if-no-files-found: error
           name: ${{ needs.snapshot.outputs.backend-artifact }}
@@ -102,14 +102,14 @@ jobs:
     needs: snapshot
     uses: ./.github/workflows/frontend-test.yml
     with:
-      node-version: 22.x
+      node-version: 24.x
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
   test-backend:
     needs: snapshot
     uses: ./.github/workflows/backend-test.yml
     with:
-      node-version: 22.x
+      node-version: 24.x
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
   deploy:

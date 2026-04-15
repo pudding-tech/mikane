@@ -8,10 +8,11 @@ on:
         description: "Node version"
         required: true
         type: choice
-        default: 22.x
+        default: 24.x
         options:
           - 20.x
           - 22.x
+          - 24.x
       dry-run:
         description: "Run the workflow in dry-run mode"
         required: false

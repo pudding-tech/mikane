@@ -45,7 +45,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Fetch tag ${{ inputs.tag }}
         if: ${{inputs.tag != '' && !inputs.dry-run}}
         run: |
@@ -71,7 +71,7 @@ jobs:
       outcome: ${{ steps.upload.outcome }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Fetch branch if branch event
         if: ${{ github.event_name == 'push' }}
         run: |
@@ -82,7 +82,7 @@ jobs:
           git fetch --tags
           git checkout ${{ inputs.tag }}
       - name: Use Node.js ${{ inputs.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ inputs.node-version }}
           cache: "npm"
@@ -97,7 +97,7 @@ jobs:
       - name: Upload artifacts
         if: inputs.upload-artifact
         id: upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           if-no-files-found: error
           name: ${{ needs.configure.outputs.artifact }}

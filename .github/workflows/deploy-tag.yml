@@ -24,7 +24,7 @@ jobs:
     uses: ./.github/workflows/frontend-build.yml
     with:
       tag: ${{ github.ref_name }}
-      node-version: 22.x
+      node-version: 24.x
       upload-artifact: true
       environment: production
   build-backend:
@@ -32,7 +32,7 @@ jobs:
     uses: ./.github/workflows/backend-build.yml
     with:
       tag: ${{ github.ref_name }}
-      node-version: 22.x
+      node-version: 24.x
       upload-artifact: true
   deploy:
     needs: [setup, build-frontend, build-backend]

@@ -23,62 +23,66 @@ Mikane is a tool designed for calculating payments to settle shared expenses fro
 
 ### Prerequisites
 
-- Node.js 22.x
+- Node.js 24.x
 - PostgreSQL 15+ (backend setup - option A)
 - Docker (backend setup - option B)
 
 ### Steps
 
- Clone the repository:
- ```bash
- git clone https://github.com/pudding-tech/mikane.git
- cd mikane
- ```
+Clone the repository:
+
+```bash
+git clone https://github.com/pudding-tech/mikane.git
+cd mikane
+```
 
 #### Frontend
 
 1. Install dependencies for the frontend:
-    ```bash
-    cd app/mikane
-    npm install
-    ```
+
+   ```bash
+   cd app/mikane
+   npm install
+   ```
 
 2. Run the frontend application:
-    ```bash
-    npm run dev
-    ```
+   ```bash
+   npm run dev
+   ```
 
 #### Backend
 
 Option A:
+
 1. Set up a PostgreSQL database, then run `db_schema.sql` and all functions in the `db_scripts` folder against it.
 
 2. Create a `.env` file and populate the required variables.
 
 3. Install dependencies for the backend:
-    ```bash
-    cd server
-    npm install
-    ```
+
+   ```bash
+   cd server
+   npm install
+   ```
 
 4. Run the backend server:
-    ```bash
-    npm run dev
-    ```
+   ```bash
+   npm run dev
+   ```
 
 Option B:
 
 Use this method if you only want to work with the frontend (a database will be automatically set up, and the backend will be non-editable).
 
 1. Create a `.env` file and populate the required variables:
-    - Add `POSTGRES_USER` and `POSTGRES_PASSWORD` to the `.env` file to be used for the database setup, and ensure these values are reflected in the `DB_USER` and `DB_PASSWORD` variables, respectively.
-    - The remaining database variables should be set as follows: `DB_HOST=db`, `DB_PORT=5432`, and `DB_DATABASE=mikane`.
+   - Add `POSTGRES_USER` and `POSTGRES_PASSWORD` to the `.env` file to be used for the database setup, and ensure these values are reflected in the `DB_USER` and `DB_PASSWORD` variables, respectively.
+   - The remaining database variables should be set as follows: `DB_HOST=db`, `DB_PORT=5432`, and `DB_DATABASE=mikane`.
 
-3. Run the backend server, which will automatically create and connect to a ready-to-use database:
-    ```bash
-    cd server
-    docker compose up
-    ```
+2. Run the backend server, which will automatically create and connect to a ready-to-use database:
+   ```bash
+   cd server
+   docker compose up
+   ```
 
 ## Usage
 
@@ -93,6 +97,7 @@ The API documentation, following the OpenAPI specification, is available at `htt
 ### Frontend
 
 To run frontend tests:
+
 ```bash
 cd app/mikane
 npm run test
@@ -103,6 +108,7 @@ npm run test
 The backend has integration tests that require a database to function. However, this is automatically set up through Docker with the `npm run db` command below, so no additional actions are needed.
 
 To run backend tests:
+
 ```bash
 cd server
 npm run db
