@@ -23,7 +23,7 @@ Mikane is a tool designed for calculating payments to settle shared expenses fro
 
 ### Prerequisites
 
-- Node.js 22.x
+- Node.js 24.x
 - PostgreSQL 15+ (backend setup - option A)
 - Docker (backend setup - option B)
 
