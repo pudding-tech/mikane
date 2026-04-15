@@ -14,7 +14,7 @@ const url = env.ALLOWED_ORIGIN + "/events/";
 export const sendAddExpensesReminderEmails = async (users: User[], event: Event, cutoffDate?: Date) => {
 
   const subject = cutoffDate
-    ? `Reminder: Add your expenses for ${event.name} before ${cutoffDate.toLocaleDateString()} - Mikane`
+    ? `Reminder: Add your expenses for ${event.name} before ${cutoffDate.toLocaleDateString(env.LOCALE)} - Mikane`
     : `Reminder: Add your expenses for ${event.name} before settlement - Mikane`;
 
   for (const user of users) {
@@ -36,7 +36,7 @@ export const sendAddExpensesReminderEmails = async (users: User[], event: Event,
 
 const addExpensesReminderEmailHTML = (user: User, event: Event, cutoffDate?: Date) => {
   const cutoffText = cutoffDate
-    ? `<div><strong>Important:</strong> Settlement is scheduled to begin on <span style="color:#c2185b;">${cutoffDate.toLocaleDateString()}</span>. Please make sure all your expenses are entered before this date.</div>`
+    ? `<div><strong>Important:</strong> Settlement is scheduled to begin on <span style="color:#c2185b;">${cutoffDate.toLocaleDateString(env.LOCALE)}</span>. Please make sure all your expenses are entered before this date.</div>`
     : "<div>Settlement will begin soon, so please review your records and add any missing expenses.</div>";
 
   return `<html>

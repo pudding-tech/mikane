@@ -23,7 +23,7 @@ router.post("/notifications/:eventId/reminder", singleRequestLimiter, authCheck,
   }
 
   const eventId = req.params.eventId;
-  if (!isUUID(eventId)) {
+  if (!eventId || !isUUID(eventId)) {
     throw new ErrorExt(ec.PUD013);
   }
 
@@ -58,7 +58,7 @@ router.post("/notifications/:eventId/settle", singleRequestLimiter, authCheck, c
 
   const eventId = req.params.eventId;
   const activeUserId = req.session.userId;
-  if (!isUUID(eventId)) {
+  if (!eventId || !isUUID(eventId)) {
     throw new ErrorExt(ec.PUD013);
   }
 

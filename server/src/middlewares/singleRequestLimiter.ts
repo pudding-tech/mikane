@@ -5,6 +5,7 @@ import env from "../env.ts";
 export const RATE_LIMIT_SINGLE_WINDOW_SEC = env.RATE_LIMIT_SINGLE_WINDOW_SEC ? env.RATE_LIMIT_SINGLE_WINDOW_SEC : 300;
 const windowMs = RATE_LIMIT_SINGLE_WINDOW_SEC * 1000;
 
+// In-memory rate-limit store: { "ip": { "endpoint": "last request timestamp (ms)" } }
 const requestStore: Record<string, Record<string, number>> = {};
 
 export const singleRequestLimiter = (req: Request, res: Response, next: NextFunction) => {
@@ -36,15 +37,25 @@ export const singleRequestLimiter = (req: Request, res: Response, next: NextFunc
   next();
 };
 
+/**
+ * Clean up expired entries from the request store to prevent memory bloat.
+ */
 const cleanupExpired = () => {
   const now = Date.now();
   for (const ip in requestStore) {
-    for (const endpoint in requestStore[ip]) {
-      if ((now - requestStore[ip][endpoint]) > windowMs) {
-        delete requestStore[ip][endpoint];
+    const ipStore = requestStore[ip];
+    if (!ipStore) {
+      continue;
+    }
+
+    for (const endpoint in ipStore) {
+      const lastTime = ipStore[endpoint];
+
+      if (lastTime !== undefined && (now - lastTime) > windowMs) {
+        delete ipStore[endpoint];
       }
     }
-    if (Object.keys(requestStore[ip]).length === 0) {
+    if (Object.keys(ipStore).length === 0) {
       delete requestStore[ip];
     }
   }

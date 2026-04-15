@@ -1,6 +1,7 @@
 import { describe, test, expect, beforeAll, afterEach } from "vitest";
 import request from "supertest";
 import app from "../src/server.ts";
+import env from "../src/env.ts";
 import * as ec from "../src/types/errorCodes.ts";
 import { Category, Event, Payment, User } from "../src/types/types.ts";
 import { EventStatusType } from "../src/types/enums.ts";
@@ -224,8 +225,8 @@ describe("notifications", async () => {
       expect(res.body.message).toEqual("Emails successfully sent");
 
       expect(sentEmails.length).toEqual(3);
-      expect(subject).toEqual(`Reminder: Add your expenses for ${event.name} before ${cutoffDate.toLocaleDateString()} - Mikane`);
-      expect(html).toContain(`<strong>Important:</strong> Settlement is scheduled to begin on <span style="color:#c2185b;">${cutoffDate.toLocaleDateString()}</span>`);
+      expect(subject).toEqual(`Reminder: Add your expenses for ${event.name} before ${cutoffDate.toLocaleDateString(env.LOCALE)} - Mikane`);
+      expect(html).toContain(`<strong>Important:</strong> Settlement is scheduled to begin on <span style="color:#c2185b;">${cutoffDate.toLocaleDateString(env.LOCALE)}</span>`);
     });
   });
 
