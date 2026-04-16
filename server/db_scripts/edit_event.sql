@@ -69,7 +69,7 @@ begin
     e.id = ip_event_id;
 
   return query
-  select * from get_events(ip_event_id, ip_by_user_id, false, false);
+  select * from get_events(ip_event_id, ip_by_user_id, false);
 
 end;
 $$

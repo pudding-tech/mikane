@@ -2,8 +2,7 @@ drop function if exists get_events;
 create or replace function get_events(
   ip_event_id uuid,
   ip_by_user_id uuid,
-  ip_active_only boolean,
-  ip_is_api_key boolean
+  ip_active_only boolean
 )
 returns table (
   id uuid,
@@ -43,7 +42,7 @@ begin
         inner join event_status_type est on e.status = est.id
       where
         e.id = coalesce(ip_event_id, e.id) and
-        (ip_is_api_key = true or e.private = false) and
+        e.private = false and
         e.status = case when ip_active_only = true then 1 else e.status end
       order by
         e.created desc;

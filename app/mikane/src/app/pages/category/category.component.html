@@ -1,4 +1,4 @@
-@if ((breakpointService.isMobile() | async) === false && event?.status.id === EventStatusType.ACTIVE) {
+@if ((breakpointService.isMobile() | async) === false && event()?.status.id === EventStatusType.ACTIVE) {
 	<div class="add-button">
 		<button mat-raised-button color="primary" (click)="openDialog()">
 			<mat-icon>post_add</mat-icon>
@@ -10,10 +10,10 @@
 @if ((loading | async) === false) {
 	<div>
 		@if ((breakpointService.isMobile() | async) === false) {
-			<div [ngClass]="{ 'extra-margin': event?.status.id !== EventStatusType.ACTIVE }">
-				@if (categories.length > 0) {
+			<div [ngClass]="{ 'extra-margin': event()?.status.id !== EventStatusType.ACTIVE }">
+				@if (categories().length > 0) {
 					<mat-accordion>
-						@for (category of categories; track category.id) {
+						@for (category of categories(); track category.id) {
 							<mat-expansion-panel class="categories">
 								<mat-expansion-panel-header>
 									<mat-panel-title>
@@ -159,12 +159,12 @@
 											</ng-container>
 											<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 											<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-											@if (event?.status.id === EventStatusType.ACTIVE) {
+											@if (event()?.status.id === EventStatusType.ACTIVE) {
 												<tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
 											}
 										</form>
 									</table>
-									@if (event?.status.id === EventStatusType.ACTIVE) {
+									@if (event()?.status.id === EventStatusType.ACTIVE) {
 										<div id="category-actions">
 											<button
 												mat-stroked-button
@@ -213,7 +213,7 @@
 											}
 										</div>
 									}
-									@if (event?.status.id !== EventStatusType.ACTIVE && category.numberOfExpenses > 0) {
+									@if (event()?.status.id !== EventStatusType.ACTIVE && category.numberOfExpenses > 0) {
 										<button
 											mat-stroked-button
 											type="button"
@@ -234,11 +234,11 @@
 				}
 			</div>
 		} @else {
-			@if (categories.length > 0) {
+			@if (categories().length > 0) {
 				<mat-nav-list class="categories-list-mobile">
-					@for (category of categories; track category.id) {
+					@for (category of categories(); track category.id) {
 						<app-category-item
-							[eventActive]="event?.status.id === EventStatusType.ACTIVE"
+							[eventActive]="event()?.status.id === EventStatusType.ACTIVE"
 							[category]="category"
 							[addUserForm]="addUserForm"
 							[filterUsers]="filterUsers"
@@ -256,7 +256,7 @@
 			} @else {
 				<div class="no-categories-mobile">No expense categories</div>
 			}
-			@if (event?.status.id === EventStatusType.ACTIVE) {
+			@if (event()?.status.id === EventStatusType.ACTIVE) {
 				<button
 					mat-fab
 					color="primary"

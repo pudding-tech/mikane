@@ -14,6 +14,7 @@ import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { EventItemComponent } from 'src/app/features/mobile/event-item/event-item.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -49,6 +50,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 	dialog = inject(MatDialog);
 	breakpointService = inject(BreakpointService);
 	scrollService = inject(ScrollService);
+	private logService = inject(LogService);
 
 	events = signal<PuddingEvent[]>([]);
 	eventsActive = computed(() => {
@@ -133,7 +135,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 							},
 							error: (err: ApiError) => {
 								this.messageService.showError('Failed to edit event');
-								console.error('something went wrong while editing event', err?.error?.message);
+								this.logService.error('Something went wrong while editing event: ' + err?.error?.message);
 							},
 						});
 				}
@@ -162,7 +164,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 					},
 					error: (err: ApiError) => {
 						this.messageService.showError('Failed to create event');
-						console.error('something went wrong while creating event', err?.error?.message);
+						this.logService.error('Something went wrong while creating event: ' + err?.error?.message);
 					},
 				});
 			}

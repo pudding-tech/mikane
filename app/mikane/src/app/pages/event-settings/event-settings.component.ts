@@ -3,13 +3,13 @@ import { Component, Input, OnDestroy, OnInit, inject, signal } from '@angular/co
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
@@ -19,6 +19,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
@@ -59,19 +60,20 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	contextService = inject(ContextService);
 	private messageService = inject(MessageService);
 	dialog = inject(MatDialog);
+	private logService = inject(LogService);
 
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
 	loading = new BehaviorSubject<boolean>(false);
 	eventData: { id?: string; name: string; description: string; private: boolean } = { name: '', description: '', private: false };
-	adminsInEvent: User[];
-	otherUsersInEvent: User[];
-	currentUser: User;
+	adminsInEvent = signal<User[]>([]);
+	otherUsersInEvent = signal<User[]>([]);
+	currentUser = signal<User>(undefined);
 
 	addExpensesCutoffDate = signal<Date | null>(null);
 	notificationsMinDate = new Date();
-	emailReadyToSettleSentLoading = false;
-	emailReminderSentLoading = false;
+	emailReadyToSettleSentLoading = new BehaviorSubject<boolean>(false);
+	emailReminderSentLoading = new BehaviorSubject<boolean>(false);
 
 	addAdminForm = new FormGroup({
 		userId: new FormControl('', [Validators.required]),
@@ -98,15 +100,15 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: ([users, currentUser]) => {
-					this.adminsInEvent = users.filter((user) => user.eventInfo?.isAdmin);
-					this.otherUsersInEvent = users.filter((user) => !user.eventInfo?.isAdmin);
-					this.currentUser = currentUser;
+					this.adminsInEvent.set(users.filter((user) => user.eventInfo?.isAdmin));
+					this.otherUsersInEvent.set(users.filter((user) => !user.eventInfo?.isAdmin));
+					this.currentUser.set(currentUser);
 					this.loading.next(false);
 				},
 				error: (err: ApiError) => {
 					this.loading.next(false);
 					this.messageService.showError('Error loading event settings');
-					console.error('Something went wrong while loading event settings data', err?.error?.message);
+					this.logService.error('Something went wrong while loading event settings data: ' + err?.error?.message);
 				},
 			});
 	}
@@ -131,7 +133,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to edit event');
-					console.error('Something went wrong while editing event', err?.error?.message);
+					this.logService.error('Something went wrong while editing event: ' + err?.error?.message);
 				},
 			});
 	}
@@ -155,7 +157,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to change event status');
-				console.error('Something went wrong while changing event status', err?.error?.message);
+				this.logService.error('Something went wrong while changing event status: ' + err?.error?.message);
 			},
 		});
 	}
@@ -188,7 +190,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to delete event');
-					console.error('Something went wrong while deleting event', err?.error?.message);
+					this.logService.error('Something went wrong while deleting event: ' + err?.error?.message);
 				},
 			});
 	}
@@ -199,10 +201,10 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			this.eventService.setUserAsAdmin(this.event.id, newAdminId).subscribe({
 				next: (res) => {
 					this.event = res;
-					const newAdmin = this.otherUsersInEvent.find((user) => user.id === newAdminId && res.adminIds.includes(newAdminId));
-					const index = this.otherUsersInEvent.findIndex((user) => user.id === newAdminId && res.adminIds.includes(newAdminId));
-					this.adminsInEvent.push(newAdmin);
-					this.otherUsersInEvent.splice(index, 1);
+					const newAdmin = this.otherUsersInEvent().find((user) => user.id === newAdminId && res.adminIds.includes(newAdminId));
+					const index = this.otherUsersInEvent().findIndex((user) => user.id === newAdminId && res.adminIds.includes(newAdminId));
+					this.adminsInEvent.set([...this.adminsInEvent(), newAdmin]);
+					this.otherUsersInEvent.set(this.otherUsersInEvent().filter((_, i) => i !== index));
 
 					this.addAdminForm.get('userId')?.setValue('');
 					this.addAdminForm.get('userId')?.markAsUntouched();
@@ -210,14 +212,14 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to add admin');
-					console.error('Something went wrong while setting admin for event', err?.error?.message);
+					this.logService.error('Something went wrong while setting admin for event: ' + err?.error?.message);
 				},
 			});
 		}
 	}
 
 	removeAdmin(userId: string) {
-		if (userId === this.currentUser.id) {
+		if (userId === this.currentUser().id) {
 			const dialogRef = this.dialog.open(ConfirmDialogComponent, {
 				width: '350px',
 				data: {
@@ -246,22 +248,22 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 					},
 					error: (err: ApiError) => {
 						this.messageService.showError('Failed to remove current user as admin');
-						console.error('Something went wrong while removing admin from event', err?.error?.message);
+						this.logService.error('Something went wrong while removing admin from event: ' + err?.error?.message);
 					},
 				});
 		} else {
 			this.eventService.removeUserAsAdmin(this.event.id, userId).subscribe({
 				next: (res) => {
 					this.event = res;
-					const index = this.adminsInEvent.findIndex((user) => user.id === userId && !res.adminIds.includes(userId));
-					const user = this.adminsInEvent.find((admin) => admin.id === userId && !res.adminIds.includes(userId));
-					this.adminsInEvent.splice(index, 1);
-					this.otherUsersInEvent.push(user);
+					const index = this.adminsInEvent().findIndex((user) => user.id === userId && !res.adminIds.includes(userId));
+					const user = this.adminsInEvent().find((admin) => admin.id === userId && !res.adminIds.includes(userId));
+					this.adminsInEvent.set(this.adminsInEvent().filter((_, i) => i !== index));
+					this.otherUsersInEvent.set([...this.otherUsersInEvent(), user]);
 					this.messageService.showSuccess('Admin removed successfully');
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to remove admin');
-					console.error('Something went wrong while removing admin from event', err?.error?.message);
+					this.logService.error('Something went wrong while removing admin from event: ' + err?.error?.message);
 				},
 			});
 		}
@@ -278,7 +280,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			width: '420px',
 			data: {
 				title: "Send 'ready to settle' email",
-				content: "Are you sure you want to send the 'ready to settle' email? Emails will be sent to all payers in the event.",
+				content: "Are you sure you want to send the 'ready to settle' email? Emails will be sent to all participants in the event.",
 				confirm: 'Yes, I am sure',
 			},
 		});
@@ -288,7 +290,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			.pipe(
 				switchMap((confirm) => {
 					if (confirm) {
-						this.emailReadyToSettleSentLoading = true;
+						this.emailReadyToSettleSentLoading.next(true);
 						return this.eventService.sendReadyToSettleEmails(this.event.id);
 					} else {
 						return NEVER;
@@ -297,12 +299,13 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: () => {
-					this.emailReadyToSettleSentLoading = false;
+					this.emailReadyToSettleSentLoading.next(false);
 					this.messageService.showSuccess('Emails successfully sent');
 				},
 				error: (err: ApiError) => {
+					this.emailReadyToSettleSentLoading.next(false);
 					this.messageService.showError('Failed to send emails');
-					console.error('Something went wrong while sending emails', err?.error?.message);
+					this.logService.error('Something went wrong while sending emails: ' + err?.error?.message);
 				},
 			});
 	}
@@ -312,7 +315,8 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			width: '420px',
 			data: {
 				title: "Send 'add expenses reminder' email",
-				content: "Are you sure you want to send the 'add expenses reminder' email? Emails will be sent to all participants in the event.",
+				content:
+					"Are you sure you want to send the 'add expenses reminder' email? Emails will be sent to all participants in the event.",
 				confirm: 'Yes, I am sure',
 			},
 		});
@@ -322,7 +326,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			.pipe(
 				switchMap((confirm) => {
 					if (confirm) {
-						this.emailReminderSentLoading = true;
+						this.emailReminderSentLoading.next(true);
 						return this.eventService.sendAddExpensesReminderEmails(this.event.id, this.addExpensesCutoffDate());
 					} else {
 						return NEVER;
@@ -331,13 +335,19 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: () => {
-					this.emailReminderSentLoading = false;
+					this.emailReminderSentLoading.next(false);
 					this.addExpensesCutoffDate.set(null);
 					this.messageService.showSuccess('Emails successfully sent');
 				},
 				error: (err: ApiError) => {
-					this.messageService.showError('Failed to send emails');
-					console.error('Something went wrong while sending emails', err?.error?.message);
+					this.emailReminderSentLoading.next(false);
+					if (err?.error?.code === 'PUD-150') {
+						this.messageService.showError(err?.error?.message);
+					} else {
+						this.messageService.showError('Failed to send emails');
+					}
+
+					this.logService.error('Something went wrong while sending emails: ' + err?.error?.message);
 				},
 			});
 	}

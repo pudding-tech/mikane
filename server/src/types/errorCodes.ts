@@ -1,3 +1,6 @@
+import { ALLOWED_LOG_LEVELS } from "../env.ts";
+import { RATE_LIMIT_SINGLE_WINDOW_SEC } from "../middlewares/singleRequestLimiter.ts";
+
 export type ErrorCode = {
   code: string,
   message: string,
@@ -621,29 +624,29 @@ export const PUD064: ErrorCode = {
 };
 
 /**
- * PUD-065: No user authenticated and no 'Authorization' header (401)
+ * PUD-065: No user authenticated and no 'X-Api-Key' header (401)
  */
 export const PUD065: ErrorCode = {
   code: "PUD-065",
-  message: "No user authenticated and no 'Authorization' header",
+  message: "No user authenticated and no 'X-Api-Key' header",
   status: 401
 };
 
 /**
- * PUD-066: Authorization key is not correct (401)
+ * PUD-066: X-Api-Key key is not correct (401)
  */
 export const PUD066: ErrorCode = {
   code: "PUD-066",
-  message: "Authorization key is not correct",
+  message: "X-Api-Key key is not correct",
   status: 401
 };
 
 /**
- * PUD-067: Authorization key is outside valid time range (401)
+ * PUD-067: X-Api-Key key is outside valid time range (401)
  */
 export const PUD067: ErrorCode = {
   code: "PUD-067",
-  message: "Authorization key is outside valid time range",
+  message: "X-Api-Key key is outside valid time range",
   status: 401
 };
 
@@ -657,11 +660,11 @@ export const PUD068: ErrorCode = {
 };
 
 /**
- * PUD-069: Missing 'Authorization' header (401)
+ * PUD-069: Missing 'X-Api-Key' header (401)
  */
 export const PUD069: ErrorCode = {
   code: "PUD-069",
-  message: "Missing 'Authorization' header",
+  message: "Missing 'X-Api-Key' header",
   status: 401
 };
 
@@ -1354,4 +1357,69 @@ export const PUD143: ErrorCode = {
   code: "PUD-143",
   message: "Cannot send 'add expenses reminder' notification email for event that's not active",
   status: 400
+};
+
+/**
+ * PUD-144: Message must be a non-empty string up to 1000 characters (400)
+ */
+export const PUD144: ErrorCode = {
+  code: "PUD-144",
+  message: "Message must be a non-empty string up to 1000 characters",
+  status: 400
+};
+
+/**
+ * PUD-145: Level must be one of the following values: ALLOWED_LOG_LEVELS (400)
+ */
+export const PUD145: ErrorCode = {
+  code: "PUD-145",
+  message: "Level must be one of the following values: " + ALLOWED_LOG_LEVELS.join(", "),
+  status: 400
+};
+
+/**
+ * PUD-146: log_server_to_db (500)
+ */
+export const PUD146: ErrorCode = {
+  code: "PUD-146",
+  message: "Something went wrong while logging server events to the database",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-147: log_client_to_db (500)
+ */
+export const PUD147: ErrorCode = {
+  code: "PUD-147",
+  message: "Something went wrong while logging client events to the database",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-148: Invalid CSRF token (403)
+ */
+export const PUD148: ErrorCode = {
+  code: "PUD-148",
+  message: "Invalid CSRF token",
+  status: 403
+};
+
+/**
+ * PUD-149: You have exceeded the allowed number of requests, please try again later (429)
+ */
+export const PUD149: ErrorCode = {
+  code: "PUD-149",
+  message: "You have exceeded the allowed number of requests, please try again later",
+  status: 429
+};
+
+/**
+ * PUD-150: You can only call this endpoint once every X seconds, please wait before trying again (429)
+ */
+export const PUD150: ErrorCode = {
+  code: "PUD-150",
+  message: `You can only call this endpoint once every ${RATE_LIMIT_SINGLE_WINDOW_SEC} seconds, please wait before trying again`,
+  status: 429
 };

@@ -18,6 +18,7 @@ import {
 	Subject,
 	Subscription,
 	combineLatest,
+	distinctUntilChanged,
 	filter,
 	forkJoin,
 	map,
@@ -33,6 +34,7 @@ import { Category, CategoryService } from 'src/app/services/category/category.se
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { ExpenseService } from 'src/app/services/expense/expense.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
@@ -76,6 +78,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 	breakpointService = inject(BreakpointService);
 	contextService = inject(ContextService);
 	scrollService = inject(ScrollService);
+	private logService = inject(LogService);
 
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	private userSubscription: Subscription;
@@ -104,6 +107,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 		this.eventSubscription = this.$event
 			?.pipe(
 				filter((event) => event?.id !== undefined),
+				distinctUntilChanged((a, b) => a?.id === b?.id),
 				switchMap((event) => {
 					if (event.id) {
 						return of(event);
@@ -173,12 +177,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 							this.loadUsers();
 						} else {
 							this.messageService.showError('Something went wrong adding user to event');
-							console.error('Something went wrong adding user to event');
+							this.logService.error('Something went wrong adding user to event');
 						}
 					},
 					error: (err: ApiError) => {
 						this.messageService.showError('Error adding user to event');
-						console.error(err?.error?.message);
+						this.logService.error('Error adding user to event: ' + err?.error?.message);
 					},
 				});
 		}
@@ -226,7 +230,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 					// Reload users and balances in case of partial success
 					this.loadUsers();
 					this.messageService.showError('Failed to add users to event');
-					console.error('something went wrong while adding users to event: ' + err?.error?.message);
+					this.logService.error('Something went wrong while adding users to event: ' + err?.error?.message);
 				},
 			});
 	}
@@ -282,7 +286,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to remove user');
-				console.error(err?.error?.message);
+				this.logService.error('Error removing user: ' + err?.error?.message);
 			},
 		});
 	}

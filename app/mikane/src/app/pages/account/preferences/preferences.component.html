@@ -22,7 +22,7 @@
 		<div class="toggle-line">
 			<span>Show email:</span>
 			<span class="toggle">
-				<mat-slide-toggle id="emailToggle" [(ngModel)]="publicEmail" [disabled]="loadingEmail" (change)="toggleEmail()" />
+				<mat-slide-toggle id="emailToggle" [(ngModel)]="publicEmail" [disabled]="loadingEmail | async" (change)="toggleEmail()" />
 			</span>
 		</div>
 		<div class="text">Choose whether your email is visible to others on your profile.</div>
@@ -31,7 +31,7 @@
 		<div class="toggle-line">
 			<span>Show phone number:</span>
 			<span class="toggle">
-				<mat-slide-toggle id="phoneToggle" [(ngModel)]="publicPhone" [disabled]="loadingPhone" (change)="togglePhone()" />
+				<mat-slide-toggle id="phoneToggle" [(ngModel)]="publicPhone" [disabled]="loadingPhone | async" (change)="togglePhone()" />
 			</span>
 		</div>
 		<div class="text end">

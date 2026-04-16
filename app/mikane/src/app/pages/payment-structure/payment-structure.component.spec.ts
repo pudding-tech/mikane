@@ -1,84 +1,104 @@
-import { MockBuilder, MockRender, MockedComponentFixture } from 'ng-mocks';
-
-import { fakeAsync, tick } from '@angular/core/testing';
+import { registerLocaleData } from '@angular/common';
+import no from '@angular/common/locales/no';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Params } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { EventService, Payment } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PaymentExpansionPanelItemComponent } from './payment-expansion-panel-item/payment-expansion-panel-item.component';
 import { PaymentStructureComponent } from './payment-structure.component';
 
 describe('PaymentStructureComponent', () => {
-	beforeEach(() =>
-		MockBuilder(PaymentStructureComponent)
-			.provide({
-				provide: AuthService,
-				useValue: {
-					getCurrentUser: jasmine.createSpy().and.returnValue(
-						of({
-							id: '1',
-							name: 'test',
-							email: '',
-						}),
-					),
-				},
-			})
-			.provide({
-				provide: ActivatedRoute,
-				useValue: {
-					parent: {
-						parent: {
-							params: of({ eventId: '1' } as Params),
-						},
+	beforeAll(() => {
+		registerLocaleData(no);
+	});
+
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [PaymentStructureComponent],
+			providers: [
+				{
+					provide: AuthService,
+					useValue: {
+						getCurrentUser: vi.fn().mockReturnValue(
+							of({
+								id: '1',
+								name: 'test',
+								email: '',
+								// avatarURL: 'test',
+							} as User),
+						),
 					},
-				} as ActivatedRoute,
-			})
-			.provide({
-				provide: EventService,
-				useValue: {
-					loadPayments: jasmine.createSpy().and.returnValue(of([])),
 				},
-			})
-			.provide({
-				provide: MessageService,
-				useValue: {
-					showError: jasmine.createSpy(),
+				{
+					provide: ActivatedRoute,
+					useValue: {
+						parent: {
+							parent: {
+								params: of({ eventId: '1' } as Params),
+							},
+						},
+					} as ActivatedRoute,
 				},
-			}),
-	);
+				{
+					provide: EventService,
+					useValue: {
+						loadPayments: vi.fn().mockReturnValue(of([])),
+					},
+				},
+				{
+					provide: MessageService,
+					useValue: {
+						showError: vi.fn(),
+					},
+				},
+				{
+					provide: LogService,
+					useValue: {
+						error: vi.fn(),
+					},
+				},
+			],
+		});
+	});
 
 	it('should create', () => {
-		const fixture = MockRender(PaymentStructureComponent);
-		const component = fixture.point.componentInstance;
+		const fixture = TestBed.createComponent(PaymentStructureComponent);
+		const component = fixture.componentInstance;
 		fixture.detectChanges();
 
 		expect(component).toBeTruthy();
 	});
 
 	describe('with payments', () => {
-		let fixture: MockedComponentFixture<PaymentStructureComponent>;
+		let fixture: ComponentFixture<PaymentStructureComponent>;
 		let component: PaymentStructureComponent;
 		let eventService: EventService;
 
-		beforeEach(fakeAsync(() => {
-			fixture = MockRender(PaymentStructureComponent);
-			component = fixture.point.componentInstance;
-			eventService = fixture.point.injector.get(EventService);
-			(eventService.loadPayments as jasmine.Spy).and.returnValue(
+		beforeEach(() => {
+			fixture = TestBed.createComponent(PaymentStructureComponent);
+			component = fixture.componentInstance;
+			eventService = TestBed.inject(EventService);
+
+			vi.spyOn(eventService, 'loadPayments').mockReturnValue(
 				of([
 					{
 						sender: {
 							id: '1',
 							name: 'test',
 							email: '',
+							avatarURL: 'test',
 						},
 						receiver: {
 							id: '2',
 							name: 'test2',
 							email: '',
+							avatarURL: 'test',
 						},
 						amount: 1,
 					},
@@ -87,11 +107,13 @@ describe('PaymentStructureComponent', () => {
 							id: '1',
 							name: 'test',
 							email: '',
+							avatarURL: 'test',
 						},
 						receiver: {
 							id: '3',
 							name: 'test3',
 							email: '',
+							avatarURL: 'test',
 						},
 						amount: 2,
 					},
@@ -100,11 +122,13 @@ describe('PaymentStructureComponent', () => {
 							id: '2',
 							name: 'test2',
 							email: '',
+							avatarURL: 'test',
 						},
 						receiver: {
 							id: '1',
 							name: 'test',
 							email: '',
+							avatarURL: 'test',
 						},
 						amount: 3,
 					},
@@ -113,11 +137,13 @@ describe('PaymentStructureComponent', () => {
 							id: '2',
 							name: 'test2',
 							email: '',
+							avatarURL: 'test',
 						},
 						receiver: {
 							id: '3',
 							name: 'test3',
 							email: '',
+							avatarURL: 'test',
 						},
 						amount: 4,
 					},
@@ -126,21 +152,22 @@ describe('PaymentStructureComponent', () => {
 							id: '3',
 							name: 'test3',
 							email: '',
+							avatarURL: 'test',
 						},
 						receiver: {
 							id: '2',
 							name: 'test2',
 							email: '',
+							avatarURL: 'test',
 						},
 						amount: 6,
 					},
 				] as Payment[]),
 			);
-			component.ngOnInit();
 
-			tick();
+			component.ngOnInit();
 			fixture.detectChanges();
-		}));
+		});
 
 		it('should load payments', () => {
 			expect(eventService.loadPayments).toHaveBeenCalledWith('1');
@@ -150,6 +177,7 @@ describe('PaymentStructureComponent', () => {
 						id: '1',
 						name: 'test',
 						email: '',
+						avatarURL: 'test',
 					},
 					receivers: [
 						{
@@ -157,6 +185,7 @@ describe('PaymentStructureComponent', () => {
 								id: '2',
 								name: 'test2',
 								email: '',
+								avatarURL: 'test',
 							},
 							amount: 1,
 						},
@@ -165,6 +194,7 @@ describe('PaymentStructureComponent', () => {
 								id: '3',
 								name: 'test3',
 								email: '',
+								avatarURL: 'test',
 							},
 							amount: 2,
 						},
@@ -175,6 +205,7 @@ describe('PaymentStructureComponent', () => {
 						id: '2',
 						name: 'test2',
 						email: '',
+						avatarURL: 'test',
 					},
 					receivers: [
 						{
@@ -182,6 +213,7 @@ describe('PaymentStructureComponent', () => {
 								id: '1',
 								name: 'test',
 								email: '',
+								avatarURL: 'test',
 							},
 							amount: 3,
 						},
@@ -190,6 +222,7 @@ describe('PaymentStructureComponent', () => {
 								id: '3',
 								name: 'test3',
 								email: '',
+								avatarURL: 'test',
 							},
 							amount: 4,
 						},
@@ -200,6 +233,7 @@ describe('PaymentStructureComponent', () => {
 						id: '3',
 						name: 'test3',
 						email: '',
+						avatarURL: 'test',
 					},
 					receivers: [
 						{
@@ -207,6 +241,7 @@ describe('PaymentStructureComponent', () => {
 								id: '2',
 								name: 'test2',
 								email: '',
+								avatarURL: 'test',
 							},
 							amount: 6,
 						},
@@ -228,6 +263,7 @@ describe('PaymentStructureComponent', () => {
 						id: '1',
 						name: 'test',
 						email: '',
+						avatarURL: 'test',
 					},
 					receivers: [
 						{
@@ -235,6 +271,7 @@ describe('PaymentStructureComponent', () => {
 								id: '2',
 								name: 'test2',
 								email: '',
+								avatarURL: 'test',
 							},
 							amount: 1,
 						},
@@ -243,6 +280,7 @@ describe('PaymentStructureComponent', () => {
 								id: '3',
 								name: 'test3',
 								email: '',
+								avatarURL: 'test',
 							},
 							amount: 2,
 						},
@@ -253,6 +291,7 @@ describe('PaymentStructureComponent', () => {
 						id: '2',
 						name: 'test2',
 						email: '',
+						avatarURL: 'test',
 					},
 					receivers: [
 						{
@@ -260,6 +299,7 @@ describe('PaymentStructureComponent', () => {
 								id: '1',
 								name: 'test',
 								email: '',
+								avatarURL: 'test',
 							},
 							amount: 3,
 						},
@@ -268,6 +308,7 @@ describe('PaymentStructureComponent', () => {
 								id: '3',
 								name: 'test3',
 								email: '',
+								avatarURL: 'test',
 							},
 							amount: 4,
 						},
@@ -289,6 +330,7 @@ describe('PaymentStructureComponent', () => {
 						id: '3',
 						name: 'test3',
 						email: '',
+						avatarURL: 'test',
 					},
 					receivers: [
 						{
@@ -296,6 +338,7 @@ describe('PaymentStructureComponent', () => {
 								id: '2',
 								name: 'test2',
 								email: '',
+								avatarURL: 'test',
 							},
 							amount: 6,
 						},
@@ -312,7 +355,7 @@ describe('PaymentStructureComponent', () => {
 
 		it('should toggle expand self payments', () => {
 			component.paymentsSelfRef = {
-				openExpand: jasmine.createSpy(),
+				openExpand: vi.fn(),
 			} as unknown as PaymentExpansionPanelItemComponent;
 			component.toggleExpand(1);
 
@@ -326,7 +369,7 @@ describe('PaymentStructureComponent', () => {
 
 		it('should toggle expand others payments', () => {
 			component.paymentsOthersRef = {
-				openExpand: jasmine.createSpy(),
+				openExpand: vi.fn(),
 			} as unknown as PaymentExpansionPanelItemComponent;
 			component.toggleExpand(2);
 
@@ -355,15 +398,16 @@ describe('PaymentStructureComponent', () => {
 	});
 
 	describe('with payment errors', () => {
-		let fixture: MockedComponentFixture<PaymentStructureComponent>;
+		let fixture: ComponentFixture<PaymentStructureComponent>;
 		let component: PaymentStructureComponent;
 		let eventService: EventService;
 
-		beforeEach(fakeAsync(() => {
-			fixture = MockRender(PaymentStructureComponent);
-			component = fixture.point.componentInstance;
-			eventService = fixture.point.injector.get(EventService);
-			(eventService.loadPayments as jasmine.Spy).and.returnValue(
+		beforeEach(() => {
+			fixture = TestBed.createComponent(PaymentStructureComponent);
+			component = fixture.componentInstance;
+			eventService = TestBed.inject(EventService);
+
+			vi.spyOn(eventService, 'loadPayments').mockReturnValue(
 				throwError(() => {
 					return {
 						error: {
@@ -372,11 +416,9 @@ describe('PaymentStructureComponent', () => {
 					} as ApiError;
 				}),
 			);
-			component.ngOnInit();
 
-			tick();
-			fixture.detectChanges();
-		}));
+			component.ngOnInit();
+		});
 
 		it('should not have any payments', () => {
 			expect(component.senders()).toEqual([]);
@@ -385,20 +427,21 @@ describe('PaymentStructureComponent', () => {
 		});
 
 		it('should show payment error message', () => {
-			expect(fixture.point.injector.get(MessageService).showError).toHaveBeenCalledWith('Error loading payments');
+			expect(TestBed.inject(MessageService).showError).toHaveBeenCalledWith('Error loading payments');
 		});
 	});
 
 	describe('with user errors', () => {
-		let fixture: MockedComponentFixture<PaymentStructureComponent>;
+		let fixture: ComponentFixture<PaymentStructureComponent>;
 		let component: PaymentStructureComponent;
 		let authService: AuthService;
 
-		beforeEach(fakeAsync(() => {
-			fixture = MockRender(PaymentStructureComponent);
-			component = fixture.point.componentInstance;
-			authService = fixture.point.injector.get(AuthService);
-			(authService.getCurrentUser as jasmine.Spy).and.returnValue(
+		beforeEach(() => {
+			fixture = TestBed.createComponent(PaymentStructureComponent);
+			component = fixture.componentInstance;
+			authService = TestBed.inject(AuthService);
+
+			vi.spyOn(authService, 'getCurrentUser').mockReturnValue(
 				throwError(() => {
 					return {
 						error: {
@@ -409,17 +452,14 @@ describe('PaymentStructureComponent', () => {
 			);
 			component.currentUser = null;
 			component.ngOnInit();
-
-			tick();
-			fixture.detectChanges();
-		}));
+		});
 
 		it('should not have a user', () => {
 			expect(component.currentUser).toBe(null);
 		});
 
 		it('should show user error message', () => {
-			expect(fixture.point.injector.get(MessageService).showError).toHaveBeenCalledWith('Something went wrong');
+			expect(TestBed.inject(MessageService).showError).toHaveBeenCalledWith('Something went wrong');
 		});
 	});
 });

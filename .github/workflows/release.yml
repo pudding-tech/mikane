@@ -1,4 +1,6 @@
 name: Bump and deploy release
+permissions:
+  contents: read
 on:
   workflow_dispatch:
     inputs:
@@ -15,10 +17,11 @@ on:
         description: "Node version"
         required: true
         type: choice
-        default: 22.x
+        default: 24.x
         options:
           - 20.x
           - 22.x
+          - 24.x
       dry-run:
         description: "Dry run for testing"
         required: false
@@ -41,6 +44,8 @@ jobs:
   bump:
     needs: [test-frontend, test-backend]
     uses: ./.github/workflows/bump.yml
+    permissions:
+      contents: write
     with:
       bump: ${{ inputs.bump }}
       node-version: ${{ inputs.node-version }}

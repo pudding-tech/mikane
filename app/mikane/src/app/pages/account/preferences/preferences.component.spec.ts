@@ -1,36 +1,33 @@
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSlideToggleHarness } from '@angular/material/slide-toggle/testing';
-import { MockModule } from 'ng-mocks';
 import { of, throwError } from 'rxjs';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PreferencesComponent } from './preferences.component';
 
 describe('PreferencesComponent', () => {
 	let component: PreferencesComponent;
 	let fixture: ComponentFixture<PreferencesComponent>;
-	let loader: HarnessLoader;
-	let userServiceSpy: jasmine.SpyObj<UserService>;
-	let messageServiceSpy: jasmine.SpyObj<MessageService>;
+	let userServiceSpy: { editUserPreferences: ReturnType<typeof vi.fn> };
+	let messageServiceSpy: { showError: ReturnType<typeof vi.fn> };
 
-	beforeEach(waitForAsync(() => {
-		userServiceSpy = jasmine.createSpyObj('UserService', ['editUserPreferences']);
-		messageServiceSpy = jasmine.createSpyObj('MessageService', ['showError']);
+	beforeEach(async () => {
+		userServiceSpy = { editUserPreferences: vi.fn() };
+		messageServiceSpy = { showError: vi.fn() };
 		TestBed.configureTestingModule({
 			imports: [
 				CommonModule,
 				PreferencesComponent,
-				MockModule(MatCardModule),
-				MockModule(MatIconModule),
-				MockModule(MatFormFieldModule),
+				MatCardModule,
+				MatIconModule,
+				MatFormFieldModule,
 				FormsModule,
 				ReactiveFormsModule,
 				MatSlideToggleModule,
@@ -38,19 +35,19 @@ describe('PreferencesComponent', () => {
 			providers: [
 				{ provide: UserService, useValue: userServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
+				{ provide: LogService, useValue: { error: vi.fn() } },
 			],
 		}).compileComponents();
-	}));
+	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(PreferencesComponent);
 		component = fixture.componentInstance;
-		loader = TestbedHarnessEnvironment.loader(fixture);
-		component.user = {
+		component.user.set({
 			id: '1',
 			publicEmail: false,
 			publicPhone: true,
-		} as User;
+		} as User);
 		fixture.detectChanges();
 	});
 
@@ -59,39 +56,47 @@ describe('PreferencesComponent', () => {
 	});
 
 	it('should initialize publicEmail and publicPhone from user', () => {
-		expect(component.user.publicEmail).toEqual(false);
-		expect(component.user.publicPhone).toEqual(true);
+		expect(component.user().publicEmail).toEqual(false);
+		expect(component.user().publicPhone).toEqual(true);
 	});
 
 	it('should toggle email setting', async () => {
-		userServiceSpy.editUserPreferences.and.returnValue(of(component.user));
-		const toggles = await loader.getAllHarnesses(MatSlideToggleHarness);
-		await toggles[0].toggle();
+		userServiceSpy.editUserPreferences.mockReturnValue(of(component.user()));
+		const emailToggleButton = fixture.nativeElement.querySelector('#emailToggle-button');
+
+		expect(emailToggleButton).toBeTruthy();
+
+		emailToggleButton.click();
 		fixture.detectChanges();
 
 		expect(userServiceSpy.editUserPreferences).toHaveBeenCalledWith('1', true, undefined);
 	});
 
 	it('should toggle phone setting', async () => {
-		userServiceSpy.editUserPreferences.and.returnValue(of(component.user));
-		const toggles = await loader.getAllHarnesses(MatSlideToggleHarness);
-		await toggles[1].toggle();
+		userServiceSpy.editUserPreferences.mockReturnValue(of(component.user));
+		const phoneToggleButton = fixture.nativeElement.querySelector('#phoneToggle-button');
+
+		expect(phoneToggleButton).toBeTruthy();
+
+		phoneToggleButton.click();
 		fixture.detectChanges();
 
 		expect(userServiceSpy.editUserPreferences).toHaveBeenCalledWith('1', undefined, false);
 	});
 
 	it('should handle error', async () => {
-		userServiceSpy.editUserPreferences.and.returnValue(throwError(() => new Error('Error')));
-		const toggles = await loader.getAllHarnesses(MatSlideToggleHarness);
-		await toggles[0].toggle();
+		userServiceSpy.editUserPreferences.mockReturnValue(throwError(() => new Error('Error')));
+		const emailToggleButton = fixture.nativeElement.querySelector('#emailToggle-button');
+
+		emailToggleButton.click();
 		fixture.detectChanges();
 
 		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to change user preferences');
 
-		messageServiceSpy.showError.calls.reset();
+		messageServiceSpy.showError.mockClear();
+		const phoneToggleButton = fixture.nativeElement.querySelector('#phoneToggle-button');
 
-		await toggles[1].toggle();
+		phoneToggleButton.click();
 		fixture.detectChanges();
 
 		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to change user preferences');

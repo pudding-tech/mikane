@@ -13,6 +13,7 @@ import { BehaviorSubject, Subscription, combineLatest, filter, switchMap } from 
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -42,6 +43,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 	private authService = inject(AuthService);
 	breakpointService = inject(BreakpointService);
 	private messageService = inject(MessageService);
+	private logService = inject(LogService);
 
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
@@ -71,7 +73,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 				error: (err: ApiError) => {
 					this.loading.next(false);
 					this.messageService.showError('Error loading event settings');
-					console.error('Something went wrong while loading event settings data', err?.error?.message);
+					this.logService.error('Something went wrong while loading event settings data: ' + err?.error?.message);
 				},
 			});
 	}

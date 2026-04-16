@@ -9,6 +9,7 @@ import { Subject, switchMap, takeUntil } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -25,6 +26,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
 	private authService = inject(AuthService);
 	private messageService = inject(MessageService);
 	protected breakpointService = inject(BreakpointService);
+	protected logService = inject(LogService);
 
 	private destroy$ = new Subject<void>();
 	protected loading = false;
@@ -56,7 +58,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.loading = false;
-					console.error('something went wrong while trying to delete account', err);
+					this.logService.error('something went wrong while trying to delete account: ' + err);
 					this.messageService.showError('Failed to delete account!');
 				},
 			});

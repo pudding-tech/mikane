@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MockModule } from 'ng-mocks';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConfirmDialogComponent } from './confirm-dialog.component';
 
 describe('ConfirmDialogComponent', () => {
@@ -10,11 +10,11 @@ describe('ConfirmDialogComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [ConfirmDialogComponent, MockModule(MatButtonModule)],
+			imports: [ConfirmDialogComponent, MatButtonModule],
 			providers: [
 				{
 					provide: MatDialogRef,
-					useValue: jasmine.createSpyObj<MatDialogRef<ConfirmDialogComponent>>('MatDialogRef', ['close']),
+					useValue: { close: vi.fn() },
 				},
 				{
 					provide: MAT_DIALOG_DATA,
@@ -37,11 +37,11 @@ describe('ConfirmDialogComponent', () => {
 	it('should throw an error if data is missing', () => {
 		TestBed.resetTestingModule();
 		TestBed.configureTestingModule({
-			imports: [ConfirmDialogComponent, MockModule(MatButtonModule)],
+			imports: [ConfirmDialogComponent, MatButtonModule],
 			providers: [
 				{
 					provide: MatDialogRef,
-					useValue: jasmine.createSpyObj<MatDialogRef<ConfirmDialogComponent>>('MatDialogRef', ['close']),
+					useValue: { close: vi.fn() },
 				},
 				{
 					provide: MAT_DIALOG_DATA,
@@ -60,11 +60,11 @@ describe('ConfirmDialogComponent', () => {
 	it('should throw an error if title is missing', () => {
 		TestBed.resetTestingModule();
 		TestBed.configureTestingModule({
-			imports: [ConfirmDialogComponent, MockModule(MatButtonModule)],
+			imports: [ConfirmDialogComponent, MatButtonModule],
 			providers: [
 				{
 					provide: MatDialogRef,
-					useValue: jasmine.createSpyObj<MatDialogRef<ConfirmDialogComponent>>('MatDialogRef', ['close']),
+					useValue: { close: vi.fn() },
 				},
 				{
 					provide: MAT_DIALOG_DATA,
@@ -83,11 +83,11 @@ describe('ConfirmDialogComponent', () => {
 	it('should throw an error if content is missing', () => {
 		TestBed.resetTestingModule();
 		TestBed.configureTestingModule({
-			imports: [ConfirmDialogComponent, MockModule(MatButtonModule)],
+			imports: [ConfirmDialogComponent, MatButtonModule],
 			providers: [
 				{
 					provide: MatDialogRef,
-					useValue: jasmine.createSpyObj<MatDialogRef<ConfirmDialogComponent>>('MatDialogRef', ['close']),
+					useValue: { close: vi.fn() },
 				},
 				{
 					provide: MAT_DIALOG_DATA,
@@ -106,11 +106,11 @@ describe('ConfirmDialogComponent', () => {
 	it('should throw an error if confirm is missing', () => {
 		TestBed.resetTestingModule();
 		TestBed.configureTestingModule({
-			imports: [ConfirmDialogComponent, MockModule(MatButtonModule)],
+			imports: [ConfirmDialogComponent, MatButtonModule],
 			providers: [
 				{
 					provide: MatDialogRef,
-					useValue: jasmine.createSpyObj<MatDialogRef<ConfirmDialogComponent>>('MatDialogRef', ['close']),
+					useValue: { close: vi.fn() },
 				},
 				{
 					provide: MAT_DIALOG_DATA,

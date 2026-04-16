@@ -3,7 +3,7 @@ import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 
 interface NavigatorIOS extends Navigator {
-  standalone?: boolean;
+	standalone?: boolean;
 }
 
 @Injectable({
@@ -43,7 +43,7 @@ export class ContextService {
 	}
 
 	get isIosPwaStandalone(): boolean {
-		return this.isIos && ((window.navigator as NavigatorIOS).standalone === true);
+		return this.isIos && (window.navigator as NavigatorIOS).standalone === true;
 	}
 
 	get environment(): 'dev' | 'prod' {

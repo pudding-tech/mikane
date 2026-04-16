@@ -3,17 +3,20 @@ import { ActivatedRouteSnapshot, ResolveFn, Route, Router } from '@angular/route
 import { EMPTY, catchError, of, switchMap } from 'rxjs';
 import { ContextService } from 'src/app/services/context/context.service';
 import { KeyValidationService } from 'src/app/services/key-validation/key-validation.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { RegisterUserComponent } from './register-user.component';
 
 const registerResolver: ResolveFn<{ key: string; user: { firstName?: string; lastName?: string; email: string } }> = (
-	route: ActivatedRouteSnapshot
+	route: ActivatedRouteSnapshot,
 ) => {
 	const router = inject(Router);
 	const keyValidationService = inject(KeyValidationService);
 	const environment = inject(ContextService).environment;
 	const messageService = inject(MessageService);
+	const logService = inject(LogService);
+
 	const key = route.paramMap.get('key');
 
 	if (environment === 'dev') {
@@ -33,11 +36,11 @@ const registerResolver: ResolveFn<{ key: string; user: { firstName?: string; las
 					return EMPTY;
 				} else {
 					messageService.showError('Failed to validate key!');
-					console.error('something went wrong while validating user registration key', err);
+					logService.error('Something went wrong while validating user registration key: ' + err);
 					router.navigate(['/login']);
 					return EMPTY;
 				}
-			})
+			}),
 		);
 	}
 };

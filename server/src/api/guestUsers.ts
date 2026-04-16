@@ -3,6 +3,8 @@ import * as db from "../db/dbGuestUsers.ts";
 import * as ec from "../types/errorCodes.ts";
 import { randomUUID } from "crypto";
 import { authCheck } from "../middlewares/authCheck.ts";
+import { csrfCheck } from "../middlewares/csrf.ts";
+import { useRateLimit } from "../middlewares/rateLimiter.ts";
 import { Guest } from "../types/types.ts";
 import { ErrorExt } from "../types/errorExt.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
@@ -15,7 +17,7 @@ const router = express.Router();
 /*
 * Get a list of all guest users
 */
-router.get("/guests", authCheck, async (_req, res) => {
+router.get("/guests", useRateLimit(), authCheck, csrfCheck, async (_req, res) => {
   const guestUsers: Guest[] = await db.getGuestUsers();
   res.status(200).send(guestUsers);
 });
@@ -27,7 +29,7 @@ router.get("/guests", authCheck, async (_req, res) => {
 /*
 * Create new guest user
 */
-router.post("/guests", authCheck, async (req, res) => {
+router.post("/guests", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const firstName: string = req.body.firstName;
   const lastName: string = req.body.lastName;
   const id = randomUUID();
@@ -52,7 +54,7 @@ router.post("/guests", authCheck, async (req, res) => {
 /*
 * Edit guest user
 */
-router.put("/guests/:id", authCheck, async (req, res) => {
+router.put("/guests/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const guestId = req.params.id;
   if (!isUUID(guestId)) {
     throw new ErrorExt(ec.PUD016);
@@ -91,7 +93,7 @@ router.put("/guests/:id", authCheck, async (req, res) => {
 /*
 * Delete guest user
 */
-router.delete("/guests/:id", authCheck, async (req, res) => {
+router.delete("/guests/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const guestId = req.params.id;
   if (!isUUID(guestId)) {
     throw new ErrorExt(ec.PUD016);

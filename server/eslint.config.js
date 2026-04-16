@@ -1,36 +1,27 @@
 import { defineConfig } from "eslint/config";
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
 import globals from "globals";
-import tsParser from "@typescript-eslint/parser";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
-});
 
 export default defineConfig([
   {
-    ignores: ["node_modules", "build"]
+    ignores: ["node_modules", "build", "coverage"]
   },
   {
-    extends: compat.extends("plugin:@typescript-eslint/recommended"),
+    files: ["**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}"],
+    extends: [
+      eslint.configs.recommended,
+      tseslint.configs.recommended
+    ],
     languageOptions: {
+      parser: tseslint.parser,
       globals: {
         ...globals.node,
       },
-      parser: tsParser,
-      ecmaVersion: "latest",
-      sourceType: "module",
     },
     rules: {
-      semi: ["error", "always"],
-      quotes: ["error", "double"],
+      "semi": ["error", "always"],
+      "quotes": ["error", "double"],
       "no-console": "off",
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "next" }],
       "@typescript-eslint/no-var-requires": "off",

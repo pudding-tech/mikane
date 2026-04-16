@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { KeyValidationService } from 'src/app/services/key-validation/key-validation.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { createCompareValidator } from 'src/app/shared/forms/validators/compare.validator';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -29,7 +30,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 		MatFormFieldModule,
 		MatInputModule,
 		MatButtonModule,
-		NgOptimizedImage
+		NgOptimizedImage,
 	],
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
@@ -39,6 +40,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 	private keyValidationService = inject(KeyValidationService);
 	private messageService = inject(MessageService);
 	breakpointService = inject(BreakpointService);
+	private logService = inject(LogService);
 
 	protected hide = true;
 
@@ -68,7 +70,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 					this.router.navigate(['/login']);
 				} else {
 					this.messageService.showError('Failed to verify key');
-					console.error('Something went wrong when verifying password reset key', err?.error);
+					this.logService.error('Something went wrong when verifying password reset key: ' + err?.error);
 				}
 			},
 		});
@@ -85,7 +87,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 					},
 					error: (err: ApiError) => {
 						this.messageService.showError('Failed to change password');
-						console.error('Something went wrong when changing password on password reset page', err?.error);
+						this.logService.error('Something went wrong when changing password on password reset page: ' + err?.error);
 					},
 				});
 		}

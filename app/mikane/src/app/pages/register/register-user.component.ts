@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { emailValidator } from 'src/app/shared/forms/validators/async-email.validator';
@@ -32,7 +33,7 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 		MatFormFieldModule,
 		MatInputModule,
 		MatButtonModule,
-		NgOptimizedImage
+		NgOptimizedImage,
 	],
 })
 export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -42,6 +43,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 	private route = inject(ActivatedRoute);
 	private formValidationService = inject(FormValidationService);
 	breakpointService = inject(BreakpointService);
+	private logService = inject(LogService);
 
 	hide = true;
 
@@ -122,7 +124,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 							this.router.navigate(['/login']);
 						} else {
 							this.messageService.showError('Failed to register');
-							console.error('Something went wrong while registering user');
+							this.logService.error('Something went wrong while registering user');
 						}
 					},
 					error: (err: ApiError) => {
@@ -154,7 +156,7 @@ export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {
 								this.messageService.showError('Failed to register');
 								break;
 						}
-						console.error('Error occurred while registering user: ', err.error.message);
+						this.logService.error('Error occurred while registering user: ' + err.error.message);
 					},
 				});
 		}

@@ -4,7 +4,6 @@ import { default as eslint, default as js } from "@eslint/js";
 import angular from "angular-eslint";
 import prettier from "eslint-config-prettier";
 import github from "eslint-plugin-github";
-import jasmine from "eslint-plugin-jasmine";
 import optimizeRegex from "eslint-plugin-optimize-regex";
 import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
@@ -23,10 +22,7 @@ const compat = new FlatCompat({
 export default defineConfig([
 	globalIgnores(["projects/**/*"]),
 	{
-		extends: compat.extends("plugin:jasmine/recommended"),
-
 		plugins: {
-			jasmine,
 			"optimize-regex": optimizeRegex,
 			github,
 		},
@@ -79,6 +75,18 @@ export default defineConfig([
 				},
 			],
 			"@angular-eslint/prefer-standalone": "warn",
+			"@typescript-eslint/no-unused-vars": [
+				"error",
+				{
+					args: "all",
+					argsIgnorePattern: "^_",
+					caughtErrors: "all",
+					caughtErrorsIgnorePattern: "^_",
+					destructuredArrayIgnorePattern: "^_",
+					varsIgnorePattern: "^_",
+					ignoreRestSiblings: true,
+				},
+			],
 		},
 	},
 	{

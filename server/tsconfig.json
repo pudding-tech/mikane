@@ -12,6 +12,7 @@
     "rewriteRelativeImportExtensions": true,
     "moduleResolution": "Node16",
 
+    "rootDir": "src",
     "outDir": "build",
     "resolveJsonModule": true
   },

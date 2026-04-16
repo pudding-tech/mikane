@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, model, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Subscription } from 'rxjs';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { emailValidator } from 'src/app/shared/forms/validators/async-email.validator';
@@ -38,11 +39,12 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	private messageService = inject(MessageService);
 	breakpointService = inject(BreakpointService);
 	private formValidationService = inject(FormValidationService);
+	private logService = inject(LogService);
 
 	private editSubscription: Subscription;
 
-	@Input() user: User;
-	editMode = false;
+	user = model<User>();
+	editMode = signal(false);
 
 	editUserForm = new FormGroup({
 		username: new FormControl<string>('', [Validators.required]),
@@ -53,17 +55,17 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 	});
 
 	ngOnInit(): void {
-		this.editUserForm.patchValue(this.user);
+		this.editUserForm.patchValue(this.user());
 
-		this.editUserForm.get('username').addAsyncValidators(usernameValidator(this.formValidationService, this.user.id));
-		this.editUserForm.get('email').addAsyncValidators(emailValidator(this.formValidationService, this.user.id));
-		this.editUserForm.get('phone').addAsyncValidators(phoneValidator(this.formValidationService, this.user.id));
+		this.editUserForm.get('username').addAsyncValidators(usernameValidator(this.formValidationService, this.user().id));
+		this.editUserForm.get('email').addAsyncValidators(emailValidator(this.formValidationService, this.user().id));
+		this.editUserForm.get('phone').addAsyncValidators(phoneValidator(this.formValidationService, this.user().id));
 	}
 
 	editUser() {
 		this.editSubscription = this.userService
 			.editUser(
-				this.user.id,
+				this.user().id,
 				this.editUserForm.get('username').value,
 				this.editUserForm.get('firstName').value,
 				this.editUserForm.get('lastName').value,
@@ -73,23 +75,23 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 			.subscribe({
 				next: (user) => {
 					this.messageService.showSuccess('User edited');
-					this.user = user;
+					this.user.set(user);
 					this.toggleEditMode();
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to edit user');
-					console.error('something went wrong while editing user', err?.error?.message);
+					this.logService.error('something went wrong while editing user: ' + err?.error?.message);
 				},
 			});
 	}
 
 	cancelEditMode() {
-		this.editUserForm.patchValue(this.user);
+		this.editUserForm.patchValue(this.user());
 		this.toggleEditMode();
 	}
 
 	toggleEditMode() {
-		this.editMode = !this.editMode;
+		this.editMode.set(!this.editMode());
 	}
 
 	ngOnDestroy(): void {

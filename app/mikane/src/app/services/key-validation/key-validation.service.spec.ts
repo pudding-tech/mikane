@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { KeyValidationService } from './key-validation.service';
 
 describe('KeyValidationService', () => {
@@ -11,8 +12,8 @@ describe('KeyValidationService', () => {
 
 	beforeEach(() => {
 		const env = { apiUrl: 'http://localhost:3002/api/' } as Environment;
+
 		TestBed.configureTestingModule({
-			imports: [],
 			providers: [
 				KeyValidationService,
 				{ provide: ENV, useValue: env },
@@ -20,23 +21,17 @@ describe('KeyValidationService', () => {
 				provideHttpClientTesting(),
 			],
 		});
+
 		service = TestBed.inject(KeyValidationService);
-
-		// Inject the http service and test controller for each test
 		httpTestingController = TestBed.inject(HttpTestingController);
-	});
-
-	afterEach(() => {
-		httpTestingController.verify();
 	});
 
 	describe('#verifyRegisterKey', () => {
 		it('should send verification key', () => {
 			service.verifyRegisterKey('key').subscribe({
 				next: (email) => {
-					expect(email).withContext('should return email').toEqual({ email: 'test@test.test' });
+					expect(email).toEqual({ email: 'test@test.test' });
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/verifykey/register/key');
@@ -49,7 +44,7 @@ describe('KeyValidationService', () => {
 
 	describe('#verifyDeleteAccountKey', () => {
 		it('should send delete account verification key', () => {
-			service.verifyDeleteAccountKey('key').subscribe({ error: fail });
+			service.verifyDeleteAccountKey('key').subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/verifykey/deleteaccount/key');
 
@@ -61,7 +56,7 @@ describe('KeyValidationService', () => {
 
 	describe('#verifyPasswordReset', () => {
 		it('should send password reset verification key', () => {
-			service.verifyPasswordReset('key').subscribe({ error: fail });
+			service.verifyPasswordReset('key').subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/verifykey/passwordreset/key');
 

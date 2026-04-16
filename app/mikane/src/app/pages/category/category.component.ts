@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule, NgOptimizedImage } from '@angular/common';
-import { AfterViewChecked, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -14,13 +14,14 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { map } from 'lodash-es';
-import { BehaviorSubject, Subject, filter, of, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { CategoryItemComponent } from 'src/app/features/mobile/category-item/category-item.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { User, UserService } from 'src/app/services/user/user.service';
@@ -57,7 +58,7 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 		NgOptimizedImage,
 	],
 })
-export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class CategoryComponent implements OnInit, OnDestroy {
 	private categoryService = inject(CategoryService);
 	private userService = inject(UserService);
 	dialog = inject(MatDialog);
@@ -67,8 +68,10 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 	contextService = inject(ContextService);
 	scrollService = inject(ScrollService);
 	private router = inject(Router);
+	private logService = inject(LogService);
 
-	@Input() $event: BehaviorSubject<PuddingEvent>;
+	@Input()
+	$event: BehaviorSubject<PuddingEvent>;
 
 	loading = new BehaviorSubject<boolean>(false);
 	readonly EventStatusType = EventStatusType;
@@ -78,16 +81,16 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 		weight: new FormControl(1, [Validators.required, Validators.min(1)]),
 	}) as FormGroup;
 
-	event: PuddingEvent;
-	categories: Category[] = [];
-	users: User[] = [];
+	event = signal<PuddingEvent>(undefined);
+	categories = signal<Category[]>([]);
+	users = signal<User[]>([]);
 	displayedColumns: string[] = ['name', 'weight'];
 
 	private destroy$ = new Subject<void>();
 
 	ngOnInit(): void {
 		this.$event
-			?.pipe(
+			.pipe(
 				filter((event) => event?.id !== undefined),
 				switchMap((event) => {
 					if (event.id) {
@@ -103,56 +106,52 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 					if (event.status.id === EventStatusType.ACTIVE) {
 						this.displayedColumns.push('save');
 					}
-					this.event = event;
+					this.event.set(event);
 					this.loadCategories();
 				},
 			});
 	}
 
-	ngAfterViewChecked(): void {
-		this.cd.detectChanges();
-	}
-
 	loadCategories() {
 		this.loading.next(true);
 		this.categoryService
-			.loadCategories(this.event.id)
+			.loadCategories(this.event().id)
 			.pipe(takeUntil(this.destroy$))
 			.subscribe({
 				next: (categories) => {
-					this.categories = categories;
+					this.categories.set(categories);
 					this.loadUsers();
 					this.loading.next(false);
 				},
 				error: (err: ApiError) => {
 					this.loading.next(false);
 					this.messageService.showError('Error loading categories');
-					console.error('something went wrong while loading categories', err?.error?.message);
+					this.logService.error('something went wrong while loading categories: ' + err?.error?.message);
 				},
 			});
 	}
 
 	loadUsers() {
 		this.userService
-			.loadUsersByEvent(this.event.id)
+			.loadUsersByEvent(this.event().id)
 			.pipe(takeUntil(this.destroy$))
 			.subscribe({
 				next: (users) => {
-					this.users = users;
+					this.users.set(users);
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error loading users');
-					console.error('something went wrong while loading users', err?.error?.message);
+					this.logService.error('something went wrong while loading users: ' + err?.error?.message);
 				},
 			});
 	}
 
 	filterUsers = (categoryId: string) => {
-		const filterCategory = this.categories.find((category) => {
+		const filterCategory = this.categories().find((category) => {
 			return category.id === categoryId;
 		});
 
-		return this.users.filter((user) => {
+		return this.users().filter((user) => {
 			return (
 				map(filterCategory?.users, (filterUser) => {
 					return filterUser.id;
@@ -164,7 +163,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 	openDialog() {
 		const dialogRef = this.dialog.open(CategoryDialogComponent, {
 			width: '380px',
-			data: { weighted: false, eventId: this.event.id },
+			data: { weighted: false, eventId: this.event().id },
 		});
 
 		dialogRef.afterClosed().subscribe((result) => {
@@ -177,7 +176,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 	openEditCategoryDialog(categoryId: string, name: string, icon: CategoryIcon) {
 		const dialogRef = this.dialog.open(CategoryDialogComponent, {
 			width: '380px',
-			data: { categoryId, name, icon, eventId: this.event.id },
+			data: { categoryId, name, icon, eventId: this.event().id },
 		});
 
 		dialogRef.afterClosed().subscribe((result) => {
@@ -189,21 +188,21 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 
 	createCategory(name: string, weighted: boolean, icon: CategoryIcon) {
 		this.categoryService
-			.createCategory(name, this.event.id, weighted, icon)
+			.createCategory(name, this.event().id, weighted, icon)
 			.pipe(takeUntil(this.destroy$))
 			.subscribe({
 				next: (category) => {
 					if (category) {
-						this.categories.push(category);
+						this.categories.update((categories) => [category, ...categories]);
 						this.messageService.showSuccess('Category created');
 					} else {
 						this.messageService.showError('Error creating category');
-						console.error('create category returned undefined');
+						this.logService.error('create category returned undefined');
 					}
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error creating category');
-					console.error('something went wrong while creating category', err?.error?.message);
+					this.logService.error('something went wrong while creating category: ' + err?.error?.message);
 				},
 			});
 	}
@@ -215,21 +214,23 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			.subscribe({
 				next: (newCategory) => {
 					if (newCategory?.id) {
-						Object.assign(
-							this.categories?.find((category) => {
-								return category?.id === categoryId;
+						this.categories.set(
+							this.categories().map((category) => {
+								if (category.id === newCategory.id) {
+									return newCategory;
+								}
+								return category;
 							}),
-							newCategory,
 						);
 						this.messageService.showSuccess('Category edited');
 					} else {
 						this.messageService.showError('Error editing category');
-						console.error('edit category returned undefined');
+						this.logService.error('edit category returned undefined');
 					}
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error editing category');
-					console.error('something went wrong while editing category', err);
+					this.logService.error('something went wrong while editing category: ' + err?.error?.message);
 				},
 			});
 	}
@@ -242,24 +243,27 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 				.subscribe({
 					next: (res) => {
 						if (res) {
-							const index = this.categories.findIndex((category) => category.id === res.id);
+							const index = this.categories().findIndex((category) => category.id === res.id);
 							if (index > -1) {
-								this.categories[index].users = res.users;
-								this.cd.detectChanges();
+								this.categories.update((categories) => {
+									const updated = [...categories];
+									updated[index] = { ...updated[index], users: res.users };
+									return updated;
+								});
 							}
 							this.addUserForm.get('participantName')?.setValue('');
 							this.addUserForm.get('participantName')?.markAsUntouched();
 							this.addUserForm.get('weight')?.setValue(1);
 
-							this.messageService.showSuccess('User added to category "' + this.categories[index].name + '"');
+							this.messageService.showSuccess('User added to category "' + this.categories()[index].name + '"');
 						} else {
 							this.messageService.showError('Error adding user to category');
-							console.error('add user to category returned undefined');
+							this.logService.error('add user to category returned undefined');
 						}
 					},
 					error: (err: ApiError) => {
 						this.messageService.showError('Error adding user to category');
-						console.error('something went wrong while adding user to category', err?.error?.message);
+						this.logService.error('something went wrong while adding user to category: ' + err?.error?.message);
 					},
 				});
 		}
@@ -272,20 +276,21 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			.subscribe({
 				next: (res) => {
 					if (res) {
-						const index = this.categories.findIndex((category) => category?.id === res?.id);
+						const index = this.categories().findIndex((category) => category?.id === res?.id);
 						if (index > -1) {
-							this.categories[index].users = res.users;
-							this.cd.detectChanges();
+							this.categories.update((categories) =>
+								categories.map((category, i) => (i === index ? { ...category, users: res.users } : category)),
+							);
 						}
-						this.messageService.showSuccess('User removed from category "' + this.categories[index].name + '"');
+						this.messageService.showSuccess('User removed from category "' + this.categories()[index].name + '"');
 					} else {
 						this.messageService.showError('Error removing user from category');
-						console.error('remove user from category returned undefined');
+						this.logService.error('remove user from category returned undefined');
 					}
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error removing user from category');
-					console.error('something went wrong while removing user from category', err?.error?.message);
+					this.logService.error('something went wrong while removing user from category: ' + err?.error?.message);
 				},
 			});
 	}
@@ -310,26 +315,29 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			.subscribe({
 				next: (res) => {
 					if (res) {
-						const catIndex = this.categories?.findIndex((category) => {
+						const catIndex = this.categories().findIndex((category) => {
 							return category?.id === res?.id;
 						});
 						if (catIndex > -1) {
-							const userIndex = this.categories[catIndex].users.findIndex((user) => {
+							const userIndex = this.categories()[catIndex].users.findIndex((user) => {
 								return user.id === userId;
 							});
 							if (userIndex > -1) {
-								this.categories[catIndex].users[userIndex].weight = weight;
+								const categories = this.categories();
+								categories[catIndex].users[userIndex].weight = weight;
+								this.categories.set(categories);
+								this.cd.markForCheck();
 								this.messageService.showSuccess('Category updated');
 							}
 						}
 					} else {
 						this.messageService.showError('Error editing category');
-						console.error('edit category returned undefined');
+						this.logService.error('edit category returned undefined');
 					}
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error editing category');
-					console.error('something went wrong while editing category', err?.error?.message);
+					this.logService.error('something went wrong while editing category: ' + err?.error?.message);
 				},
 			});
 	}
@@ -341,22 +349,29 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			.subscribe({
 				next: (result) => {
 					if (result) {
-						const newCategory = this.categories.indexOf(
-							this.categories.find((category) => {
+						const newCategory = this.categories().indexOf(
+							this.categories().find((category) => {
 								return category.id === result.id;
 							}),
 						);
 						if (~newCategory) {
-							Object.assign(this.categories[newCategory], result);
+							this.categories.set(
+								this.categories().map((category, index) => {
+									if (index === newCategory) {
+										return result;
+									}
+									return category;
+								}),
+							);
 						}
 					} else {
 						this.messageService.showError('Error toggling weighted status');
-						console.error('toggle weighted status returned undefined');
+						this.logService.error('toggle weighted status returned undefined');
 					}
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to toggle weighted status');
-					console.error('something went wrong while toggling category weight', err?.error?.message);
+					this.logService.error('something went wrong while toggling category weight: ' + err?.error?.message);
 				},
 			});
 	}
@@ -384,13 +399,13 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 			.pipe(takeUntil(this.destroy$))
 			.subscribe({
 				next: () => {
-					const index = this.categories.findIndex((category) => category.id === categoryId);
-					this.categories.splice(index, 1);
+					const index = this.categories().findIndex((category) => category.id === categoryId);
+					this.categories.set(this.categories().filter((_, i) => i !== index));
 					this.messageService.showSuccess('Category deleted');
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Error deleting category');
-					console.error('something went wrong while deleting category', err?.error?.message);
+					this.logService.error('something went wrong while deleting category: ' + err?.error?.message);
 				},
 			});
 	}
@@ -399,7 +414,7 @@ export class CategoryComponent implements OnInit, AfterViewChecked, OnDestroy {
 		if (category.numberOfExpenses < 1) {
 			return;
 		}
-		this.router.navigate(['events', this.event.id, 'expenses'], {
+		this.router.navigate(['events', this.event().id, 'expenses'], {
 			queryParams: { categories: category.id },
 		});
 	}

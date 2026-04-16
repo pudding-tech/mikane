@@ -22,6 +22,7 @@ import { Category, CategoryService } from 'src/app/services/category/category.se
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { User } from 'src/app/services/user/user.service';
@@ -67,6 +68,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 	private router = inject(Router);
 	private changeDetector = inject(ChangeDetectorRef);
 	private bottomSheet = inject(MatBottomSheet);
+	private logService = inject(LogService);
 
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event!: PuddingEvent;
@@ -129,7 +131,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to get user');
-				console.error('Something went wrong getting signed in user in expenses component: ' + err?.error?.message);
+				this.logService.error('Something went wrong getting signed in user in expenses component: ' + err?.error?.message);
 			},
 		});
 		this.eventSubscription = this.$event
@@ -194,7 +196,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 				error: (err: ApiError) => {
 					this.loading = false;
 					this.messageService.showError('Error loading expenses');
-					console.error('something went wrong while loading expenses', err?.error?.message);
+					this.logService.error('Something went wrong while loading expenses: ' + err?.error?.message);
 				},
 			});
 	}
@@ -250,7 +252,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to create expense');
-					console.error('something went wrong while creating expense', err?.error?.message);
+					this.logService.error('Something went wrong while creating expense: ' + err?.error?.message);
 				},
 			});
 	}
@@ -312,7 +314,7 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to edit expense');
-					console.error('something went wrong while editing expense', err);
+					this.logService.error('Something went wrong while editing expense: ' + err);
 				},
 			});
 	}
@@ -329,12 +331,12 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 					this.messageService.showSuccess('Expense deleted');
 				} else {
 					this.messageService.showError('Failed to delete expense');
-					console.error('something went wrong while deleting expense');
+					this.logService.error('Something went wrong while deleting expense');
 				}
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to delete expense');
-				console.error('something went wrong while deleting expense', err?.error?.message);
+				this.logService.error('Something went wrong while deleting expense: ' + err?.error?.message);
 			},
 		});
 	}

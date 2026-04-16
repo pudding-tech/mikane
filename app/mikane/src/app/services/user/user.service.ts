@@ -28,6 +28,7 @@ export interface User {
 		joinedTime: Date;
 	};
 	authenticated: boolean;
+	csrfToken: string;
 }
 
 /**

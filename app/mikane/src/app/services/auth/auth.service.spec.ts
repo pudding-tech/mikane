@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { User } from '../user/user.service';
 import { AuthService } from './auth.service';
 
@@ -12,8 +13,8 @@ describe('AuthService', () => {
 
 	beforeEach(() => {
 		const env = { apiUrl: 'http://localhost:3002/api/' } as Environment;
+
 		TestBed.configureTestingModule({
-			imports: [],
 			providers: [
 				AuthService,
 				{ provide: ENV, useValue: env },
@@ -21,9 +22,8 @@ describe('AuthService', () => {
 				provideHttpClientTesting(),
 			],
 		});
-		service = TestBed.inject(AuthService);
 
-		// Inject the http service and test controller for each test
+		service = TestBed.inject(AuthService);
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
@@ -54,15 +54,15 @@ describe('AuthService', () => {
 				created: new Date('2023-01-20T18:00:00'),
 				guest: false,
 				avatarURL: 'https://gravatar.com/avatar/aaaa',
+				csrfToken: 'testToken',
 			};
 		});
 
 		it('should return user after login', () => {
 			service.login('testuser', 'secret').subscribe({
 				next: (user) => {
-					expect(user).withContext('should return user').toEqual(expectedLoginResponse);
+					expect(user).toEqual(expectedLoginResponse);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
@@ -72,11 +72,29 @@ describe('AuthService', () => {
 
 			req.flush(expectedLoginResponse);
 		});
+
+		it('should set POST request CSRF token', () => {
+			service.getCurrentUser().subscribe({
+				next: (user) => {
+					expect(user).not.toBeNull();
+				},
+			});
+
+			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
+
+			expect(req.request.method).toEqual('GET');
+
+			req.flush(expectedLoginResponse);
+
+			service.csrfToken$.subscribe((token) => {
+				expect(token).toBe('testToken');
+			});
+		});
 	});
 
 	describe('#logout', () => {
 		it('should call logout', () => {
-			service.logout().subscribe({ error: fail });
+			service.logout().subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/logout');
 
@@ -88,7 +106,7 @@ describe('AuthService', () => {
 
 	describe('#sendResetPasswordEmail', () => {
 		it('should send email', () => {
-			service.sendResetPasswordEmail('test@test.test').subscribe({ error: fail });
+			service.sendResetPasswordEmail('test@test.test').subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/requestpasswordreset');
 
@@ -114,15 +132,15 @@ describe('AuthService', () => {
 				created: new Date('2023-01-20T18:00:00'),
 				guest: false,
 				avatarURL: 'https://gravatar.com/avatar/aaaa',
+				csrfToken: 'testToken',
 			};
 		});
 
 		it('should return current user', () => {
 			service.getCurrentUser().subscribe({
 				next: (user) => {
-					expect(user).withContext('should return user').toEqual(expectedLoginResponse);
+					expect(user).toEqual(expectedLoginResponse);
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
@@ -145,16 +163,50 @@ describe('AuthService', () => {
 			// Should hit cache
 			service.getCurrentUser().subscribe({
 				next: (user) => {
-					expect(user).withContext('should return cached user').toEqual(expectedLoginResponse);
+					expect(user).toEqual(expectedLoginResponse);
 				},
-				error: fail,
+			});
+		});
+
+		it('should return authenticated status', () => {
+			expect(service.authenticated).toBeFalsy();
+
+			service.getCurrentUser().subscribe({
+				next: (user) => {
+					expect(user).not.toBeNull();
+					expect(service.authenticated).toBeTruthy();
+				},
+			});
+
+			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
+
+			expect(req.request.method).toEqual('GET');
+
+			req.flush(expectedLoginResponse);
+		});
+
+		it('should set GET request CSRF token', () => {
+			service.getCurrentUser().subscribe({
+				next: (user) => {
+					expect(user).not.toBeNull();
+				},
+			});
+
+			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
+
+			expect(req.request.method).toEqual('GET');
+
+			req.flush(expectedLoginResponse);
+
+			service.csrfToken$.subscribe((token) => {
+				expect(token).toBe('testToken');
 			});
 		});
 	});
 
 	describe('#resetPassword', () => {
 		it('should make reset password request', () => {
-			service.resetPassword('key', 'newsecret').subscribe({ error: fail });
+			service.resetPassword('key', 'newsecret').subscribe();
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/resetpassword');
 
@@ -180,15 +232,15 @@ describe('AuthService', () => {
 				created: new Date('2023-01-20T18:00:00'),
 				guest: false,
 				avatarURL: 'https://gravatar.com/avatar/aaaa',
+				csrfToken: 'testToken',
 			};
 		});
 
 		it('should clear current user', () => {
 			service.getCurrentUser().subscribe({
 				next: (user) => {
-					expect(user).withContext('should return user').not.toBeNull();
+					expect(user).not.toBeNull();
 				},
-				error: fail,
 			});
 
 			const req = httpTestingController.expectOne('http://localhost:3002/api/login');
@@ -201,9 +253,8 @@ describe('AuthService', () => {
 
 			service.getCurrentUser().subscribe({
 				next: (user) => {
-					expect(user).withContext('should return user').not.toBeNull();
+					expect(user).not.toBeNull();
 				},
-				error: fail,
 			});
 
 			const req2 = httpTestingController.expectOne('http://localhost:3002/api/login');

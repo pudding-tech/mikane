@@ -55,7 +55,7 @@ begin
     values (ip_user_id, ip_event_id, CURRENT_TIMESTAMP, ip_admin);
 
   return query
-  select * from get_events(ip_event_id, ip_by_user_id, false, false);
+  select * from get_events(ip_event_id, ip_by_user_id, false);
 
 end;
 $$

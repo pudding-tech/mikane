@@ -5,13 +5,14 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CategoryEditDialogComponent } from './category-edit-dialog.component';
 
 describe('CategoryEditDialogComponent', () => {
 	let component: CategoryEditDialogComponent;
 	let fixture: ComponentFixture<CategoryEditDialogComponent>;
 	let page: Page;
-	let matDialogRefSpy: jasmine.SpyObj<MatDialogRef<CategoryEditDialogComponent>>;
+	let matDialogRefSpy: { close: ReturnType<typeof vi.fn> };
 
 	const data = {
 		catId: 1,
@@ -20,7 +21,7 @@ describe('CategoryEditDialogComponent', () => {
 	};
 
 	beforeEach(async () => {
-		matDialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+		matDialogRefSpy = { close: vi.fn() };
 
 		await TestBed.configureTestingModule({
 			providers: [
@@ -38,9 +39,7 @@ describe('CategoryEditDialogComponent', () => {
 				NoopAnimationsModule,
 			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(CategoryEditDialogComponent);
 		component = fixture.componentInstance;
 		page = new Page(fixture);

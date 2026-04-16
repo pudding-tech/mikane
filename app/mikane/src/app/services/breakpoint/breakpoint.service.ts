@@ -8,13 +8,12 @@ import { Observable, map } from 'rxjs';
 export class BreakpointService {
 	private breakpointObserver = inject(BreakpointObserver);
 
-
 	/**
 	 * Returns observable that emits true if screen is mobile and false otherwise.
 	 *
 	 * Ex. 1:
 	 *
-	 * *ngIf="breakpointService.isMobile() | async"
+	 * @if(breakpointService.isMobile() | async)
 	 *
 	 * Ex. 2:
 	 *
@@ -28,7 +27,7 @@ export class BreakpointService {
 				} else {
 					return false;
 				}
-			})
+			}),
 		);
 	}
 }

@@ -71,7 +71,7 @@ begin
   );
 
   return query
-  select * from get_events(ip_event_id, null, false, false);
+  select * from get_events(ip_event_id, null, false);
 
 end;
 $$

@@ -1,6 +1,7 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, registerLocaleData } from '@angular/common';
+import localeNo from '@angular/common/locales/no';
 import { ElementRef } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,33 +9,31 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
-import { MockModule, MockPipe } from 'ng-mocks';
 import { User } from 'src/app/services/user/user.service';
 import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PaymentItemComponent } from './payment-item.component';
 
 describe('PaymentItemComponent', () => {
 	let component: PaymentItemComponent;
 	let fixture: ComponentFixture<PaymentItemComponent>;
 
+	beforeAll(() => {
+		registerLocaleData(localeNo);
+	});
+
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			declarations: [
-				FormControlPipe,
-				MockPipe(
-					CurrencyPipe,
-					jasmine.createSpy().and.callFake((...args: string[]) => JSON.stringify(args))
-				),
-			],
 			imports: [
 				PaymentItemComponent,
 				CommonModule,
-				MockModule(MatIconModule),
-				MockModule(MatListModule),
-				MockModule(MatButtonModule),
-				MockModule(MatFormFieldModule),
-				MockModule(MatInputModule),
+				MatIconModule,
+				MatListModule,
+				MatButtonModule,
+				MatFormFieldModule,
+				MatInputModule,
 				FormsModule,
+				FormControlPipe,
 				ReactiveFormsModule,
 			],
 			providers: [CurrencyPipe],
@@ -84,10 +83,10 @@ describe('PaymentItemComponent', () => {
 	});
 
 	it('should toggle the dropdown when the toggleDropdown method is called', () => {
-		const initialDropdownOpen = component.dropdownOpen;
+		const initialDropdownOpen = component.dropdownOpen();
 		component.toggleDropdown();
 
-		expect(component.dropdownOpen).toEqual(!initialDropdownOpen);
+		expect(component.dropdownOpen()).toEqual(!initialDropdownOpen);
 	});
 
 	it('should set lowerHeight to 0 when dropdown is closed', () => {
@@ -108,13 +107,18 @@ describe('PaymentItemComponent', () => {
 		expect(component.lowerHeight).toEqual(0);
 	});
 
-	it('should set lowerHeight to scrollHeight when self is true', fakeAsync(() => {
+	it('should set lowerHeight to scrollHeight when self is true', async () => {
+		vi.useFakeTimers();
+
 		component.lower = { nativeElement: { scrollHeight: 100 } } as ElementRef;
 		fixture.componentRef.setInput('self', true);
 		fixture.componentRef.setInput('expanded', true);
 		fixture.detectChanges();
-		tick();
+
+		vi.advanceTimersByTime(100);
+		vi.runAllTicks();
 
 		expect(component.lowerHeight).toEqual(100);
-	}));
+		vi.useRealTimers();
+	});
 });

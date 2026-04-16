@@ -1,18 +1,19 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, filter, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, filter, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -42,9 +43,10 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	dialog = inject(MatDialog);
 	private router = inject(Router);
 	private route = inject(ActivatedRoute);
+	private logService = inject(LogService);
 
-	protected loading = true;
-	expense: Expense;
+	protected loading = new BehaviorSubject<boolean>(true);
+	expense = signal<Expense>(null);
 	event: PuddingEvent;
 	currentUserId: string;
 
@@ -53,7 +55,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	destroy$ = new Subject<void>();
 
 	ngOnInit() {
-		this.loading = true;
+		this.loading.next(true);
 		const eventId = this.route.parent.parent.snapshot.paramMap.get('eventId');
 		const expenseId = this.route.snapshot.paramMap.get('id');
 
@@ -68,13 +70,13 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: (expense) => {
-					this.expense = expense;
-					this.loading = false;
+					this.expense.set(expense);
+					this.loading.next(false);
 				},
 				error: (err: ApiError) => {
-					this.loading = false;
+					this.loading.next(false);
 					this.messageService.showError('Error loading expense');
-					console.error('Something went wrong while loading expense', err?.error?.message);
+					this.logService.error('Something went wrong while loading expense: ' + err?.error?.message);
 				},
 			});
 
@@ -87,7 +89,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to get user');
-					console.error('Something went wrong getting signed in user', err?.error?.message);
+					this.logService.error('Something went wrong getting signed in user: ' + err?.error?.message);
 				},
 			});
 	}
@@ -107,7 +109,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 				data: {
 					eventId: this.event.id,
 					userId: this.currentUserId,
-					expense: this.expense,
+					expense: this.expense(),
 				},
 			})
 			.afterClosed()
@@ -124,7 +126,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 			.pipe(
 				switchMap((category: Category) => {
 					return this.expenseService.editExpense(
-						this.expense.id,
+						this.expense().id,
 						editExpense.name,
 						editExpense.description ?? undefined,
 						editExpense.amount,
@@ -137,12 +139,12 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: (returnedExpense) => {
-					this.expense = returnedExpense;
+					this.expense.set(returnedExpense);
 					this.messageService.showSuccess('Expense edited');
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to edit expense');
-					console.error('Something went wrong while editing expense', err);
+					this.logService.error('Something went wrong while editing expense: ' + err);
 				},
 			});
 	}
@@ -161,7 +163,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 			.afterClosed()
 			.pipe(
 				filter((confirm) => confirm),
-				switchMap(() => this.expenseService.deleteExpense(this.expense.id)),
+				switchMap(() => this.expenseService.deleteExpense(this.expense().id)),
 				takeUntil(this.destroy$),
 			)
 			.subscribe({
@@ -171,7 +173,7 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 				},
 				error: (err: ApiError) => {
 					this.messageService.showError('Failed to delete expense');
-					console.error('Something went wrong while deleting expense', err?.error?.message);
+					this.logService.error('Something went wrong while deleting expense: ' + err?.error?.message);
 				},
 			});
 	}
@@ -183,8 +185,8 @@ export class ExpenseComponent implements OnInit, OnDestroy {
 	}
 
 	gotoUserProfile() {
-		if (!this.expense.payer.guest) {
-			this.router.navigate(['u', this.expense.payer.username]);
+		if (!this.expense().payer.guest) {
+			this.router.navigate(['u', this.expense().payer.username]);
 		}
 	}
 

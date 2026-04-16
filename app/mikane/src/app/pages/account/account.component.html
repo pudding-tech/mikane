@@ -8,21 +8,15 @@
 </mat-toolbar>
 @if ((loading | async) === false) {
 	<div>
-		@if (user) {
+		@if (user()) {
 			<div class="account-settings">
 				<app-user-settings
 					[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc first'"
-					[user]="user"
+					[user]="user()"
 				/>
-				<app-preferences
-					[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"
-					[user]="user" />
-				<app-change-password
-					[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'"
-				/>
-				<app-danger-zone
-					[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc last'"
-				/>
+				<app-preferences [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'" [user]="user()" />
+				<app-change-password [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'" />
+				<app-danger-zone [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc last'" />
 			</div>
 		} @else {
 			<div class="no-user">

@@ -4,6 +4,9 @@ import * as db from "../db/dbUsers.ts";
 import * as dbAuth from "../db/dbAuthentication.ts";
 import * as ec from "../types/errorCodes.ts";
 import { authCheck } from "../middlewares/authCheck.ts";
+import { csrfCheck } from "../middlewares/csrf.ts";
+import { useRateLimit } from "../middlewares/rateLimiter.ts";
+import { singleRequestLimiter } from "../middlewares/singleRequestLimiter.ts";
 import { authenticate, createHash } from "../utils/auth.ts";
 import { generateKey } from "../utils/generateKey.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
@@ -25,7 +28,7 @@ const router = express.Router();
 /*
 * Get a list of all users in a given event
 */
-router.get("/users", authCheck, async (req, res) => {
+router.get("/users", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const filter: { eventId?: string, excludeGuests?: boolean, excludeUserId?: string } = {
     eventId: req.query.eventId as string,
     excludeGuests: req.query.excludeGuests === "true"
@@ -56,7 +59,7 @@ router.get("/users", authCheck, async (req, res) => {
 /*
 * Get a specific user
 */
-router.get("/users/:id", authCheck, async (req, res) => {
+router.get("/users/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const userId = req.params.id;
   const activeUserId = req.session.userId;
   if (!isUUID(userId)) {
@@ -80,7 +83,7 @@ router.get("/users/:id", authCheck, async (req, res) => {
 /*
 * Get a specific user by username (also accepts ID)
 */
-router.get("/users/username/:usernameOrUserId", authCheck, async (req, res) => {
+router.get("/users/username/:usernameOrUserId", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const usernameOrUserId = req.params.usernameOrUserId;
   const activeUserId = req.session.userId;
   if (!activeUserId) {
@@ -108,7 +111,7 @@ router.get("/users/username/:usernameOrUserId", authCheck, async (req, res) => {
 /*
 * Get a list of a user's events
 */
-router.get("/users/:id/events", authCheck, async (req, res) => {
+router.get("/users/:id/events", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const userId = req.params.id;
   if (!isUUID(userId)) {
     throw new ErrorExt(ec.PUD016);
@@ -131,7 +134,7 @@ router.get("/users/:id/events", authCheck, async (req, res) => {
 /*
 * Get a list of a user's expenses, optionally in an event
 */
-router.get("/users/:id/expenses", authCheck, async (req, res) => {
+router.get("/users/:id/expenses", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const userId = req.params.id;
   if (!isUUID(userId)) {
     throw new ErrorExt(ec.PUD016);
@@ -159,7 +162,7 @@ router.get("/users/:id/expenses", authCheck, async (req, res) => {
 /*
 * Verify that a register account key is valid
 */
-router.get("/verifykey/register/:key", async (req, res) => {
+router.get("/verifykey/register/:key", useRateLimit("strict"), async (req, res) => {
   const key = req.params.key;
   const { email, guestUser, firstName, lastName } = await db.verifyRegisterAccountKey(key);
   if (!email) {
@@ -171,7 +174,7 @@ router.get("/verifykey/register/:key", async (req, res) => {
 /*
 * Verify that a delete account key is valid
 */
-router.get("/verifykey/deleteaccount/:key", authCheck, async (req, res) => {
+router.get("/verifykey/deleteaccount/:key", useRateLimit("strict"), authCheck, csrfCheck, async (req, res) => {
   const key = req.params.key;
   const valid = await db.verifyDeleteAccountKey(key);
   if (!valid) {
@@ -187,7 +190,7 @@ router.get("/verifykey/deleteaccount/:key", authCheck, async (req, res) => {
 /*
 * Register a new user
 */
-router.post("/users", async (req, res) => {
+router.post("/users", useRateLimit("strict"), async (req, res) => {
   const key: string = req.body.key;
   const keyInfo = await db.verifyRegisterAccountKey(key);
 
@@ -244,7 +247,7 @@ router.post("/users", async (req, res) => {
 /*
 * Change signed in user's password
 */
-router.post("/users/changepassword", authCheck, async (req, res) => {
+router.post("/users/changepassword", useRateLimit("strict"), authCheck, csrfCheck, async (req, res) => {
   // Get signed in user's hashed password
   const userId = req.session.userId;
   const userPW = await dbAuth.getUserHash(undefined, userId);
@@ -281,7 +284,7 @@ router.post("/users/changepassword", authCheck, async (req, res) => {
 /*
 * Invite a new user via email
 */
-router.post("/users/invite", authCheck, async (req, res) => {
+router.post("/users/invite", useRateLimit("strict"), authCheck, csrfCheck, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
     throw new ErrorExt(ec.PUD073);
   }
@@ -316,7 +319,7 @@ router.post("/users/invite", authCheck, async (req, res) => {
 /*
 * Request an account deletion confirmation email
 */
-router.post("/users/requestdeleteaccount", authCheck, async (req, res) => {
+router.post("/users/requestdeleteaccount", singleRequestLimiter, authCheck, csrfCheck, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
     throw new ErrorExt(ec.PUD073);
   }
@@ -339,7 +342,7 @@ router.post("/users/requestdeleteaccount", authCheck, async (req, res) => {
 /*
 * Edit user
 */
-router.put("/users/:id", authCheck, async (req, res) => {
+router.put("/users/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const userId = req.params.id;
   if (!isUUID(userId)) {
     throw new ErrorExt(ec.PUD016);
@@ -392,7 +395,7 @@ router.put("/users/:id", authCheck, async (req, res) => {
 /*
 * Edit user preferences
 */
-router.put("/users/:id/preferences", authCheck, async (req, res) => {
+router.put("/users/:id/preferences", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const userId = req.params.id;
   if (!isUUID(userId)) {
     throw new ErrorExt(ec.PUD016);
@@ -433,14 +436,12 @@ router.put("/users/:id/preferences", authCheck, async (req, res) => {
 /*
 * Delete user
 */
-router.delete("/users/:id", authCheck, async (req, res) => {
+router.delete("/users/:id", useRateLimit("strict"), authCheck, csrfCheck, async (req, res) => {
   const key: string = req.body.key;
   const userId = req.params.id;
   if (!isUUID(userId)) {
     throw new ErrorExt(ec.PUD016);
   }
-
-  
 
   const valid = await db.verifyDeleteAccountKey(key);
   if (!valid) {

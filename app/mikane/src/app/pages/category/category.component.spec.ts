@@ -1,88 +1,110 @@
+import { TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MockBuilder, MockRender, MockedComponentFixture } from 'ng-mocks';
-import { MessageService } from 'src/app/services/message/message.service';
-
-import { ChangeDetectorRef } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { Category, CategoryService } from 'src/app/services/category/category.service';
 import { ContextService } from 'src/app/services/context/context.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
+import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
+import { LogService } from 'src/app/services/log/log.service';
+import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { CategoryIcon } from 'src/app/types/enums';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
 import { CategoryComponent } from './category.component';
 
+function createComponent(eventData?: Partial<PuddingEvent>) {
+	const $event = new BehaviorSubject<PuddingEvent>({
+		id: '1',
+		status: {
+			id: EventStatusType.ACTIVE,
+			name: 'Active',
+		},
+		...(eventData || {}),
+	} as PuddingEvent);
+
+	const fixture = TestBed.createComponent(CategoryComponent);
+	const component = fixture.componentInstance;
+	fixture.componentRef.setInput('$event', $event);
+	fixture.detectChanges();
+	return { fixture, component, $event };
+}
+
 describe('CategoryComponent', () => {
-	let component: CategoryComponent;
-	let fixture: MockedComponentFixture<CategoryComponent, { $event: Observable<PuddingEvent> }>;
-	let categoryServiceStub: jasmine.SpyObj<CategoryService>;
-	let userServiceStub: jasmine.SpyObj<UserService>;
-	let dialogStub: jasmine.SpyObj<MatDialog>;
-	let changeDetectorRefStub: jasmine.SpyObj<ChangeDetectorRef>;
-	let messageServiceStub: jasmine.SpyObj<MessageService>;
-	let breakpointObserverStub: jasmine.SpyObj<BreakpointService>;
-	let contextServiceStub: jasmine.SpyObj<ContextService>;
+	let categoryServiceSpy: {
+		loadCategories: ReturnType<typeof vi.fn>;
+		createCategory: ReturnType<typeof vi.fn>;
+		editCategory: ReturnType<typeof vi.fn>;
+		addUser: ReturnType<typeof vi.fn>;
+		deleteUser: ReturnType<typeof vi.fn>;
+		editUser: ReturnType<typeof vi.fn>;
+		setWeighted: ReturnType<typeof vi.fn>;
+		deleteCategory: ReturnType<typeof vi.fn>;
+	};
+	let userServiceSpy: { loadUsersByEvent: ReturnType<typeof vi.fn> };
+	let dialogSpy: { open: ReturnType<typeof vi.fn> };
+	let messageServiceSpy: { showError: ReturnType<typeof vi.fn>; showSuccess: ReturnType<typeof vi.fn> };
+	let breakpointServiceSpy: { isMobile: () => boolean };
+	let contextServiceSpy: { isIos: () => boolean };
+	let formValidationServiceSpy: object;
 	let users: User[];
 
 	beforeEach(() => {
-		categoryServiceStub = jasmine.createSpyObj('CategoryService', [
-			'loadCategories',
-			'createCategory',
-			'editCategory',
-			'addUser',
-			'deleteUser',
-			'editUser',
-			'setWeighted',
-			'deleteCategory',
-		]);
-		userServiceStub = jasmine.createSpyObj('UserService', ['loadUsersByEvent']);
-		dialogStub = jasmine.createSpyObj('MatDialog', ['open']);
-		changeDetectorRefStub = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
-		messageServiceStub = jasmine.createSpyObj('MessageService', ['showError', 'showSuccess']);
-		breakpointObserverStub = jasmine.createSpyObj('BreakpointService', ['isMobile']);
-		contextServiceStub = jasmine.createSpyObj('ContextService', [], ['isIos']);
+		categoryServiceSpy = {
+			loadCategories: vi.fn().mockReturnValue(of([])),
+			createCategory: vi.fn(),
+			editCategory: vi.fn(),
+			addUser: vi.fn(),
+			deleteUser: vi.fn(),
+			editUser: vi.fn(),
+			setWeighted: vi.fn(),
+			deleteCategory: vi.fn(),
+		};
+		userServiceSpy = { loadUsersByEvent: vi.fn().mockReturnValue(of([])) };
+		dialogSpy = { open: vi.fn() };
+		messageServiceSpy = { showError: vi.fn(), showSuccess: vi.fn() };
+		breakpointServiceSpy = { isMobile: () => false };
+		contextServiceSpy = { isIos: () => false };
+		formValidationServiceSpy = {};
 
-		return MockBuilder(CategoryComponent)
-			.provide({ provide: CategoryService, useValue: categoryServiceStub })
-			.provide({ provide: UserService, useValue: userServiceStub })
-			.provide({ provide: MessageService, useValue: messageServiceStub })
-			.provide({ provide: MatDialog, useValue: dialogStub })
-			.provide({ provide: ChangeDetectorRef, useValue: changeDetectorRefStub })
-			.provide({ provide: BreakpointService, useValue: breakpointObserverStub })
-			.provide({ provide: ContextService, useValue: contextServiceStub })
-			.mock(MatIconModule)
-			.mock(MatCardModule);
+		TestBed.configureTestingModule({
+			imports: [CategoryComponent, MatCardModule, MatIconModule],
+			providers: [
+				{ provide: CategoryService, useValue: categoryServiceSpy },
+				{ provide: UserService, useValue: userServiceSpy },
+				{ provide: MessageService, useValue: messageServiceSpy },
+				{ provide: MatDialog, useValue: dialogSpy },
+				{ provide: BreakpointService, useValue: breakpointServiceSpy },
+				{ provide: ContextService, useValue: contextServiceSpy },
+				{ provide: LogService, useValue: { error: vi.fn() } },
+				{ provide: FormValidationService, useValue: formValidationServiceSpy },
+			],
+		})
+			.overrideComponent(CategoryComponent, {
+				remove: {
+					imports: [MatDialogModule],
+				},
+			})
+			.compileComponents();
+
+		vi.clearAllMocks();
 	});
 
-	function createComponent() {
-		fixture = MockRender(CategoryComponent, {
-			$event: of({
-				id: '1',
-				status: {
-					id: EventStatusType.ACTIVE,
-					name: 'Active',
-				},
-			} as PuddingEvent),
-		});
-		component = fixture.point.componentInstance;
-		fixture.detectChanges();
-	}
-
 	it('should create', () => {
-		createComponent();
+		const { component } = createComponent();
 
 		expect(component).toBeTruthy();
 	});
 
 	it('should set event', () => {
-		createComponent();
+		const { component } = createComponent();
 
-		expect(component.event).toEqual({
+		expect(component.event()).toEqual({
 			id: '1',
 			status: {
 				id: EventStatusType.ACTIVE,
@@ -92,62 +114,43 @@ describe('CategoryComponent', () => {
 	});
 
 	it('should set event to undefined', () => {
-		fixture = MockRender(CategoryComponent, {
-			$event: of(undefined),
-		});
-		component = fixture.point.componentInstance;
+		const $event = new BehaviorSubject<PuddingEvent | undefined>(undefined);
+
+		const fixture = TestBed.createComponent(CategoryComponent);
+		const component = fixture.componentInstance;
+		fixture.componentRef.setInput('$event', $event);
 		fixture.detectChanges();
 
-		expect(component.event).toBeUndefined();
+		expect(component.event()).toBeUndefined();
 	});
 
 	it('should set event to undefined if no id', () => {
-		fixture = MockRender(CategoryComponent, {
-			$event: of({
-				id: undefined,
-				status: {
-					id: EventStatusType.ACTIVE,
-					name: 'Active',
-				},
-			} as PuddingEvent),
-		});
-		component = fixture.point.componentInstance;
-		fixture.detectChanges();
+		const { component } = createComponent({ id: undefined });
 
-		expect(component.event).toBeUndefined();
+		expect(component.event()).toBeUndefined();
 	});
 
 	it('should push save on displayedColumns if event active', () => {
-		createComponent();
+		const { component } = createComponent();
 
 		expect(component.displayedColumns).toEqual(['name', 'weight', 'save']);
 	});
 
-	it('should not push save on displayedColumns if event active', () => {
-		fixture = MockRender(CategoryComponent, {
-			$event: of({
-				id: '1',
-				status: {
-					id: EventStatusType.SETTLED,
-					name: 'Settled',
-				},
-			} as PuddingEvent),
-		});
-		component = fixture.point.componentInstance;
-		fixture.detectChanges();
+	it('should not push save on displayedColumns if event not active', () => {
+		const { component } = createComponent({ status: { id: EventStatusType.SETTLED, name: 'Settled' } });
 
 		expect(component.displayedColumns).toEqual(['name', 'weight']);
 	});
 
 	it('should load categories', () => {
-		createComponent();
+		const { component } = createComponent();
 
-		expect(categoryServiceStub.loadCategories).toHaveBeenCalledWith(component.event.id);
+		expect(categoryServiceSpy.loadCategories).toHaveBeenCalledWith(component.event().id);
 	});
 
 	describe('#loadCategories', () => {
 		beforeEach(() => {
-			categoryServiceStub.loadCategories.and.returnValue(
+			categoryServiceSpy.loadCategories.mockReturnValue(
 				of([
 					{
 						id: '1',
@@ -162,16 +165,16 @@ describe('CategoryComponent', () => {
 							},
 						],
 					},
-				] as Category[]),
+				]),
 			);
-			userServiceStub.loadUsersByEvent.and.returnValue(of([]));
+			userServiceSpy.loadUsersByEvent.mockReturnValue(of([]));
 		});
 
 		it('should set categories', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.loadCategories();
 
-			expect(component.categories).toEqual([
+			expect(component.categories()).toEqual([
 				{
 					id: '1',
 					name: 'name',
@@ -185,38 +188,38 @@ describe('CategoryComponent', () => {
 						},
 					],
 				},
-			] as Category[]);
+			]);
 		});
 
 		it('should load users after categories', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.loadCategories();
 
-			expect(userServiceStub.loadUsersByEvent).toHaveBeenCalledWith(component.event.id);
+			expect(userServiceSpy.loadUsersByEvent).toHaveBeenCalledWith(component.event().id);
 		});
 
-		it('should set categories to undefined', () => {
-			categoryServiceStub.loadCategories.and.returnValue(of(undefined));
+		it('should set categories to empty array', () => {
+			categoryServiceSpy.loadCategories.mockReturnValue(of([]));
 
-			createComponent();
+			const { component } = createComponent();
 			component.loadCategories();
 
-			expect(component.categories).toBeUndefined();
+			expect(component.categories()).toEqual([]);
 		});
 
 		it('should show error if categories fail to load', () => {
-			categoryServiceStub.loadCategories.and.returnValue(throwError('error'));
+			categoryServiceSpy.loadCategories.mockReturnValue(throwError(() => new Error('error')));
 
-			createComponent();
+			const { component } = createComponent();
 			component.loadCategories();
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error loading categories');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error loading categories');
 		});
 	});
 
 	describe('#loadUsers', () => {
 		it('should set users', () => {
-			userServiceStub.loadUsersByEvent.and.returnValue(
+			userServiceSpy.loadUsersByEvent.mockReturnValue(
 				of([
 					{
 						id: '1',
@@ -226,10 +229,10 @@ describe('CategoryComponent', () => {
 				] as User[]),
 			);
 
-			createComponent();
+			const { component } = createComponent();
 			component.loadUsers();
 
-			expect(component.users).toEqual([
+			expect(component.users()).toEqual([
 				{
 					id: '1',
 					name: 'name',
@@ -239,21 +242,21 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should set users to undefined', () => {
-			userServiceStub.loadUsersByEvent.and.returnValue(of(undefined));
+			userServiceSpy.loadUsersByEvent.mockReturnValue(of(undefined));
 
-			createComponent();
+			const { component } = createComponent();
 			component.loadUsers();
 
-			expect(component.users).toBeUndefined();
+			expect(component.users()).toBeUndefined();
 		});
 
 		it('should show error if users fail to load', () => {
-			userServiceStub.loadUsersByEvent.and.returnValue(throwError('error'));
+			userServiceSpy.loadUsersByEvent.mockReturnValue(throwError(() => new Error('error')));
 
-			createComponent();
+			const { component } = createComponent();
 			component.loadUsers();
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error loading users');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error loading users');
 		});
 	});
 
@@ -271,8 +274,8 @@ describe('CategoryComponent', () => {
 					avatarURL: 'avatarURL2',
 				},
 			] as User[];
-			userServiceStub.loadUsersByEvent.and.returnValue(of(users));
-			categoryServiceStub.loadCategories.and.returnValue(
+			userServiceSpy.loadUsersByEvent.mockReturnValue(of(users));
+			categoryServiceSpy.loadCategories.mockReturnValue(
 				of([
 					{
 						id: '1',
@@ -305,7 +308,7 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should return users in category', () => {
-			createComponent();
+			const { component } = createComponent();
 
 			expect(component.filterUsers('1')).toEqual([
 				{
@@ -317,8 +320,8 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should return empty', () => {
-			createComponent();
-			component.users = [];
+			const { component } = createComponent();
+			component.users.set([]);
 
 			component.filterUsers('1');
 
@@ -328,7 +331,7 @@ describe('CategoryComponent', () => {
 
 	describe('#openDialog', () => {
 		beforeEach(() => {
-			dialogStub.open.and.returnValue({
+			dialogSpy.open.mockReturnValue({
 				afterClosed: () =>
 					of({
 						categoryName: 'name',
@@ -336,68 +339,68 @@ describe('CategoryComponent', () => {
 						selectedIcon: CategoryIcon.SHOPPING,
 					}),
 			} as MatDialogRef<CategoryDialogComponent>);
-			categoryServiceStub.createCategory.and.returnValue(of({} as Category));
+			categoryServiceSpy.createCategory.mockReturnValue(of({} as Category));
 		});
 
 		it('should open dialog', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.openDialog();
 
-			expect(dialogStub.open).toHaveBeenCalledWith(CategoryDialogComponent, {
+			expect(dialogSpy.open).toHaveBeenCalledWith(CategoryDialogComponent, {
 				width: '380px',
 				data: {
-					eventId: component.event.id,
+					eventId: component.event().id,
 					weighted: false,
 				},
 			});
 		});
 
 		it('should create category after closing dialog', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.openDialog();
 
-			expect(categoryServiceStub.createCategory).toHaveBeenCalledWith('name', component.event.id, false, CategoryIcon.SHOPPING);
+			expect(categoryServiceSpy.createCategory).toHaveBeenCalledWith('name', component.event().id, false, CategoryIcon.SHOPPING);
 		});
 	});
 
 	describe('#openEditCategoryDialog', () => {
 		beforeEach(() => {
-			dialogStub.open.and.returnValue({
+			dialogSpy.open.mockReturnValue({
 				afterClosed: () =>
 					of({
 						categoryName: 'name',
 						selectedIcon: CategoryIcon.SHOPPING,
 					}),
 			} as MatDialogRef<CategoryDialogComponent>);
-			categoryServiceStub.editCategory.and.returnValue(of({} as Category));
+			categoryServiceSpy.editCategory.mockReturnValue(of({} as Category));
 		});
 
 		it('should open edit dialog', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.openEditCategoryDialog('1', 'category', CategoryIcon.SHOPPING);
 
-			expect(dialogStub.open).toHaveBeenCalledWith(CategoryDialogComponent, {
+			expect(dialogSpy.open).toHaveBeenCalledWith(CategoryDialogComponent, {
 				width: '380px',
 				data: {
 					categoryId: '1',
 					name: 'category',
 					icon: CategoryIcon.SHOPPING,
-					eventId: component.event.id,
+					eventId: component.event().id,
 				},
 			});
 		});
 
 		it('should edit category after closing dialog', () => {
-			createComponent();
-			component.openEditCategoryDialog('1', 'cateagory', CategoryIcon.SHOPPING);
+			const { component } = createComponent();
+			component.openEditCategoryDialog('1', 'category', CategoryIcon.SHOPPING);
 
-			expect(categoryServiceStub.editCategory).toHaveBeenCalledWith('1', 'name', CategoryIcon.SHOPPING);
+			expect(categoryServiceSpy.editCategory).toHaveBeenCalledWith('1', 'name', CategoryIcon.SHOPPING);
 		});
 	});
 
 	describe('#createCategory', () => {
 		beforeEach(() => {
-			categoryServiceStub.createCategory.and.returnValue(
+			categoryServiceSpy.createCategory.mockReturnValue(
 				of({
 					id: '1',
 					name: 'name',
@@ -408,42 +411,42 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should create category', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.createCategory('name', false, CategoryIcon.SHOPPING);
 
-			expect(categoryServiceStub.createCategory).toHaveBeenCalledWith('name', component.event.id, false, CategoryIcon.SHOPPING);
+			expect(categoryServiceSpy.createCategory).toHaveBeenCalledWith('name', component.event().id, false, CategoryIcon.SHOPPING);
 		});
 
 		it('should push category and show success message', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.createCategory('name', false, CategoryIcon.SHOPPING);
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
-			expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('Category created');
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
+			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Category created');
 		});
 
 		it('should show error if category fails to create', () => {
-			categoryServiceStub.createCategory.and.returnValue(throwError(() => 'error'));
+			categoryServiceSpy.createCategory.mockReturnValue(throwError(() => 'error'));
 
-			createComponent();
+			const { component } = createComponent();
 			component.createCategory('name', false, CategoryIcon.SHOPPING);
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error creating category');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error creating category');
 		});
 
 		it('should show error if category is undefined', () => {
-			categoryServiceStub.createCategory.and.returnValue(of(undefined));
+			categoryServiceSpy.createCategory.mockReturnValue(of(undefined));
 
-			createComponent();
+			const { component } = createComponent();
 			component.createCategory('name', false, CategoryIcon.SHOPPING);
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error creating category');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error creating category');
 		});
 	});
 
 	describe('#editCategory', () => {
 		beforeEach(() => {
-			categoryServiceStub.loadCategories.and.returnValue(
+			categoryServiceSpy.loadCategories.mockReturnValue(
 				of([
 					{
 						id: '1',
@@ -454,7 +457,7 @@ describe('CategoryComponent', () => {
 				] as Category[]),
 			);
 
-			categoryServiceStub.editCategory.and.returnValue(
+			categoryServiceSpy.editCategory.mockReturnValue(
 				of({
 					id: '1',
 					name: 'new name',
@@ -465,44 +468,44 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should edit category', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.editCategory('1', 'name', CategoryIcon.SHOPPING);
 
-			expect(categoryServiceStub.editCategory).toHaveBeenCalledWith('1', 'name', CategoryIcon.SHOPPING);
+			expect(categoryServiceSpy.editCategory).toHaveBeenCalledWith('1', 'name', CategoryIcon.SHOPPING);
 		});
 
 		it('should push edited category and show success message', () => {
-			createComponent();
+			const { component } = createComponent();
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
 			component.editCategory('1', 'name', CategoryIcon.SHOPPING);
 
-			expect(component.categories).toEqual([{ id: '1', name: 'new name', weighted: false, users: [] }] as Category[]);
-			expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('Category edited');
+			expect(component.categories()).toEqual([{ id: '1', name: 'new name', weighted: false, users: [] }] as Category[]);
+			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Category edited');
 		});
 
 		it('should show error if category fails to edit', () => {
-			categoryServiceStub.editCategory.and.returnValue(throwError(() => 'error'));
+			categoryServiceSpy.editCategory.mockReturnValue(throwError(() => 'error'));
 
-			createComponent();
+			const { component } = createComponent();
 			component.editCategory('1', 'name', CategoryIcon.SHOPPING);
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error editing category');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error editing category');
 		});
 
 		it('should show error if edited category is undefined', () => {
-			categoryServiceStub.editCategory.and.returnValue(of(undefined));
+			categoryServiceSpy.editCategory.mockReturnValue(of(undefined));
 
-			createComponent();
+			const { component } = createComponent();
 			component.editCategory('1', 'name', CategoryIcon.SHOPPING);
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error editing category');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error editing category');
 		});
 	});
 
 	describe('#addUser', () => {
 		beforeEach(() => {
-			categoryServiceStub.loadCategories.and.returnValue(
+			categoryServiceSpy.loadCategories.mockReturnValue(
 				of([
 					{
 						id: '1',
@@ -513,7 +516,7 @@ describe('CategoryComponent', () => {
 				] as Category[]),
 			);
 
-			categoryServiceStub.addUser.and.returnValue(
+			categoryServiceSpy.addUser.mockReturnValue(
 				of({
 					id: '1',
 					name: 'name',
@@ -531,25 +534,25 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should add user', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.addUserForm.get('participantName').setValue('name');
 			component.addUserForm.get('weight').setValue(2);
 
 			component.addUser('1');
 
-			expect(categoryServiceStub.addUser).toHaveBeenCalledWith('1', 'name', 2);
+			expect(categoryServiceSpy.addUser).toHaveBeenCalledWith('1', 'name', 2);
 		});
 
 		it('should add users to category and show success message', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.addUserForm.get('participantName').setValue('name');
 			component.addUserForm.get('weight').setValue(2);
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
 
 			component.addUser('1');
 
-			expect(component.categories).toEqual([
+			expect(component.categories()).toEqual([
 				{
 					id: '1',
 					name: 'name',
@@ -565,11 +568,11 @@ describe('CategoryComponent', () => {
 				},
 			] as Category[]);
 
-			expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('User added to category "' + 'name' + '"');
+			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('User added to category "' + 'name' + '"');
 		});
 
 		it('should reset form values and mark as untouched', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.addUserForm.get('participantName').setValue('name');
 			component.addUserForm.get('weight').setValue(2);
 
@@ -581,33 +584,33 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should show error if user fails to add', () => {
-			categoryServiceStub.addUser.and.returnValue(throwError(() => 'error'));
+			categoryServiceSpy.addUser.mockReturnValue(throwError(() => 'error'));
 
-			createComponent();
+			const { component } = createComponent();
 			component.addUserForm.get('participantName').setValue('name');
 			component.addUserForm.get('weight').setValue(2);
 
 			component.addUser('1');
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error adding user to category');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error adding user to category');
 		});
 
 		it('should show error if user added category is undefined', () => {
-			categoryServiceStub.addUser.and.returnValue(of(undefined));
+			categoryServiceSpy.addUser.mockReturnValue(of(undefined));
 
-			createComponent();
+			const { component } = createComponent();
 			component.addUserForm.get('participantName').setValue('name');
 			component.addUserForm.get('weight').setValue(2);
 
 			component.addUser('1');
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error adding user to category');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error adding user to category');
 		});
 	});
 
 	describe('#removeUser', () => {
 		beforeEach(() => {
-			categoryServiceStub.loadCategories.and.returnValue(
+			categoryServiceSpy.loadCategories.mockReturnValue(
 				of([
 					{
 						id: '1',
@@ -625,7 +628,7 @@ describe('CategoryComponent', () => {
 				] as Category[]),
 			);
 
-			categoryServiceStub.deleteUser.and.returnValue(
+			categoryServiceSpy.deleteUser.mockReturnValue(
 				of({
 					id: '1',
 					name: 'name',
@@ -636,16 +639,16 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should remove user', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.removeUser('1', '1');
 
-			expect(categoryServiceStub.deleteUser).toHaveBeenCalledWith('1', '1');
+			expect(categoryServiceSpy.deleteUser).toHaveBeenCalledWith('1', '1');
 		});
 
 		it('should remove user from category and show success message', () => {
-			createComponent();
+			const { component } = createComponent();
 
-			expect(component.categories).toEqual([
+			expect(component.categories()).toEqual([
 				{
 					id: '1',
 					name: 'name',
@@ -663,35 +666,35 @@ describe('CategoryComponent', () => {
 
 			component.removeUser('1', '1');
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
-			expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('User removed from category "' + 'name' + '"');
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
+			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('User removed from category "' + 'name' + '"');
 		});
 
 		it('should show error if user fails to remove', () => {
-			categoryServiceStub.deleteUser.and.returnValue(throwError(() => 'error'));
+			categoryServiceSpy.deleteUser.mockReturnValue(throwError(() => 'error'));
 
-			createComponent();
+			const { component } = createComponent();
 			component.removeUser('1', '1');
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error removing user from category');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error removing user from category');
 		});
 
 		it('should show error if user removed category is undefined', () => {
-			categoryServiceStub.deleteUser.and.returnValue(of(undefined));
+			categoryServiceSpy.deleteUser.mockReturnValue(of(undefined));
 
-			createComponent();
+			const { component } = createComponent();
 			component.removeUser('1', '1');
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error removing user from category');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error removing user from category');
 		});
 	});
 
 	describe('#openWeightEditDialog', () => {
 		beforeEach(() => {
-			dialogStub.open.and.returnValue({
+			dialogSpy.open.mockReturnValue({
 				afterClosed: () => of({ weight: 2 }),
 			} as MatDialogRef<CategoryEditDialogComponent>);
-			categoryServiceStub.editUser.and.returnValue(
+			categoryServiceSpy.editUser.mockReturnValue(
 				of({
 					id: '1',
 					name: 'name',
@@ -709,10 +712,10 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should open weight edit dialog', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.openWeightEditDialog('1', '1', 2);
 
-			expect(dialogStub.open).toHaveBeenCalledWith(CategoryEditDialogComponent, {
+			expect(dialogSpy.open).toHaveBeenCalledWith(CategoryEditDialogComponent, {
 				width: '300px',
 				data: {
 					categoryId: '1',
@@ -723,16 +726,16 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should edit user after closing dialog', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.openWeightEditDialog('1', '1', 2);
 
-			expect(categoryServiceStub.editUser).toHaveBeenCalledWith('1', '1', 2);
+			expect(categoryServiceSpy.editUser).toHaveBeenCalledWith('1', '1', 2);
 		});
 	});
 
 	describe('#editCategoryWeight', () => {
 		beforeEach(() => {
-			categoryServiceStub.loadCategories.and.returnValue(
+			categoryServiceSpy.loadCategories.mockReturnValue(
 				of([
 					{
 						id: '1',
@@ -750,7 +753,7 @@ describe('CategoryComponent', () => {
 				] as Category[]),
 			);
 
-			categoryServiceStub.editUser.and.returnValue(
+			categoryServiceSpy.editUser.mockReturnValue(
 				of({
 					id: '1',
 					name: 'name',
@@ -768,16 +771,16 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should edit user', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.editCategoryWeight('1', '1', 2);
 
-			expect(categoryServiceStub.editUser).toHaveBeenCalledWith('1', '1', 2);
+			expect(categoryServiceSpy.editUser).toHaveBeenCalledWith('1', '1', 2);
 		});
 
 		it('should edit user and show success message', () => {
-			createComponent();
+			const { component } = createComponent();
 
-			expect(component.categories).toEqual([
+			expect(component.categories()).toEqual([
 				{
 					id: '1',
 					name: 'name',
@@ -795,7 +798,7 @@ describe('CategoryComponent', () => {
 
 			component.editCategoryWeight('1', '1', 2);
 
-			expect(component.categories).toEqual([
+			expect(component.categories()).toEqual([
 				{
 					id: '1',
 					name: 'name',
@@ -811,31 +814,31 @@ describe('CategoryComponent', () => {
 				},
 			] as Category[]);
 
-			expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('Category updated');
+			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Category updated');
 		});
 
 		it('should show error if user fails to edit', () => {
-			categoryServiceStub.editUser.and.returnValue(throwError(() => 'error'));
+			categoryServiceSpy.editUser.mockReturnValue(throwError(() => 'error'));
 
-			createComponent();
+			const { component } = createComponent();
 			component.editCategoryWeight('1', '1', 2);
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error editing category');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error editing category');
 		});
 
 		it('should show error if user edited category is undefined', () => {
-			categoryServiceStub.editUser.and.returnValue(of(undefined));
+			categoryServiceSpy.editUser.mockReturnValue(of(undefined));
 
-			createComponent();
+			const { component } = createComponent();
 			component.editCategoryWeight('1', '1', 2);
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error editing category');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error editing category');
 		});
 	});
 
 	describe('#toggleWeighted', () => {
 		beforeEach(() => {
-			categoryServiceStub.loadCategories.and.returnValue(
+			categoryServiceSpy.loadCategories.mockReturnValue(
 				of([
 					{
 						id: '1',
@@ -846,7 +849,7 @@ describe('CategoryComponent', () => {
 				] as Category[]),
 			);
 
-			categoryServiceStub.setWeighted.and.returnValue(
+			categoryServiceSpy.setWeighted.mockReturnValue(
 				of({
 					id: '1',
 					name: 'name',
@@ -857,54 +860,54 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should toggle weighted', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.toggleWeighted('1', false);
 
-			expect(categoryServiceStub.setWeighted).toHaveBeenCalledWith('1', true);
+			expect(categoryServiceSpy.setWeighted).toHaveBeenCalledWith('1', true);
 		});
 
 		it('should toggle weighted and show success message', () => {
-			createComponent();
+			const { component } = createComponent();
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
 
 			component.toggleWeighted('1', false);
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: true, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: true, users: [] }] as Category[]);
 		});
 
 		it('should show error if category fails to toggle weighted', () => {
-			categoryServiceStub.setWeighted.and.returnValue(throwError(() => 'error'));
+			categoryServiceSpy.setWeighted.mockReturnValue(throwError(() => 'error'));
 
-			createComponent();
+			const { component } = createComponent();
 			component.toggleWeighted('1', false);
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Failed to toggle weighted status');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to toggle weighted status');
 		});
 
 		it('should show error if toggled category is undefined', () => {
-			categoryServiceStub.setWeighted.and.returnValue(of(undefined));
+			categoryServiceSpy.setWeighted.mockReturnValue(of(undefined));
 
-			createComponent();
+			const { component } = createComponent();
 			component.toggleWeighted('1', false);
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error toggling weighted status');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error toggling weighted status');
 		});
 	});
 
 	describe('#deleteCategoryDialog', () => {
 		beforeEach(() => {
-			dialogStub.open.and.returnValue({
+			dialogSpy.open.mockReturnValue({
 				afterClosed: () => of(true),
 			} as MatDialogRef<ConfirmDialogComponent>);
-			categoryServiceStub.deleteCategory.and.returnValue(of([{}] as Category[]));
+			categoryServiceSpy.deleteCategory.mockReturnValue(of([{}] as Category[]));
 		});
 
 		it('should open delete dialog', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.deleteCategoryDialog('1');
 
-			expect(dialogStub.open).toHaveBeenCalledWith(ConfirmDialogComponent, {
+			expect(dialogSpy.open).toHaveBeenCalledWith(ConfirmDialogComponent, {
 				width: '350px',
 				data: {
 					title: 'Delete Category',
@@ -915,27 +918,27 @@ describe('CategoryComponent', () => {
 		});
 
 		it('should delete category after closing dialog', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.deleteCategoryDialog('1');
 
-			expect(categoryServiceStub.deleteCategory).toHaveBeenCalledWith('1');
+			expect(categoryServiceSpy.deleteCategory).toHaveBeenCalledWith('1');
 		});
 
 		it('should not delete category if dialog is canceled', () => {
-			dialogStub.open.and.returnValue({
+			dialogSpy.open.mockReturnValue({
 				afterClosed: () => of(false),
 			} as MatDialogRef<ConfirmDialogComponent>);
 
-			createComponent();
+			const { component } = createComponent();
 			component.deleteCategoryDialog('1');
 
-			expect(categoryServiceStub.deleteCategory).not.toHaveBeenCalled();
+			expect(categoryServiceSpy.deleteCategory).not.toHaveBeenCalled();
 		});
 	});
 
 	describe('#deleteCategory', () => {
 		beforeEach(() => {
-			categoryServiceStub.loadCategories.and.returnValue(
+			categoryServiceSpy.loadCategories.mockReturnValue(
 				of([
 					{
 						id: '1',
@@ -946,34 +949,34 @@ describe('CategoryComponent', () => {
 				] as Category[]),
 			);
 
-			categoryServiceStub.deleteCategory.and.returnValue(of([] as Category[]));
+			categoryServiceSpy.deleteCategory.mockReturnValue(of([] as Category[]));
 		});
 
 		it('should delete category', () => {
-			createComponent();
+			const { component } = createComponent();
 			component.deleteCategory('1');
 
-			expect(categoryServiceStub.deleteCategory).toHaveBeenCalledWith('1');
+			expect(categoryServiceSpy.deleteCategory).toHaveBeenCalledWith('1');
 		});
 
 		it('should delete category and show success message', () => {
-			createComponent();
+			const { component } = createComponent();
 
-			expect(component.categories).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
+			expect(component.categories()).toEqual([{ id: '1', name: 'name', weighted: false, users: [] }] as Category[]);
 
 			component.deleteCategory('1');
 
-			expect(component.categories).toEqual([]);
-			expect(messageServiceStub.showSuccess).toHaveBeenCalledWith('Category deleted');
+			expect(component.categories()).toEqual([]);
+			expect(messageServiceSpy.showSuccess).toHaveBeenCalledWith('Category deleted');
 		});
 
 		it('should show error if category fails to delete', () => {
-			categoryServiceStub.deleteCategory.and.returnValue(throwError(() => 'error'));
+			categoryServiceSpy.deleteCategory.mockReturnValue(throwError(() => 'error'));
 
-			createComponent();
+			const { component } = createComponent();
 			component.deleteCategory('1');
 
-			expect(messageServiceStub.showError).toHaveBeenCalledWith('Error deleting category');
+			expect(messageServiceSpy.showError).toHaveBeenCalledWith('Error deleting category');
 		});
 	});
 });

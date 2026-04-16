@@ -10,11 +10,13 @@ const sendEmailMock = vi.fn(async (email: Message) => {
 });
 
 vi.mock("postmark", () => {
-  return {
-    ServerClient: vi.fn().mockImplementation(() => ({
+  const ServerClient = vi.fn(function ServerClient() {
+    return {
       sendEmail: sendEmailMock
-    }))
-  };
+    };
+  });
+
+  return { ServerClient };
 });
 
 export const getSentEmails = () => {

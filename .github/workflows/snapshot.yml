@@ -1,4 +1,6 @@
 name: Post Merge Snapshot
+permissions:
+  contents: write
 
 on:
   pull_request:
@@ -16,13 +18,13 @@ jobs:
       backend-artifact: ${{ steps.bump-snapshot.outputs.artifact-backend }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ssh-key: ${{ secrets.COMMIT_KEY }}
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22.x
+          node-version: 24.x
       - name: Bump frontend version
         run: |
           cd ./app/mikane/
@@ -47,7 +49,16 @@ jobs:
       - name: Push changes to repository
         run: |
           git push origin develop
-
+  build-frontend:
+    needs: snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
       - name: Install frontend dependencies
         run: |
           cd ./app/mikane/
@@ -58,12 +69,20 @@ jobs:
           npm run build:test --if-present
       - name: Upload frontend artifact
         id: upload-artifact-frontend
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          if-no-files-found: error
-          name: ${{ steps.bump-snapshot.outputs.artifact-frontend }}
+          name: ${{ needs.snapshot.outputs.frontend-artifact }}
           path: ./app/mikane/dist/mikane/browser/
-
+  build-backend:
+    runs-on: ubuntu-latest
+    needs: snapshot
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
       - name: Install backend dependencies
         run: |
           cd ./server/
@@ -74,42 +93,33 @@ jobs:
           npm run esbuild --if-present
       - name: Upload backend artifact
         id: upload-artifact-backend
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           if-no-files-found: error
-          name: ${{ steps.bump-snapshot.outputs.artifact-backend }}
+          name: ${{ needs.snapshot.outputs.backend-artifact }}
           path: ./server/build/
   test-frontend:
     needs: snapshot
     uses: ./.github/workflows/frontend-test.yml
     with:
-      node-version: 22.x
+      node-version: 24.x
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
   test-backend:
     needs: snapshot
     uses: ./.github/workflows/backend-test.yml
     with:
-      node-version: 22.x
+      node-version: 24.x
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
-  deploy-frontend:
-    needs: [snapshot, test-frontend]
-    uses: ./.github/workflows/frontend-deploy.yml
+  deploy:
+    needs:
+      [snapshot, build-frontend, build-backend, test-frontend, test-backend]
+    uses: ./.github/workflows/deploy.yml
     with:
       environment: test
-      artifact: ${{ needs.snapshot.outputs.frontend-artifact }}
-      dry-run: false
-    secrets:
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USER: ${{ secrets.SSH_USER }}
-  deploy-backend:
-    needs: [snapshot, test-backend]
-    uses: ./.github/workflows/backend-deploy.yml
-    with:
-      environment: test
-      artifact: ${{ needs.snapshot.outputs.backend-artifact }}
+      artifact-frontend: ${{ needs.snapshot.outputs.frontend-artifact }}
+      artifact-backend: ${{ needs.snapshot.outputs.backend-artifact }}
       dry-run: false
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}

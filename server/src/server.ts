@@ -9,13 +9,15 @@ import categoryRoutes from "./api/categories.ts";
 import eventRoutes from "./api/events.ts";
 import expenseRoutes from "./api/expenses.ts";
 import guestUserRoutes from "./api/guestUsers.ts";
+import logRoutes from "./api/log.ts";
 import notificationRoutes from "./api/notifications.ts";
 import userRoutes from "./api/users.ts";
 import validationRoutes from "./api/validation.ts";
 import apiDocument from "./api.json" with { type: "json" };
-import env from "./env.ts";
+import env, { drainStartupLogs } from "./env.ts";
 import logger from "./utils/logger.ts";
 import { pool } from "./db.ts";
+import { requestContext } from "./middlewares/requestContext.ts";
 import { errorHandler } from "./errorHandler.ts";
 
 const app = express();
@@ -26,6 +28,14 @@ const checkDBConnection = () => {
     .then(client => {
       logger.success(`Connected to SQL database: ${env.DB_HOST} - ${env.DB_DATABASE}`);
       client.release();
+
+      // Drain and log any startup logs that were stored before the main logger was initialized
+      for (const log of drainStartupLogs()) {
+        const msg = `${log.message} [startup ${log.timestamp.toLocaleTimeString(env.LOCALE)}]`;
+        if (log.level === "error") logger.error(msg);
+        else if (log.level === "warn") logger.warn(msg);
+        else logger.info(msg);
+      }
     })
     .catch(err => {
       logger.error("An error occurred connecting to database: " + err);
@@ -50,8 +60,8 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   }
 });
 
-// Trust proxy
-app.enable("trust proxy");
+// Trust proxies (number of proxies set through env variable)
+app.set("trust proxy", env.TRUSTED_PROXIES);
 
 // Helmet protection
 app.use(helmet());
@@ -104,6 +114,11 @@ app.use(session({
   unset: "destroy"
 }));
 
+// Save request context (for logging purposes)
+app.use((req, _res, next) => {
+  requestContext.run({ req }, next);
+});
+
 app.post("/{*any}", (req, res, next) => {
   if (req.headers["content-type"] !== undefined && !req.is("application/json")) {
     res.status(400).json({ error: "Wrong content-type" });
@@ -134,6 +149,7 @@ app.use("/api", categoryRoutes);
 app.use("/api", eventRoutes);
 app.use("/api", expenseRoutes);
 app.use("/api", guestUserRoutes);
+app.use("/api", logRoutes);
 app.use("/api", notificationRoutes);
 app.use("/api", userRoutes);
 app.use("/api", validationRoutes);

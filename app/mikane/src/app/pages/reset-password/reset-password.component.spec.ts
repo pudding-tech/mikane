@@ -1,107 +1,111 @@
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
-import { DefaultRenderComponent, MockBuilder, MockInstance, MockRender, MockedComponentFixture, ngMocks } from 'ng-mocks';
 import { of, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { KeyValidationService } from 'src/app/services/key-validation/key-validation.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ApiError } from 'src/app/types/apiError.type';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ResetPasswordComponent } from './reset-password.component';
 
 describe('ResetPasswordComponent', () => {
-	let component: DefaultRenderComponent<ResetPasswordComponent>;
-	let fixture: MockedComponentFixture<ResetPasswordComponent>;
+	let component: ResetPasswordComponent;
+	let fixture: ComponentFixture<ResetPasswordComponent>;
 	let page: PageObject;
-	let spy: jasmine.Spy;
 
-	beforeAll(MockInstance.remember);
-
-	afterAll(MockInstance.restore);
+	const routerSpy = {
+		navigate: vi.fn(),
+	};
+	const authServiceSpy = {
+		resetPassword: vi.fn(),
+	};
+	const keyValidationServiceSpy = {
+		verifyPasswordReset: vi.fn(() => of(undefined)),
+	};
+	const messageServiceSpy = {
+		showError: vi.fn(),
+		showSuccess: vi.fn(),
+	};
+	const breakpointServiceSpy = {
+		isMobile: () => false,
+	};
+	const logServiceSpy = {
+		error: vi.fn(),
+	};
 
 	beforeEach(() => {
-		return MockBuilder(ResetPasswordComponent)
-			.keep(FormsModule)
-			.keep(ReactiveFormsModule)
-			.mock(AuthService)
-			.provide({
-				provide: Router,
-				useValue: {
-					navigate: jasmine.createSpy('navigate'),
-				},
-			})
-			.provide({
-				provide: KeyValidationService,
-				useValue: {
-					verifyPasswordReset: jasmine.createSpy('verifyPasswordReset').and.returnValue(of(undefined)),
-				},
-			})
-			.provide({
-				provide: MessageService,
-				useValue: {
-					showError: jasmine.createSpy('showError'),
-					showSuccess: jasmine.createSpy('showSuccess'),
-				},
-			})
-			.mock(BreakpointService)
-			.provide({
-				provide: ActivatedRoute,
-				useValue: {
-					snapshot: {
-						paramMap: convertToParamMap({
-							key: 'key',
-						}),
+		TestBed.configureTestingModule({
+			imports: [FormsModule, ReactiveFormsModule, ResetPasswordComponent],
+			providers: [
+				{ provide: Router, useValue: routerSpy },
+				{ provide: AuthService, useValue: authServiceSpy },
+				{ provide: KeyValidationService, useValue: keyValidationServiceSpy },
+				{ provide: MessageService, useValue: messageServiceSpy },
+				{ provide: BreakpointService, useValue: breakpointServiceSpy },
+				{ provide: LogService, useValue: logServiceSpy },
+				{
+					provide: ActivatedRoute,
+					useValue: {
+						snapshot: {
+							paramMap: convertToParamMap({ key: 'key' }),
+						},
 					},
 				},
-			});
+			],
+		}).compileComponents();
 	});
 
-	beforeEach(fakeAsync(() => {
-		fixture = MockRender(ResetPasswordComponent);
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ResetPasswordComponent);
 		component = fixture.componentInstance;
-
-		const authService = TestBed.inject(AuthService);
-		spy = spyOn(authService, 'resetPassword').and.returnValue(of(undefined));
-
 		page = new PageObject(fixture);
 
+		vi.clearAllMocks();
+
+		// Default spy return value
+		authServiceSpy.resetPassword.mockReturnValue(of(undefined));
+		keyValidationServiceSpy.verifyPasswordReset.mockReturnValue(of(undefined));
+		routerSpy.navigate.mockClear();
+		messageServiceSpy.showError.mockClear();
+		messageServiceSpy.showSuccess.mockClear();
+
 		fixture.detectChanges();
-	}));
+	});
 
 	afterEach(() => {
 		fixture.destroy();
 	});
 
 	it('should create', () => {
-		expect(component).withContext('should create').toBeTruthy();
+		expect(component).toBeTruthy();
 	});
 
 	it('should render form', () => {
-		expect(page.submitButton).withContext('should render submit button').toBeTruthy();
-		expect(page.passwordField).withContext('should render password field').toBeTruthy();
-		expect(page.confirmPasswordField).withContext('should render confirm password field').toBeTruthy();
+		expect(page.submitButton).toBeTruthy();
+		expect(page.passwordField).toBeTruthy();
+		expect(page.confirmPasswordField).toBeTruthy();
 	});
 
 	it('should have a form', () => {
-		expect(component.resetPasswordForm).withContext('should have a form').toBeTruthy();
+		expect(component.resetPasswordForm).toBeTruthy();
 	});
 
 	it('should have a password control', () => {
-		expect(component.resetPasswordForm.get('newPassword')).withContext('should have a password control').toBeTruthy();
+		expect(component.resetPasswordForm.get('newPassword')).toBeTruthy();
 	});
 
 	it('should have a password confirmation control', () => {
-		expect(component.resetPasswordForm.get('newPasswordRetype'))
-			.withContext('should have a password confirmation control')
-			.toBeTruthy();
+		expect(component.resetPasswordForm.get('newPasswordRetype')).toBeTruthy();
 	});
 
 	it('should have a submit button', () => {
 		const submitButton = fixture.debugElement.query(By.css('button[type="submit"]'));
 
-		expect(submitButton).withContext('should have a submit button').toBeTruthy();
+		expect(submitButton).toBeTruthy();
 	});
 
 	it('should reset password', () => {
@@ -111,7 +115,7 @@ describe('ResetPasswordComponent', () => {
 		});
 		component.submit();
 
-		expect(spy).toHaveBeenCalledWith('key', 'password');
+		expect(authServiceSpy.resetPassword).toHaveBeenCalledWith('key', 'password');
 	});
 
 	it('should not reset password if passwords do not match', () => {
@@ -121,7 +125,7 @@ describe('ResetPasswordComponent', () => {
 		});
 		component.submit();
 
-		expect(spy).not.toHaveBeenCalled();
+		expect(authServiceSpy.resetPassword).not.toHaveBeenCalled();
 	});
 
 	it('should not reset password if form is invalid', () => {
@@ -131,7 +135,7 @@ describe('ResetPasswordComponent', () => {
 		});
 		component.submit();
 
-		expect(spy).not.toHaveBeenCalled();
+		expect(authServiceSpy.resetPassword).not.toHaveBeenCalled();
 	});
 
 	it('should fill out form and submit', () => {
@@ -143,7 +147,7 @@ describe('ResetPasswordComponent', () => {
 
 		page.submitButton.nativeElement.click();
 
-		expect(spy).toHaveBeenCalledWith('key', 'password');
+		expect(authServiceSpy.resetPassword).toHaveBeenCalledWith('key', 'password');
 	});
 
 	it('should show success message after submitting', () => {
@@ -175,15 +179,14 @@ describe('ResetPasswordComponent', () => {
 	});
 
 	it('should show error message after submitting', () => {
-		const messageService = TestBed.inject(MessageService);
-		spy.and.returnValue(
+		authServiceSpy.resetPassword.mockReturnValue(
 			throwError(() => {
 				return {
 					error: {
 						message: 'error',
 					},
 				} as ApiError;
-			})
+			}),
 		);
 		page.passwordField.nativeElement.value = 'password';
 		page.passwordField.nativeElement.dispatchEvent(new Event('input'));
@@ -194,66 +197,60 @@ describe('ResetPasswordComponent', () => {
 		page.submitButton.nativeElement.click();
 		fixture.detectChanges();
 
-		expect(messageService.showError).toHaveBeenCalledWith('Failed to change password');
+		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to change password');
 	});
 
 	it('should show error if key is invalid', () => {
-		const messageService = TestBed.inject(MessageService) as jasmine.SpyObj<MessageService>;
-		const keyValidationService = TestBed.inject(KeyValidationService) as jasmine.SpyObj<KeyValidationService>;
-		keyValidationService.verifyPasswordReset.and.returnValue(
+		keyValidationServiceSpy.verifyPasswordReset.mockReturnValue(
 			throwError(() => {
 				return {
 					error: {
 						message: 'error',
 					},
 				} as ApiError;
-			})
+			}),
 		);
 
-		ngMocks.flushTestBed();
-
-		MockRender(ResetPasswordComponent);
+		fixture = TestBed.createComponent(ResetPasswordComponent);
+		component = fixture.componentInstance;
+		page = new PageObject(fixture);
 		fixture.detectChanges();
 
-		expect(messageService.showError).toHaveBeenCalledWith('Failed to verify key');
+		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Failed to verify key');
 	});
 
 	it('should show error if key not found', () => {
-		const messageService = TestBed.inject(MessageService) as jasmine.SpyObj<MessageService>;
-		const keyValidationService = TestBed.inject(KeyValidationService) as jasmine.SpyObj<KeyValidationService>;
-		keyValidationService.verifyPasswordReset.and.returnValue(
+		keyValidationServiceSpy.verifyPasswordReset.mockReturnValue(
 			throwError(() => {
 				return {
 					status: 404,
 				} as ApiError;
-			})
+			}),
 		);
 
-		ngMocks.flushTestBed();
-
-		MockRender(ResetPasswordComponent);
+		fixture = TestBed.createComponent(ResetPasswordComponent);
+		component = fixture.componentInstance;
+		page = new PageObject(fixture);
 		fixture.detectChanges();
 
-		expect(messageService.showError).toHaveBeenCalledWith('Invalid key');
+		expect(messageServiceSpy.showError).toHaveBeenCalledWith('Invalid key');
 	});
 
 	it('should redirect to login if key is invalid', () => {
-		const router = TestBed.inject(Router);
-		const keyValidationService = TestBed.inject(KeyValidationService) as jasmine.SpyObj<KeyValidationService>;
-		keyValidationService.verifyPasswordReset.and.returnValue(
+		keyValidationServiceSpy.verifyPasswordReset.mockReturnValue(
 			throwError(() => {
 				return {
 					status: 404,
 				} as ApiError;
-			})
+			}),
 		);
 
-		ngMocks.flushTestBed();
-
-		MockRender(ResetPasswordComponent);
+		fixture = TestBed.createComponent(ResetPasswordComponent);
+		component = fixture.componentInstance;
+		page = new PageObject(fixture);
 		fixture.detectChanges();
 
-		expect(router.navigate).toHaveBeenCalledWith(['/login']);
+		expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
 	});
 });
 
@@ -271,5 +268,5 @@ class PageObject {
 		return this.fixture.debugElement.query(By.css('form'));
 	}
 
-	constructor(private fixture: MockedComponentFixture<ResetPasswordComponent>) {}
+	constructor(private fixture: ComponentFixture<ResetPasswordComponent>) {}
 }

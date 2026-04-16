@@ -24,7 +24,7 @@ export class SplitButtonComponent {
 
 	splitButtonClick = output();
 	@ContentChildren(SplitButtonItemDirective) items: QueryList<SplitButtonItemDirective>;
-	@HostListener('document:click', ['$event.target']) outsideClick(target: HTMLElement) {
+	@HostListener('document:click', ['$event.target']) outsideClick(target: EventTarget) {
 		if (!this.toggled) {
 			return;
 		}

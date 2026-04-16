@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { SplitButtonComponent } from 'src/app/features/split-button/split-button.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
@@ -21,6 +22,7 @@ export class MenuComponent implements OnInit {
 	private router = inject(Router);
 	private messageService = inject(MessageService);
 	private authService = inject(AuthService);
+	private logService = inject(LogService);
 	breakpointService = inject(BreakpointService);
 
 	@ViewChild('splitButton') private splitButton: SplitButtonComponent;
@@ -33,7 +35,7 @@ export class MenuComponent implements OnInit {
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to get user');
-				console.error('Something went wrong getting user in header component: ' + err?.error?.message);
+				this.logService.error('Something went wrong getting user in header component: ' + err?.error?.message);
 			},
 		});
 	}
@@ -61,7 +63,7 @@ export class MenuComponent implements OnInit {
 			},
 			error: (err: ApiError) => {
 				this.messageService.showError('Failed to log out');
-				console.error('something went wrong while trying to log out', err?.error?.message);
+				this.logService.error('something went wrong while trying to log out: ' + err?.error?.message);
 			},
 		});
 	}

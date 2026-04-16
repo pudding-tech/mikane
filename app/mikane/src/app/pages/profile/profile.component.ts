@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -9,12 +9,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Subscription, catchError, combineLatest, map, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, EMPTY, Subscription, catchError, combineLatest, map, switchMap, tap } from 'rxjs';
 import { MenuComponent } from 'src/app/features/menu/menu.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { Expense } from 'src/app/services/expense/expense.service';
+import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
@@ -46,14 +47,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	private titleService = inject(Title);
 	private route = inject(ActivatedRoute);
 	private router = inject(Router);
+	private logService = inject(LogService);
 
-	protected loading = true;
-	protected loadingEvents = false;
-	protected loadingExpenses = false;
+	protected loading = new BehaviorSubject<boolean>(false);
+	protected loadingEvents = new BehaviorSubject<boolean>(false);
+	protected loadingExpenses = new BehaviorSubject<boolean>(false);
 
 	protected user: User;
-	protected events: PuddingEvent[];
-	protected expenses: Expense[];
+	protected events = signal<PuddingEvent[]>([]);
+	protected expenses = signal<Expense[]>([]);
 
 	private eventsOffset = 5;
 	private expensesOffset = 5;
@@ -69,7 +71,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		this.subscription = this.route.paramMap
 			.pipe(
 				tap(() => {
-					this.loading = true;
+					this.loading.next(true);
 					this.eventsOffset = 5;
 					this.expensesOffset = 5;
 					this.showMoreEvents = true;
@@ -99,38 +101,40 @@ export class ProfileComponent implements OnInit, OnDestroy {
 						]);
 					} else {
 						this.messageService.showError('User not found');
-						console.error('user not found on profile page');
-						return of(undefined);
+						this.logService.error('User not found on profile page');
+						return EMPTY;
 					}
 				}),
 				catchError((err: ApiError) => {
 					this.messageService.showError('Something went wrong');
-					console.error('something went wrong while getting user on profile page', err);
-					return of(undefined);
+					this.logService.error('Something went wrong while getting user on profile page: ' + err);
+					return EMPTY;
 				}),
 			)
 			.subscribe({
 				next: ([events, expenses]) => {
-					this.events = events;
-					this.expenses = expenses.map((expense) => ({
-						...expense,
-						created: new Date(expense.created),
-					}));
-					this.loading = false;
+					this.events.set(events);
+					this.expenses.set(
+						expenses.map((expense) => ({
+							...expense,
+							created: new Date(expense.created),
+						})),
+					);
+					this.loading.next(false);
 				},
 				error: (error: ApiError) => {
 					this.messageService.showError('Something went wrong');
-					console.error('something went wrong when getting user on profile page', error);
+					this.logService.error('Something went wrong when getting user on profile page: ' + error);
 					this.router.navigate(['/events']);
 				},
 			});
 	}
 
 	loadMoreEvents() {
-		this.loadingEvents = true;
+		this.loadingEvents.next(true);
 		this.userService.loadUserEvents(this.user.id, 5, this.eventsOffset).subscribe({
 			next: (events) => {
-				this.events = [...this.events, ...events];
+				this.events.set([...this.events(), ...events]);
 				this.eventsOffset += 5;
 				if (events.length < 5) {
 					this.showMoreEvents = false;
@@ -138,21 +142,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
 						this.hideEventsText = true;
 					}, 2000);
 				}
-				this.loadingEvents = false;
+				this.loadingEvents.next(false);
 			},
 			error: (err: ApiError) => {
-				this.loadingEvents = false;
+				this.loadingEvents.next(false);
 				this.messageService.showError('Failed to get more events');
-				console.error('Something went wrong while retrieving more events', err?.error?.message);
+				this.logService.error('Something went wrong while retrieving more events: ' + err?.error?.message);
 			},
 		});
 	}
 
 	loadMoreExpenses() {
-		this.loadingExpenses = true;
+		this.loadingExpenses.next(true);
 		this.userService.loadUserExpenses(this.user.id, null, 5, this.expensesOffset).subscribe({
 			next: (expenses) => {
-				this.expenses = [...this.expenses, ...expenses];
+				this.expenses.set([...this.expenses(), ...expenses]);
 				this.expensesOffset += 5;
 				if (expenses.length < 5) {
 					this.showMoreExpenses = false;
@@ -160,12 +164,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
 						this.hideExpensesText = true;
 					}, 2000);
 				}
-				this.loadingExpenses = false;
+				this.loadingExpenses.next(false);
 			},
 			error: (err: ApiError) => {
-				this.loadingExpenses = false;
+				this.loadingExpenses.next(false);
 				this.messageService.showError('Failed to get more expenses');
-				console.error('Something went wrong while retrieving more expenses', err?.error?.message);
+				this.logService.error('Something went wrong while retrieving more expenses: ' + err?.error?.message);
 			},
 		});
 	}
@@ -177,7 +181,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			this.messageService.showSuccess('Link to profile copied to clipboard');
 		} else {
 			this.messageService.showError('Copy to clipboard is only allowed in a secure environment');
-			console.error('Copy to clipboard is only allowed in a secure environment');
+			this.logService.error('Copy to clipboard is only allowed in a secure environment');
 		}
 	}
 
