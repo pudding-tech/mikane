@@ -14,7 +14,7 @@ import notificationRoutes from "./api/notifications.ts";
 import userRoutes from "./api/users.ts";
 import validationRoutes from "./api/validation.ts";
 import apiDocument from "./api.json" with { type: "json" };
-import env from "./env.ts";
+import env, { drainStartupLogs } from "./env.ts";
 import logger from "./utils/logger.ts";
 import { pool } from "./db.ts";
 import { requestContext } from "./middlewares/requestContext.ts";
@@ -28,6 +28,14 @@ const checkDBConnection = () => {
     .then(client => {
       logger.success(`Connected to SQL database: ${env.DB_HOST} - ${env.DB_DATABASE}`);
       client.release();
+
+      // Drain and log any startup logs that were stored before the main logger was initialized
+      for (const log of drainStartupLogs()) {
+        const msg = `${log.message} [startup ${log.timestamp.toLocaleTimeString(env.LOCALE)}]`;
+        if (log.level === "error") logger.error(msg);
+        else if (log.level === "warn") logger.warn(msg);
+        else logger.info(msg);
+      }
     })
     .catch(err => {
       logger.error("An error occurred connecting to database: " + err);
