@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import { isEmail } from "./utils/validators/emailValidator.ts";
+import type { LogEntryServer } from "./types/types.ts";
 
 if (process.env.NODE_ENV === "test") {
   dotenv.config({ path: "./.env.test", quiet: true });
@@ -37,6 +38,31 @@ interface EnvVariables {
   MIKANE_EMAIL_API_TOKEN?: string;
 }
 
+const startupLogs: LogEntryServer[] = [];
+
+/**
+ * Helper function to log messages during startup before the main logger is initialized.
+ * These logs are stored in an array and can be drained and logged using the main logger once it's ready.
+ * @param message The log message to store.
+ * @param level The log level (info, warn, error) of the message.
+ */
+const startupLog = (message: string, level: "info" | "warn" | "error") => {
+  startupLogs.push({ level, message, timestamp: new Date() });
+
+  if (level === "info") console.log(message);
+  else if (level === "warn") console.warn(message);
+  else console.error(message);
+};
+
+/**
+ * Drains the startup logs stored in the array and returns them.
+ * This can be used to log these messages using the main logger once it's initialized.
+ * @returns An array of log entries that were stored during startup.
+ */
+const drainStartupLogs = (): LogEntryServer[] => {
+  return startupLogs.splice(0, startupLogs.length);
+};
+
 const ALLOWED_ENVIRONMENTS = ["dev", "production", "staging", "test"] as const;
 const ALLOWED_LOG_LEVELS = ["alert", "error", "warn", "info", "fail", "success", "log", "debug", "verbose"] as const;
 
@@ -51,7 +77,7 @@ const isEnvType = (environement: any): environement is EnvType => {
     return true;
   }
   if (environement) {
-    console.warn(`Invalid environment: '${environement}'. Defaulting to 'dev'`);
+    startupLog(`Invalid environment: '${environement}'. Defaulting to 'dev'`, "warn");
   } 
   return false;
 };
@@ -64,7 +90,7 @@ const isLogLevelType = (logLevel: any): logLevel is LogLevelType => {
     return true;
   }
   if (logLevel) {
-    console.warn(`Invalid log level: '${logLevel}'. Defaulting to 'log'`);
+    startupLog(`Invalid log level: '${logLevel}'. Defaulting to 'log'`, "warn");
   }
   return false;
 };
@@ -76,7 +102,7 @@ const isLogLevelType = (logLevel: any): logLevel is LogLevelType => {
 const getValidLocale = (locale: string | undefined): string => {
   const DEFAULT_LOCALE = "nb-NO";
   if (!locale) {
-    console.warn(`No locale provided for LOCALE. Defaulting to '${DEFAULT_LOCALE}'.`);
+    startupLog(`No locale provided for LOCALE. Defaulting to '${DEFAULT_LOCALE}'.`, "warn");
     return DEFAULT_LOCALE;
   }
 
@@ -85,7 +111,7 @@ const getValidLocale = (locale: string | undefined): string => {
     return canonicalLocale;
   }
   catch {
-    console.warn(`Invalid locale '${locale}' provided for LOCALE. Defaulting to '${DEFAULT_LOCALE}'.`);
+    startupLog(`Invalid locale '${locale}' provided for LOCALE. Defaulting to '${DEFAULT_LOCALE}'.`, "warn");
     return DEFAULT_LOCALE;
   }
 };
@@ -215,4 +241,4 @@ catch (err) {
 }
 
 export default envVariables;
-export { ALLOWED_LOG_LEVELS, LogLevelType };
+export { ALLOWED_LOG_LEVELS, LogLevelType, drainStartupLogs };
