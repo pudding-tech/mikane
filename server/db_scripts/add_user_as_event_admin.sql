@@ -10,6 +10,7 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
+  currency varchar(3),
   status int,
   status_name varchar(255),
   admin_ids jsonb,

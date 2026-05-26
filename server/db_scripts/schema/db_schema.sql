@@ -3,6 +3,12 @@ create table event_status_type (
   "name" varchar(255) not null
 );
 
+create table currency (
+  code varchar(3) primary key,
+  "name" varchar(255) not null,
+  sort_order int not null
+);
+
 create table "user" (
   id uuid primary key default gen_random_uuid(),
   username varchar(255) not null unique,
@@ -24,6 +30,7 @@ create table "event" (
   "description" varchar(400),
   created timestamp not null,
   "private" boolean not null,
+  currency varchar(3) not null references currency(code) on delete restrict,
   status int not null references "event_status_type"(id) on delete restrict,
   usernames_only boolean not null
 );
@@ -60,6 +67,7 @@ create table expense (
   "name" varchar(255) not null,
   "description" varchar(255),
   amount numeric(16, 2) not null,
+  currency varchar(3) null references currency(code) on delete restrict,
   category_id uuid not null references category(id) on delete cascade,
   payer_id uuid references "user"(id) on delete cascade,
   expense_date date,
@@ -131,7 +139,12 @@ create table log_client (
   ip varchar(255)
 );
 
-insert into event_status_type (id, name)
+insert into event_status_type (id, "name")
   values (1, 'Active'), (2, 'Ready to settle'), (3, 'Settled');
+
+insert into currency (code, "name", sort_order)
+  values ('USD', 'US Dollar', 2), ('EUR', 'Euro', 3), ('GBP', 'British Pound', 4), ('CAD', 'Canadian Dollar', 5), ('AUD', 'Australian Dollar', 6),
+    ('NOK', 'Norwegian Krone', 1), ('SEK', 'Swedish Krona', 7), ('DKK', 'Danish Krone', 8), ('JPY', 'Japanese Yen', 9), ('CNY', 'Chinese Yuan', 10),
+    ('KRW', 'South Korean Won', 11), ('CHF', 'Swiss Franc', 12);
 
 create extension if not exists pgcrypto;

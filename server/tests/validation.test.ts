@@ -43,7 +43,8 @@ describe("validation", async () => {
       .send({
         name: "Example event",
         description: "Example description",
-        private: false
+        private: false,
+        currency: "USD"
       });
 
     event = resEvent.body;

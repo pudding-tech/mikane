@@ -83,7 +83,8 @@ describe("expenses", async () => {
       .send({
         name: "Example event",
         description: "Example description",
-        private: false
+        private: false,
+        currency: "NOK"
       });
 
     event1 = resEvent.body;
@@ -94,7 +95,8 @@ describe("expenses", async () => {
       .send({
         name: "Example event 2",
         description: "Example description",
-        private: false
+        private: false,
+        currency: "EUR"
       });
 
     event2 = resEvent2.body;

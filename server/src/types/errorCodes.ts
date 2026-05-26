@@ -135,11 +135,11 @@ export const PUD013: ErrorCode = {
 };
 
 /**
- * PUD-014: 'name' and/or 'private' properties not provided in body (400)
+ * PUD-014: 'name', 'private', and/or 'currency' properties not provided in body (400)
  */
 export const PUD014: ErrorCode = {
   code: "PUD-014",
-  message: "'name' and/or 'private' properties not provided in body",
+  message: "'name', 'private', and/or 'currency' properties not provided in body",
   status: 400
 };
 
@@ -1422,4 +1422,32 @@ export const PUD150: ErrorCode = {
   code: "PUD-150",
   message: `You can only call this endpoint once every ${RATE_LIMIT_SINGLE_WINDOW_SEC} seconds, please wait before trying again`,
   status: 429
+};
+
+/**
+ * PUD-151: get_currencies (500)
+ */
+export const PUD151: ErrorCode = {
+  code: "PUD-151",
+  message: "Something went wrong while getting currencies",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-152: Not a valid currency code (400)
+ */
+export const PUD152: ErrorCode = {
+  code: "PUD-152",
+  message: "Not a valid currency code",
+  status: 400
+};
+
+/**
+ * PUD-153: Request body must include at least one event property (400)
+ */
+export const PUD153: ErrorCode = {
+  code: "PUD-153",
+  message: "Request body must include at least one event property",
+  status: 400
 };

@@ -22,6 +22,7 @@ export const resetDatabase = async () => {
     DROP TABLE "event";
     DROP TABLE "user_preferences";
     DROP TABLE "user";
+    DROP TABLE "currency";
     DROP TABLE "event_status_type";
     DROP TABLE "log_server";
     DROP TABLE "log_client";

@@ -5,6 +5,7 @@ create or replace function edit_event(
   ip_name varchar(255),
   ip_description varchar(400),
   ip_private boolean,
+  ip_currency varchar(3),
   ip_status int
 )
 returns table (
@@ -13,6 +14,7 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
+  currency varchar(3),
   status int,
   status_name varchar(255),
   admin_ids jsonb,
@@ -54,6 +56,10 @@ begin
     raise exception 'Not a valid event status type' using errcode = 'P0128';
   end if;
 
+  if ip_currency is not null and not exists (select 1 from currency c where c.code = upper(ip_currency)) then
+    raise exception 'Not a valid currency code' using errcode = 'P0152';
+  end if;
+
   if exists (select 1 from "event" e where e.name ilike ip_name and e.id != ip_event_id) then
     raise exception 'Another event already has this name' using errcode = 'P0005';
   end if;
@@ -64,6 +70,7 @@ begin
     "name" = coalesce(ip_name, e.name),
     "description" = nullif(trim(coalesce(ip_description, e.description)), ''),
     "private" = coalesce(ip_private, e.private),
+    currency = coalesce(upper(ip_currency), e.currency),
     status = coalesce(ip_status, e.status)
   where
     e.id = ip_event_id;

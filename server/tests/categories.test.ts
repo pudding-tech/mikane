@@ -45,7 +45,8 @@ describe("categories", async () => {
       .send({
         name: "Example event",
         description: "Example description",
-        private: false
+        private: false,
+        currency: "EUR"
       });
 
     event = resEvent.body;

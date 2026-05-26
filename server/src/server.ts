@@ -6,6 +6,7 @@ import helmet from "helmet";
 import SessionStore from "./session-store/SessionStore.ts";
 import authRoutes from "./api/authentication.ts";
 import categoryRoutes from "./api/categories.ts";
+import configRoutes from "./api/config.ts";
 import eventRoutes from "./api/events.ts";
 import expenseRoutes from "./api/expenses.ts";
 import guestUserRoutes from "./api/guestUsers.ts";
@@ -146,6 +147,7 @@ app.use((req, _res, next) => {
 // Initialize routes defined in "/api"
 app.use("/api", authRoutes);
 app.use("/api", categoryRoutes);
+app.use("/api", configRoutes);
 app.use("/api", eventRoutes);
 app.use("/api", expenseRoutes);
 app.use("/api", guestUserRoutes);

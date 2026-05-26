@@ -16,6 +16,7 @@ export const parseEvents = (eventsInput: EventDB[]) => {
       created: new Date(eventObj.created + "Z"),
       adminIds: eventObj.admin_ids.map(admin => admin.user_id),
       private: eventObj.private,
+      currency: eventObj.currency,
       status: {
         id: eventObj.status,
         name: eventObj.status_name
@@ -36,7 +37,7 @@ export const parseEvents = (eventsInput: EventDB[]) => {
  * Parse BalanceCalculationResult into a list of UserBalance objects
  * @param balanceRes Balance Calculation Result
  * @param users List of Users
- * @param users List of Expenses
+ * @param expenses List of Expenses
  */
 export const parseBalance = (balanceRes: BalanceCalculationResult, users: User[], expenses: Expense[]) => {
   const balances: UserBalance[] = [];
