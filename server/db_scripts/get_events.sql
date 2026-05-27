@@ -10,6 +10,7 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
+  currency varchar(3),
   status int,
   status_name varchar(255),
   admin_ids jsonb,
@@ -24,7 +25,7 @@ begin
     begin
       return query
       select
-        e.id, e.name, e.description, e.created, e.private, e.status, est.name,
+        e.id, e.name, e.description, e.created, e.private, e.currency, e.status, est.name,
         (
           select
             JSONB_AGG(jsonb_build_object('user_id', u.id))
@@ -72,7 +73,7 @@ begin
 
       return query
       select
-        e.id, e.name, e.description, e.created, e.private, e.status, est.name,
+        e.id, e.name, e.description, e.created, e.private, e.currency, e.status, est.name,
         (
           select
             JSONB_AGG(jsonb_build_object('user_id', u.id))

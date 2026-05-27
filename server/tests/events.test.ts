@@ -72,7 +72,8 @@ describe("events", async () => {
         .send({
           name: "Example event",
           description: "Example description",
-          private: false
+          private: false,
+          currency: "NOK"
         });
 
       const res2 = await request(app)
@@ -80,15 +81,47 @@ describe("events", async () => {
         .set("Cookie", authToken)
         .send({
           name: "Another event",
-          private: true
+          private: true,
+          currency: "USD"
         });
 
       expect(res1.status).toEqual(200);
       expect(res1.body).toBeDefined();
+      expect(res1.body.private).toEqual(false);
+      expect(res1.body.currency).toEqual("NOK");
       expect(res2.status).toEqual(200);
       expect(res2.body).toBeDefined();
+      expect(res2.body.private).toEqual(true);
+      expect(res2.body.currency).toEqual("USD");
       event = res1.body;
       event2 = res2.body;
+    });
+
+    test("fail create event when currency is missing", async () => {
+      const res = await request(app)
+        .post("/api/events")
+        .set("Cookie", authToken)
+        .send({
+          name: "Missing currency event",
+          private: false
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD014.code);
+    });
+
+    test("fail create event when currency code is invalid", async () => {
+      const res = await request(app)
+        .post("/api/events")
+        .set("Cookie", authToken)
+        .send({
+          name: "Invalid currency event",
+          private: false,
+          currency: "ZZZ"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD152.code);
     });
 
     test("fail create event with taken name", async () => {
@@ -98,7 +131,8 @@ describe("events", async () => {
         .send({
           name: "Example event",
           description: "Example description",
-          private: false
+          private: false,
+          currency: "NOK"
         });
 
       expect(res.status).toEqual(409);
@@ -240,6 +274,16 @@ describe("events", async () => {
       expect(res.body.name).toEqual("Changed");
     });
 
+    test("fail edit event with empty body", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({});
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD153.code);
+    });
+
     test("fail edit event when logged in user is not event admin", async () => {
       const res = await request(app)
         .put("/api/events/" + event.id)
@@ -346,6 +390,42 @@ describe("events", async () => {
 
       expect(res.status).toEqual(400);
       expect(res.body.code).toEqual(ec.PUD128.code);
+    });
+
+    test("should set event currency to JPY", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          currency: "JPY"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.currency).toEqual("JPY");
+    });
+
+    test("fail setting event currency to invalid code", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          currency: "ZZZ"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD152.code);
+    });
+
+    test("should set event currency back to NOK", async () => {
+      const res = await request(app)
+        .put("/api/events/" + event.id)
+        .set("Cookie", authToken)
+        .send({
+          currency: "NOK"
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.currency).toEqual("NOK");
     });
   });
 

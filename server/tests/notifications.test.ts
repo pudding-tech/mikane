@@ -71,7 +71,8 @@ describe("notifications", async () => {
       .send({
         name: "Example event",
         description: "Example description",
-        private: false
+        private: false,
+        currency: "NOK"
       });
 
     event = resEvent.body;

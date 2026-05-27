@@ -532,7 +532,8 @@ describe("users", async () => {
         .set("Cookie", authToken)
         .send({
           name: "Event1",
-          private: false
+          private: false,
+          currency: "NOK"
         })).body;
 
       event2 = (await request(app)
@@ -540,7 +541,8 @@ describe("users", async () => {
         .set("Cookie", authToken)
         .send({
           name: "Event2",
-          private: false
+          private: false,
+          currency: "EUR"
         })).body;
 
       await request(app)

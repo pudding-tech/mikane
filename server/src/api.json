@@ -1853,6 +1853,10 @@
                   "private": {
                     "type": "boolean",
                     "example": false
+                  },
+                  "currency": {
+                    "type": "string",
+                    "example": "USD"
                   }
                 }
               }
@@ -2061,6 +2065,10 @@
                   "private": {
                     "type": "boolean",
                     "example": true
+                  },
+                  "currency": {
+                    "type": "string",
+                    "example": "USD"
                   },
                   "status": {
                     "type": "number",
@@ -5191,6 +5199,75 @@
         }
       }
     },
+    "/currencies": {
+      "get": {
+        "tags": [
+          "Various"
+        ],
+        "summary": "Get currencies",
+        "description": "Get all supported currencies.",
+        "operationId": "getCurrencies",
+        "security": [
+          { "cookieAuth": [] },
+          { "csrfToken": [] }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string",
+                        "example": "USD"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "US Dollar"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoAuthResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - invalid CSRF token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/log": {
       "post": {
         "tags": [
@@ -5535,6 +5612,10 @@
             "type": "boolean",
             "example": false
           },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
           "status": {
             "type": "object",
             "properties": {
@@ -5579,6 +5660,10 @@
           "private": {
             "type": "boolean",
             "example": false
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
           },
           "status": {
             "type": "object",

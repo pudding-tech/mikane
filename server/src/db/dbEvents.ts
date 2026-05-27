@@ -67,7 +67,7 @@ export const getEvent = async (eventId: string, userId?: string) => {
 
 /**
  * DB interface: Get specific event by name
- * @param eventId Event name
+ * @param eventName Event name
  * @param userId Get user specific information about event (optional)
  * @returns Event
  */
@@ -212,14 +212,15 @@ export const getEventPayments = async (eventId: string, activeUserId?: string) =
  * DB interface: Add a new event to the database
  * @param name Name of event
  * @param activeUserId ID of user creating event
- * @param private Whether event should be open for all or invite only
+ * @param privateEvent Whether event should be open for all or invite only
+ * @param currency Currency of event
  * @param description Description of event (optional)
  * @returns Newly created event
  */
-export const createEvent = async (name: string, activeUserId: string, privateEvent: boolean, description?: string) => {
+export const createEvent = async (name: string, activeUserId: string, privateEvent: boolean, currency: string, description?: string) => {
   const query = {
-    text: "SELECT * FROM new_event($1, $2, $3, $4, $5, $6);",
-    values: [name, description, activeUserId, privateEvent, EventStatusType.ACTIVE, false]
+    text: "SELECT * FROM new_event($1, $2, $3, $4, $5, $6, $7);",
+    values: [name, description, activeUserId, privateEvent, currency, EventStatusType.ACTIVE, false]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {
@@ -232,6 +233,8 @@ export const createEvent = async (name: string, activeUserId: string, privateEve
         throw new ErrorExt(ec.PUD008, err);
       else if (err.code === "P0138")
         throw new ErrorExt(ec.PUD138, err);
+      else if (err.code === "P0152")
+        throw new ErrorExt(ec.PUD152, err);
       else
         throw new ErrorExt(ec.PUD037, err);
     });
@@ -416,13 +419,14 @@ export const removeUserAsEventAdmin = async (eventId: string, userId: string, ac
  * @param name New name
  * @param description New description
  * @param privateEvent Whether event should be open for all or invite only
+ * @param currency Event currency
  * @param status Event status
  * @returns Edited event
  */
-export const editEvent = async (eventId: string, activeUserId: string, name?: string, description?: string, privateEvent?: boolean, status?: number) => {
+export const editEvent = async (eventId: string, activeUserId: string, name?: string, description?: string, privateEvent?: boolean, currency?: string, status?: number) => {
   const query = {
-    text: "SELECT * FROM edit_event($1, $2, $3, $4, $5, $6);",
-    values: [eventId, activeUserId, name, description, privateEvent, status]
+    text: "SELECT * FROM edit_event($1, $2, $3, $4, $5, $6, $7);",
+    values: [eventId, activeUserId, name, description, privateEvent, currency, status]
   };
   const events: Event[] = await pool.query(query)
     .then(data => {
@@ -441,6 +445,8 @@ export const editEvent = async (eventId: string, activeUserId: string, name?: st
         throw new ErrorExt(ec.PUD128, err);
       else if (err.code === "P0138")
         throw new ErrorExt(ec.PUD138, err);
+      else if (err.code === "P0152")
+        throw new ErrorExt(ec.PUD152, err);
       else
         throw new ErrorExt(ec.PUD044, err);
     });

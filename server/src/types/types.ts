@@ -38,6 +38,7 @@ export type Event = {
   created: Date,
   adminIds: string[],
   private: boolean,
+  currency: string,
   status: {
     id: number,
     name: string
@@ -74,6 +75,7 @@ export type Expense = {
   name: string,
   description: string,
   amount: number,
+  currency?: string,
   expenseDate?: Date,
   created: Date,
   categoryInfo: {
@@ -121,6 +123,11 @@ export type APIKey = {
   master: boolean,
   validFrom?: Date,
   validTo?: Date
+};
+
+export type Currency = {
+  code: string,
+  name: string
 };
 
 export type DBConfig = {

@@ -4,6 +4,7 @@ create or replace function new_event(
   ip_description varchar(400),
   ip_user_id uuid,
   ip_private boolean,
+  ip_currency varchar(3),
   ip_status int,
   ip_usernames_only boolean
 )
@@ -13,6 +14,7 @@ returns table (
   "description" varchar(255),
   created timestamp,
   "private" boolean,
+  currency varchar(3),
   status int,
   status_name varchar(255),
   admin_ids jsonb,
@@ -32,8 +34,12 @@ begin
     raise exception 'User not found' using errcode = 'P0008';
   end if;
 
-  insert into "event"("name", "description", created, "private", status, usernames_only)
-    values (ip_name, nullif(trim(ip_description), ''), CURRENT_TIMESTAMP, ip_private, ip_status, ip_usernames_only)
+  if not exists (select 1 from currency c where c.code = upper(ip_currency)) then
+    raise exception 'Not a valid currency code' using errcode = 'P0152';
+  end if;
+
+  insert into "event"("name", "description", created, "private", currency, status, usernames_only)
+    values (ip_name, nullif(trim(ip_description), ''), CURRENT_TIMESTAMP, ip_private, upper(ip_currency), ip_status, ip_usernames_only)
     returning "event".id into tmp_event_id;
 
   return query

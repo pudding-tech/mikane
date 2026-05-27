@@ -118,7 +118,7 @@ router.get("/events/:id/payments", useRateLimit(), authKeyCheck, async (req, res
 */
 router.post("/events", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const name: string = req.body.name;
-  if (!name || (req.body.private === null || req.body.private === undefined)) {
+  if (!name || (req.body.private === null || req.body.private === undefined) || (req.body.currency === null || req.body.currency === undefined)) {
     throw new ErrorExt(ec.PUD014);
   }
   if (name.trim() === "") {
@@ -129,7 +129,7 @@ router.post("/events", useRateLimit(), authCheck, csrfCheck, async (req, res) =>
     throw new ErrorExt(ec.PUD055);
   }
 
-  const createdEvent: Event = await db.createEvent(name.trim(), activeUserId, req.body.private, req.body.description);
+  const createdEvent: Event = await db.createEvent(name.trim(), activeUserId, req.body.private, req.body.currency, req.body.description);
   const event = await db.getEvent(createdEvent.id, activeUserId);
   res.status(200).send(event);
 });
@@ -183,6 +183,9 @@ router.put("/events/:id", useRateLimit(), authCheck, csrfCheck, async (req, res)
   if (!isUUID(eventId)) {
     throw new ErrorExt(ec.PUD013);
   }
+  if ([req.body.name, req.body.description, req.body.private, req.body.currency, req.body.status].every((value) => value === undefined || value === null)) {
+    throw new ErrorExt(ec.PUD153);
+  }
   if (![undefined, null].includes(req.body.name) && req.body.name.trim() === "") {
     throw new ErrorExt(ec.PUD053);
   }
@@ -191,7 +194,7 @@ router.put("/events/:id", useRateLimit(), authCheck, csrfCheck, async (req, res)
     throw new ErrorExt(ec.PUD055);
   }
 
-  const event = await db.editEvent(eventId, activeUserId, req.body.name, req.body.description, req.body.private, req.body.status);
+  const event = await db.editEvent(eventId, activeUserId, req.body.name, req.body.description, req.body.private, req.body.currency, req.body.status);
   if (!event) {
     throw new ErrorExt(ec.PUD006);
   }

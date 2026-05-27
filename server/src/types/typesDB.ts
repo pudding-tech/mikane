@@ -26,6 +26,7 @@ export type EventDB = {
     user_id: string
   }[],
   private: boolean,
+  currency: string,
   status: number,
   status_name: string,
   user_id?: string,
@@ -57,6 +58,7 @@ export type ExpenseDB = {
   name: string,
   description: string,
   amount: string,
+  currency: string,
   category_id: string,
   category_name: string,
   category_icon: string,
@@ -81,6 +83,11 @@ export type APIKeyDB = {
   master: boolean,
   valid_from: Date,
   valid_to: Date
+};
+
+export type CurrencyDB = {
+  code: string,
+  name: string
 };
 
 export type UserNamesDB = {
