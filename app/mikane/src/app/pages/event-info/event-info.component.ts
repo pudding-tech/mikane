@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Subscription, combineLatest, filter, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { CurrencyService } from 'src/app/services/currency/currency.service';
 import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -41,6 +42,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 	private router = inject(Router);
 	private userService = inject(UserService);
 	private authService = inject(AuthService);
+	private currencyService = inject(CurrencyService);
 	breakpointService = inject(BreakpointService);
 	private messageService = inject(MessageService);
 	private logService = inject(LogService);
@@ -50,6 +52,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 	loading = new BehaviorSubject<boolean>(false);
 	adminsInEvent: User[];
 	currentUser: User;
+	eventCurrencyDisplay = '';
 
 	private eventSubscription: Subscription;
 	readonly EventStatusType = EventStatusType;
@@ -61,13 +64,21 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 				filter((event) => event?.id !== undefined),
 				switchMap((event) => {
 					this.event = event;
-					return combineLatest([this.userService.loadUsersByEvent(event.id, true), this.authService.getCurrentUser()]);
+					return combineLatest([
+						this.userService.loadUsersByEvent(event.id, true),
+						this.authService.getCurrentUser(),
+						this.currencyService.loadCurrencies(),
+					]);
 				}),
 			)
 			.subscribe({
-				next: ([users, currentUser]) => {
+				next: ([users, currentUser, currencies]) => {
 					this.adminsInEvent = users.filter((user) => user.eventInfo?.isAdmin);
 					this.currentUser = currentUser;
+					const selectedCurrency = currencies.find((currency) => currency.code === this.event.currency);
+					this.eventCurrencyDisplay = selectedCurrency
+						? `${selectedCurrency.name} (${selectedCurrency.code})`
+						: (this.event.currency ?? 'Unknown');
 					this.loading.next(false);
 				},
 				error: (err: ApiError) => {

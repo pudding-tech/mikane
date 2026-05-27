@@ -18,6 +18,7 @@ import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { ContextService } from 'src/app/services/context/context.service';
+import { Currency, CurrencyService } from 'src/app/services/currency/currency.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -56,6 +57,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	private eventService = inject(EventService);
 	private userService = inject(UserService);
 	private authService = inject(AuthService);
+	private currencyService = inject(CurrencyService);
 	breakpointService = inject(BreakpointService);
 	contextService = inject(ContextService);
 	private messageService = inject(MessageService);
@@ -65,7 +67,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
 	loading = new BehaviorSubject<boolean>(false);
-	eventData: { id?: string; name: string; description: string; private: boolean } = { name: '', description: '', private: false };
+	eventData: { id?: string; name: string; description: string; private: boolean; currency: string } = { name: '', description: '', private: false, currency: 'EUR' };
 	adminsInEvent = signal<User[]>([]);
 	otherUsersInEvent = signal<User[]>([]);
 	currentUser = signal<User>(undefined);
@@ -74,6 +76,8 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	notificationsMinDate = new Date();
 	emailReadyToSettleSentLoading = new BehaviorSubject<boolean>(false);
 	emailReminderSentLoading = new BehaviorSubject<boolean>(false);
+
+	currencies: Currency[] = [];
 
 	addAdminForm = new FormGroup({
 		userId: new FormControl('', [Validators.required]),
@@ -95,14 +99,20 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 					this.eventData.name = event.name;
 					this.eventData.description = event.description;
 					this.eventData.private = event.private;
-					return combineLatest([this.userService.loadUsersByEvent(event.id, true), this.authService.getCurrentUser()]);
+					this.eventData.currency = event.currency;
+					return combineLatest([
+						this.userService.loadUsersByEvent(event.id, true),
+						this.authService.getCurrentUser(),
+						this.currencyService.loadCurrencies(),
+					]);
 				}),
 			)
 			.subscribe({
-				next: ([users, currentUser]) => {
+				next: ([users, currentUser, currencies]) => {
 					this.adminsInEvent.set(users.filter((user) => user.eventInfo?.isAdmin));
 					this.otherUsersInEvent.set(users.filter((user) => !user.eventInfo?.isAdmin));
 					this.currentUser.set(currentUser);
+					this.currencies = currencies;
 					this.loading.next(false);
 				},
 				error: (err: ApiError) => {
@@ -120,6 +130,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				name: this.eventData.name,
 				description: this.eventData.description,
 				privateEvent: this.eventData.private,
+				currency: this.eventData.currency,
 			})
 			.subscribe({
 				next: (event) => {

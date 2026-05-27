@@ -84,6 +84,23 @@
 			color: rgba(255, 255, 255, 0.44);
 		}
 	}
+
+	.currency {
+		margin-bottom: 20px;
+
+		.currency-title {
+			margin-bottom: 6px;
+		}
+
+		.currency-subtext {
+			margin-bottom: 10px;
+			color: rgba(255, 255, 255, 0.58);
+		}
+
+		.disabled {
+			color: rgba(255, 255, 255, 0.44);
+		}
+	}
 }
 
 .admins-content {

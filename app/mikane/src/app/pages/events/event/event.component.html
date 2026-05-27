@@ -11,9 +11,9 @@
 	<div class="name">
 		{{ event.name }}
 		@if (event.status?.id !== EventStatusType.ACTIVE && (breakpointService.isMobile() | async) === false) {
-			<button mat-stroked-button disabled [ngClass]="{ 'ready-to-settle': event.status?.id === EventStatusType.READY_TO_SETTLE }">
+			<div class="event-status-marker" [ngClass]="{ 'ready-to-settle': event.status?.id === EventStatusType.READY_TO_SETTLE }">
 				{{ event.status?.id === EventStatusType.READY_TO_SETTLE ? "Ready to settle" : "Settled" }}
-			</button>
+			</div>
 		}
 	</div>
 	<span class="toolbar-spacer"></span>

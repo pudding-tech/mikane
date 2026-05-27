@@ -76,12 +76,14 @@ export class EventService {
 		name,
 		description,
 		privateEvent,
+		currency,
 	}: {
 		name: string;
 		description: string;
 		privateEvent: boolean;
+		currency?: string;
 	}): Observable<PuddingEvent> {
-		return this.httpClient.post<PuddingEvent>(this.apiUrl, { name, description, private: privateEvent });
+		return this.httpClient.post<PuddingEvent>(this.apiUrl, { name, description, private: privateEvent, currency });
 	}
 
 	editEvent({
@@ -89,15 +91,17 @@ export class EventService {
 		name,
 		description,
 		privateEvent,
+		currency,
 		status,
 	}: {
 		id: string;
 		name?: string;
 		description?: string;
 		privateEvent?: boolean;
+		currency?: string;
 		status?: EventStatusType;
 	}): Observable<PuddingEvent> {
-		return this.httpClient.put<PuddingEvent>(this.apiUrl + `/${id}`, { name, description, private: privateEvent, status });
+		return this.httpClient.put<PuddingEvent>(this.apiUrl + `/${id}`, { name, description, private: privateEvent, currency, status });
 	}
 
 	deleteEvent(eventId: string): Observable<void> {

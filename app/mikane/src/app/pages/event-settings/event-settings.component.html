@@ -131,6 +131,22 @@
 				Private events are only visible to participants in the event.
 			</div>
 		</div>
+		<div class="currency">
+			<div>
+				<div [ngClass]="{ disabled: event.status.id !== EventStatusType.ACTIVE }" class="currency-title">Currency:</div>
+				<div [ngClass]="{ disabled: event.status.id !== EventStatusType.ACTIVE }" class="currency-subtext">
+					This sets the event currency for payments and settlement, but you can still override it per expense.
+				</div>
+			</div>
+			<mat-form-field	appearance="fill"	subscriptSizing="dynamic">
+				<mat-label>Currency</mat-label>
+				<mat-select name="currency" [(ngModel)]="eventData.currency" required [disabled]="event.status.id !== EventStatusType.ACTIVE">
+					@for (currency of currencies; track currency.code) {
+						<mat-option [value]="currency.code">{{ currency.name }} ({{ currency.code }})</mat-option>
+					}
+				</mat-select>
+			</mat-form-field>
+		</div>
 		<button
 			mat-raised-button
 			color="primary"
@@ -144,9 +160,9 @@
 </ng-template>
 
 <ng-template #statusContent>
-	<button mat-stroked-button disabled class="event-info-marker">
+	<div class="event-info-marker">
 		{{ event?.status.name }}
-	</button>
+	</div>
 	@switch (event?.status.id) {
 		@case (EventStatusType.ACTIVE) {
 			<div>

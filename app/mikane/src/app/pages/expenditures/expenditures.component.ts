@@ -25,6 +25,7 @@ import { Expense, ExpenseService } from 'src/app/services/expense/expense.servic
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
+import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
@@ -37,6 +38,7 @@ import { ExpenseBottomSheetComponent } from './expense-bottom-sheet/expense-bott
 	styleUrls: ['./expenditures.component.scss'],
 	imports: [
 		CommonModule,
+		AppCurrencyPipe,
 		MatButtonModule,
 		MatIconModule,
 		MatTableModule,

@@ -5,6 +5,7 @@ import { BehaviorSubject, of, throwError } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ContextService } from 'src/app/services/context/context.service';
+import { CurrencyService } from 'src/app/services/currency/currency.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 import { LogService } from 'src/app/services/log/log.service';
@@ -76,6 +77,7 @@ describe('EventSettingsComponent', () => {
 				{ provide: EventService, useValue: eventServiceSpy },
 				{ provide: UserService, useValue: userServiceSpy },
 				{ provide: AuthService, useValue: authServiceSpy },
+				{ provide: CurrencyService, useValue: { loadCurrencies: vi.fn().mockReturnValue(of([{ code: 'NOK', name: 'Norwegian Krone' }])) } },
 				{ provide: ContextService, useValue: contextServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
 				{ provide: MatDialog, useValue: dialogSpy },

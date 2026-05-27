@@ -99,7 +99,7 @@
 							<ng-container matColumnDef="amount">
 								<th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
 								<td mat-cell class="amount-color" *matCellDef="let expense">
-									<div>{{ expense.amount | currency: "" : "" : "1.2-2" : "no" }} kr</div>
+									 <div>{{ expense.amount | appCurrency: expense.currency ?? event.currency }}</div>
 								</td>
 							</ng-container>
 							<!-- Description Column -->

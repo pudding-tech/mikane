@@ -10,6 +10,7 @@ export interface Expense {
 	name: string;
 	description: string;
 	amount: number;
+	currency?: string;
 	expenseDate?: Date;
 	created: Date;
 	categoryInfo: {
