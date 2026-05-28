@@ -1,71 +1,103 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Behavioral guidelines for working in the Mikane (PuddingDebt) repo. Reduce common LLM coding mistakes; layer on project-specific context.
 
-## Repository layout
+**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
-Mikane is a shared-expense settlement app split into two npm projects in one repo:
+## Project Context
 
-- `server/` — Express 5 + TypeScript API backed by PostgreSQL 15. Most domain logic lives in PG stored functions in `server/db_scripts/` and is invoked from thin `server/src/db/*.ts` wrappers.
-- `app/mikane/` — Angular 21 PWA (standalone components, Angular Material, service worker). Routes are lazy-loaded per page module from `app/mikane/src/app/pages/`.
-- `.github/workflows/` — CI runs build + test for both projects on PRs into `develop`; releases tag and deploy from `main`. Default working branch is `develop`.
+Mikane is a shared-expense settlement tool. Two deployables in one repo:
 
-The two projects do not share code or tooling — they have independent `package.json`, eslint, TS config, and Node-only deps.
+- **Frontend** — `app/mikane/` — Angular 21 (standalone components, signals where present), Angular Material, RxJS, SCSS. Tests via `ng test` (Vitest under the hood).
+- **Backend** — `server/` — Express 5 on Node 24, PostgreSQL (via `pg`), session auth (`express-session` + `csrf-sync`). Tests via Vitest + Supertest against a Dockerized test DB.
 
-## Common commands
+Layout cheatsheet:
 
-All commands run from the respective project directory.
+- `app/mikane/src/app/{pages,features,services,shared,helpers,types}` — UI surfaces, feature modules, HTTP services, shared utilities (incl. async form validators).
+- `server/src/{api,db,middlewares,parsers,email-services,session-store,types,utils}` — route handlers per resource (`api/events.ts`, `api/expenses.ts`, …), DB access, Express middleware.
+- `server/db_scripts/` — SQL functions; `server/test_db/` — Dockerized Postgres for tests.
 
-### Backend (`server/`)
-- `npm run dev` — Watch mode via `tsx` + `tsc --noEmit` in parallel. Requires a populated `.env`.
-- `npm run db` — Start the dockerized **test** Postgres on port `37000` (used by the test suite, not by `npm run dev`).
-- `npm test` — `vitest run --coverage`. **Requires `npm run db` first**; tests hit a real DB and run with `maxWorkers: 1`, `isolate: false` (shared DB state between files; `resetDatabase()` runs once in `afterAll`).
-- Run a single test file: `npx vitest run tests/events.test.ts`
-- Run a single test: `npx vitest run tests/events.test.ts -t "creates event"`
-- `npm run lint` / `npm run typecheck` / `npm run build`
-- `npm run esbuild` — Alternate bundled build via `esbuild.config.js`.
-- Local dev DB (option B from README): `docker compose up` from `server/` runs both API and PG with volumes from `pg_db_data/`.
+Common commands (run from the matching directory):
 
-### Frontend (`app/mikane/`)
-- `npm run dev` — `ng serve --host=0.0.0.0` (use `npm start` for localhost-only). Serves on `http://localhost:4200`, expects API at `http://localhost:3002`.
-- `npm test` — Angular unit tests via `@angular/build:unit-test` (Vitest runner), no watch. `npm run test:dev` for watch mode without coverage.
-- Single test: `npx ng test --include='src/app/pages/events/**/*.spec.ts'`
-- `npm run build` defaults to the **production** configuration; use `npm run build:test` for the test backend or `npm run watch` for a development build with sourcemaps.
-- `npm run lint` runs `@angular-eslint` over TS + HTML templates.
+| Task          | Frontend (`app/mikane`)       | Backend (`server`)                  |
+| ------------- | ----------------------------- | ----------------------------------- |
+| Dev server    | `npm run dev`                 | `npm run dev`                       |
+| Build         | `npm run build`               | `npm run build`                     |
+| Lint          | `npm run lint`                | `npm run lint`                      |
+| Tests         | `npm run test`                | `npm run db` then `npm run test`    |
+| Typecheck     | (covered by `ng build`)       | `npm run typecheck`                 |
 
-## Architecture notes
+Backend integration tests need the test DB up (`npm run db`). Don't mock the DB to avoid that — use the real one.
 
-### Backend request flow
-`src/server.ts` wires the Express app: Helmet → CORS → Swagger UI at `/` (served from `src/api.json`) → `express-session` backed by the custom `SessionStore` (a PG-backed store in `src/session-store/`) → `requestContext` AsyncLocalStorage middleware (for log correlation) → route mounts under `/api` → `errorHandler`.
+## 1. Think Before Coding
 
-Routes live in `src/api/*.ts` and follow a strict middleware order: `useRateLimit()` → `authCheck` or `authKeyCheck` → `csrfCheck` → handler. The `authKeyCheck` variant accepts either a logged-in session or an `X-Api-Key` header; `masterKeyCheck` requires a master API key.
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
 
-Handlers throw `ErrorExt(ec.PUDxxx)` from `src/types/errorCodes.ts` instead of building responses inline — `errorHandler` translates these into `{ code, message }` JSON with the right status. **When adding a new error condition, define a new `PUDxxx` constant rather than reusing a generic one or returning ad-hoc strings.**
+Before implementing:
 
-### Database layer
-Business logic is implemented as PG stored procedures in `server/db_scripts/*.sql`; `src/db/db*.ts` modules are thin wrappers that call `SELECT * FROM <function>(...)` and translate PG error codes (e.g. `P0006`, `P0008`) back to `PUDxxx` `ErrorExt`s. Schema lives in `db_scripts/schema/db_schema.sql` with versioned migration scripts (`2.x-2.y_migrations.sql`) alongside it. When changing data model:
-1. Edit `db_schema.sql` and add a matching `db_scripts/schema/<from>-<to>_migrations.sql`.
-2. Update or add the relevant `db_scripts/*.sql` function(s).
-3. Update the `src/db/db*.ts` wrapper and any error-code translation.
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them — don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+- For changes that cross the FE/BE boundary (API shape, auth, CSRF, session), call that out before editing — both sides must stay in sync.
 
-`bash_scripts/db_init.sh` is what loads schema + all functions into a fresh container (used by both `docker-compose.yml` and `test_db/docker-compose-test-db.yml`); the test DB additionally seeds a master API key from `test_db/master_api_key.sql`.
+## 2. Simplicity First
 
-### Settlement algorithm
-`src/calculations.ts` is the only pure-domain module. `calculateBalance` computes per-user net position using per-category weights; `calculatePayments` runs a greedy largest-debtor/largest-lender match. It minimizes transactions heuristically — not provably optimal. Keep this file dependency-free apart from the logger and types.
+**Minimum code that solves the problem. Nothing speculative.**
 
-### Frontend structure
-- `src/app/pages/` — One folder per top-level route, each with its own `*.routes.ts` lazy-loaded from `app-routing.module.ts`.
-- `src/app/services/` — One folder per domain (auth, event, expense, user, etc.); services are the only thing that should talk to the API.
-- `src/app/features/` — Cross-page UI building blocks (menu, footer, dialogs, mobile shell).
-- `src/app/shared/`, `src/app/helpers/`, `src/app/types/` — Reusable bits.
-- Environment switching uses Angular's `fileReplacements` for `production`/`test` build configurations; the `test` configuration points at `environment.test.ts` and is what `build:test` ships.
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios — trust internal boundaries; validate only at HTTP/DB edges and user input.
+- If you write 200 lines and it could be 50, rewrite it.
 
-### Tests
-Backend tests in `server/tests/*.test.ts` use Supertest against the in-process app and require the dockerized test DB on port `37000`. CSRF and Postmark are mocked via `tests/mocks/` (loaded by `tests/setup.ts`). Since tests share DB state, ordering and cleanup within a `describe` matter — prefer self-contained setup per test rather than relying on data from earlier files.
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
 
-## Conventions worth knowing
-- **TS imports keep the `.ts` extension** (`import x from "./foo.ts"`). The backend `tsconfig` uses `Node16` resolution with `rewriteRelativeImportExtensions`; do not drop the extension when adding imports.
-- Backend style enforced by ESLint: **double quotes, semicolons required, 2-space indent**.
-- Frontend formatting follows the repo's Prettier config (tabs, see `.vscode/settings.json`); ESLint enforces `app`-prefixed component/directive selectors and the standalone-component preference.
-- Versions are bumped via `bump.yml` workflow; manual `version` field edits in `package.json` are usually unnecessary.
-- `develop` is the integration branch — PRs target it, not `main`.
+## 3. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style (tab indentation in the FE, current Angular control-flow / standalone patterns, Express handler shape on the BE), even if you'd do it differently.
+- If you notice unrelated dead code, mention it — don't delete it.
+
+When your changes create orphans:
+
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: every changed line should trace directly to the user's request.
+
+## 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+
+- "Add validation" → "Write tests for invalid inputs, then make them pass" (FE: `*.spec.ts` with `TestBed`; BE: Vitest + Supertest hitting the test DB).
+- "Fix the bug" → "Write a test that reproduces it, then make it pass."
+- "Refactor X" → "Ensure `npm run lint` + `npm run test` pass before and after."
+
+For multi-step tasks, state a brief plan:
+
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Default verification ladder before reporting done:
+
+1. Typecheck / build clean (`ng build` or `npm run typecheck`).
+2. Lint clean (`npm run lint`).
+3. Tests pass (`npm run test` — backend needs `npm run db` first).
+4. For UI changes you can't run in a browser, say so explicitly rather than claiming success.
+
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+---
+
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
