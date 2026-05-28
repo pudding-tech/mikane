@@ -4,7 +4,7 @@
 		<mat-form-field appearance="fill">
 			<mat-label>User</mat-label>
 			<mat-chip-grid #chipGrid>
-				@for (user of selectedUsers; track user) {
+				@for (user of selectedUsers; track user.id) {
 					<mat-chip-row (removed)="remove(user)">
 						{{ user.name }}
 						<button matChipRemove>
