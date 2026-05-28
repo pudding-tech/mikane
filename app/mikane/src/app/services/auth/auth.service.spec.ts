@@ -31,12 +31,23 @@ describe('AuthService', () => {
 		httpTestingController.verify();
 	});
 
-	it('should set and get redirectUrl', () => {
+	it('should set and consume redirectUrl exactly once', () => {
 		const redirectUrl = 'http://example.com';
 		service.redirectUrl = redirectUrl;
 
+		// First read returns the stored value...
 		expect(service.redirectUrl).toEqual(redirectUrl);
-		expect(service.redirectUrl).toBe('undefined');
+		// ...and the getter clears the slot, so subsequent reads are undefined
+		// (NOT the string "undefined", which would be a truthy navigation target).
+		expect(service.redirectUrl).toBeUndefined();
+	});
+
+	it('clearCurrentUser should also clear any pending redirectUrl', () => {
+		service.redirectUrl = '/some/deep/route';
+
+		service.clearCurrentUser();
+
+		expect(service.redirectUrl).toBeUndefined();
 	});
 
 	describe('#login', () => {

@@ -20,9 +20,9 @@ export function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
 				// Login check allowed, used by route guards
 				return throwError(() => error);
 			} else if (error?.status === 401 && error?.error?.code !== 'PUD-003') {
-				// User is not authorized, redirecting to login page
-				authService.redirectUrl = router.url;
+				// User is not authorized, redirecting to login page.
 				authService.clearCurrentUser();
+				authService.redirectUrl = router.url;
 				router.navigate(['/login']);
 				return NEVER;
 			} else if (error?.status === 403 && error?.error?.code === 'PUD-138') {
