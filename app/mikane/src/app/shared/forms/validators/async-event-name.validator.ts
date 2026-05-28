@@ -1,28 +1,11 @@
 import { Directive, Input, inject } from '@angular/core';
 import { AbstractControl, AsyncValidator, AsyncValidatorFn, NG_ASYNC_VALIDATORS, ValidationErrors } from '@angular/forms';
-import { Observable, catchError, of, switchMap, timer } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
-import { ApiError } from 'src/app/types/apiError.type';
+import { createUniquenessValidator } from './uniqueness-validator';
 
 export function eventNameValidator(formValidationService: FormValidationService, eventId?: string): AsyncValidatorFn {
-	return (control: AbstractControl): Observable<ValidationErrors> => {
-		return timer(500).pipe(
-			switchMap(() => {
-				return formValidationService.validateEventName(control.value, eventId);
-			}),
-			switchMap(() => {
-				// Did not get error, value is valid
-				return of(null);
-			}),
-			catchError((err: ApiError) => {
-				if (err.status === 409) {
-					return of({ duplicate: true });
-				} else {
-					return of({ invalid: true });
-				}
-			})
-		);
-	};
+	return createUniquenessValidator((value) => formValidationService.validateEventName(value, eventId));
 }
 
 @Directive({

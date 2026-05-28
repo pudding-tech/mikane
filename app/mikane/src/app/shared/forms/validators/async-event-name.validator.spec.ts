@@ -85,7 +85,7 @@ describe('eventNameValidator', () => {
 		expect(result).toEqual({ invalid: true });
 	});
 
-	it('should debounce validation by 500ms', () => {
+	it('should debounce validation by 400ms', () => {
 		const control = new FormControl('Debounced Event Name');
 		vi.spyOn(formValidationService, 'validateEventName').mockReturnValue(of(null));
 		const validator = eventNameValidator(formValidationService) as (control: FormControl) => Observable<ValidationErrors | null>;
@@ -96,7 +96,7 @@ describe('eventNameValidator', () => {
 		validator(control).subscribe(() => {
 			const endTime = Date.now();
 
-			expect(endTime - startTime).toBeGreaterThanOrEqual(500);
+			expect(endTime - startTime).toBeGreaterThanOrEqual(400);
 		});
 
 		vi.runAllTimers();

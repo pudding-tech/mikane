@@ -85,7 +85,7 @@ describe('phoneValidator', () => {
 		expect(result).toEqual({ invalid: true });
 	});
 
-	it('should debounce validation by 500ms', () => {
+	it('should debounce validation by 400ms', () => {
 		const control = new FormControl('1234567890');
 		vi.spyOn(formValidationService, 'validatePhone').mockReturnValue(of(null));
 		const validator = phoneValidator(formValidationService) as (control: FormControl) => Observable<ValidationErrors | null>;
@@ -96,7 +96,7 @@ describe('phoneValidator', () => {
 		validator(control).subscribe(() => {
 			const endTime = Date.now();
 
-			expect(endTime - startTime).toBeGreaterThanOrEqual(500);
+			expect(endTime - startTime).toBeGreaterThanOrEqual(400);
 		});
 
 		vi.runAllTimers();

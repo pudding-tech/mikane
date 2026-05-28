@@ -85,7 +85,7 @@ describe('usernameValidator', () => {
 		expect(result).toEqual({ invalid: true });
 	});
 
-	it('should debounce validation by 1000ms', () => {
+	it('should debounce validation by 400ms', () => {
 		const control = new FormControl('valid-username');
 		vi.spyOn(formValidationService, 'validateUsername').mockReturnValue(of(null));
 		const validator = usernameValidator(formValidationService) as (control: FormControl) => Observable<ValidationErrors | null>;
@@ -96,7 +96,7 @@ describe('usernameValidator', () => {
 		validator(control).subscribe(() => {
 			const endTime = Date.now();
 
-			expect(endTime - startTime).toBeGreaterThanOrEqual(1000);
+			expect(endTime - startTime).toBeGreaterThanOrEqual(400);
 		});
 
 		vi.runAllTimers();
