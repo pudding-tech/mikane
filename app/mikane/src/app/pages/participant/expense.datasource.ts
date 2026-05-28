@@ -1,14 +1,17 @@
 import { DataSource } from '@angular/cdk/collections';
-import { BehaviorSubject, Observable, catchError, finalize, of } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, finalize, of } from 'rxjs';
 import { Expense } from 'src/app/services/expense/expense.service';
 import { UserService } from 'src/app/services/user/user.service';
+import { ApiError } from 'src/app/types/apiError.type';
 
 export class ExpenseDataSource implements DataSource<Expense> {
 	private expenseSubject = new BehaviorSubject<Expense[]>([]);
 	private loadingSubject = new BehaviorSubject<boolean>(false);
+	private errorSubject = new Subject<ApiError>();
 
 	public loading$ = this.loadingSubject.asObservable();
 	public notEmpty = new BehaviorSubject<boolean>(false);
+	public error$ = this.errorSubject.asObservable();
 
 	constructor(private userService: UserService) {}
 
@@ -22,6 +25,7 @@ export class ExpenseDataSource implements DataSource<Expense> {
 
 	destroy() {
 		this.expenseSubject.complete();
+		this.errorSubject.complete();
 	}
 
 	loadExpenses(userId: string, eventId: string) {
@@ -30,8 +34,11 @@ export class ExpenseDataSource implements DataSource<Expense> {
 		this.userService
 			.loadUserExpenses(userId, eventId)
 			.pipe(
-				catchError(() => of([])),
-				finalize(() => this.loadingSubject.next(false))
+				catchError((err) => {
+					this.errorSubject.next(err);
+					return of([]);
+				}),
+				finalize(() => this.loadingSubject.next(false)),
 			)
 			.subscribe((expenses) => {
 				this.notEmpty.next(expenses.length > 0);

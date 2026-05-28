@@ -145,11 +145,20 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 			)
 			.subscribe({
 				next: (usersWithBalance) => {
+					// Clear old datasources so repeated loadUsers() calls do not leak subscriptions.
+					this.dataSources.forEach((dataSource) => dataSource.destroy());
+					this.dataSources = [];
+
 					this.usersWithBalance = usersWithBalance;
 					this.usersWithBalance$.next(usersWithBalance);
 					this.loading.next(false);
 					usersWithBalance.forEach(() => {
-						this.dataSources.push(new ExpenseDataSource(this.userService));
+						const dataSource = new ExpenseDataSource(this.userService);
+						dataSource.error$.subscribe((err: ApiError) => {
+							this.messageService.showError('Failed to load expenses');
+							this.logService.error('Something went wrong loading user expenses: ' + err?.error?.message);
+						});
+						this.dataSources.push(dataSource);
 					});
 				},
 				error: () => {
