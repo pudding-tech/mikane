@@ -86,15 +86,23 @@ export class PaymentStructureComponent implements OnInit, OnDestroy {
 			this.eventId = params['eventId'];
 			this.loadPayments();
 		});
-		this.authService.getCurrentUser().subscribe({
-			next: (user) => {
-				this.currentUser.set(user);
-			},
-			error: (error: ApiError) => {
-				this.messageService.showError('Something went wrong');
-				this.logService.error('Something went wrong when getting current user on account page: ' + error);
-			},
-		});
+		this.authService
+			.getCurrentUser()
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: (user) => {
+					this.currentUser.set(user);
+					// Payments may have loaded before currentUser resolved; re-seed the
+					// mobile expand set now that paymentsSelf() has the correct user context.
+					if (this.senders().length > 0) {
+						this.expandedSelf.set(new Set(this.paymentsSelf().map((p) => p.sender.id)));
+					}
+				},
+				error: (error: ApiError) => {
+					this.messageService.showError('Something went wrong');
+					this.logService.error('Something went wrong when getting current user on account page: ' + error);
+				},
+			});
 
 		// Re-apply the shared expand state after the mobile/desktop view flips.
 		this.breakpointService
@@ -132,37 +140,40 @@ export class PaymentStructureComponent implements OnInit, OnDestroy {
 
 	private loadPayments() {
 		this.loading.next(true);
-		this.eventService.loadPayments(this.eventId).subscribe({
-			next: (payments) => {
-				// Build unique senders
-				const uniqueSenders: SenderPayments[] = [];
-				payments.forEach((payment) => {
-					if (!uniqueSenders.find((s) => s.sender.id === payment.sender.id)) {
-						uniqueSenders.push({ sender: payment.sender, receivers: [] });
-					}
-				});
+		this.eventService
+			.loadPayments(this.eventId)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: (payments) => {
+					// Build unique senders
+					const uniqueSenders: SenderPayments[] = [];
+					payments.forEach((payment) => {
+						if (!uniqueSenders.find((s) => s.sender.id === payment.sender.id)) {
+							uniqueSenders.push({ sender: payment.sender, receivers: [] });
+						}
+					});
 
-				// Assign receivers to each sender
-				const updatedSenders = uniqueSenders.map((sender) => {
-					const receivers = payments
-						.filter((payment) => payment.sender.id === sender.sender.id)
-						.map((payment) => ({
-							receiver: payment.receiver,
-							amount: payment.amount,
-						}));
-					return { ...sender, receivers };
-				});
+					// Assign receivers to each sender
+					const updatedSenders = uniqueSenders.map((sender) => {
+						const receivers = payments
+							.filter((payment) => payment.sender.id === sender.sender.id)
+							.map((payment) => ({
+								receiver: payment.receiver,
+								amount: payment.amount,
+							}));
+						return { ...sender, receivers };
+					});
 
-				this.senders.set(updatedSenders);
-				this.expandedSelf.set(new Set(this.paymentsSelf().map((p) => p.sender.id)));
-				this.loading.next(false);
-			},
-			error: (err: ApiError) => {
-				this.loading.next(false);
-				this.messageService.showError('Error loading payments');
-				this.logService.error('Something went wrong while loading payments: ' + err?.error?.message);
-			},
-		});
+					this.senders.set(updatedSenders);
+					this.expandedSelf.set(new Set(this.paymentsSelf().map((p) => p.sender.id)));
+					this.loading.next(false);
+				},
+				error: (err: ApiError) => {
+					this.loading.next(false);
+					this.messageService.showError('Error loading payments');
+					this.logService.error('Something went wrong while loading payments: ' + err?.error?.message);
+				},
+			});
 	}
 
 	toggleExpand = (index: number) => {

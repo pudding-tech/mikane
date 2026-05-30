@@ -1,0 +1,597 @@
+[
+	{
+		"id": "592137a4-d245-4cb6-a99c-f871b3b64f14",
+		"name": "Cabin",
+		"description": null,
+		"amount": 16429.42,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:34.000Z",
+		"categoryInfo": { "id": "e34c02af-179f-4ecf-af89-5aec141a7083", "name": "Cabin", "icon": "hotel" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+			"username": "user07",
+			"name": "Jordan Vale",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "1125ca15-659a-4739-a223-ff7f1271e7b7",
+		"name": "Gas Moon-Oslo",
+		"description": null,
+		"amount": 863,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:33.000Z",
+		"categoryInfo": { "id": "5e728988-db86-40af-a2bb-4ddd84eb0e1c", "name": "Gas Trysil-Oslo", "icon": "local_gas_station" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+			"username": "user07",
+			"name": "Jordan Vale",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "2132eb2c-e665-4556-b755-c36c743110a2",
+		"name": "Gas Oslo-Moon",
+		"description": null,
+		"amount": 863,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:32.000Z",
+		"categoryInfo": { "id": "501e4344-9dc1-414c-8838-37e21816a3ed", "name": "Gas Oslo-Trysil", "icon": "local_gas_station" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+			"username": "user07",
+			"name": "Jordan Vale",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "c39a47d6-ab3c-4175-a770-a8cc8f0181db",
+		"name": "Handling 29. July",
+		"description": null,
+		"amount": 1506.81,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:31.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+			"username": "user07",
+			"name": "Jordan Vale",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "63867973-ebc9-4651-b08d-0e27ba64991f",
+		"name": "Bensin",
+		"description": "Kjøring på månen",
+		"amount": 346,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:30.000Z",
+		"categoryInfo": { "id": "ab994ad4-7323-4254-83a6-60896ffe44c3", "name": "Gas Other (Adrian)", "icon": "local_gas_station" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "1103a069-d6c5-4bf2-b2af-019c19efe570",
+		"name": "Bensin",
+		"description": "Bay of Pigs",
+		"amount": 402,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:29.000Z",
+		"categoryInfo": { "id": "cfd9c074-09e5-424f-9db2-e7b347e66259", "name": "Hamar", "icon": "directions_car" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "00ecfae0-52bc-4b5c-9abc-44ecea2fc6ee",
+		"name": "Bensin",
+		"description": "Moon - Trondheim",
+		"amount": 690,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:28.000Z",
+		"categoryInfo": { "id": "891c1877-d78c-4527-b446-bd7fa7f3bf0e", "name": "Gas Trysil-Trondheim", "icon": "local_gas_station" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "312d0267-a2bd-4845-af5d-1333d0f4a551",
+		"name": "Bensin",
+		"description": "Trondheim - Moon",
+		"amount": 690,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:27.000Z",
+		"categoryInfo": { "id": "8a02beef-6402-4d76-9270-6ab22a28ac12", "name": "Gas Trondheim-Trysil", "icon": "local_gas_station" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "7c3ddcad-aab0-44a2-9f7c-e7ca00169525",
+		"name": "Disc golf",
+		"description": null,
+		"amount": 400,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:26.000Z",
+		"categoryInfo": { "id": "115f5259-861c-439a-bc88-6171419d73cc", "name": "Disc golf", "icon": "golf_course" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+			"username": "user06",
+			"name": "Hayden Cole",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "dbeb2611-e72b-4fa7-abee-775e4ad8b336",
+		"name": "Rom brun",
+		"description": null,
+		"amount": 385,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:25.000Z",
+		"categoryInfo": { "id": "da9eb910-43f7-4bce-88bc-da0bf0c13e6e", "name": "Alcohol", "icon": "local_bar" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+			"username": "user06",
+			"name": "Hayden Cole",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "55162bc6-50f5-49ef-be39-b0c5e404c76f",
+		"name": "Brioche brød",
+		"description": null,
+		"amount": 120,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:24.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+			"username": "user06",
+			"name": "Hayden Cole",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "355a76d3-cafd-4ef1-ad5f-bbcaad70dab1",
+		"name": "Skydiving",
+		"description": null,
+		"amount": 800,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:23.000Z",
+		"categoryInfo": { "id": "b52e07d9-898c-462d-85de-caec1cd3d44d", "name": "Paddleboard", "icon": null },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+			"username": "user06",
+			"name": "Hayden Cole",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "cc97f764-ef73-4afd-9155-080201e7e283",
+		"name": "Ski jump - SP keeps skis",
+		"description": null,
+		"amount": 200,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:22.000Z",
+		"categoryInfo": { "id": "e4c8fd64-3ea2-4933-93fb-3d20d1f0747e", "name": "Scam lamp (SP)", "icon": null },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+			"username": "user05",
+			"name": "Gray Bennett",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "2af1fcec-a74a-4b28-b909-176062d191d1",
+		"name": "Ski jump",
+		"description": null,
+		"amount": 300,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:21.000Z",
+		"categoryInfo": { "id": "e3a4b8de-3c7e-4e2c-bbed-86519caba9ae", "name": "Scam lamp", "icon": null },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+			"username": "user05",
+			"name": "Gray Bennett",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "794d29a5-b899-4bde-862b-7cf70ff4c5e7",
+		"name": "Handling nr.2 - 2. august",
+		"description": "Godteri og leverpostei lokk",
+		"amount": 67.2,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:20.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "e6a1c1ee-e92b-4878-8548-20e36f9c0dec",
+			"username": "user04",
+			"name": "Evan Brooks",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "b6201307-2a17-4621-a8fb-485dc3f7e2a8",
+		"name": "Vinmonopolet (for mat) 4. august",
+		"description": null,
+		"amount": 132.9,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:19.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "5368d26e-4ac1-4ac1-8ca3-6556cd39b167",
+		"name": "Handling Innsbruck 02.08",
+		"description": null,
+		"amount": 73.5,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:18.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "b2b0eed5-5214-4d21-becc-487c9449a996",
+		"name": "Parkering Bay of Pigs",
+		"description": null,
+		"amount": 26,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:17.000Z",
+		"categoryInfo": { "id": "cfd9c074-09e5-424f-9db2-e7b347e66259", "name": "Hamar", "icon": "directions_car" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "8b0cd382-27e2-4730-9ed9-60c400f0a833",
+		"name": "Vinmonopolet 3. august",
+		"description": null,
+		"amount": 852.8,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:16.000Z",
+		"categoryInfo": { "id": "da9eb910-43f7-4bce-88bc-da0bf0c13e6e", "name": "Alcohol", "icon": "local_bar" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "62baa20c-1e1a-46ac-8511-831dd023a2f6",
+		"name": "Handling ドンキ 30.07",
+		"description": null,
+		"amount": 67.8,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:15.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "936e734b-179b-41b3-a742-57090e88b463",
+		"name": "Handling ドンキ 03.08",
+		"description": null,
+		"amount": 294.59,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:14.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "68f3b397-fac9-4389-ba8d-805fb40b99e2",
+		"name": "Handling ドンキ 04.08",
+		"description": null,
+		"amount": 84.9,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:13.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "dcbb30ed-ef51-46cf-a2aa-96ad167b825d",
+		"name": "Handling ドンキ 05.08",
+		"description": null,
+		"amount": 110.4,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:12.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "52d5f1b7-c107-41c1-a9e1-a91fe0be3603",
+		"name": "Handling 30. juli",
+		"description": null,
+		"amount": 93.4,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:11.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "84ce32fe-f638-4c31-b487-66c0044cfc7c",
+		"name": "Handling 30. juli",
+		"description": null,
+		"amount": 3952.74,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:11.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "2e8502fa-a545-486b-b116-fcd61a2fcbba",
+		"name": "Kjøkkenutstyr",
+		"description": null,
+		"amount": 98,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:10.000Z",
+		"categoryInfo": { "id": "76aa5522-e7f4-4120-96fb-507becd0e7e4", "name": "Other", "icon": null },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "214fc040-aec1-48c4-93fd-7e5096a28357",
+		"name": "Skjøteledning",
+		"description": null,
+		"amount": 99,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:08.000Z",
+		"categoryInfo": { "id": "76aa5522-e7f4-4120-96fb-507becd0e7e4", "name": "Other", "icon": null },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "7ae8e913-0d1b-45aa-b012-759407c1d315",
+		"name": "Handling 1. august",
+		"description": null,
+		"amount": 2204.49,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:07.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "ceefabf3-7b6d-44d7-8a0d-16cad61c349e",
+		"name": "Handling 2. august",
+		"description": null,
+		"amount": 1945.09,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:06.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "8f4f3186-c836-4e90-a928-f0bda483b551",
+		"name": "Handling 3. august",
+		"description": null,
+		"amount": 1389.87,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:05.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "f1620e95-377e-4c38-a301-90b7d066363f",
+		"name": "Handling nr.2 - 4. august",
+		"description": null,
+		"amount": 1564.86,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:04.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "aydex",
+			"name": "Adrian",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "49690609-4328-42d1-b3a6-50c1793993d0",
+		"name": "Handling 4. august",
+		"description": null,
+		"amount": 71.3,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:03.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "aydex",
+			"name": "Adrian",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "0852f10e-39d5-42bc-8403-c8ceb44c5be3",
+		"name": "Handling nr.2 - 5. august",
+		"description": null,
+		"amount": 451.17,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:02.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "aydex",
+			"name": "Adrian",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "06cb966f-d2ca-4af5-88ab-b6b29b3c9359",
+		"name": "Handling 5. august",
+		"description": null,
+		"amount": 339.6,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:01.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "aydex",
+			"name": "Adrian",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	},
+	{
+		"id": "9cdf049d-1504-4967-b826-8e1a64babf3a",
+		"name": "Handling 6. august",
+		"description": null,
+		"amount": 1233.8,
+		"expenseDate": null,
+		"created": "2020-05-10T00:00:00.000Z",
+		"categoryInfo": { "id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c", "name": "Food", "icon": "restaurant" },
+		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
+		"payer": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false
+		}
+	}
+]

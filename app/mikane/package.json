@@ -5,6 +5,7 @@
 		"ng": "ng",
 		"start": "ng serve",
 		"dev": "ng serve --host=0.0.0.0",
+		"dev:mock": "ng serve --configuration mock --host=0.0.0.0",
 		"build": "ng build",
 		"build:test": "ng build --configuration test",
 		"watch": "ng build --watch --configuration development",
@@ -54,6 +55,7 @@
 		"eslint-plugin-unicorn": "^62.0.0",
 		"globals": "^16.5.0",
 		"jsdom": "^27.3.0",
+		"msw": "^2.14.6",
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.49.0",
 		"vitest": "^4.1.4"
@@ -63,5 +65,10 @@
 		"@nx/nx-darwin-x64": "22.2.1",
 		"@nx/nx-linux-x64-gnu": "22.2.1",
 		"@nx/nx-win32-x64-msvc": "22.2.1"
+	},
+	"msw": {
+		"workerDirectory": [
+			"public"
+		]
 	}
 }

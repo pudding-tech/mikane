@@ -1,0 +1,148 @@
+[
+	{
+		"user": {
+			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+			"username": "user01",
+			"name": "Alex Harper",
+			"email": "user01@example.test",
+			"phone": "00000003",
+			"created": "2022-08-07T16:02:00.000Z",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false,
+			"superAdmin": true,
+			"publicEmail": false,
+			"publicPhone": true,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "isAdmin": true, "joinedTime": "2024-06-17T00:53:39.950Z" }
+		},
+		"expensesCount": 24,
+		"spending": -4861.76,
+		"expenses": 17214.21,
+		"balance": 12352.45
+	},
+	{
+		"user": {
+			"id": "61e4e87a-8038-4591-87c8-a4eed687f37e",
+			"username": "user02",
+			"name": "Blake Morgan",
+			"phone": "00000004",
+			"created": "2022-08-07T16:03:00.000Z",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "isAdmin": true, "joinedTime": "2024-06-17T00:53:39.950Z" }
+		},
+		"expensesCount": 0,
+		"spending": -4684.93,
+		"expenses": 0,
+		"balance": -4684.93
+	},
+	{
+		"user": {
+			"id": "dd5d9769-0ec2-4dda-b586-72760648e15f",
+			"username": "user03",
+			"name": "Casey Lin",
+			"phone": "00000005",
+			"created": "2022-08-07T16:04:00.000Z",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "isAdmin": false, "joinedTime": "2024-06-17T00:53:39.950Z" }
+		},
+		"expensesCount": 0,
+		"spending": -1716.98,
+		"expenses": 0,
+		"balance": -1716.98
+	},
+	{
+		"user": {
+			"id": "6eae2670-b913-4745-9590-093ce439627d",
+			"username": "guest01",
+			"name": "Dana Wells",
+			"created": "2022-08-07T16:08:00.000Z",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": true,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "isAdmin": false, "joinedTime": "2024-06-17T00:53:39.950Z" }
+		},
+		"expensesCount": 0,
+		"spending": -4085.19,
+		"expenses": 0,
+		"balance": -4085.19
+	},
+	{
+		"user": {
+			"id": "e6a1c1ee-e92b-4878-8548-20e36f9c0dec",
+			"username": "user04",
+			"name": "Evan Brooks",
+			"phone": "00000007",
+			"created": "2022-08-07T16:07:00.000Z",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "isAdmin": false, "joinedTime": "2024-06-17T00:53:39.950Z" }
+		},
+		"expensesCount": 1,
+		"spending": -4085.19,
+		"expenses": 67.2,
+		"balance": -4017.99
+	},
+	{
+		"user": {
+			"id": "0f70438a-b0d9-43fe-b191-2e7073cb94ed",
+			"username": "guest02",
+			"name": "Finley Shaw",
+			"created": "2022-08-07T16:15:00.000Z",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": true,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "isAdmin": false, "joinedTime": "2024-06-17T00:53:39.950Z" }
+		},
+		"expensesCount": 0,
+		"spending": -4123.99,
+		"expenses": 0,
+		"balance": -4123.99
+	},
+	{
+		"user": {
+			"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+			"username": "user05",
+			"name": "Gray Bennett",
+			"phone": "00000002",
+			"created": "2022-08-07T16:01:00.000Z",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "isAdmin": false, "joinedTime": "2024-06-17T00:53:39.950Z" }
+		},
+		"expensesCount": 2,
+		"spending": -5235.76,
+		"expenses": 500,
+		"balance": -4735.76
+	},
+	{
+		"user": {
+			"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+			"username": "user06",
+			"name": "Hayden Cole",
+			"phone": "00000006",
+			"created": "2022-08-07T16:05:00.000Z",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "isAdmin": false, "joinedTime": "2024-06-17T00:53:39.950Z" }
+		},
+		"expensesCount": 4,
+		"spending": -4919.09,
+		"expenses": 1705,
+		"balance": -3214.09
+	},
+	{
+		"user": {
+			"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+			"username": "user07",
+			"name": "Jordan Vale",
+			"phone": "00000001",
+			"created": "2022-08-07T16:00:00.000Z",
+			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "isAdmin": false, "joinedTime": "2024-06-17T00:53:39.950Z" }
+		},
+		"expensesCount": 4,
+		"spending": -5435.76,
+		"expenses": 19662.23,
+		"balance": 14226.47
+	}
+]

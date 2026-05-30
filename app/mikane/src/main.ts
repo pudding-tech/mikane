@@ -23,47 +23,59 @@ if (environment.production) {
 	enableProdMode();
 }
 
-bootstrapApplication(AppComponent, {
-	providers: [
-		importProvidersFrom(
-			BrowserModule,
-			AppRoutingModule,
-			ServiceWorkerModule.register('ngsw-worker.js', {
-				enabled: environment.production,
-				// Register the ServiceWorker as soon as the application is stable
-				// or after 30 seconds (whichever comes first).
-				registrationStrategy: 'registerWhenStable:30000',
-			}),
-			MatSnackBarModule,
-		),
-		{
-			provide: ErrorHandler,
-			useClass: MikaneErrorHandler,
-		},
-		{
-			provide: TitleStrategy,
-			useClass: MikaneTitleStrategy,
-		},
-		{
-			provide: LOG_LEVEL,
-			useValue: LoggerLevel.INFO,
-		},
-		{
-			provide: LOCALE_ID,
-			useValue: 'no',
-		},
-		{
-			provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-			useValue: {
-				duration: 2500,
+async function prepare() {
+	if (!environment.production && (environment as { mock?: boolean }).mock) {
+		const { worker } = await import('./mocks/browser');
+		await worker.start({
+			onUnhandledRequest: 'bypass',
+			serviceWorker: { url: '/mockServiceWorker.js' },
+		});
+	}
+}
+
+prepare().then(() => {
+	bootstrapApplication(AppComponent, {
+		providers: [
+			importProvidersFrom(
+				BrowserModule,
+				AppRoutingModule,
+				ServiceWorkerModule.register('ngsw-worker.js', {
+					enabled: environment.production,
+					// Register the ServiceWorker as soon as the application is stable
+					// or after 30 seconds (whichever comes first).
+					registrationStrategy: 'registerWhenStable:30000',
+				}),
+				MatSnackBarModule,
+			),
+			{
+				provide: ErrorHandler,
+				useClass: MikaneErrorHandler,
 			},
-		},
-		{
-			provide: ENV,
-			useFactory: getEnv,
-		},
-		provideAnimations(),
-		provideHttpClient(withInterceptorsFromDi(), withInterceptors([authInterceptor, csrfInterceptor])),
-		provideZonelessChangeDetection(),
-	],
-}).catch((err) => console.error(err));
+			{
+				provide: TitleStrategy,
+				useClass: MikaneTitleStrategy,
+			},
+			{
+				provide: LOG_LEVEL,
+				useValue: LoggerLevel.INFO,
+			},
+			{
+				provide: LOCALE_ID,
+				useValue: 'no',
+			},
+			{
+				provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+				useValue: {
+					duration: 2500,
+				},
+			},
+			{
+				provide: ENV,
+				useFactory: getEnv,
+			},
+			provideAnimations(),
+			provideHttpClient(withInterceptorsFromDi(), withInterceptors([authInterceptor, csrfInterceptor])),
+			provideZonelessChangeDetection(),
+		],
+	}).catch((err) => console.error(err));
+});

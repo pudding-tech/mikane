@@ -24,8 +24,13 @@ export function csrfInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
 				if (error instanceof TimeoutError) {
 					// force re-auth if no token arrives
 					messageService.showError('Could not authenticate, please log in again.');
-					authService.redirectUrl = router.url;
-					authService.logout().subscribe({ error: () => undefined });
+					const urlToRestore = router.url;
+					authService.logout().subscribe({
+						next: () => {
+							authService.redirectUrl = urlToRestore;
+						},
+						error: () => undefined,
+					});
 					router.navigate(['/login']);
 					return NEVER;
 				}
@@ -42,8 +47,12 @@ export function csrfInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
 					catchError((error) => {
 						if (error.status === 403 && error?.error?.code === 'PUD-148') {
 							messageService.showError('CSRF Token invalid, please log in again.');
-							authService.redirectUrl = router.url;
-							authService.logout().subscribe();
+							const urlToRestore = router.url;
+							authService.logout().subscribe({
+								next: () => {
+									authService.redirectUrl = urlToRestore;
+								},
+							});
 							router.navigate(['/login']);
 							return NEVER;
 						}
