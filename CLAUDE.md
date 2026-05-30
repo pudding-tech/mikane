@@ -14,18 +14,22 @@ Mikane is a shared-expense settlement tool. Two deployables in one repo:
 Layout cheatsheet:
 
 - `app/mikane/src/app/{pages,features,services,shared,helpers,types}` — UI surfaces, feature modules, HTTP services, shared utilities (incl. async form validators).
+- `app/mikane/src/mocks/` — MSW handlers + JSON fixtures used by the `dev:mock` config. Only active when the build's environment file sets `mock: true` (see `environment.mock.ts`); the service worker file lives at `app/mikane/public/mockServiceWorker.js`.
 - `server/src/{api,db,middlewares,parsers,email-services,session-store,types,utils}` — route handlers per resource (`api/events.ts`, `api/expenses.ts`, …), DB access, Express middleware.
 - `server/db_scripts/` — SQL functions; `server/test_db/` — Dockerized Postgres for tests.
 
 Common commands (run from the matching directory):
 
-| Task          | Frontend (`app/mikane`)       | Backend (`server`)                  |
-| ------------- | ----------------------------- | ----------------------------------- |
-| Dev server    | `npm run dev`                 | `npm run dev`                       |
-| Build         | `npm run build`               | `npm run build`                     |
-| Lint          | `npm run lint`                | `npm run lint`                      |
-| Tests         | `npm run test`                | `npm run db` then `npm run test`    |
-| Typecheck     | (covered by `ng build`)       | `npm run typecheck`                 |
+| Task              | Frontend (`app/mikane`)       | Backend (`server`)                  |
+| ----------------- | ----------------------------- | ----------------------------------- |
+| Dev server        | `npm run dev`                 | `npm run dev`                       |
+| Dev server (mock) | `npm run dev:mock`            | —                                   |
+| Build             | `npm run build`               | `npm run build`                     |
+| Lint              | `npm run lint`                | `npm run lint`                      |
+| Tests             | `npm run test`                | `npm run db` then `npm run test`    |
+| Typecheck         | (covered by `ng build`)       | `npm run typecheck`                 |
+
+`npm run dev:mock` runs the FE against MSW handlers in `src/mocks/` — no backend or DB needed. Use it for pure UI work; spin up the real backend when you need to exercise real auth, CSRF, persistence, or any API contract change (the mocks won't catch drift).
 
 Backend integration tests need the test DB up (`npm run db`). Don't mock the DB to avoid that — use the real one.
 
