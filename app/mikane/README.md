@@ -1,27 +1,70 @@
-# Mikane
+# Mikane — Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.0.
+Angular 21 frontend for [Mikane](../../README.md). For project overview, installation, and backend setup, see the [root README](../../README.md).
 
-## Development server
+## Stack
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Angular 21 (standalone components, signals where present, `provideZonelessChangeDetection`)
+- Angular Material
+- RxJS, SCSS
+- [MSW](https://mswjs.io/) for local mock backend
+- Vitest (via `@angular/build:unit-test`) + jsdom for unit tests
+- ESLint (flat config)
 
-## Code scaffolding
+## Scripts
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Run all commands from `app/mikane/`.
 
-## Build
+| Command            | What it does                                                                 |
+| ------------------ | ---------------------------------------------------------------------------- |
+| `npm run dev`      | Dev server against the real backend (expects `server/` running on `:3002`). |
+| `npm run dev:mock` | Dev server against in-process MSW mocks — no backend or DB required.         |
+| `npm run build`    | Production build into `dist/mikane/`.                                        |
+| `npm run build:test` | Production build using the `test` environment file.                        |
+| `npm run watch`    | Development build in watch mode.                                             |
+| `npm run test`     | Run all unit tests once.                                                     |
+| `npm run test:dev` | Run unit tests in watch mode, no coverage.                                   |
+| `npm run lint`     | ESLint over `src/**/*.{ts,html}`.                                            |
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+The dev server defaults to `http://localhost:4200`.
 
-## Running unit tests
+## Environments
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+`src/environments/`:
 
-## Running end-to-end tests
+- `environment.ts` — local development (points at `http://localhost:3002/api/`).
+- `environment.mock.ts` — MSW-backed dev, used by `dev:mock` via Angular's file replacement.
+- `environment.test.ts` — staging / test backend.
+- `environment.prod.ts` — production backend.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Selection is driven by the `--configuration` flag in [angular.json](angular.json).
 
-## Further help
+## Mock backend (MSW)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+`npm run dev:mock` boots the app with MSW intercepting all `/api/*` requests via the service worker in [public/mockServiceWorker.js](public/mockServiceWorker.js). Handlers and JSON fixtures live under [src/mocks/](src/mocks/):
+
+```
+src/mocks/
+  browser.ts          # setupWorker entry, dynamically imported from main.ts
+  db.ts               # in-memory store + CURRENT_USER mock
+  fixtures/           # JSON snapshots used as seed data
+  handlers/           # one file per API resource (events, expenses, …)
+```
+
+**When to use it:** isolated UI work, design iteration, demoing without infra.
+
+**When *not* to use it:** anything that touches the FE/BE contract (new endpoints, response-shape changes, auth/CSRF behavior, persistence semantics). The mocks won't catch drift — run the real backend instead.
+
+If you add a new endpoint or change a response shape, update the matching handler under `src/mocks/handlers/` to keep the mock layer honest.
+
+## Project layout
+
+```
+src/app/
+  pages/        # routed views
+  features/     # feature-scoped components, dialogs, etc.
+  services/     # HTTP services + interceptors (auth, csrf)
+  shared/       # reusable components, directives, pipes
+  helpers/      # framework-agnostic utilities, async form validators
+  types/        # cross-cutting types
+```
