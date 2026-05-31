@@ -19,10 +19,15 @@ mat-toolbar button {
 }
 
 .name {
-	white-space: normal;
+	white-space: nowrap;
 	overflow: hidden;
 	display: flex;
 	align-items: center;
+
+	.name-text {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }
 
 .settings-tab {
@@ -42,6 +47,7 @@ mat-toolbar button {
 	color: rgba(255, 255, 255, 0.515);
 	border-color: rgba(167, 150, 150, 0.35);
 	margin-left: 1.4em;
+	margin-right: 1.4em;
 }
 
 .ready-to-settle {

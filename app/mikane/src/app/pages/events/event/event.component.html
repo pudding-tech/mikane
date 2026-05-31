@@ -9,7 +9,7 @@
 		</a>
 	</div>
 	<div class="name">
-		{{ event.name }}
+		<span class="name-text">{{ event.name }}</span>
 		@if (event.status?.id !== EventStatusType.ACTIVE && (breakpointService.isMobile() | async) === false) {
 			<div class="event-status-marker" [ngClass]="{ 'ready-to-settle': event.status?.id === EventStatusType.READY_TO_SETTLE }">
 				{{ event.status?.id === EventStatusType.READY_TO_SETTLE ? "Ready to settle" : "Settled" }}
