@@ -4,7 +4,12 @@ export const verifyKeyHandlers = [
 	http.get('/api/verifykey/register/:registerKey', ({ params }) => {
 		const registerKey = params['registerKey'];
 		if (registerKey === 'valid-register-key') {
-			return new HttpResponse(null, { status: 204 });
+			return HttpResponse.json({
+				email: 'mock@example.test',
+				guestUser: null,
+				firstName: 'Mock',
+				lastName: 'User',
+			});
 		} else {
 			return new HttpResponse(null, { status: 404 });
 		}

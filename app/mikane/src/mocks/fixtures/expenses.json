@@ -74,7 +74,7 @@
 		"amount": 346,
 		"expenseDate": null,
 		"created": "2020-05-10T00:00:30.000Z",
-		"categoryInfo": { "id": "ab994ad4-7323-4254-83a6-60896ffe44c3", "name": "Gas Other (Adrian)", "icon": "local_gas_station" },
+		"categoryInfo": { "id": "ab994ad4-7323-4254-83a6-60896ffe44c3", "name": "Gas Other (Alex)", "icon": "local_gas_station" },
 		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
 		"payer": {
 			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
@@ -520,8 +520,8 @@
 		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
 		"payer": {
 			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
-			"username": "aydex",
-			"name": "Adrian",
+			"username": "user01",
+			"name": "Alex Harper",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
 			"guest": false
 		}
@@ -537,8 +537,8 @@
 		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
 		"payer": {
 			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
-			"username": "aydex",
-			"name": "Adrian",
+			"username": "user01",
+			"name": "Alex Harper",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
 			"guest": false
 		}
@@ -554,8 +554,8 @@
 		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
 		"payer": {
 			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
-			"username": "aydex",
-			"name": "Adrian",
+			"username": "user01",
+			"name": "Alex Harper",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
 			"guest": false
 		}
@@ -571,8 +571,8 @@
 		"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "private": true },
 		"payer": {
 			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
-			"username": "aydex",
-			"name": "Adrian",
+			"username": "user01",
+			"name": "Alex Harper",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
 			"guest": false
 		}

@@ -13,15 +13,22 @@ export const userHandlers = [
 		}
 		return HttpResponse.json([...users, ...guests]);
 	}),
+	http.get('/api/users/balances', ({ request }) => {
+		const url = new URL(request.url);
+		const eventId = url.searchParams.get('eventId');
+		if (!eventId) return HttpResponse.json([]);
+		const balances = db.balances.filter((b) => b.user.eventInfo?.id === eventId);
+		return HttpResponse.json(balances);
+	}),
+	http.get('/api/users/username/:usernameId', ({ params }) => {
+		const user = db.users.find((u) => u.username === params['usernameId']) ?? db.users.find((u) => u.id === params['usernameId']);
+		return HttpResponse.json(user);
+	}),
 	http.get('/api/users/:userId', ({ params }) => {
 		const user = db.users.find((u) => u.id === params['userId']);
 		if (!user) {
 			return new HttpResponse(null, { status: 404 });
 		}
-		return HttpResponse.json(user);
-	}),
-	http.get('/api/users/username/:usernameId', ({ params }) => {
-		const user = db.users.find((u) => u.username === params['usernameId']) ?? db.users.find((u) => u.id === params['usernameId']);
 		return HttpResponse.json(user);
 	}),
 	http.post('/api/users', async ({ request }) => {
@@ -53,13 +60,6 @@ export const userHandlers = [
 		if (!user) return HttpResponse.json([]);
 		const expenses = db.expenses.filter((e) => e.payer.id === user.id);
 		return HttpResponse.json(expenses);
-	}),
-	http.get('/api/users/balances', ({ request }) => {
-		const url = new URL(request.url);
-		const eventId = url.searchParams.get('eventId');
-		if (!eventId) return HttpResponse.json([]);
-		const balances = db.balances.filter((b) => b.user.eventInfo?.id === eventId);
-		return HttpResponse.json(balances);
 	}),
 	http.put('/api/users/:userId', async ({ params, request }) => {
 		const body = (await request.json()) as Partial<Omit<(typeof db.users)[number], 'id' | 'created' | 'guest' | 'eventInfo'>>;
