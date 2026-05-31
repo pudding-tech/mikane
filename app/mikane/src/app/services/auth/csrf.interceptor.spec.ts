@@ -2,7 +2,7 @@ import { HttpHandlerFn, HttpRequest, provideHttpClient, withInterceptors } from 
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Observable, of, ReplaySubject, throwError } from 'rxjs';
+import { NEVER, Observable, of, ReplaySubject, throwError } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { MessageService } from '../message/message.service';
 import { AuthService } from './auth.service';
@@ -120,5 +120,40 @@ describe('csrfInterceptor', () => {
 		executeHandler(req, next).subscribe();
 
 		expect(next).toHaveBeenCalledWith(req);
+	});
+
+	it('should treat a missing CSRF token (>5s) as an auth failure and force re-auth', () => {
+		// Simulate the stale-auth-state edge case: `authenticated` is true but
+		// no token ever lands on `csrfToken$`. Without the timeout, the request
+		// would hang silently.
+		vi.useFakeTimers();
+		try {
+			vi.spyOn(mockAuthService, 'csrfToken$', 'get').mockReturnValue(NEVER as unknown as ReplaySubject<string>);
+			const req = new HttpRequest('GET', '/api/test');
+			let completed = false;
+			let errored = false;
+			executeHandler(req, next).subscribe({
+				complete: () => (completed = true),
+				error: () => (errored = true),
+			});
+
+			// Pre-timeout: nothing has fired yet, request hasn't gone out.
+			expect(mockMessageService.showError).not.toHaveBeenCalled();
+			expect(next).not.toHaveBeenCalled();
+
+			vi.advanceTimersByTime(5_001);
+
+			expect(mockMessageService.showError).toHaveBeenCalledWith('Could not authenticate, please log in again.');
+			expect(mockAuthService.redirectUrl).toBe('/current-url');
+			expect(mockAuthService.logout).toHaveBeenCalledWith();
+			expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+			// TimeoutError is caught and mapped to NEVER, so the consumer sees neither
+			// completion nor error — same recovery shape as the existing 403/PUD-148 path.
+			expect(completed).toBe(false);
+			expect(errored).toBe(false);
+			expect(next).not.toHaveBeenCalled();
+		} finally {
+			vi.useRealTimers();
+		}
 	});
 });

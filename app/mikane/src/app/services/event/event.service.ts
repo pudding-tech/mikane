@@ -12,6 +12,7 @@ export interface PuddingEvent {
 	created: Date;
 	adminIds: string[];
 	private: boolean;
+	currency: string;
 	status: {
 		id: number;
 		name: string;

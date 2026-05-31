@@ -15,7 +15,7 @@ export class AuthService {
 	private apiUrl = this.env.apiUrl;
 	private currentUser: User;
 
-	private _redirectUrl: string;
+	private _redirectUrl: string | undefined;
 
 	public authenticated$ = new BehaviorSubject<boolean | null>(false);
 	public csrfToken$ = new ReplaySubject<string>();
@@ -24,14 +24,14 @@ export class AuthService {
 		return !!this.currentUser;
 	}
 
-	get redirectUrl(): string {
-		// Consume redirect URL
-		const redirectUrl = `${this._redirectUrl}`;
-		delete this._redirectUrl;
+	get redirectUrl(): string | undefined {
+		// Consume and clear redirect URL
+		const redirectUrl = this._redirectUrl;
+		this._redirectUrl = undefined;
 		return redirectUrl;
 	}
 
-	set redirectUrl(value: string) {
+	set redirectUrl(value: string | undefined) {
 		this._redirectUrl = value;
 	}
 
@@ -84,5 +84,7 @@ export class AuthService {
 
 	clearCurrentUser() {
 		delete this.currentUser;
+		// Reset any pending post-login redirect
+		this._redirectUrl = undefined;
 	}
 }

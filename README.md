@@ -50,6 +50,12 @@ cd mikane
    npm run dev
    ```
 
+   Alternatively, to run the frontend against an in-memory mock backend (no database or backend server required), use:
+   ```bash
+   npm run dev:mock
+   ```
+   This serves requests via [MSW](https://mswjs.io/) handlers in `src/mocks/`. Useful for UI work in isolation; switch back to `npm run dev` (with the real backend running) when working on API contracts, auth, or anything that needs real persistence.
+
 #### Backend
 
 Option A:

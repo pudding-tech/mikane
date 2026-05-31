@@ -467,18 +467,20 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			data: { type: 'search', currentFilter: [this.filterValue()] },
 		});
 
-		searchBottomSheetRef.instance.inputDataChange.subscribe((filterValue) => {
-			this.filterValue.set(filterValue[0]);
-			this.router.navigate([], {
-				relativeTo: this.route,
-				queryParams: {
-					...this.route.snapshot.queryParams,
-					filter: filterValue[0] || null,
-				},
-				replaceUrl: true,
-				queryParamsHandling: 'merge',
+		searchBottomSheetRef.instance.inputDataChange
+			.pipe(takeUntil(searchBottomSheetRef.afterDismissed()), takeUntil(this.destroy$))
+			.subscribe((filterValue) => {
+				this.filterValue.set(filterValue[0]);
+				this.router.navigate([], {
+					relativeTo: this.route,
+					queryParams: {
+						...this.route.snapshot.queryParams,
+						filter: filterValue[0] || null,
+					},
+					replaceUrl: true,
+					queryParamsHandling: 'merge',
+				});
 			});
-		});
 	}
 
 	openFilterPayerBottomSheet(): void {
@@ -486,18 +488,20 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			data: { type: 'payers', filterData: this.payers(), currentFilter: this.payersFilter() },
 		});
 
-		payerBottomSheetRef.instance.inputDataChange.subscribe((payers) => {
-			this.payersFilter.set([...payers]);
-			this.router.navigate([], {
-				relativeTo: this.route,
-				queryParams: {
-					...this.route.snapshot.queryParams,
-					payers: this.payersFilter().toString().replace(new RegExp(',', 'g'), ';') || null,
-				},
-				replaceUrl: true,
-				queryParamsHandling: 'merge',
+		payerBottomSheetRef.instance.inputDataChange
+			.pipe(takeUntil(payerBottomSheetRef.afterDismissed()), takeUntil(this.destroy$))
+			.subscribe((payers) => {
+				this.payersFilter.set([...payers]);
+				this.router.navigate([], {
+					relativeTo: this.route,
+					queryParams: {
+						...this.route.snapshot.queryParams,
+						payers: this.payersFilter().toString().replace(new RegExp(',', 'g'), ';') || null,
+					},
+					replaceUrl: true,
+					queryParamsHandling: 'merge',
+				});
 			});
-		});
 	}
 
 	openFilterCategoryBottomSheet(): void {
@@ -505,18 +509,20 @@ export class ExpendituresComponent implements OnInit, OnDestroy {
 			data: { type: 'categories', filterData: this.categories(), currentFilter: this.categoriesFilter() },
 		});
 
-		categoryBottomSheetRef.instance.inputDataChange.subscribe((categories) => {
-			this.categoriesFilter.set([...categories]);
-			this.router.navigate([], {
-				relativeTo: this.route,
-				queryParams: {
-					...this.route.snapshot.queryParams,
-					categories: this.categoriesFilter().toString().replace(new RegExp(',', 'g'), ';') || null,
-				},
-				replaceUrl: true,
-				queryParamsHandling: 'merge',
+		categoryBottomSheetRef.instance.inputDataChange
+			.pipe(takeUntil(categoryBottomSheetRef.afterDismissed()), takeUntil(this.destroy$))
+			.subscribe((categories) => {
+				this.categoriesFilter.set([...categories]);
+				this.router.navigate([], {
+					relativeTo: this.route,
+					queryParams: {
+						...this.route.snapshot.queryParams,
+						categories: this.categoriesFilter().toString().replace(new RegExp(',', 'g'), ';') || null,
+					},
+					replaceUrl: true,
+					queryParamsHandling: 'merge',
+				});
 			});
-		});
 	}
 
 	ngOnDestroy(): void {

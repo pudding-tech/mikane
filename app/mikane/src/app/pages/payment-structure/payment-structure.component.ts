@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, skip, takeUntil } from 'rxjs';
 import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payment-item.component';
 import { PaymentExpansionPanelItemComponent } from 'src/app/pages/payment-structure/payment-expansion-panel-item/payment-expansion-panel-item.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -43,7 +43,7 @@ interface SenderPayments {
 		PaymentItemComponent,
 	],
 })
-export class PaymentStructureComponent implements OnInit {
+export class PaymentStructureComponent implements OnInit, OnDestroy {
 	private authService = inject(AuthService);
 	private eventService = inject(EventService);
 	private route = inject(ActivatedRoute);
@@ -59,78 +59,121 @@ export class PaymentStructureComponent implements OnInit {
 	loading = new BehaviorSubject<boolean>(false);
 
 	senders = signal<SenderPayments[]>([]);
-	paymentsSelf = computed(() =>
-		this.senders().filter((senderPayment) => {
-			return (
-				senderPayment.sender.id === this.currentUser?.id ||
-				senderPayment.receivers.some((r) => r.receiver.id === this.currentUser?.id)
-			);
-		}),
-	);
-	paymentsOthers = computed(() =>
-		this.senders().filter((senderPayment) => {
-			return !(
-				senderPayment.sender.id === this.currentUser?.id ||
-				senderPayment.receivers.some((r) => r.receiver.id === this.currentUser?.id)
-			);
-		}),
-	);
+	// Keep this reactive so paymentsSelf/paymentsOthers update if the user loads after payments.
+	currentUser = signal<User | undefined>(undefined);
+	paymentsSelf = computed(() => {
+		const user = this.currentUser();
+		return this.senders().filter((senderPayment) => {
+			return senderPayment.sender.id === user?.id || senderPayment.receivers.some((r) => r.receiver.id === user?.id);
+		});
+	});
+	paymentsOthers = computed(() => {
+		const user = this.currentUser();
+		return this.senders().filter((senderPayment) => {
+			return !(senderPayment.sender.id === user?.id || senderPayment.receivers.some((r) => r.receiver.id === user?.id));
+		});
+	});
 
 	expandedSelf = signal<Set<string>>(new Set());
 	expandedOthers = signal<Set<string>>(new Set());
 	allExpandedSelf = true;
 	allExpandedOthers = false;
-	currentUser: User;
+
+	private destroy$ = new Subject<void>();
 
 	ngOnInit(): void {
-		this.route?.parent?.parent?.params.subscribe((params) => {
+		this.route?.parent?.parent?.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
 			this.eventId = params['eventId'];
 			this.loadPayments();
 		});
-		this.authService.getCurrentUser().subscribe({
-			next: (user) => {
-				this.currentUser = user;
-			},
-			error: (error: ApiError) => {
-				this.messageService.showError('Something went wrong');
-				this.logService.error('Something went wrong when getting current user on account page: ' + error);
-			},
-		});
+		this.authService
+			.getCurrentUser()
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: (user) => {
+					this.currentUser.set(user);
+					// Payments may have loaded before currentUser resolved; re-seed the
+					// mobile expand set now that paymentsSelf() has the correct user context.
+					if (this.senders().length > 0) {
+						this.expandedSelf.set(new Set(this.paymentsSelf().map((p) => p.sender.id)));
+					}
+				},
+				error: (error: ApiError) => {
+					this.messageService.showError('Something went wrong');
+					this.logService.error('Something went wrong when getting current user on account page: ' + error);
+				},
+			});
+
+		// Re-apply the shared expand state after the mobile/desktop view flips.
+		this.breakpointService
+			.isMobile()
+			.pipe(skip(1), takeUntil(this.destroy$))
+			.subscribe((isMobile) => {
+				if (isMobile) {
+					this.syncMobileFromBooleans();
+				} else {
+					// Defer one tick: the desktop branch's ViewChild resolves after the
+					// `@if` flip completes and Angular re-runs its view queries.
+					setTimeout(() => this.syncDesktopFromBooleans(), 0);
+				}
+			});
+	}
+
+	ngOnDestroy(): void {
+		this.destroy$.next();
+		this.destroy$.complete();
+	}
+
+	private syncMobileFromBooleans(): void {
+		this.expandedSelf.set(this.allExpandedSelf ? new Set(this.paymentsSelf().map((p) => p.sender.id)) : new Set());
+		this.expandedOthers.set(this.allExpandedOthers ? new Set(this.paymentsOthers().map((p) => p.sender.id)) : new Set());
+	}
+
+	private syncDesktopFromBooleans(): void {
+		if (this.paymentsSelfRef && this.paymentsSelf().length > 0) {
+			this.paymentsSelfRef.openExpand(this.allExpandedSelf);
+		}
+		if (this.paymentsOthersRef && this.paymentsOthers().length > 0) {
+			this.paymentsOthersRef.openExpand(this.allExpandedOthers);
+		}
 	}
 
 	private loadPayments() {
 		this.loading.next(true);
-		this.eventService.loadPayments(this.eventId).subscribe({
-			next: (payments) => {
-				// Build unique senders
-				const uniqueSenders: SenderPayments[] = [];
-				payments.forEach((payment) => {
-					if (!uniqueSenders.find((s) => s.sender.id === payment.sender.id)) {
-						uniqueSenders.push({ sender: payment.sender, receivers: [] });
-					}
-				});
+		this.eventService
+			.loadPayments(this.eventId)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: (payments) => {
+					// Build unique senders
+					const uniqueSenders: SenderPayments[] = [];
+					payments.forEach((payment) => {
+						if (!uniqueSenders.find((s) => s.sender.id === payment.sender.id)) {
+							uniqueSenders.push({ sender: payment.sender, receivers: [] });
+						}
+					});
 
-				// Assign receivers to each sender
-				const updatedSenders = uniqueSenders.map((sender) => {
-					const receivers = payments
-						.filter((payment) => payment.sender.id === sender.sender.id)
-						.map((payment) => ({
-							receiver: payment.receiver,
-							amount: payment.amount,
-						}));
-					return { ...sender, receivers };
-				});
+					// Assign receivers to each sender
+					const updatedSenders = uniqueSenders.map((sender) => {
+						const receivers = payments
+							.filter((payment) => payment.sender.id === sender.sender.id)
+							.map((payment) => ({
+								receiver: payment.receiver,
+								amount: payment.amount,
+							}));
+						return { ...sender, receivers };
+					});
 
-				this.senders.set(updatedSenders);
-				this.expandedSelf.set(new Set(this.paymentsSelf().map((p) => p.sender.id)));
-				this.loading.next(false);
-			},
-			error: (err: ApiError) => {
-				this.loading.next(false);
-				this.messageService.showError('Error loading payments');
-				this.logService.error('Something went wrong while loading payments: ' + err?.error?.message);
-			},
-		});
+					this.senders.set(updatedSenders);
+					this.expandedSelf.set(new Set(this.paymentsSelf().map((p) => p.sender.id)));
+					this.loading.next(false);
+				},
+				error: (err: ApiError) => {
+					this.loading.next(false);
+					this.messageService.showError('Error loading payments');
+					this.logService.error('Something went wrong while loading payments: ' + err?.error?.message);
+				},
+			});
 	}
 
 	toggleExpand = (index: number) => {

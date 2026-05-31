@@ -23,7 +23,12 @@
 						"polyfills": ["src/polyfills.ts"],
 						"tsConfig": "tsconfig.app.json",
 						"inlineStyleLanguage": "scss",
-						"assets": ["src/favicon.png", "src/assets", "src/manifest.webmanifest"],
+						"assets": [
+							"src/favicon.png",
+							"src/assets",
+							"src/manifest.webmanifest",
+							{ "glob": "**/*", "input": "public", "output": "/" }
+						],
 						"styles": ["./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css", "src/styles.scss"],
 						"scripts": [],
 						"serviceWorker": "ngsw-config.json"
@@ -71,6 +76,18 @@
 							],
 							"outputHashing": "all"
 						},
+						"mock": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true,
+							"namedChunks": true,
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.mock.ts"
+								}
+							]
+						},
 						"development": {
 							"optimization": false,
 							"extractLicenses": false,
@@ -88,6 +105,9 @@
 						},
 						"development": {
 							"buildTarget": "mikane:build:development"
+						},
+						"mock": {
+							"buildTarget": "mikane:build:mock"
 						}
 					},
 					"defaultConfiguration": "development"

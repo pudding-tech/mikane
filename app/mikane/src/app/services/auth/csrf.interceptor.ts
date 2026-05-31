@@ -1,9 +1,14 @@
 import { HttpEvent, HttpHandlerFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, NEVER, filter, Observable, switchMap, take, throwError } from 'rxjs';
+import { catchError, filter, NEVER, Observable, switchMap, take, throwError, timeout, TimeoutError } from 'rxjs';
 import { MessageService } from '../message/message.service';
 import { AuthService } from './auth.service';
+
+/**
+ * Upper bound for how long we wait for a CSRF token
+ */
+const CSRF_TOKEN_WAIT_MS = 5_000;
 
 export function csrfInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
 	const authService = inject(AuthService);
@@ -14,6 +19,23 @@ export function csrfInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
 		return authService.csrfToken$.pipe(
 			filter((token) => !!token),
 			take(1),
+			timeout(CSRF_TOKEN_WAIT_MS),
+			catchError((error) => {
+				if (error instanceof TimeoutError) {
+					// force re-auth if no token arrives
+					messageService.showError('Could not authenticate, please log in again.');
+					const urlToRestore = router.url;
+					authService.logout().subscribe({
+						next: () => {
+							authService.redirectUrl = urlToRestore;
+						},
+						error: () => undefined,
+					});
+					router.navigate(['/login']);
+					return NEVER;
+				}
+				return throwError(() => error);
+			}),
 			switchMap((token) => {
 				req = req.clone({
 					setHeaders: {
@@ -25,8 +47,12 @@ export function csrfInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
 					catchError((error) => {
 						if (error.status === 403 && error?.error?.code === 'PUD-148') {
 							messageService.showError('CSRF Token invalid, please log in again.');
-							authService.redirectUrl = router.url;
-							authService.logout().subscribe();
+							const urlToRestore = router.url;
+							authService.logout().subscribe({
+								next: () => {
+									authService.redirectUrl = urlToRestore;
+								},
+							});
 							router.navigate(['/login']);
 							return NEVER;
 						}

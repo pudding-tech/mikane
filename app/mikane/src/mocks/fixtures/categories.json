@@ -1,0 +1,782 @@
+[
+	{
+		"id": "e34c02af-179f-4ecf-af89-5aec141a7083",
+		"name": "Cabin",
+		"icon": "hotel",
+		"weighted": true,
+		"created": "2022-08-01T00:23:00.000Z",
+		"numberOfExpenses": 1,
+		"users": [
+			{
+				"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+				"name": "Jordan Vale",
+				"username": "user07",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 9,
+				"guest": false
+			},
+			{
+				"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+				"name": "Gray Bennett",
+				"username": "user05",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 9,
+				"guest": false
+			},
+			{
+				"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+				"name": "Alex Harper",
+				"username": "user01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 9,
+				"guest": false
+			},
+			{
+				"id": "61e4e87a-8038-4591-87c8-a4eed687f37e",
+				"name": "Blake Morgan",
+				"username": "user02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 9,
+				"guest": false
+			},
+			{
+				"id": "dd5d9769-0ec2-4dda-b586-72760648e15f",
+				"name": "Casey Lin",
+				"username": "user03",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 3,
+				"guest": false
+			},
+			{
+				"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+				"name": "Hayden Cole",
+				"username": "user06",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 9,
+				"guest": false
+			},
+			{
+				"id": "e6a1c1ee-e92b-4878-8548-20e36f9c0dec",
+				"name": "Evan Brooks",
+				"username": "user04",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 8,
+				"guest": false
+			},
+			{
+				"id": "6eae2670-b913-4745-9590-093ce439627d",
+				"name": "Dana Wells",
+				"username": "guest01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 8,
+				"guest": true
+			},
+			{
+				"id": "0f70438a-b0d9-43fe-b191-2e7073cb94ed",
+				"name": "Finley Shaw",
+				"username": "guest02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 7,
+				"guest": true
+			}
+		]
+	},
+	{
+		"id": "5e728988-db86-40af-a2bb-4ddd84eb0e1c",
+		"name": "Gas Trysil-Oslo",
+		"icon": "local_gas_station",
+		"weighted": false,
+		"created": "2022-08-01T00:22:00.000Z",
+		"numberOfExpenses": 1,
+		"users": [
+			{
+				"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+				"name": "Jordan Vale",
+				"username": "user07",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+				"name": "Gray Bennett",
+				"username": "user05",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			}
+		]
+	},
+	{
+		"id": "501e4344-9dc1-414c-8838-37e21816a3ed",
+		"name": "Gas Oslo-Trysil",
+		"icon": "local_gas_station",
+		"weighted": false,
+		"created": "2022-08-01T00:21:00.000Z",
+		"numberOfExpenses": 1,
+		"users": [
+			{
+				"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+				"name": "Jordan Vale",
+				"username": "user07",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+				"name": "Gray Bennett",
+				"username": "user05",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "0f70438a-b0d9-43fe-b191-2e7073cb94ed",
+				"name": "Finley Shaw",
+				"username": "guest02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": true
+			}
+		]
+	},
+	{
+		"id": "115f5259-861c-439a-bc88-6171419d73cc",
+		"name": "Disc golf",
+		"icon": "golf_course",
+		"weighted": false,
+		"created": "2022-08-01T00:20:00.000Z",
+		"numberOfExpenses": 1,
+		"users": [
+			{
+				"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+				"name": "Jordan Vale",
+				"username": "user07",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+				"name": "Gray Bennett",
+				"username": "user05",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+				"name": "Alex Harper",
+				"username": "user01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "61e4e87a-8038-4591-87c8-a4eed687f37e",
+				"name": "Blake Morgan",
+				"username": "user02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+				"name": "Hayden Cole",
+				"username": "user06",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "e6a1c1ee-e92b-4878-8548-20e36f9c0dec",
+				"name": "Evan Brooks",
+				"username": "user04",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "6eae2670-b913-4745-9590-093ce439627d",
+				"name": "Dana Wells",
+				"username": "guest01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": true
+			},
+			{
+				"id": "0f70438a-b0d9-43fe-b191-2e7073cb94ed",
+				"name": "Finley Shaw",
+				"username": "guest02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": true
+			}
+		]
+	},
+	{
+		"id": "b52e07d9-898c-462d-85de-caec1cd3d44d",
+		"name": "Paddleboard",
+		"icon": null,
+		"weighted": false,
+		"created": "2022-08-01T00:19:00.000Z",
+		"numberOfExpenses": 1,
+		"users": [
+			{
+				"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+				"name": "Jordan Vale",
+				"username": "user07",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+				"name": "Gray Bennett",
+				"username": "user05",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+				"name": "Hayden Cole",
+				"username": "user06",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "0f70438a-b0d9-43fe-b191-2e7073cb94ed",
+				"name": "Finley Shaw",
+				"username": "guest02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": true
+			}
+		]
+	},
+	{
+		"id": "e4c8fd64-3ea2-4933-93fb-3d20d1f0747e",
+		"name": "Scam lamp (SP)",
+		"icon": null,
+		"weighted": false,
+		"created": "2022-08-01T00:18:00.000Z",
+		"numberOfExpenses": 1,
+		"users": [
+			{
+				"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+				"name": "Jordan Vale",
+				"username": "user07",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			}
+		]
+	},
+	{
+		"id": "e3a4b8de-3c7e-4e2c-bbed-86519caba9ae",
+		"name": "Scam lamp",
+		"icon": null,
+		"weighted": false,
+		"created": "2022-08-01T00:17:00.000Z",
+		"numberOfExpenses": 1,
+		"users": [
+			{
+				"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+				"name": "Jordan Vale",
+				"username": "user07",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+				"name": "Gray Bennett",
+				"username": "user05",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+				"name": "Alex Harper",
+				"username": "user01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "61e4e87a-8038-4591-87c8-a4eed687f37e",
+				"name": "Blake Morgan",
+				"username": "user02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "dd5d9769-0ec2-4dda-b586-72760648e15f",
+				"name": "Casey Lin",
+				"username": "user03",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+				"name": "Hayden Cole",
+				"username": "user06",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "e6a1c1ee-e92b-4878-8548-20e36f9c0dec",
+				"name": "Evan Brooks",
+				"username": "user04",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "6eae2670-b913-4745-9590-093ce439627d",
+				"name": "Dana Wells",
+				"username": "guest01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": true
+			},
+			{
+				"id": "0f70438a-b0d9-43fe-b191-2e7073cb94ed",
+				"name": "Finley Shaw",
+				"username": "guest02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": true
+			}
+		]
+	},
+	{
+		"id": "ab994ad4-7323-4254-83a6-60896ffe44c3",
+		"name": "Gas Other (Alex)",
+		"icon": "local_gas_station",
+		"weighted": true,
+		"created": "2022-08-01T00:16:00.000Z",
+		"numberOfExpenses": 1,
+		"users": [
+			{
+				"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+				"name": "Jordan Vale",
+				"username": "user07",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 8,
+				"guest": false
+			},
+			{
+				"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+				"name": "Gray Bennett",
+				"username": "user05",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 8,
+				"guest": false
+			},
+			{
+				"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+				"name": "Alex Harper",
+				"username": "user01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 8,
+				"guest": false
+			},
+			{
+				"id": "61e4e87a-8038-4591-87c8-a4eed687f37e",
+				"name": "Blake Morgan",
+				"username": "user02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 8,
+				"guest": false
+			},
+			{
+				"id": "dd5d9769-0ec2-4dda-b586-72760648e15f",
+				"name": "Casey Lin",
+				"username": "user03",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 3,
+				"guest": false
+			},
+			{
+				"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+				"name": "Hayden Cole",
+				"username": "user06",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 8,
+				"guest": false
+			},
+			{
+				"id": "e6a1c1ee-e92b-4878-8548-20e36f9c0dec",
+				"name": "Evan Brooks",
+				"username": "user04",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 8,
+				"guest": false
+			},
+			{
+				"id": "6eae2670-b913-4745-9590-093ce439627d",
+				"name": "Dana Wells",
+				"username": "guest01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 8,
+				"guest": true
+			},
+			{
+				"id": "0f70438a-b0d9-43fe-b191-2e7073cb94ed",
+				"name": "Finley Shaw",
+				"username": "guest02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 7,
+				"guest": true
+			}
+		]
+	},
+	{
+		"id": "891c1877-d78c-4527-b446-bd7fa7f3bf0e",
+		"name": "Gas Trysil-Trondheim",
+		"icon": "local_gas_station",
+		"weighted": false,
+		"created": "2022-08-01T00:15:00.000Z",
+		"numberOfExpenses": 1,
+		"users": [
+			{
+				"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+				"name": "Alex Harper",
+				"username": "user01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "61e4e87a-8038-4591-87c8-a4eed687f37e",
+				"name": "Blake Morgan",
+				"username": "user02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "dd5d9769-0ec2-4dda-b586-72760648e15f",
+				"name": "Casey Lin",
+				"username": "user03",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+				"name": "Hayden Cole",
+				"username": "user06",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			}
+		]
+	},
+	{
+		"id": "cfd9c074-09e5-424f-9db2-e7b347e66259",
+		"name": "Hamar",
+		"icon": "directions_car",
+		"weighted": false,
+		"created": "2022-08-01T00:14:00.000Z",
+		"numberOfExpenses": 2,
+		"users": [
+			{
+				"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+				"name": "Alex Harper",
+				"username": "user01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "61e4e87a-8038-4591-87c8-a4eed687f37e",
+				"name": "Blake Morgan",
+				"username": "user02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "dd5d9769-0ec2-4dda-b586-72760648e15f",
+				"name": "Casey Lin",
+				"username": "user03",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			}
+		]
+	},
+	{
+		"id": "8a02beef-6402-4d76-9270-6ab22a28ac12",
+		"name": "Gas Trondheim-Trysil",
+		"icon": "local_gas_station",
+		"weighted": false,
+		"created": "2022-08-01T00:13:00.000Z",
+		"numberOfExpenses": 1,
+		"users": [
+			{
+				"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+				"name": "Alex Harper",
+				"username": "user01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "61e4e87a-8038-4591-87c8-a4eed687f37e",
+				"name": "Blake Morgan",
+				"username": "user02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+				"name": "Hayden Cole",
+				"username": "user06",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			}
+		]
+	},
+	{
+		"id": "da9eb910-43f7-4bce-88bc-da0bf0c13e6e",
+		"name": "Alcohol",
+		"icon": "local_bar",
+		"weighted": false,
+		"created": "2022-08-01T00:12:00.000Z",
+		"numberOfExpenses": 2,
+		"users": [
+			{
+				"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+				"name": "Jordan Vale",
+				"username": "user07",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+				"name": "Gray Bennett",
+				"username": "user05",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+				"name": "Alex Harper",
+				"username": "user01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+				"name": "Hayden Cole",
+				"username": "user06",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "e6a1c1ee-e92b-4878-8548-20e36f9c0dec",
+				"name": "Evan Brooks",
+				"username": "user04",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "6eae2670-b913-4745-9590-093ce439627d",
+				"name": "Dana Wells",
+				"username": "guest01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": true
+			},
+			{
+				"id": "0f70438a-b0d9-43fe-b191-2e7073cb94ed",
+				"name": "Finley Shaw",
+				"username": "guest02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": true
+			}
+		]
+	},
+	{
+		"id": "76aa5522-e7f4-4120-96fb-507becd0e7e4",
+		"name": "Other",
+		"icon": null,
+		"weighted": false,
+		"created": "2022-08-01T00:11:00.000Z",
+		"numberOfExpenses": 2,
+		"users": [
+			{
+				"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+				"name": "Jordan Vale",
+				"username": "user07",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+				"name": "Gray Bennett",
+				"username": "user05",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+				"name": "Alex Harper",
+				"username": "user01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "61e4e87a-8038-4591-87c8-a4eed687f37e",
+				"name": "Blake Morgan",
+				"username": "user02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "dd5d9769-0ec2-4dda-b586-72760648e15f",
+				"name": "Casey Lin",
+				"username": "user03",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+				"name": "Hayden Cole",
+				"username": "user06",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "e6a1c1ee-e92b-4878-8548-20e36f9c0dec",
+				"name": "Evan Brooks",
+				"username": "user04",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": false
+			},
+			{
+				"id": "6eae2670-b913-4745-9590-093ce439627d",
+				"name": "Dana Wells",
+				"username": "guest01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": true
+			},
+			{
+				"id": "0f70438a-b0d9-43fe-b191-2e7073cb94ed",
+				"name": "Finley Shaw",
+				"username": "guest02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 1,
+				"guest": true
+			}
+		]
+	},
+	{
+		"id": "f0eb0421-05e1-4681-92e2-9a1be5e5669c",
+		"name": "Food",
+		"icon": "restaurant",
+		"weighted": true,
+		"created": "2022-08-01T00:10:00.000Z",
+		"numberOfExpenses": 19,
+		"users": [
+			{
+				"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
+				"name": "Jordan Vale",
+				"username": "user07",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 9,
+				"guest": false
+			},
+			{
+				"id": "d3e936aa-416f-4737-8a1e-e12e45afc0e0",
+				"name": "Gray Bennett",
+				"username": "user05",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 9,
+				"guest": false
+			},
+			{
+				"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
+				"name": "Alex Harper",
+				"username": "user01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 9,
+				"guest": false
+			},
+			{
+				"id": "61e4e87a-8038-4591-87c8-a4eed687f37e",
+				"name": "Blake Morgan",
+				"username": "user02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 9,
+				"guest": false
+			},
+			{
+				"id": "dd5d9769-0ec2-4dda-b586-72760648e15f",
+				"name": "Casey Lin",
+				"username": "user03",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 3,
+				"guest": false
+			},
+			{
+				"id": "bae214f7-bdc4-49b9-bbdc-e071ba5c892a",
+				"name": "Hayden Cole",
+				"username": "user06",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 9,
+				"guest": false
+			},
+			{
+				"id": "e6a1c1ee-e92b-4878-8548-20e36f9c0dec",
+				"name": "Evan Brooks",
+				"username": "user04",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 9,
+				"guest": false
+			},
+			{
+				"id": "6eae2670-b913-4745-9590-093ce439627d",
+				"name": "Dana Wells",
+				"username": "guest01",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 9,
+				"guest": true
+			},
+			{
+				"id": "0f70438a-b0d9-43fe-b191-2e7073cb94ed",
+				"name": "Finley Shaw",
+				"username": "guest02",
+				"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
+				"weight": 8,
+				"guest": true
+			}
+		]
+	}
+]

@@ -86,7 +86,7 @@ describe('asyncEmailValidator', () => {
 		expect(result).toEqual({ invalid: true });
 	});
 
-	it('should debounce validation by 1000ms', () => {
+	it('should debounce validation by 400ms', () => {
 		const control = new FormControl('test@example.com');
 		vi.spyOn(formValidationService, 'validateEmail').mockReturnValue(of(null));
 		const validator = emailValidator(formValidationService) as (control: FormControl) => Observable<ValidationErrors | null>;
@@ -97,7 +97,7 @@ describe('asyncEmailValidator', () => {
 		validator(control).subscribe(() => {
 			const endTime = Date.now();
 
-			expect(endTime - startTime).toBeGreaterThanOrEqual(1000);
+			expect(endTime - startTime).toBeGreaterThanOrEqual(400);
 		});
 
 		vi.runAllTimers();

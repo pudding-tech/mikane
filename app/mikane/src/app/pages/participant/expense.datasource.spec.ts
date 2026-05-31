@@ -1,4 +1,4 @@
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Expense } from 'src/app/services/expense/expense.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
@@ -114,6 +114,22 @@ describe('ExpenseDataSource', () => {
 		dataSource.removeExpense('expenseId');
 		dataSource.connect().subscribe(() => {
 			expect(dataSource.notEmpty.value).toBeFalsy();
+		});
+	});
+
+	it('should emit on error$ when loadUserExpenses fails, and fall back to an empty list', () => {
+		const error = new Error('network down');
+		(userServiceSpy.loadUserExpenses as Mock).mockReturnValue(throwError(() => error));
+
+		const errorSpy = vi.fn();
+		dataSource.error$.subscribe(errorSpy);
+
+		dataSource.loadExpenses('userId', 'eventId');
+
+		expect(errorSpy).toHaveBeenCalledWith(error);
+		expect(dataSource.notEmpty.value).toBeFalsy();
+		dataSource.connect().subscribe((expenses) => {
+			expect(expenses).toEqual([]);
 		});
 	});
 

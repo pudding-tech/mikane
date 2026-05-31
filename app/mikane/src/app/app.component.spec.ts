@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { MatIconRegistry } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { SwUpdate } from '@angular/service-worker';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -29,6 +30,10 @@ describe('AppComponent', () => {
 					useValue: {
 						version: '1.0.0',
 					} as Environment,
+				},
+				{
+					provide: SwUpdate,
+					useValue: { isEnabled: false },
 				},
 			],
 			imports: [RouterModule, FooterComponent, AppComponent],

@@ -13,7 +13,7 @@
 				<mat-card-content class="card-content">
 					<div class="header">Active Events</div>
 					@if (pagedEventsActive().length > 0) {
-						@for (event of pagedEventsActive(); track event) {
+						@for (event of pagedEventsActive(); track event.id) {
 							<mat-card
 								class="event-item"
 								[ngClass]="{ 'ready-to-settle': event.status.id === EventStatusType.READY_TO_SETTLE }"
@@ -76,7 +76,7 @@
 					}
 					<div class="header settled-events">Settled events</div>
 					@if (pagedEventsSettled().length > 0) {
-						@for (event of pagedEventsSettled(); track event) {
+						@for (event of pagedEventsSettled(); track event.id) {
 							<mat-card class="event-item">
 								<mat-card-header class="event-header clickable" (click)="clickEvent(event)">
 									<mat-card-title class="event-title">
@@ -140,7 +140,7 @@
 		<div class="title-mobile">Active events</div>
 		@if (pagedEventsActive().length > 0) {
 			<mat-nav-list class="events-list-mobile">
-				@for (event of eventsActive(); track event) {
+				@for (event of eventsActive(); track event.id) {
 					<app-event-item [event]="event" (click)="clickEvent(event)" />
 				}
 			</mat-nav-list>
@@ -150,7 +150,7 @@
 		<div class="title-mobile">Settled events</div>
 		@if (pagedEventsSettled().length > 0) {
 			<mat-nav-list class="events-list-mobile">
-				@for (event of eventsSettled(); track event) {
+				@for (event of eventsSettled(); track event.id) {
 					<app-event-item [event]="event" (click)="clickEvent(event)" />
 				}
 			</mat-nav-list>
