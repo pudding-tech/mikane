@@ -50,6 +50,7 @@ describe('PaymentStructureComponent', () => {
 					provide: EventService,
 					useValue: {
 						loadPayments: vi.fn().mockReturnValue(of([])),
+						getEvent: vi.fn().mockReturnValue(of({ currency: 'NOK' })),
 					},
 				},
 				{
@@ -509,7 +510,7 @@ describe('PaymentStructureComponent', () => {
 					},
 					{
 						provide: EventService,
-						useValue: { loadPayments: vi.fn().mockReturnValue(of(payments)) },
+						useValue: { loadPayments: vi.fn().mockReturnValue(of(payments)), getEvent: vi.fn().mockReturnValue(of({ currency: 'NOK' })) },
 					},
 					{ provide: MessageService, useValue: { showError: vi.fn() } },
 					{ provide: LogService, useValue: { error: vi.fn() } },

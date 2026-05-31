@@ -72,11 +72,9 @@
 										<div class="count" [ngClass]="{ 'no-expenses': userWithBalance.expensesCount === 0 }">
 											{{ userWithBalance.expensesCount }}
 										</div>
-										<div>{{ userWithBalance.spending | currency: "" : "" : "1.2-2" : "no" }} kr</div>
-										<div>{{ userWithBalance.expenses | currency: "" : "" : "1.2-2" : "no" }} kr</div>
-										<div class="amount-color">
-											{{ userWithBalance.balance | currency: "" : "" : "1.2-2" : "no" }} kr
-										</div>
+										<div>{{ userWithBalance.spending | appCurrency: event.currency }}</div>
+										<div>{{ userWithBalance.expenses | appCurrency: event.currency }}</div>
+										<div class="amount-color">{{ userWithBalance.balance | appCurrency: event.currency }}</div>
 									</mat-panel-title>
 								</mat-expansion-panel-header>
 								<ng-template matExpansionPanelContent>
@@ -102,7 +100,7 @@
 											<ng-container matColumnDef="amount">
 												<th mat-header-cell *matHeaderCellDef>Amount</th>
 												<td mat-cell class="amount-color" *matCellDef="let expense">
-													{{ expense.amount | currency: "" : "" : "1.2-2" : "no" }} kr
+													{{ expense.amount | appCurrency: event.currency }}
 												</td></ng-container
 											>
 											<!-- Category Column -->

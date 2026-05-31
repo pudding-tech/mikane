@@ -52,8 +52,7 @@
 					<ng-container matColumnDef="amount">
 						<th mat-header-cell *matHeaderCellDef>Amount</th>
 						<td mat-cell *matCellDef="let receiver" class="amount-cell amount-color">
-							{{ receiver.amount | currency: "" : "" : "1.2-2" : "no" }}
-							kr
+							{{ receiver.amount | appCurrency: currency }}
 						</td>
 					</ng-container>
 					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

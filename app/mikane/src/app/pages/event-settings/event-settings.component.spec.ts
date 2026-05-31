@@ -5,7 +5,6 @@ import { BehaviorSubject, of, throwError } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { CurrencyService } from 'src/app/services/currency/currency.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
 import { LogService } from 'src/app/services/log/log.service';
@@ -77,7 +76,6 @@ describe('EventSettingsComponent', () => {
 				{ provide: EventService, useValue: eventServiceSpy },
 				{ provide: UserService, useValue: userServiceSpy },
 				{ provide: AuthService, useValue: authServiceSpy },
-				{ provide: CurrencyService, useValue: { loadCurrencies: vi.fn().mockReturnValue(of([{ code: 'NOK', name: 'Norwegian Krone' }])) } },
 				{ provide: ContextService, useValue: contextServiceSpy },
 				{ provide: MessageService, useValue: messageServiceSpy },
 				{ provide: MatDialog, useValue: dialogSpy },
@@ -103,12 +101,13 @@ describe('EventSettingsComponent', () => {
 	});
 
 	it('should set event data', () => {
-		const { component } = createComponent();
+		const { component } = createComponent({ currency: 'NOK' });
 		component.ngOnInit();
 
 		expect(component.eventData.id).toEqual('1');
 		expect(component.eventData.name).toEqual('test');
 		expect(component.eventData.description).toEqual('test');
+		expect(component.eventData.currency).toEqual('NOK');
 	});
 
 	it('should set event admins and other users', () => {

@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe, NgOptimizedImage } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +8,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { User } from 'src/app/services/user/user.service';
+import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
+import { CurrencyCode } from 'src/app/types/constants';
 
 @Component({
 	selector: 'app-payment-expansion-panel-item',
@@ -21,7 +23,7 @@ import { User } from 'src/app/services/user/user.service';
 		MatTableModule,
 		MatCardModule,
 		MatListModule,
-		CurrencyPipe,
+		AppCurrencyPipe,
 		NgOptimizedImage,
 	],
 })
@@ -38,6 +40,7 @@ export class PaymentExpansionPanelItemComponent {
 	}[];
 	@Input() self: boolean;
 	@Input() currentUser: User;
+	@Input() currency?: CurrencyCode;
 	@Output() allPanelsExpanded = new EventEmitter();
 
 	displayedColumns: string[] = ['name', 'amount'];

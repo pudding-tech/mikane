@@ -1,20 +1,9 @@
-import { registerLocaleData } from '@angular/common';
-import localeNo from '@angular/common/locales/no';
-import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Expense } from 'src/app/services/expense/expense.service';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExpenseItemComponent } from './expense-item.component';
-
-// Simple mock pipe for CurrencyPipe
-@Pipe({ name: 'currency' })
-class MockCurrencyPipe implements PipeTransform {
-	transform(...args: unknown[]) {
-		return JSON.stringify(args);
-	}
-}
 
 describe('ExpenseItemComponent', () => {
 	let component: ExpenseItemComponent;
@@ -23,16 +12,12 @@ describe('ExpenseItemComponent', () => {
 	let routerSpy: { navigate: ReturnType<typeof vi.fn> };
 	let routeSpy: { snapshot: ActivatedRouteSnapshot };
 
-	beforeAll(() => {
-		registerLocaleData(localeNo);
-	});
-
 	beforeEach(() => {
 		routerSpy = { navigate: vi.fn() };
 		routeSpy = { snapshot: new ActivatedRouteSnapshot() };
 
 		TestBed.configureTestingModule({
-			imports: [ExpenseItemComponent, MockCurrencyPipe],
+			imports: [ExpenseItemComponent],
 			providers: [
 				{ provide: Router, useValue: routerSpy },
 				{ provide: ActivatedRoute, useValue: routeSpy },

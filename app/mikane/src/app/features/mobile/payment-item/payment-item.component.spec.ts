@@ -52,6 +52,7 @@ describe('PaymentItemComponent', () => {
 		});
 		fixture.componentRef.setInput('self', false);
 		fixture.componentRef.setInput('currentUser', { id: '1', name: 'Sender' } as User);
+		fixture.componentRef.setInput('currency', 'NOK');
 		fixture.detectChanges();
 	});
 

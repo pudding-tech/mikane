@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe, NgOptimizedImage } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, effect, ElementRef, inject, input, output, signal, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,6 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { Router } from '@angular/router';
 import { User } from 'src/app/services/user/user.service';
+import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
+import { CurrencyCode } from 'src/app/types/constants';
 
 @Component({
 	selector: 'app-payment-item',
@@ -16,7 +18,7 @@ import { User } from 'src/app/services/user/user.service';
 	imports: [
 		CommonModule,
 		MatIconModule,
-		CurrencyPipe,
+		AppCurrencyPipe,
 		MatListModule,
 		MatButtonModule,
 		MatFormFieldModule,
@@ -39,6 +41,7 @@ export class PaymentItemComponent {
 	}>();
 	self = input.required<boolean>();
 	currentUser = input.required<User>();
+	currency = input<CurrencyCode>();
 	expanded = input<boolean>(false);
 	dropdownToggled = output<{ senderId: string; expanded: boolean; self: boolean }>();
 

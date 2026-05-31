@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { CurrencyCode } from 'src/app/types/constants';
 
-const LOCALE_BY_CURRENCY: Record<string, string> = {
+const LOCALE_BY_CURRENCY: Record<CurrencyCode, string> = {
 	USD: 'en-US',
 	EUR: 'en-GB',
 	GBP: 'en-GB',
@@ -22,7 +23,7 @@ const LOCALE_BY_CURRENCY: Record<string, string> = {
 export class AppCurrencyPipe implements PipeTransform {
 	transform(
 		amount: number | string | null | undefined,
-		currencyCode: string | null | undefined,
+		currencyCode: CurrencyCode | null | undefined,
 		locale?: string,
 		display: 'narrowSymbol' | 'symbol' | 'code' | 'name' = 'narrowSymbol',
 	): string {
@@ -35,7 +36,7 @@ export class AppCurrencyPipe implements PipeTransform {
 			return '';
 		}
 
-		const normalizedCode = (currencyCode || 'EUR').toUpperCase();
+		const normalizedCode = (currencyCode || 'EUR').toUpperCase() as CurrencyCode;
 		const resolvedLocale = locale || LOCALE_BY_CURRENCY[normalizedCode] || 'en-GB';
 
 		try {
@@ -44,8 +45,7 @@ export class AppCurrencyPipe implements PipeTransform {
 				currency: normalizedCode,
 				currencyDisplay: display,
 			}).format(parsedAmount);
-		}
-		catch {
+		} catch {
 			const fallbackNumber = new Intl.NumberFormat(resolvedLocale, {
 				minimumFractionDigits: 2,
 				maximumFractionDigits: 2,

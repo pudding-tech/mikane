@@ -1,3 +1,4 @@
+import { CurrencyCode } from 'src/app/types/constants';
 import { describe, expect, it } from 'vitest';
 import { AppCurrencyPipe } from './app-currency.pipe';
 
@@ -31,5 +32,24 @@ describe('AppCurrencyPipe', () => {
 	it('should return empty string for invalid amounts', () => {
 		expect(pipe.transform(null, 'NOK')).toBe('');
 		expect(pipe.transform('invalid', 'NOK')).toBe('');
+	});
+
+	it('should parse numeric string amounts', () => {
+		const result = pipe.transform('1234.56', 'USD');
+
+		expect(result).toContain('$');
+		expect(result).toContain('.56');
+	});
+
+	it('should honour the display option', () => {
+		expect(pipe.transform(1234.56, 'USD', undefined, 'code')).toContain('USD');
+		expect(pipe.transform(1234.56, 'USD', undefined, 'name')).toContain('dollar');
+	});
+
+	it('should fall back to a plain number and code for a malformed currency code', () => {
+		const result = pipe.transform(1234.56, 'XX' as CurrencyCode);
+
+		expect(result).toContain('XX');
+		expect(result).toMatch(/1.?234/);
 	});
 });

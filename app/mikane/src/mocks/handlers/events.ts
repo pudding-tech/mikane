@@ -35,11 +35,16 @@ export const eventHandlers = [
 	http.put('/api/events/:eventId', async ({ params, request }) => {
 		const body = (await request.json()) as PuddingEvent;
 		const idx = db.events.findIndex((e) => e.id === params['eventId']);
-
+		const rawStatus = body.status as PuddingEvent['status'] | number;
+		const statusId = typeof rawStatus === 'number' ? rawStatus : (rawStatus?.id ?? 1);
+		const status = {
+			id: statusId,
+			name: statusId === 1 ? 'Active' : statusId === 2 ? 'Ready to Settle' : statusId === 3 ? 'Settled' : 'Unknown',
+		};
 		if (idx < 0) {
 			return new HttpResponse(null, { status: 404 });
 		}
-		db.events[idx] = { ...db.events[idx], ...body, created: new Date(body.created).toISOString() };
+		db.events[idx] = { ...db.events[idx], ...body, status: status, created: db.events[idx].created };
 		return HttpResponse.json(db.events[idx]);
 	}),
 	http.delete('/api/events/:eventId', ({ params }) => {
@@ -64,6 +69,7 @@ export const eventHandlers = [
 						id: event.id,
 						isAdmin: false,
 						joinedTime: new Date().toISOString(),
+						currency: event.currency,
 					},
 				},
 				expensesCount: 0,

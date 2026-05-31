@@ -33,6 +33,8 @@ Common commands (run from the matching directory):
 
 Backend integration tests need the test DB up (`npm run db`). Don't mock the DB to avoid that — use the real one.
 
+**Branches:** `develop` is the main development branch — base feature branches off it and open PRs against it. `main` only gets updated when a release is built, so don't target it for day-to-day work.
+
 ## 1. Think Before Coding
 
 **Don't assume. Don't hide confusion. Surface tradeoffs.**

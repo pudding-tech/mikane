@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { CurrencyCode } from 'src/app/types/constants';
 import { Phonenumber } from 'src/app/types/phonenumber.type';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
@@ -26,6 +27,7 @@ export interface User {
 		id: string;
 		isAdmin: boolean;
 		joinedTime: Date;
+		currency: CurrencyCode;
 	};
 	authenticated: boolean;
 	csrfToken: string;

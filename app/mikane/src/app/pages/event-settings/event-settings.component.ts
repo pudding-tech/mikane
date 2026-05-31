@@ -18,13 +18,13 @@ import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { ContextService } from 'src/app/services/context/context.service';
-import { Currency, CurrencyService } from 'src/app/services/currency/currency.service';
 import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
 import { ApiError } from 'src/app/types/apiError.type';
+import { CURRENCIES, CurrencyCode } from 'src/app/types/constants';
 import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 
@@ -53,11 +53,11 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 	],
 })
 export class EventSettingsComponent implements OnInit, OnDestroy {
+	protected readonly currencies = CURRENCIES;
 	private router = inject(Router);
 	private eventService = inject(EventService);
 	private userService = inject(UserService);
 	private authService = inject(AuthService);
-	private currencyService = inject(CurrencyService);
 	breakpointService = inject(BreakpointService);
 	contextService = inject(ContextService);
 	private messageService = inject(MessageService);
@@ -67,7 +67,12 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
 	loading = new BehaviorSubject<boolean>(false);
-	eventData: { id?: string; name: string; description: string; private: boolean; currency: string } = { name: '', description: '', private: false, currency: 'EUR' };
+	eventData: { id?: string; name: string; description: string; private: boolean; currency: CurrencyCode } = {
+		name: '',
+		description: '',
+		private: false,
+		currency: CurrencyCode['EUR'],
+	};
 	adminsInEvent = signal<User[]>([]);
 	otherUsersInEvent = signal<User[]>([]);
 	currentUser = signal<User>(undefined);
@@ -76,8 +81,6 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	notificationsMinDate = new Date();
 	emailReadyToSettleSentLoading = new BehaviorSubject<boolean>(false);
 	emailReminderSentLoading = new BehaviorSubject<boolean>(false);
-
-	currencies: Currency[] = [];
 
 	addAdminForm = new FormGroup({
 		userId: new FormControl('', [Validators.required]),
@@ -99,20 +102,15 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 					this.eventData.name = event.name;
 					this.eventData.description = event.description;
 					this.eventData.private = event.private;
-					this.eventData.currency = event.currency;
-					return combineLatest([
-						this.userService.loadUsersByEvent(event.id, true),
-						this.authService.getCurrentUser(),
-						this.currencyService.loadCurrencies(),
-					]);
+					this.eventData.currency = event.currency as CurrencyCode;
+					return combineLatest([this.userService.loadUsersByEvent(event.id, true), this.authService.getCurrentUser()]);
 				}),
 			)
 			.subscribe({
-				next: ([users, currentUser, currencies]) => {
+				next: ([users, currentUser]) => {
 					this.adminsInEvent.set(users.filter((user) => user.eventInfo?.isAdmin));
 					this.otherUsersInEvent.set(users.filter((user) => !user.eventInfo?.isAdmin));
 					this.currentUser.set(currentUser);
-					this.currencies = currencies;
 					this.loading.next(false);
 				},
 				error: (err: ApiError) => {

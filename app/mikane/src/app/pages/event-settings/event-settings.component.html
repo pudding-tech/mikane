@@ -138,9 +138,14 @@
 					This sets the event currency for payments and settlement, but you can still override it per expense.
 				</div>
 			</div>
-			<mat-form-field	appearance="fill"	subscriptSizing="dynamic">
+			<mat-form-field appearance="fill" subscriptSizing="dynamic">
 				<mat-label>Currency</mat-label>
-				<mat-select name="currency" [(ngModel)]="eventData.currency" required [disabled]="event.status.id !== EventStatusType.ACTIVE">
+				<mat-select
+					name="currency"
+					[(ngModel)]="eventData.currency"
+					required
+					[disabled]="event.status.id !== EventStatusType.ACTIVE"
+				>
 					@for (currency of currencies; track currency.code) {
 						<mat-option [value]="currency.code">{{ currency.name }} ({{ currency.code }})</mat-option>
 					}

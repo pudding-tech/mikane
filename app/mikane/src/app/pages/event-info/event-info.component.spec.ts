@@ -2,7 +2,6 @@ import { AsyncPipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { CurrencyService } from 'src/app/services/currency/currency.service';
 import { PuddingEvent } from 'src/app/services/event/event.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
@@ -15,7 +14,6 @@ describe('EventInfoComponent', () => {
 	let fixture: ComponentFixture<EventInfoComponent>;
 	let loadUsersByEventSpy: ReturnType<typeof vi.fn>;
 	let getCurrentUserSpy: ReturnType<typeof vi.fn>;
-	let loadCurrenciesSpy: ReturnType<typeof vi.fn>;
 	let showErrorSpy: ReturnType<typeof vi.fn>;
 
 	function createComponent(
@@ -42,7 +40,6 @@ describe('EventInfoComponent', () => {
 				] as User[]),
 			);
 			getCurrentUserSpy = vi.fn().mockReturnValue(of({ id: 'test' } as User));
-			loadCurrenciesSpy = vi.fn().mockReturnValue(of([{ code: 'NOK', name: 'Norwegian Krone' }]));
 			showErrorSpy = vi.fn();
 
 			TestBed.configureTestingModule({
@@ -50,7 +47,6 @@ describe('EventInfoComponent', () => {
 				providers: [
 					{ provide: UserService, useValue: { loadUsersByEvent: loadUsersByEventSpy } },
 					{ provide: AuthService, useValue: { getCurrentUser: getCurrentUserSpy } },
-					{ provide: CurrencyService, useValue: { loadCurrencies: loadCurrenciesSpy } },
 					{ provide: MessageService, useValue: { showError: showErrorSpy } },
 					{ provide: LogService, useValue: { error: vi.fn() } },
 				],
@@ -82,13 +78,30 @@ describe('EventInfoComponent', () => {
 				{ id: 'test', name: 'test', eventInfo: { isAdmin: true }, avatarURL: 'test-avatar.png' },
 			] as User[]);
 		});
+
+		it('should display the full name and code for a known currency', () => {
+			createComponent(of({ id: 'test', currency: 'NOK', status: { id: 1, name: 'Active' } } as PuddingEvent));
+
+			expect(component.eventCurrencyDisplay).toEqual('Norwegian Krone (NOK)');
+		});
+
+		it('should fall back to the raw code for an unknown currency', () => {
+			createComponent(of({ id: 'test', currency: 'XYZ', status: { id: 1, name: 'Active' } } as unknown as PuddingEvent));
+
+			expect(component.eventCurrencyDisplay).toEqual('XYZ');
+		});
+
+		it('should display "Unknown" when the event has no currency', () => {
+			createComponent(of({ id: 'test', status: { id: 1, name: 'Active' } } as PuddingEvent));
+
+			expect(component.eventCurrencyDisplay).toEqual('Unknown');
+		});
 	});
 
 	describe('from user service', () => {
 		beforeEach(() => {
 			loadUsersByEventSpy = vi.fn().mockReturnValue(throwError(() => 'test error'));
 			getCurrentUserSpy = vi.fn().mockReturnValue(of({ id: 'test' } as User));
-			loadCurrenciesSpy = vi.fn().mockReturnValue(of([{ code: 'NOK', name: 'Norwegian Krone' }]));
 			showErrorSpy = vi.fn();
 
 			TestBed.configureTestingModule({
@@ -96,7 +109,6 @@ describe('EventInfoComponent', () => {
 				providers: [
 					{ provide: UserService, useValue: { loadUsersByEvent: loadUsersByEventSpy } },
 					{ provide: AuthService, useValue: { getCurrentUser: getCurrentUserSpy } },
-					{ provide: CurrencyService, useValue: { loadCurrencies: loadCurrenciesSpy } },
 					{ provide: MessageService, useValue: { showError: showErrorSpy } },
 					{ provide: LogService, useValue: { error: vi.fn() } },
 				],
@@ -119,7 +131,6 @@ describe('EventInfoComponent', () => {
 				] as User[]),
 			);
 			getCurrentUserSpy = vi.fn().mockReturnValue(throwError(() => 'test error'));
-			loadCurrenciesSpy = vi.fn().mockReturnValue(of([{ code: 'NOK', name: 'Norwegian Krone' }]));
 			showErrorSpy = vi.fn();
 
 			TestBed.configureTestingModule({
@@ -127,7 +138,6 @@ describe('EventInfoComponent', () => {
 				providers: [
 					{ provide: UserService, useValue: { loadUsersByEvent: loadUsersByEventSpy } },
 					{ provide: AuthService, useValue: { getCurrentUser: getCurrentUserSpy } },
-					{ provide: CurrencyService, useValue: { loadCurrencies: loadCurrenciesSpy } },
 					{ provide: MessageService, useValue: { showError: showErrorSpy } },
 					{ provide: LogService, useValue: { error: vi.fn() } },
 				],

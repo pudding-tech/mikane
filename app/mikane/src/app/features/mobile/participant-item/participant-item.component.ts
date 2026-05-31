@@ -1,15 +1,16 @@
-import { CurrencyPipe, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { User, UserBalance } from 'src/app/services/user/user.service';
+import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
 
 @Component({
 	selector: 'app-participant-item',
 	templateUrl: 'participant-item.component.html',
 	styleUrls: ['./participant-item.component.scss'],
-	imports: [MatButtonModule, MatIconModule, CurrencyPipe, MatListModule, NgOptimizedImage],
+	imports: [MatButtonModule, MatIconModule, AppCurrencyPipe, MatListModule, NgOptimizedImage],
 })
 export class ParticipantItemComponent {
 	userBalance = input.required<UserBalance>();

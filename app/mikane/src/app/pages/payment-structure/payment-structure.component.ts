@@ -17,6 +17,7 @@ import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
+import { CurrencyCode } from 'src/app/types/constants';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 
 interface SenderPayments {
@@ -58,6 +59,7 @@ export class PaymentStructureComponent implements OnInit, OnDestroy {
 
 	loading = new BehaviorSubject<boolean>(false);
 
+	eventCurrency = signal<CurrencyCode | undefined>(undefined);
 	senders = signal<SenderPayments[]>([]);
 	// Keep this reactive so paymentsSelf/paymentsOthers update if the user loads after payments.
 	currentUser = signal<User | undefined>(undefined);
@@ -85,6 +87,7 @@ export class PaymentStructureComponent implements OnInit, OnDestroy {
 		this.route?.parent?.parent?.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
 			this.eventId = params['eventId'];
 			this.loadPayments();
+			this.loadEventCurrency();
 		});
 		this.authService
 			.getCurrentUser()
@@ -136,6 +139,18 @@ export class PaymentStructureComponent implements OnInit, OnDestroy {
 		if (this.paymentsOthersRef && this.paymentsOthers().length > 0) {
 			this.paymentsOthersRef.openExpand(this.allExpandedOthers);
 		}
+	}
+
+	private loadEventCurrency() {
+		this.eventService
+			.getEvent(this.eventId)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: (event) => this.eventCurrency.set(event.currency),
+				error: (err: ApiError) => {
+					this.logService.error('Something went wrong while loading event currency: ' + err?.error?.message);
+				},
+			});
 	}
 
 	private loadPayments() {
