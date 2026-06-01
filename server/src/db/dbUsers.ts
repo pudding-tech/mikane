@@ -3,7 +3,7 @@ import { parseEvents } from "../parsers/parseEvents.ts";
 import { parseExpenses } from "../parsers/parseExpenses.ts";
 import { parseUser, parseUsers } from "../parsers/parseUsers.ts";
 import { Event, Expense, User } from "../types/types.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import * as ec from "../types/errorCodes.ts";
 
 /**
@@ -26,7 +26,7 @@ export const getUser = async (userId: string | null, avatarSize?: number, userna
       return parseUser(data.rows[0], avatarSize);
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD034, err);
+      throw new PudError(ec.PUD034, err);
     });
 
   return user;
@@ -47,7 +47,7 @@ export const getUserID = async (email: string) => {
       return data.rows[0]?.id || null;
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD071, err);
+      throw new PudError(ec.PUD071, err);
     });
 
   return userId;
@@ -71,9 +71,9 @@ export const getUsers = async (activeUserId: string, filter?: { eventId?: string
     })
     .catch(err => {
       if (err.code === "P0006")
-        throw new ErrorExt(ec.PUD006);
+        throw new PudError(ec.PUD006);
       else
-        throw new ErrorExt(ec.PUD035, err);
+        throw new PudError(ec.PUD035, err);
     });
 
   return users;
@@ -97,9 +97,9 @@ export const getUserEvents = async (userId: string, activeUserId: string, filter
     })
     .catch(err => {
       if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else
-        throw new ErrorExt(ec.PUD139, err);
+        throw new PudError(ec.PUD139, err);
     });
 
   return events;
@@ -123,13 +123,13 @@ export const getUserExpenses = async (userId: string, activeUserId: string, filt
     })
     .catch(err => {
       if (err.code === "P0006")
-        throw new ErrorExt(ec.PUD006, err);
+        throw new PudError(ec.PUD006, err);
       else if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD032, err);
+        throw new PudError(ec.PUD032, err);
     });
 
   return expenses;
@@ -156,13 +156,13 @@ export const createUser = async (username: string, firstName: string, lastName: 
     })
     .catch(err => {
       if (err.code === "P0017")
-        throw new ErrorExt(ec.PUD017, err);
+        throw new PudError(ec.PUD017, err);
       else if (err.code === "P0018")
-        throw new ErrorExt(ec.PUD018, err);
+        throw new PudError(ec.PUD018, err);
       else if (err.code === "P0019")
-        throw new ErrorExt(ec.PUD019, err);
+        throw new PudError(ec.PUD019, err);
       else
-        throw new ErrorExt(ec.PUD038, err);
+        throw new PudError(ec.PUD038, err);
     });
 
   return user;
@@ -189,15 +189,15 @@ export const convertGuestToUser = async (fromGuestId: string, username: string, 
     })
     .catch(err => {
       if (err.code === "P0017")
-        throw new ErrorExt(ec.PUD017, err);
+        throw new PudError(ec.PUD017, err);
       else if (err.code === "P0018")
-        throw new ErrorExt(ec.PUD018, err);
+        throw new PudError(ec.PUD018, err);
       else if (err.code === "P0019")
-        throw new ErrorExt(ec.PUD019, err);
+        throw new PudError(ec.PUD019, err);
       else if (err.code === "P0122")
-        throw new ErrorExt(ec.PUD122, err);
+        throw new PudError(ec.PUD122, err);
       else
-        throw new ErrorExt(ec.PUD127, err);
+        throw new PudError(ec.PUD127, err);
     });
 
   return user;
@@ -220,15 +220,15 @@ export const editUser = async (userId: string, data: { username?: string, firstN
     })
     .catch(err => {
       if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else if (err.code === "P0017")
-        throw new ErrorExt(ec.PUD017, err);
+        throw new PudError(ec.PUD017, err);
       else if (err.code === "P0018")
-        throw new ErrorExt(ec.PUD018, err);
+        throw new PudError(ec.PUD018, err);
       else if (err.code === "P0019")
-        throw new ErrorExt(ec.PUD019, err);
+        throw new PudError(ec.PUD019, err);
       else
-        throw new ErrorExt(ec.PUD028, err);
+        throw new PudError(ec.PUD028, err);
     });
 
   return user;
@@ -251,11 +251,11 @@ export const editUserPreferences = async (userId: string, data: { publicEmail?: 
     })
     .catch(err => {
       if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else if (err.code === "P0134")
-        throw new ErrorExt(ec.PUD134, err);
+        throw new PudError(ec.PUD134, err);
       else
-        throw new ErrorExt(ec.PUD135, err);
+        throw new PudError(ec.PUD135, err);
     });
 
   return user;
@@ -278,13 +278,13 @@ export const deleteUser = async (userId: string, key: string) => {
     })
     .catch(err => {
       if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else if (err.code === "P0108")
-        throw new ErrorExt(ec.PUD108, err);
+        throw new PudError(ec.PUD108, err);
       else if (err.code === "P0120")
-        throw new ErrorExt(ec.PUD120, err);
+        throw new PudError(ec.PUD120, err);
       else
-        throw new ErrorExt(ec.PUD025, err);
+        throw new PudError(ec.PUD025, err);
     });
 
   return success;
@@ -306,7 +306,7 @@ export const changePassword = async (userId: string, hash: string) => {
       return true;
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD082, err);
+      throw new PudError(ec.PUD082, err);
     });
 
   return success;
@@ -326,11 +326,11 @@ export const newRegisterAccountKey = async (email: string, key: string, guestId?
   await pool.query(query)
     .catch(err => {
       if (err.code === "P0103")
-        throw new ErrorExt(ec.PUD103, err);
+        throw new PudError(ec.PUD103, err);
       if (err.code === "P0122")
-        throw new ErrorExt(ec.PUD122, err);
+        throw new PudError(ec.PUD122, err);
       else
-        throw new ErrorExt(ec.PUD099, err);
+        throw new PudError(ec.PUD099, err);
     });
 };
 
@@ -355,7 +355,7 @@ export const verifyRegisterAccountKey = async (key: string) => {
       };
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD100, err);
+      throw new PudError(ec.PUD100, err);
     });
 
   return keyInfo;
@@ -372,7 +372,7 @@ export const invalidateRegisterAccountKey = async (key: string) => {
   };
   await pool.query(query)
     .catch(err => {
-      throw new ErrorExt(ec.PUD102, err);
+      throw new PudError(ec.PUD102, err);
     });
 };
 
@@ -388,7 +388,7 @@ export const newDeleteAccountKey = async (userId: string, key: string) => {
   };
   await pool.query(query)
     .catch(err => {
-      throw new ErrorExt(ec.PUD104, err);
+      throw new PudError(ec.PUD104, err);
     });
 };
 
@@ -406,7 +406,7 @@ export const verifyDeleteAccountKey = async (key: string) => {
       return data.rows[0] ? true : false;
     })
     .catch(err => {
-      throw new ErrorExt(ec.PUD105, err);
+      throw new PudError(ec.PUD105, err);
     });
 
   return keyExists;

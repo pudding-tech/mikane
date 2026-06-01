@@ -3928,6 +3928,10 @@
                     "type": "string",
                     "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                   },
+                  "currency": {
+                    "type": "string",
+                    "example": "EUR"
+                  },
                   "expenseDate": {
                     "type": "date",
                     "example": "2023-01-20"
@@ -4138,6 +4142,10 @@
                     "type": "string",
                     "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
                   },
+                  "currency": {
+                    "type": "string",
+                    "example": "EUR"
+                  },
                   "expenseDate": {
                     "type": "date",
                     "example": "2023-01-20"
@@ -4215,7 +4223,7 @@
           "Expenses"
         ],
         "summary": "Edit (patch) expense",
-        "description": "Edit any property of an expense (does not support unsetting properties)",
+        "description": "Edit any property of an expense. Nullable fields (description, currency, expenseDate) can be explicitly unset by sending null.",
         "operationId": "patchExpense",
         "security": [
           { "cookieAuth": [] },
@@ -4244,9 +4252,32 @@
                     "type": "string",
                     "example": "New expense name"
                   },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "Updated description"
+                  },
                   "amount": {
                     "type": "number",
                     "example": 120
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  },
+                  "payerId": {
+                    "type": "string",
+                    "example": "24b96dad-e95a-4794-9dea-25fd2bbd21a1"
+                  },
+                  "currency": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "EUR"
+                  },
+                  "expenseDate": {
+                    "type": "date",
+                    "nullable": true,
+                    "example": "2023-01-20"
                   }
                 }
               }
@@ -5595,6 +5626,7 @@
           },
           "description": {
             "type": "string",
+            "nullable": true,
             "example": "Example description"
           },
           "created": {
@@ -5629,7 +5661,16 @@
               }
             }
           }
-        }
+        },
+        "required": [
+          "id",
+          "name",
+          "created",
+          "adminIds",
+          "private",
+          "currency",
+          "status"
+        ]
       },
       "EventWithUser": {
         "type": "object",
@@ -5644,6 +5685,7 @@
           },
           "description": {
             "type": "string",
+            "nullable": true,
             "example": "Example description"
           },
           "created": {
@@ -5699,11 +5741,11 @@
         "required": [
           "id",
           "name",
-          "description",
           "created",
           "adminIds",
           "private",
-          "active"
+          "currency",
+          "status"
         ]
       },
       "Expense": {
@@ -5719,14 +5761,21 @@
           },
           "description": {
             "type": "string",
+            "nullable": true,
             "example": "Example description"
           },
           "amount": {
             "type": "number",
             "example": 100
           },
+          "currency": {
+            "type": "string",
+            "nullable": true,
+            "example": "EUR"
+          },
           "expenseDate": {
             "type": "date",
+            "nullable": true,
             "example": "2023-01-20"
           },
           "created": {

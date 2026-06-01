@@ -1,6 +1,6 @@
 import { pool } from "../db.ts";
 import { PUD033, PUD063, PUD064, PUD070, PUD075, PUD076, PUD077 } from "../types/errorCodes.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import { parseApiKeys } from "../parsers/parseKeys.ts";
 import { randomUUID } from "crypto";
 
@@ -26,7 +26,7 @@ export const getUserHash = async (usernameEmail?: string, userId?: string) => {
       };
     })
     .catch(err => {
-      throw new ErrorExt(PUD033, err);
+      throw new PudError(PUD033, err);
     });
 
   return userHash;
@@ -57,7 +57,7 @@ export const getApiKeys = async (type: "normal" | "master" | "all") => {
       return parseApiKeys(data.rows);
     })
     .catch(err => {
-      throw new ErrorExt(PUD063, err);
+      throw new PudError(PUD063, err);
     });
 
   return keys;
@@ -82,9 +82,9 @@ export const newApiKey = async (name: string, hash: string, validFrom?: Date, va
     })
     .catch(err => {
       if (err.code === "P0070")
-        throw new ErrorExt(PUD070, err);
+        throw new PudError(PUD070, err);
       else
-        throw new ErrorExt(PUD064, err);
+        throw new PudError(PUD064, err);
     });
 
   return key[0];
@@ -102,7 +102,7 @@ export const newPasswordResetKey = async (userId: string, key: string) => {
   };
   await pool.query(query)
     .catch(err => {
-      throw new ErrorExt(PUD075, err);
+      throw new PudError(PUD075, err);
     });
 };
 
@@ -120,7 +120,7 @@ export const verifyPasswordResetKey = async (key: string) => {
       return data.rows[0] ? true : false;
     })
     .catch(err => {
-      throw new ErrorExt(PUD076, err);
+      throw new PudError(PUD076, err);
     });
 
   return keyExists;
@@ -138,6 +138,6 @@ export const resetPassword = async (key: string, hash: string) => {
   };
   await pool.query(query)
     .catch(err => {
-      throw new ErrorExt(PUD077, err);
+      throw new PudError(PUD077, err);
     });
 };

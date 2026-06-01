@@ -18,7 +18,7 @@ import { removeUserInfo } from "../parsers/parseUserInfo.ts";
 import { sendRegisterAccountEmail } from "../email-services/registerAccount.ts";
 import { sendDeleteAccountEmail } from "../email-services/deleteAccount.ts";
 import { Event, Expense, User } from "../types/types.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 const router = express.Router();
 
 /* --- */
@@ -35,7 +35,7 @@ router.get("/users", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   };
 
   if (filter.eventId !== undefined && !isUUID(filter.eventId)) {
-    throw new ErrorExt(ec.PUD013);
+    throw new PudError(ec.PUD013);
   }
 
   const excludeSelf = req.query.excludeSelf === "true";
@@ -45,7 +45,7 @@ router.get("/users", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const users: User[] = await db.getUsers(activeUserId, filter);
@@ -63,15 +63,15 @@ router.get("/users/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) 
   const userId = req.params.id;
   const activeUserId = req.session.userId;
   if (!isUUID(userId)) {
-    throw new ErrorExt(ec.PUD016);
+    throw new PudError(ec.PUD016);
   }
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD054);
+    throw new PudError(ec.PUD054);
   }
 
   const user = await db.getUser(userId);
   if (!user) {
-    throw new ErrorExt(ec.PUD008);
+    throw new PudError(ec.PUD008);
   }
 
   // Remove sensitive information if user is not signed in user
@@ -87,7 +87,7 @@ router.get("/users/username/:usernameOrUserId", useRateLimit(), authCheck, csrfC
   const usernameOrUserId = req.params.usernameOrUserId;
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD054);
+    throw new PudError(ec.PUD054);
   }
 
   let user: User | null;
@@ -99,7 +99,7 @@ router.get("/users/username/:usernameOrUserId", useRateLimit(), authCheck, csrfC
   }
 
   if (!user) {
-    throw new ErrorExt(ec.PUD008);
+    throw new PudError(ec.PUD008);
   }
 
   // Remove sensitive information if user is not signed in user
@@ -114,12 +114,12 @@ router.get("/users/username/:usernameOrUserId", useRateLimit(), authCheck, csrfC
 router.get("/users/:id/events", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const userId = req.params.id;
   if (!isUUID(userId)) {
-    throw new ErrorExt(ec.PUD016);
+    throw new PudError(ec.PUD016);
   }
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const filter: { limit?: number, offset?: number } = {
@@ -137,12 +137,12 @@ router.get("/users/:id/events", useRateLimit(), authCheck, csrfCheck, async (req
 router.get("/users/:id/expenses", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const userId = req.params.id;
   if (!isUUID(userId)) {
-    throw new ErrorExt(ec.PUD016);
+    throw new PudError(ec.PUD016);
   }
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const filter: { eventId?: string, limit?: number, offset?: number } = {
@@ -152,7 +152,7 @@ router.get("/users/:id/expenses", useRateLimit(), authCheck, csrfCheck, async (r
   };
 
   if (filter.eventId !== undefined && !isUUID(filter.eventId)) {
-    throw new ErrorExt(ec.PUD013);
+    throw new PudError(ec.PUD013);
   }
 
   const expenses: Expense[] = await db.getUserExpenses(userId, activeUserId, filter);
@@ -166,7 +166,7 @@ router.get("/verifykey/register/:key", useRateLimit("strict"), async (req, res) 
   const key = req.params.key;
   const { email, guestUser, firstName, lastName } = await db.verifyRegisterAccountKey(key);
   if (!email) {
-    throw new ErrorExt(ec.PUD101);
+    throw new PudError(ec.PUD101);
   }
   res.status(200).json({ email, guestUser, firstName, lastName });
 });
@@ -178,7 +178,7 @@ router.get("/verifykey/deleteaccount/:key", useRateLimit("strict"), authCheck, c
   const key = req.params.key;
   const valid = await db.verifyDeleteAccountKey(key);
   if (!valid) {
-    throw new ErrorExt(ec.PUD106);
+    throw new PudError(ec.PUD106);
   }
   res.status(200).json();
 });
@@ -196,7 +196,7 @@ router.post("/users", useRateLimit("strict"), async (req, res) => {
 
   if (env.IN_PROD) {
     if (!keyInfo.email) {
-      throw new ErrorExt(ec.PUD101);
+      throw new PudError(ec.PUD101);
     }
   }
 
@@ -210,24 +210,24 @@ router.post("/users", useRateLimit("strict"), async (req, res) => {
   const password: string = req.body.password;
 
   if (!username || !firstName || !email || !phoneNumber || !password) {
-    throw new ErrorExt(ec.PUD052);
+    throw new PudError(ec.PUD052);
   }
   if (username.trim() === "" || firstName.trim() === "" || email.trim() === "" || phoneNumber.trim() === "" || password.trim() === "") {
-    throw new ErrorExt(ec.PUD059);
+    throw new PudError(ec.PUD059);
   }
 
   // Validate username, password, email, and phone number
   if (!isValidUsername(username)) {
-    throw new ErrorExt(ec.PUD132);
+    throw new PudError(ec.PUD132);
   }
   if (!isValidPassword(password)) {
-    throw new ErrorExt(ec.PUD079);
+    throw new PudError(ec.PUD079);
   }
   if (!isEmail(email)) {
-    throw new ErrorExt(ec.PUD004);
+    throw new PudError(ec.PUD004);
   }
   if (!isPhoneNumber(phoneNumber)) {
-    throw new ErrorExt(ec.PUD113);
+    throw new PudError(ec.PUD113);
   }
 
   const hash = createHash(password);
@@ -252,19 +252,19 @@ router.post("/users/changepassword", useRateLimit("strict"), authCheck, csrfChec
   const userId = req.session.userId;
   const userPW = await dbAuth.getUserHash(undefined, userId);
   if (!userPW || !userPW.hash || !userId) {
-    throw new ErrorExt(ec.PUD080);
+    throw new PudError(ec.PUD080);
   }
 
   // Validate current password
   const isAuthenticated = authenticate(req.body.currentPassword ?? "", userPW.hash);
   if (!isAuthenticated) {
-    throw new ErrorExt(ec.PUD081);
+    throw new PudError(ec.PUD081);
   }
 
   // Validate new password
   const newPassword: string = req.body.newPassword;
   if (!isValidPassword(newPassword)) {
-    throw new ErrorExt(ec.PUD079);
+    throw new PudError(ec.PUD079);
   }
 
   // Change password
@@ -274,7 +274,7 @@ router.post("/users/changepassword", useRateLimit("strict"), authCheck, csrfChec
   // Destroy all sessions for this user
   req.sessionStore.destroyAll(userId, err => {
     if (err) {
-      throw new ErrorExt(ec.PUD083);
+      throw new PudError(ec.PUD083);
     }
   });
 
@@ -286,28 +286,28 @@ router.post("/users/changepassword", useRateLimit("strict"), authCheck, csrfChec
 */
 router.post("/users/invite", useRateLimit("strict"), authCheck, csrfCheck, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
-    throw new ErrorExt(ec.PUD073);
+    throw new PudError(ec.PUD073);
   }
 
   const email = req.body.email as string;
   if (!email) {
-    throw new ErrorExt(ec.PUD072);
+    throw new PudError(ec.PUD072);
   }
 
   // Validate email
   if (!isEmail(email)) {
-    throw new ErrorExt(ec.PUD004);
+    throw new PudError(ec.PUD004);
   }
 
   // Optionally link invite to guest user
   const guestId = req.body.guestId as string | undefined;
   if (guestId && !isUUID(guestId)) {
-    throw new ErrorExt(ec.PUD016);
+    throw new PudError(ec.PUD016);
   }
 
   const user: User | null = await db.getUser(req.session.userId ?? "");
   if (!user) {
-    throw new ErrorExt(ec.PUD054);
+    throw new PudError(ec.PUD054);
   }
 
   const key = generateKey();
@@ -321,12 +321,12 @@ router.post("/users/invite", useRateLimit("strict"), authCheck, csrfCheck, async
 */
 router.post("/users/requestdeleteaccount", singleRequestLimiter, authCheck, csrfCheck, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
-    throw new ErrorExt(ec.PUD073);
+    throw new PudError(ec.PUD073);
   }
 
   const user: User | null = await db.getUser(req.session.userId ?? "");
   if (!user || !user.email) {
-    throw new ErrorExt(ec.PUD054);
+    throw new PudError(ec.PUD054);
   }
 
   const key = generateKey();
@@ -345,12 +345,12 @@ router.post("/users/requestdeleteaccount", singleRequestLimiter, authCheck, csrf
 router.put("/users/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const userId = req.params.id;
   if (!isUUID(userId)) {
-    throw new ErrorExt(ec.PUD016);
+    throw new PudError(ec.PUD016);
   }
 
   // Users can only edit their own data
   if (req.session.userId !== userId) {
-    throw new ErrorExt(ec.PUD136);
+    throw new PudError(ec.PUD136);
   }
 
   const username: string | undefined = req.body.username;
@@ -360,21 +360,21 @@ router.put("/users/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) 
   const phoneNumber: string | undefined = req.body.phone;
 
   if (!username && !firstName && !lastName && !email && !phoneNumber) {
-    throw new ErrorExt(ec.PUD058);
+    throw new PudError(ec.PUD058);
   }
   if (username?.trim() === "" || firstName?.trim() === "" || email?.trim() === "" || phoneNumber?.trim() === "") {
-    throw new ErrorExt(ec.PUD059);
+    throw new PudError(ec.PUD059);
   }
 
   // Validate username, email and phone number
   if (username && !isValidUsername(username)) {
-    throw new ErrorExt(ec.PUD132);
+    throw new PudError(ec.PUD132);
   }
   if (email && !isEmail(email)) {
-    throw new ErrorExt(ec.PUD004);
+    throw new PudError(ec.PUD004);
   }
   if (phoneNumber && !isPhoneNumber(phoneNumber)) {
-    throw new ErrorExt(ec.PUD113);
+    throw new PudError(ec.PUD113);
   }
 
   const data = {
@@ -387,7 +387,7 @@ router.put("/users/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) 
 
   const user = await db.editUser(userId, data);
   if (!user) {
-    throw new ErrorExt(ec.PUD008);
+    throw new PudError(ec.PUD008);
   }
   res.status(200).send(user);
 });
@@ -398,12 +398,12 @@ router.put("/users/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) 
 router.put("/users/:id/preferences", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const userId = req.params.id;
   if (!isUUID(userId)) {
-    throw new ErrorExt(ec.PUD016);
+    throw new PudError(ec.PUD016);
   }
 
   // Users can only edit their own preferences
   if (req.session.userId !== userId) {
-    throw new ErrorExt(ec.PUD136);
+    throw new PudError(ec.PUD136);
   }
 
   const publicEmail: boolean | undefined = req.body.publicEmail !== undefined
@@ -414,7 +414,7 @@ router.put("/users/:id/preferences", useRateLimit(), authCheck, csrfCheck, async
     : undefined;
 
   if (publicEmail === undefined && publicPhone === undefined) {
-    throw new ErrorExt(ec.PUD133);
+    throw new PudError(ec.PUD133);
   }
 
   const data = {
@@ -424,7 +424,7 @@ router.put("/users/:id/preferences", useRateLimit(), authCheck, csrfCheck, async
 
   const user = await db.editUserPreferences(userId, data);
   if (!user) {
-    throw new ErrorExt(ec.PUD008);
+    throw new PudError(ec.PUD008);
   }
   res.status(200).send(user);
 });
@@ -440,16 +440,16 @@ router.delete("/users/:id", useRateLimit("strict"), authCheck, csrfCheck, async 
   const key: string = req.body.key;
   const userId = req.params.id;
   if (!isUUID(userId)) {
-    throw new ErrorExt(ec.PUD016);
+    throw new PudError(ec.PUD016);
   }
 
   const valid = await db.verifyDeleteAccountKey(key);
   if (!valid) {
-    throw new ErrorExt(ec.PUD106);
+    throw new PudError(ec.PUD106);
   }
   // Users can only delete their own account
   if (req.session.userId !== userId) {
-    throw new ErrorExt(ec.PUD137);
+    throw new PudError(ec.PUD137);
   }
 
   const success = await db.deleteUser(userId, key);
@@ -457,7 +457,7 @@ router.delete("/users/:id", useRateLimit("strict"), authCheck, csrfCheck, async 
   // Destroy all sessions for this user
   req.sessionStore.destroyAll(userId, err => {
     if (err) {
-      throw new ErrorExt(ec.PUD083);
+      throw new PudError(ec.PUD083);
     }
   });
 

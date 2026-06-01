@@ -1,9 +1,9 @@
 import { ErrorCode } from "./errorCodes.ts";
 
 /**
- * Custom Error class
+ * Error class for PUD error codes
  */
-export class ErrorExt extends Error {
+export class PudError extends Error {
   /**
    * @param errorCode ErrorCode object
    * @param error Original error
@@ -21,4 +21,18 @@ export class ErrorExt extends Error {
   log?: boolean;
   error?: Error;
   status: number;
+}
+
+/**
+ * Error class for currency exchange provider errors
+ */
+export class CurrencyExchangeServiceError extends Error {
+  /**
+   * @param message The error message
+   * @param status The HTTP status code associated with the error, if applicable
+   */
+  constructor(message: string, readonly status?: number) {
+    super(message);
+    this.name = "CurrencyExchangeServiceError";
+  }
 }

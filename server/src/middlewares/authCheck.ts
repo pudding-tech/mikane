@@ -3,7 +3,7 @@ import { ErrorCode, PUD001, PUD065, PUD066, PUD067, PUD069 } from "../types/erro
 import { getApiKeys } from "../db/dbAuthentication.ts";
 import { authenticate } from "../utils/auth.ts";
 import { APIKey } from "../types/types.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 
 type KeyOutput = { valid: true } | { valid: false, reason: ErrorCode };
 
@@ -15,7 +15,7 @@ type KeyOutput = { valid: true } | { valid: false, reason: ErrorCode };
  */
 export const authCheck = (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.authenticated) {
-    throw new ErrorExt(PUD001);
+    throw new PudError(PUD001);
   }
   next();
 };
@@ -33,14 +33,14 @@ export const authKeyCheck = async (req: Request, res: Response, next: NextFuncti
 
   const authKey = req.get("X-Api-Key") || req.get("Api-Key");
   if (!authKey) {
-    throw new ErrorExt(PUD065);
+    throw new PudError(PUD065);
   }
 
   const keys = await getApiKeys("all");
   const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
 
   if (!isAuthenticated.valid) {
-    throw new ErrorExt(isAuthenticated.reason);
+    throw new PudError(isAuthenticated.reason);
   }
 
   req.authIsApiKey = true;
@@ -56,14 +56,14 @@ export const authKeyCheck = async (req: Request, res: Response, next: NextFuncti
 export const masterKeyCheck = async (req: Request, res: Response, next: NextFunction) => {
   const authKey = req.get("X-Api-Key") || req.get("Api-Key");
   if (!authKey) {
-    throw new ErrorExt(PUD069);
+    throw new PudError(PUD069);
   }
 
   const keys = await getApiKeys("master");
   const isAuthenticated: KeyOutput = checkKeys(authKey, keys);
 
   if (!isAuthenticated.valid) {
-    throw new ErrorExt(isAuthenticated.reason);
+    throw new PudError(isAuthenticated.reason);
   }
 
   req.authIsApiKey = true;

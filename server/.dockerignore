@@ -6,3 +6,7 @@ dist
 
 Dockerfile
 .dockerignore
+
+# SQL procedures/functions combined into one file for deployment
+all_procs.sql
+all_files.sql

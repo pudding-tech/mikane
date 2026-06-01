@@ -1,6 +1,6 @@
 import { ServerClient } from "postmark";
 import env from "../env.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import { PUD073, PUD074 } from "../types/errorCodes.ts";
 
 const email = env.MIKANE_EMAIL;
@@ -15,7 +15,7 @@ const token = env.MIKANE_EMAIL_API_TOKEN;
 export const sendEmail = async (recipient: string, subject: string, html: string) => {
 
   if (!email || !token) {
-    throw new ErrorExt(PUD073);
+    throw new PudError(PUD073);
   }
 
   const client = new ServerClient(token);
@@ -34,6 +34,6 @@ export const sendEmail = async (recipient: string, subject: string, html: string
     return res;
   })
   .catch(err => {
-    throw new ErrorExt(PUD074, err);
+    throw new PudError(PUD074, err);
   });
 };

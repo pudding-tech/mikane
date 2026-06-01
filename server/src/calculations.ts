@@ -1,5 +1,5 @@
+import { BalanceCalculationResult, Category, Expense, Payment, Record, User } from "./types/types.ts";
 import logger from "./utils/logger.ts";
-import { User, Category, Expense, Payment, Record, BalanceCalculationResult } from "./types/types.ts";
 
 /**
  * Calculate an event's balance
@@ -110,7 +110,8 @@ export const calculatePayments = (
   balanceResults.balance.forEach((record: Record) => {
     if (record.amount > 0) {
       lenders.push(record);
-    } else if (record.amount < 0) {
+    }
+    else if (record.amount < 0) {
       debtors.push({
         user: record.user,
         amount: Math.abs(record.amount),
@@ -128,20 +129,22 @@ export const calculatePayments = (
       break;
     }
 
-    let paymentAmount = 0;
+    let paymentAmount: number;
     if (largestLender.amount > largestDebtor.amount) {
       paymentAmount = largestDebtor.amount;
       lenders.push({
         user: largestLender.user,
         amount: largestLender.amount - largestDebtor.amount,
       });
-    } else if (largestLender.amount < largestDebtor.amount) {
+    }
+    else if (largestLender.amount < largestDebtor.amount) {
       paymentAmount = largestLender.amount;
       debtors.push({
         user: largestDebtor.user,
         amount: largestDebtor.amount - largestLender.amount,
       });
-    } else {
+    }
+    else {
       paymentAmount = largestDebtor.amount;
     }
 

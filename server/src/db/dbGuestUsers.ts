@@ -1,7 +1,7 @@
 import { pool } from "../db.ts";
 import { parseGuestUser, parseGuestUsers } from "../parsers/parseUsers.ts";
 import { Guest } from "../types/types.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import * as ec from "../types/errorCodes.ts";
 
 /**
@@ -18,9 +18,9 @@ export const getGuestUsers = async () => {
     })
     .catch(err => {
       if (err.code === "P0006")
-        throw new ErrorExt(ec.PUD006);
+        throw new PudError(ec.PUD006);
       else
-        throw new ErrorExt(ec.PUD035, err);
+        throw new PudError(ec.PUD035, err);
     });
 
   return users;
@@ -45,9 +45,9 @@ export const createGuestUser = async (id: string, firstName: string, lastName: s
     })
     .catch(err => {
       if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else
-        throw new ErrorExt(ec.PUD123, err);
+        throw new PudError(ec.PUD123, err);
     });
 
   return guestUser;
@@ -71,11 +71,11 @@ export const editGuestUser = async (guestId: string, data: { firstName?: string,
     })
     .catch(err => {
       if (err.code === "P0130")
-        throw new ErrorExt(ec.PUD130, err);
+        throw new PudError(ec.PUD130, err);
       else if (err.code === "P0122")
-        throw new ErrorExt(ec.PUD122, err);
+        throw new PudError(ec.PUD122, err);
       else
-        throw new ErrorExt(ec.PUD124, err);
+        throw new PudError(ec.PUD124, err);
     });
 
   return guestUser;
@@ -98,13 +98,13 @@ export const deleteGuestUser = async (guestId: string, activeUserId: string) => 
     })
     .catch(err => {
       if (err.code === "P0129")
-        throw new ErrorExt(ec.PUD129, err);
+        throw new PudError(ec.PUD129, err);
       else if (err.code === "P0122")
-        throw new ErrorExt(ec.PUD122, err);
+        throw new PudError(ec.PUD122, err);
       else if (err.code === "P0120")
-        throw new ErrorExt(ec.PUD120, err);
+        throw new PudError(ec.PUD120, err);
       else
-        throw new ErrorExt(ec.PUD125, err);
+        throw new PudError(ec.PUD125, err);
     });
 
   return success;

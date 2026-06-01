@@ -6,7 +6,7 @@ import { useRateLimit } from "../middlewares/rateLimiter.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
 import { Category } from "../types/types.ts";
 import { CategoryIcon } from "../types/enums.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import * as ec from "../types/errorCodes.ts";
 const router = express.Router();
 
@@ -22,10 +22,10 @@ router.get("/categories", useRateLimit(), authCheck, csrfCheck, async (req, res)
   const activeUserId = req.session.userId;
 
   if (!isUUID(eventId)) {
-    throw new ErrorExt(ec.PUD013);
+    throw new PudError(ec.PUD013);
   }
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const categories: Category[] = await db.getCategories(eventId, activeUserId);
@@ -40,15 +40,15 @@ router.get("/categories/:id", useRateLimit(), authCheck, csrfCheck, async (req, 
   const activeUserId = req.session.userId;
 
   if (!isUUID(id)) {
-    throw new ErrorExt(ec.PUD045);
+    throw new PudError(ec.PUD045);
   }
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const category = await db.getCategory(id, activeUserId);
   if (!category) {
-    throw new ErrorExt(ec.PUD007);
+    throw new PudError(ec.PUD007);
   }
   res.status(200).json(category);
 });
@@ -63,23 +63,23 @@ router.get("/categories/:id", useRateLimit(), authCheck, csrfCheck, async (req, 
 router.post("/categories", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const name: string = req.body.name;
   if (!name || !req.body.eventId || req.body.weighted === undefined) {
-    throw new ErrorExt(ec.PUD046);
+    throw new PudError(ec.PUD046);
   }
   if (name.trim() === "") {
-    throw new ErrorExt(ec.PUD059);
+    throw new PudError(ec.PUD059);
   }
   const eventId = req.body.eventId as string;
   if (!isUUID(eventId)) {
-    throw new ErrorExt(ec.PUD013);
+    throw new PudError(ec.PUD013);
   }
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const icon: CategoryIcon = req.body.icon;
   if (icon && !Object.values(CategoryIcon).includes(icon)) {
-    throw new ErrorExt(ec.PUD096);
+    throw new PudError(ec.PUD096);
   }
   
   const category: Category = await db.createCategory(name.trim(), eventId, Boolean(req.body.weighted), activeUserId, icon);
@@ -95,18 +95,18 @@ router.post("/categories/:id/user/:userId", useRateLimit(), authCheck, csrfCheck
   const weight = req.body.weight ? Number(req.body.weight) : undefined;
 
   if (!isUUID(catId) || !isUUID(userId)) {
-    throw new ErrorExt(ec.PUD047);
+    throw new PudError(ec.PUD047);
   }
   if (weight && isNaN(weight)) {
-    throw new ErrorExt(ec.PUD048);
+    throw new PudError(ec.PUD048);
   }
   if (weight && weight < 1) {
-    throw new ErrorExt(ec.PUD049);
+    throw new PudError(ec.PUD049);
   }
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const category: Category = await db.addUserToCategory(catId, userId, activeUserId, weight);
@@ -123,24 +123,24 @@ router.post("/categories/:id/user/:userId", useRateLimit(), authCheck, csrfCheck
 router.put("/categories/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const catId = req.params.id;
   if (!isUUID(catId)) {
-    throw new ErrorExt(ec.PUD045);
+    throw new PudError(ec.PUD045);
   }
 
   const name: string | undefined = req.body.name;
   const icon: CategoryIcon | undefined = req.body.icon;
   if (!name && !icon) {
-    throw new ErrorExt(ec.PUD115);
+    throw new PudError(ec.PUD115);
   }
   if (name && name.trim() === "") {
-    throw new ErrorExt(ec.PUD059);
+    throw new PudError(ec.PUD059);
   }
   if (icon && !Object.values(CategoryIcon).includes(icon)) {
-    throw new ErrorExt(ec.PUD096);
+    throw new PudError(ec.PUD096);
   }
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const data = {
@@ -150,7 +150,7 @@ router.put("/categories/:id", useRateLimit(), authCheck, csrfCheck, async (req, 
 
   const category = await db.editCategory(catId, activeUserId, data);
   if (!category) {
-    throw new ErrorExt(ec.PUD007);
+    throw new PudError(ec.PUD007);
   }
   res.status(200).send(category);
 });
@@ -161,15 +161,15 @@ router.put("/categories/:id", useRateLimit(), authCheck, csrfCheck, async (req, 
 router.put("/categories/:id/weighted", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const catId = req.params.id;
   if (!isUUID(catId)) {
-    throw new ErrorExt(ec.PUD045);
+    throw new PudError(ec.PUD045);
   }
   if (typeof(req.body.weighted) !== "boolean") {
-    throw new ErrorExt(ec.PUD051);
+    throw new PudError(ec.PUD051);
   }
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const category: Category = await db.editWeightStatus(catId, Boolean(req.body.weighted), activeUserId);
@@ -185,18 +185,18 @@ router.put("/categories/:id/user/:userId", useRateLimit(), authCheck, csrfCheck,
   const weight = req.body.weight ? Number(req.body.weight) : undefined;
 
   if (!isUUID(catId) || !isUUID(userId)) {
-    throw new ErrorExt(ec.PUD047);
+    throw new PudError(ec.PUD047);
   }
   if (!weight || isNaN(weight)) {
-    throw new ErrorExt(ec.PUD048);
+    throw new PudError(ec.PUD048);
   }
   if (weight < 1) {
-    throw new ErrorExt(ec.PUD049);
+    throw new PudError(ec.PUD049);
   }
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const category: Category = await db.editUserWeight(catId, userId, weight, activeUserId);
@@ -213,12 +213,12 @@ router.put("/categories/:id/user/:userId", useRateLimit(), authCheck, csrfCheck,
 router.delete("/categories/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const catId = req.params.id;
   if (!isUUID(catId)) {
-    throw new ErrorExt(ec.PUD045);
+    throw new PudError(ec.PUD045);
   }
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const success = await db.deleteCategory(catId, activeUserId);
@@ -232,12 +232,12 @@ router.delete("/categories/:id/user/:userId", useRateLimit(), authCheck, csrfChe
   const catId = req.params.id;
   const userId = req.params.userId;
   if (!isUUID(catId) || !isUUID(userId)) {
-    throw new ErrorExt(ec.PUD047);
+    throw new PudError(ec.PUD047);
   }
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const category: Category = await db.removeUserFromCategory(catId, userId, activeUserId);

@@ -13,7 +13,7 @@ import { User } from "../types/types.ts";
 import { masterKeyCheck } from "../middlewares/authCheck.ts";
 import { isValidPassword } from "../utils/validators/passwordValidator.ts";
 import { sendPasswordResetEmail } from "../email-services/passwordReset.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 const router = express.Router();
 
 /* --- */
@@ -25,7 +25,7 @@ const router = express.Router();
 */
 router.get("/login", useRateLimit("strict"), (req, res) => {
   if (!req.session.authenticated) {
-    throw new ErrorExt(ec.PUD000);
+    throw new PudError(ec.PUD000);
   }
   res.status(200).json({
     authenticated: req.session.authenticated,
@@ -44,7 +44,7 @@ router.get("/verifykey/passwordreset/:key", useRateLimit("strict"), async (req, 
   const key = req.params.key;
   const valid = await dbAuth.verifyPasswordResetKey(key);
   if (!valid) {
-    throw new ErrorExt(ec.PUD078);
+    throw new PudError(ec.PUD078);
   }
   res.status(200).json();
 });
@@ -59,14 +59,14 @@ router.get("/verifykey/passwordreset/:key", useRateLimit("strict"), async (req, 
 router.post("/login", useRateLimit("strict"), async (req, res) => {
   const { usernameEmail, password } = req.body;
   if (!usernameEmail || !password) {
-    throw new ErrorExt(ec.PUD002);
+    throw new PudError(ec.PUD002);
   }
 
   if (req.session.authenticated && req.session.userId) {
     logger.info(`User ${req.session.username} tried signing in, but is already authenticated`);
     const user: User | null = await dbUsers.getUser(req.session.userId);
     if (!user) {
-      throw new ErrorExt(ec.PUD054);
+      throw new PudError(ec.PUD054);
     }
     res.status(200).json({
       authenticated: req.session.authenticated,
@@ -78,17 +78,17 @@ router.post("/login", useRateLimit("strict"), async (req, res) => {
 
   const userPW = await dbAuth.getUserHash(usernameEmail);
   if (!userPW || !userPW.hash) {
-    throw new ErrorExt(ec.PUD003);
+    throw new PudError(ec.PUD003);
   }
 
   const isAuthenticated = authenticate(password, userPW.hash);
   if (!isAuthenticated) {
-    throw new ErrorExt(ec.PUD003);
+    throw new PudError(ec.PUD003);
   }
 
   const user: User | null = await dbUsers.getUser(userPW.id);
   if (!user) {
-    throw new ErrorExt(ec.PUD054);
+    throw new PudError(ec.PUD054);
   }
 
   const csrfToken = generateCsrfToken(req, true);
@@ -111,13 +111,13 @@ router.post("/login", useRateLimit("strict"), async (req, res) => {
 */
 router.post("/logout", useRateLimit("strict"), (req, res) => {
   if (!req.session.authenticated) {
-    throw new ErrorExt(ec.PUD001);
+    throw new PudError(ec.PUD001);
   }
 
   const username = req.session.username;
   req.session.destroy(err => {
     if (err) {
-      throw new ErrorExt(ec.PUD060);
+      throw new PudError(ec.PUD060);
     }
     logger.info(`User ${username} successfully signed out`);
     res.status(200).json({ msg: "Signed out successfully" });
@@ -130,7 +130,7 @@ router.post("/logout", useRateLimit("strict"), (req, res) => {
 router.post("/generatekey", useRateLimit("strict"), masterKeyCheck, async (req, res) => {
   const name = req.body.name as string;
   if (!name) {
-    throw new ErrorExt(ec.PUD068);
+    throw new PudError(ec.PUD068);
   }
 
   const key = generateApiKey();
@@ -144,12 +144,12 @@ router.post("/generatekey", useRateLimit("strict"), masterKeyCheck, async (req, 
 */
 router.post("/requestpasswordreset", singleRequestLimiter, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
-    throw new ErrorExt(ec.PUD073);
+    throw new PudError(ec.PUD073);
   }
 
   const email = req.body.email as string;
   if (!email) {
-    throw new ErrorExt(ec.PUD072);
+    throw new PudError(ec.PUD072);
   }
 
   const userId = await dbUsers.getUserID(email);
@@ -176,12 +176,12 @@ router.post("/resetpassword", useRateLimit("strict"), async (req, res) => {
   const key: string = req.body.key;
   const valid = await dbAuth.verifyPasswordResetKey(key);
   if (!valid) {
-    throw new ErrorExt(ec.PUD078);
+    throw new PudError(ec.PUD078);
   }
 
   const password: string = req.body.password;
   if (!isValidPassword(password)) {
-    throw new ErrorExt(ec.PUD079);
+    throw new PudError(ec.PUD079);
   }
 
   const hash = createHash(password);

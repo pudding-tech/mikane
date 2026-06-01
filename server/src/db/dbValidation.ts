@@ -1,5 +1,5 @@
 import { pool } from "../db.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import { PUD006 } from "../types/errorCodes.ts";
 
 /* ---- */
@@ -111,7 +111,7 @@ export const validateCategoryName = async (name: string, eventId: string, catego
   await pool.query(queryEventCheck)
     .then(data => {
       if (!data.rows[0]) {
-        throw new ErrorExt(PUD006);
+        throw new PudError(PUD006);
       }
     });
 

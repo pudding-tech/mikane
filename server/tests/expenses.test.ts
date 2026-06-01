@@ -217,10 +217,11 @@ describe("expenses", async () => {
       expect(res.status).toEqual(200);
       expect(res.body.name).toEqual("Test expense 1");
       expect(res.body.payer.id).toEqual(user.id);
+      expect(res.body.currency).toEqual(null);
       expense1 = res.body;
     });
 
-    test("should create expense in event2, with expense date", async () => {
+    test("should create expense in event2, with expense date and currency", async () => {
       const res = await request(app)
         .post("/api/expenses")
         .set("Cookie", authToken)
@@ -230,12 +231,14 @@ describe("expenses", async () => {
           amount: 100,
           categoryId: category2.id,
           payerId: user.id,
+          currency: "EUR",
           expenseDate: new Date("2024-06-05")
         });
 
       expect(res.status).toEqual(200);
       expect(res.body.name).toEqual("Test expense 2");
       expect(res.body.payer.id).toEqual(user.id);
+      expect(res.body.currency).toEqual("EUR");
       expect(res.body.expenseDate).toEqual(new Date("2024-06-05").toISOString());
       expense2 = res.body;
     });
@@ -563,6 +566,23 @@ describe("expenses", async () => {
       expect(res.body.code).toEqual(ec.PUD062.code);
     });
 
+    test("fail editing expense currency - invalid currency", async () => {
+      const res = await request(app)
+        .put("/api/expenses/" + expense1.id)
+        .set("Cookie", authToken)
+        .send({
+          name: "Test expense 1",
+          description: "This is test",
+          amount: 100,
+          categoryId: category1.id,
+          payerId: user.id,
+          currency: "ZZZ"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD152.code);
+    });
+
     test("should edit expense", async () => {
       const res = await request(app)
         .put("/api/expenses/" + expense1.id)
@@ -572,13 +592,15 @@ describe("expenses", async () => {
           description: "Amount changed",
           amount: 200,
           categoryId: category1.id,
-          payerId: user.id
+          payerId: user.id,
+          currency: "NOK"
         });
 
       expect(res.status).toEqual(200);
       expect(res.body.name).toEqual("Test expense 1 (updated)");
       expect(res.body.amount).toEqual(200);
       expect(res.body.description).toEqual("Amount changed");
+      expect(res.body.currency).toEqual("NOK");
     });
   });
 
@@ -656,18 +678,44 @@ describe("expenses", async () => {
       expect(res.body.code).toEqual(ec.PUD062.code);
     });
 
-    test("should patch expense amount and description", async () => {
+    test("fail patching expense currency - invalid currency", async () => {
+      const res = await request(app)
+        .patch("/api/expenses/" + expense1.id)
+        .set("Cookie", authToken)
+        .send({
+          currency: "ZZZ"
+        });
+
+      expect(res.status).toEqual(400);
+      expect(res.body.code).toEqual(ec.PUD152.code);
+    });
+
+    test("should patch expense amount, description, and currency", async () => {
       const res = await request(app)
         .patch("/api/expenses/" + expense1.id)
         .set("Cookie", authToken)
         .send({
           amount: 200,
-          description: ""
+          description: "",
+          currency: "JPY"
         });
 
       expect(res.status).toEqual(200);
       expect(res.body.amount).toEqual(200);
       expect(res.body.description).toEqual(null);
+      expect(res.body.currency).toEqual("JPY");
+    });
+
+    test("should patch expense currency to null", async () => {
+      const res = await request(app)
+        .patch("/api/expenses/" + expense1.id)
+        .set("Cookie", authToken)
+        .send({
+          currency: null
+        });
+
+      expect(res.status).toEqual(200);
+      expect(res.body.currency).toEqual(null);
     });
   });
 
