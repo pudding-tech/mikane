@@ -3,7 +3,7 @@ import { CurrencyCode } from 'src/app/types/constants';
 
 const LOCALE_BY_CURRENCY: Record<CurrencyCode, string> = {
 	USD: 'en-US',
-	EUR: 'en-GB',
+	EUR: 'de-DE',
 	GBP: 'en-GB',
 	CAD: 'en-CA',
 	AUD: 'en-AU',
@@ -25,7 +25,7 @@ export class AppCurrencyPipe implements PipeTransform {
 		amount: number | string | null | undefined,
 		currencyCode: CurrencyCode | null | undefined,
 		locale?: string,
-		display: 'narrowSymbol' | 'symbol' | 'code' | 'name' = 'narrowSymbol',
+		display: 'narrowSymbol' | 'symbol' | 'code' | 'name' = 'symbol',
 	): string {
 		if (amount === null || amount === undefined || amount === '') {
 			return '';
@@ -37,7 +37,7 @@ export class AppCurrencyPipe implements PipeTransform {
 		}
 
 		const normalizedCode = (currencyCode || 'EUR').toUpperCase() as CurrencyCode;
-		const resolvedLocale = locale || LOCALE_BY_CURRENCY[normalizedCode] || 'en-GB';
+		const resolvedLocale = locale || LOCALE_BY_CURRENCY[normalizedCode] || 'de-DE';
 
 		try {
 			return new Intl.NumberFormat(resolvedLocale, {

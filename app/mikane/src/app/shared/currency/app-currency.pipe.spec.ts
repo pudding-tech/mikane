@@ -20,7 +20,7 @@ describe('AppCurrencyPipe', () => {
 		const result = pipe.transform(1234.56, 'USD', 'nb-NO');
 
 		expect(result).toContain(',56');
-		expect(result).toContain('$');
+		expect(result).toMatch(/\$|USD/);
 	});
 
 	it('should default to EUR when currency code is missing', () => {
