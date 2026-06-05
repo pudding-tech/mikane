@@ -25,7 +25,7 @@
 			</div>
 		</div>
 	</mat-list-item>
-	<div #lower class="lower" [style.height.px]="lowerHeight">
+	<div #lower class="lower" [class.no-transition]="disableTransition()" [style.height.px]="lowerHeight()">
 		@for (receiver of payment().receivers; track receiver.receiver.id) {
 			<mat-list-item>
 				<div class="payment">

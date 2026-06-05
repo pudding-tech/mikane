@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, effect, ElementRef, inject, input, output, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, input, OnDestroy, output, signal, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,7 +27,7 @@ import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
 		NgOptimizedImage,
 	],
 })
-export class PaymentItemComponent {
+export class PaymentItemComponent implements OnDestroy {
 	private router = inject(Router);
 
 	@ViewChild('lower') lower: ElementRef;
@@ -43,37 +43,74 @@ export class PaymentItemComponent {
 	expanded = input<boolean>(false);
 	dropdownToggled = output<{ senderId: string; expanded: boolean; self: boolean }>();
 
-	dropdownOpen = signal<boolean>(false);
-	lowerHeight: number | string;
+	dropdownOpen = computed(() => this.expanded());
+	lowerHeight = signal<number>(0);
+	disableTransition = signal<boolean>(false);
 	private initialized = false;
+	private expandTimeout: ReturnType<typeof setTimeout> | null = null;
+	private transitionResetFrame: number | null = null;
 
 	constructor() {
 		effect(() => {
-			this.dropdownOpen.set(this.expanded());
-			this.lowerHeight = this.dropdownOpen() ? 'auto' : 0;
-			if (this.lowerHeight === 'auto') {
-				if (!this.initialized) {
-					setTimeout(() => {
-						this.lowerHeight = this.lower.nativeElement.scrollHeight;
-						this.initialized = true;
-					});
-				} else {
-					this.lowerHeight = this.lower.nativeElement.scrollHeight;
-				}
-			}
+			const suppressAnimation = !this.initialized && this.expanded();
+			this.setOpenState(this.expanded(), suppressAnimation);
+			this.initialized = true;
 		});
 	}
 
-	toggleDropdown = () => {
-		this.dropdownOpen.set(!this.dropdownOpen());
-
-		if (this.lowerHeight === 0) {
-			this.lowerHeight = this.lower.nativeElement.scrollHeight;
-		} else {
-			this.lowerHeight = 0;
+	private setOpenState = (expanded: boolean, suppressAnimation = false) => {
+		if (!expanded) {
+			this.clearPendingTimeout();
+			this.clearPendingAnimationFrame();
+			this.disableTransition.set(false);
+			this.lowerHeight.set(0);
+			return;
 		}
 
-		this.dropdownToggled.emit({ senderId: this.payment().sender.id, expanded: this.dropdownOpen(), self: this.self() });
+		this.clearPendingTimeout();
+		this.clearPendingAnimationFrame();
+		this.disableTransition.set(suppressAnimation);
+
+		this.expandTimeout = setTimeout(() => {
+			const el = this.lower?.nativeElement;
+			if (el) {
+				this.lowerHeight.set(el.scrollHeight);
+			}
+
+			if (suppressAnimation) {
+				this.transitionResetFrame = requestAnimationFrame(() => {
+					this.disableTransition.set(false);
+					this.transitionResetFrame = null;
+				});
+			}
+
+			this.expandTimeout = null;
+		});
+	};
+
+	private clearPendingTimeout = () => {
+		if (this.expandTimeout !== null) {
+			clearTimeout(this.expandTimeout);
+			this.expandTimeout = null;
+			this.disableTransition.set(false);
+		}
+	};
+
+	private clearPendingAnimationFrame = () => {
+		if (this.transitionResetFrame !== null) {
+			cancelAnimationFrame(this.transitionResetFrame);
+			this.transitionResetFrame = null;
+		}
+	};
+
+	ngOnDestroy() {
+		this.clearPendingTimeout();
+		this.clearPendingAnimationFrame();
+	}
+
+	toggleDropdown = () => {
+		const nextExpanded = !this.expanded();
+		this.dropdownToggled.emit({ senderId: this.payment().sender.id, expanded: nextExpanded, self: this.self() });
 	};
 
 	gotoUserProfile(user: User) {

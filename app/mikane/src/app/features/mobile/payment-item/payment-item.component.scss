@@ -39,6 +39,10 @@
 	transition: height 0.3s ease;
 	overflow: hidden;
 
+	&.no-transition {
+		transition: none !important;
+	}
+
 	.payment {
 		display: flex;
 		align-items: center;
