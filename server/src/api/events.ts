@@ -6,7 +6,7 @@ import { useRateLimit } from "../middlewares/rateLimiter.ts";
 import { removeUserInfoFromPayments, removeUserInfoFromUserBalances } from "../parsers/parseUserInfo.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
 import { Event, Payment, UserBalance } from "../types/types.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import * as ec from "../types/errorCodes.ts";
 const router = express.Router();
 
@@ -30,12 +30,12 @@ router.get("/events/:id", useRateLimit(), authCheck, csrfCheck, async (req, res)
   const eventId = req.params.id;
   const activeUserId = req.session.userId;
   if (!isUUID(eventId)) {
-    throw new ErrorExt(ec.PUD013);
+    throw new PudError(ec.PUD013);
   }
 
   const event = await db.getEvent(eventId, activeUserId);
   if (!event) {
-    throw new ErrorExt(ec.PUD006);
+    throw new PudError(ec.PUD006);
   }
   res.status(200).send(event);
 });
@@ -50,7 +50,7 @@ router.get("/eventbyname", useRateLimit(), authKeyCheck, async (req, res) => {
 
   const event = await db.getEventByName(eventName, activeUserId);
   if (!event) {
-    throw new ErrorExt(ec.PUD006);
+    throw new PudError(ec.PUD006);
   }
   res.status(200).send(event);
 });
@@ -62,7 +62,7 @@ router.get("/events/:id/balances", useRateLimit(), authCheck, csrfCheck, async (
   const eventId = req.params.id;
   const activeUserId = req.session.userId;
   if (!isUUID(eventId)) {
-    throw new ErrorExt(ec.PUD013);
+    throw new PudError(ec.PUD013);
   }
 
   const usersWithBalance: UserBalance[] = await db.getEventBalances(eventId, activeUserId);
@@ -89,7 +89,7 @@ router.get("/events/:id/payments", useRateLimit(), authKeyCheck, async (req, res
   const eventId = req.params.id;
   const activeUserId = req.session.userId;
   if (!isUUID(eventId)) {
-    throw new ErrorExt(ec.PUD013);
+    throw new PudError(ec.PUD013);
   }
 
   const payments: Payment[] = await db.getEventPayments(eventId, activeUserId);
@@ -119,14 +119,14 @@ router.get("/events/:id/payments", useRateLimit(), authKeyCheck, async (req, res
 router.post("/events", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const name: string = req.body.name;
   if (!name || (req.body.private === null || req.body.private === undefined) || (req.body.currency === null || req.body.currency === undefined)) {
-    throw new ErrorExt(ec.PUD014);
+    throw new PudError(ec.PUD014);
   }
   if (name.trim() === "") {
-    throw new ErrorExt(ec.PUD053);
+    throw new PudError(ec.PUD053);
   }
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const createdEvent: Event = await db.createEvent(name.trim(), activeUserId, req.body.private, req.body.currency, req.body.description);
@@ -141,12 +141,12 @@ router.post("/events/:id/user/:userId", useRateLimit(), authCheck, csrfCheck, as
   const eventId = req.params.id;
   const userId = req.params.userId;
   if (!isUUID(eventId) || !isUUID(userId)) {
-    throw new ErrorExt(ec.PUD015);
+    throw new PudError(ec.PUD015);
   }
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const event: Event = await db.addUserToEvent(eventId, userId, activeUserId);
@@ -160,11 +160,11 @@ router.post("/events/:id/admin/:userId", useRateLimit(), authCheck, csrfCheck, a
   const eventId = req.params.id;
   const userId = req.params.userId;
   if (!isUUID(eventId) || !isUUID(userId)) {
-    throw new ErrorExt(ec.PUD015);
+    throw new PudError(ec.PUD015);
   }
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const event: Event = await db.addUserAsEventAdmin(eventId, userId, activeUserId);
@@ -181,22 +181,22 @@ router.post("/events/:id/admin/:userId", useRateLimit(), authCheck, csrfCheck, a
 router.put("/events/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const eventId = req.params.id;
   if (!isUUID(eventId)) {
-    throw new ErrorExt(ec.PUD013);
+    throw new PudError(ec.PUD013);
   }
   if ([req.body.name, req.body.description, req.body.private, req.body.currency, req.body.status].every((value) => value === undefined || value === null)) {
-    throw new ErrorExt(ec.PUD153);
+    throw new PudError(ec.PUD153);
   }
   if (![undefined, null].includes(req.body.name) && req.body.name.trim() === "") {
-    throw new ErrorExt(ec.PUD053);
+    throw new PudError(ec.PUD053);
   }
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const event = await db.editEvent(eventId, activeUserId, req.body.name, req.body.description, req.body.private, req.body.currency, req.body.status);
   if (!event) {
-    throw new ErrorExt(ec.PUD006);
+    throw new PudError(ec.PUD006);
   }
   res.status(200).send(event);
 });
@@ -211,11 +211,11 @@ router.put("/events/:id", useRateLimit(), authCheck, csrfCheck, async (req, res)
 router.delete("/events/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const eventId = req.params.id;
   if (!isUUID(eventId)) {
-    throw new ErrorExt(ec.PUD013);
+    throw new PudError(ec.PUD013);
   }
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const success = await db.deleteEvent(eventId, activeUserId);
@@ -229,12 +229,12 @@ router.delete("/events/:id/user/:userId", useRateLimit(), authCheck, csrfCheck, 
   const eventId = req.params.id;
   const userId = req.params.userId;
   if (!isUUID(eventId) || !isUUID(userId)) {
-    throw new ErrorExt(ec.PUD015);
+    throw new PudError(ec.PUD015);
   }
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const event: Event = await db.removeUserFromEvent(eventId, userId, activeUserId);
@@ -248,11 +248,11 @@ router.delete("/events/:id/admin/:userId", useRateLimit(), authCheck, csrfCheck,
   const eventId = req.params.id;
   const userId = req.params.userId;
   if (!isUUID(eventId) || !isUUID(userId)) {
-    throw new ErrorExt(ec.PUD015);
+    throw new PudError(ec.PUD015);
   }
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const event: Event = await db.removeUserAsEventAdmin(eventId, userId, activeUserId);

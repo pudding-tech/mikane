@@ -1,4 +1,4 @@
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import { PUD141 } from "../types/errorCodes.ts";
 
 /**
@@ -8,13 +8,13 @@ import { PUD141 } from "../types/errorCodes.ts";
  */
 export const createDate = (dateInput: string) => {
   if (!dateInput) {
-    throw new ErrorExt(PUD141);
+    throw new PudError(PUD141);
   }
 
   const date = new Date(dateInput);
 
   if (isNaN(date.getTime())) {
-    throw new ErrorExt(PUD141);
+    throw new PudError(PUD141);
   }
 
   return date;

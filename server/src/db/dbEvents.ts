@@ -4,9 +4,10 @@ import { parseBalance, parseEvents } from "../parsers/parseEvents.ts";
 import { parseCategories } from "../parsers/parseCategories.ts";
 import { parseExpenses } from "../parsers/parseExpenses.ts";
 import { parseUsers } from "../parsers/parseUsers.ts";
+import { convertExpensesToEventCurrency } from "../utils/convertExpenseCurrencies.ts";
 import { BalanceCalculationResult, Category, Event, Expense, Payment, User, UserBalance } from "../types/types.ts";
 import { EventStatusType, Target } from "../types/enums.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { CurrencyExchangeServiceError, PudError } from "../types/errors.ts";
 import * as ec from "../types/errorCodes.ts";
 
 /**
@@ -25,9 +26,9 @@ export const getEvents = async (userId?: string) => {
     })
     .catch(err => {
       if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else
-        throw new ErrorExt(ec.PUD031, err);
+        throw new PudError(ec.PUD031, err);
     });
 
   return events;
@@ -50,13 +51,13 @@ export const getEvent = async (eventId: string, userId?: string) => {
     })
     .catch(err => {
       if (err.code === "P0006")
-        throw new ErrorExt(ec.PUD006, err);
+        throw new PudError(ec.PUD006, err);
       else if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD031, err);
+        throw new PudError(ec.PUD031, err);
     });
 
   if (!events.length) {
@@ -82,11 +83,11 @@ export const getEventByName = async (eventName: string, userId?: string) => {
     })
     .catch(err => {
       if (err.code === "P0006")
-        throw new ErrorExt(ec.PUD006, err);
+        throw new PudError(ec.PUD006, err);
       else if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else
-        throw new ErrorExt(ec.PUD031, err);
+        throw new PudError(ec.PUD031, err);
     });
 
   if (!events.length) {
@@ -120,35 +121,47 @@ export const getEventBalances = async (eventId: string, activeUserId?: string) =
     `,
     values: [eventId, activeUserId]
   };
+  const queryEvent = {
+    text: `
+      SELECT * FROM get_events($1, $2, false);
+    `,
+    values: [eventId, activeUserId]
+  };
 
   try {
-    const queries = [queryUsers, queryCategories, queryExpenses];
+    const queries = [queryUsers, queryCategories, queryExpenses, queryEvent];
     const queryPromises = queries.map(query => pool.query(query));
     
     const res = await Promise.all(queryPromises);
-    if (!res || res.length < 3) {
-      throw new ErrorExt(ec.PUD061);
+    if (!res || res.length < 4) {
+      throw new PudError(ec.PUD061);
     }
 
     const users: User[] = parseUsers(res[0].rows, true, false, 100);
     const categories: Category[] = parseCategories(res[1].rows, Target.CALC);
     const expenses: Expense[] = parseExpenses(res[2].rows);
+    const event = parseEvents(res[3].rows)[0];
 
-    const balance: BalanceCalculationResult = calculateBalance(expenses, categories, users);
-    const usersWithBalance: UserBalance[] = parseBalance(balance, users, expenses);
+    // Convert all expenses to the event currency before calculating balances
+    const expensesInEventCurrency = await convertExpensesToEventCurrency(expenses, event.currency);
+
+    const balance: BalanceCalculationResult = calculateBalance(expensesInEventCurrency, categories, users);
+    const usersWithBalance: UserBalance[] = parseBalance(balance, users, expensesInEventCurrency);
     return usersWithBalance;
   }
   catch (err: any) {
-    if (err.code === "P0006")
-      throw new ErrorExt(ec.PUD006, err);
+    if (err instanceof CurrencyExchangeServiceError || err instanceof PudError)
+      throw err;
+    else if (err.code === "P0006")
+      throw new PudError(ec.PUD006, err);
     else if (err.code === "P0008")
-      throw new ErrorExt(ec.PUD008, err);
+      throw new PudError(ec.PUD008, err);
     else if (err.code === "P0084")
-      throw new ErrorExt(ec.PUD084, err);
+      throw new PudError(ec.PUD084, err);
     else if (err.code === "P0138")
-      throw new ErrorExt(ec.PUD138, err);
+      throw new PudError(ec.PUD138, err);
     else
-      throw new ErrorExt(ec.PUD061, err);
+      throw new PudError(ec.PUD061, err);
   }
 };
 
@@ -177,34 +190,46 @@ export const getEventPayments = async (eventId: string, activeUserId?: string) =
     `,
     values: [eventId, activeUserId]
   };
+  const queryEvent = {
+    text: `
+      SELECT * FROM get_events($1, $2, false);
+    `,
+    values: [eventId, activeUserId]
+  };
 
   try {
-    const queries = [queryUsers, queryCategories, queryExpenses];
+    const queries = [queryUsers, queryCategories, queryExpenses, queryEvent];
     const queryPromises = queries.map(query => pool.query(query));
 
     const res = await Promise.all(queryPromises);
-    if (!res || res.length < 3) {
-      throw new ErrorExt(ec.PUD061);
+    if (!res || res.length < 4) {
+      throw new PudError(ec.PUD061);
     }
 
     const users: User[] = parseUsers(res[0].rows, false, false, 100);
     const categories: Category[] = parseCategories(res[1].rows, Target.CALC);
     const expenses: Expense[] = parseExpenses(res[2].rows);
+    const event = parseEvents(res[3].rows)[0];
 
-    const payments: Payment[] = calculatePayments(expenses, categories, users);
+    // Convert all expenses to the event currency before calculating payments
+    const expensesInEventCurrency = await convertExpensesToEventCurrency(expenses, event.currency);
+
+    const payments: Payment[] = calculatePayments(expensesInEventCurrency, categories, users);
     return payments;
   }
   catch (err: any) {
-    if (err.code === "P0006")
-      throw new ErrorExt(ec.PUD006, err);
+    if (err instanceof CurrencyExchangeServiceError || err instanceof PudError)
+      throw err;
+    else if (err.code === "P0006")
+      throw new PudError(ec.PUD006, err);
     else if (err.code === "P0008")
-      throw new ErrorExt(ec.PUD008, err);
+      throw new PudError(ec.PUD008, err);
     else if (err.code === "P0084")
-      throw new ErrorExt(ec.PUD084, err);
+      throw new PudError(ec.PUD084, err);
     else if (err.code === "P0138")
-      throw new ErrorExt(ec.PUD138, err);
+      throw new PudError(ec.PUD138, err);
     else
-      throw new ErrorExt(ec.PUD061, err);
+      throw new PudError(ec.PUD061, err);
   }
 };
 
@@ -228,15 +253,15 @@ export const createEvent = async (name: string, activeUserId: string, privateEve
     })
     .catch(err => {
       if (err.code === "P0005")
-        throw new ErrorExt(ec.PUD005, err);
+        throw new PudError(ec.PUD005, err);
       else if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else if (err.code === "P0152")
-        throw new ErrorExt(ec.PUD152, err);
+        throw new PudError(ec.PUD152, err);
       else
-        throw new ErrorExt(ec.PUD037, err);
+        throw new PudError(ec.PUD037, err);
     });
 
   return events[0];
@@ -258,15 +283,15 @@ export const deleteEvent = async (id: string, activeUserId: string) => {
     })
     .catch(err => {
       if (err.code === "P0006")
-        throw new ErrorExt(ec.PUD006, err);
+        throw new PudError(ec.PUD006, err);
       else if (err.code === "P0085")
-        throw new ErrorExt(ec.PUD085, err);
+        throw new PudError(ec.PUD085, err);
       else if (err.code === "P0119")
-        throw new ErrorExt(ec.PUD119, err);
+        throw new PudError(ec.PUD119, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD023, err);
+        throw new PudError(ec.PUD023, err);
     });
 
   return success;
@@ -290,17 +315,17 @@ export const addUserToEvent = async (eventId: string, userId: string, activeUser
     })
     .catch(err => {
       if (err.code === "P0006") 
-        throw new ErrorExt(ec.PUD006, err);
+        throw new PudError(ec.PUD006, err);
       else if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else if (err.code === "P0009")
-        throw new ErrorExt(ec.PUD009, err);
+        throw new PudError(ec.PUD009, err);
       else if (err.code === "P0118")
-        throw new ErrorExt(ec.PUD118, err);
+        throw new PudError(ec.PUD118, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD021, err);
+        throw new PudError(ec.PUD021, err);
     });
 
   return events[0];
@@ -324,19 +349,19 @@ export const removeUserFromEvent = async (eventId: string, userId: string, activ
     })
     .catch(err => {
       if (err.code === "P0006") 
-        throw new ErrorExt(ec.PUD006, err);
+        throw new PudError(ec.PUD006, err);
       else if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else if (err.code === "P0098")
-        throw new ErrorExt(ec.PUD098, err);
+        throw new PudError(ec.PUD098, err);
       else if (err.code === "P0114")
-        throw new ErrorExt(ec.PUD114, err);
+        throw new PudError(ec.PUD114, err);
       else if (err.code === "P0118")
-        throw new ErrorExt(ec.PUD118, err);
+        throw new PudError(ec.PUD118, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD040, err);
+        throw new PudError(ec.PUD040, err);
     });
 
   return events[0];
@@ -360,19 +385,19 @@ export const addUserAsEventAdmin = async (eventId: string, userId: string, activ
     })
     .catch(err => {
       if (err.code === "P0006") 
-        throw new ErrorExt(ec.PUD006, err);
+        throw new PudError(ec.PUD006, err);
       else if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else if (err.code === "P0090")
-        throw new ErrorExt(ec.PUD090, err);
+        throw new PudError(ec.PUD090, err);
       else if (err.code === "P0091")
-        throw new ErrorExt(ec.PUD091, err);
+        throw new PudError(ec.PUD091, err);
       else if (err.code === "P0126")
-        throw new ErrorExt(ec.PUD126, err);
+        throw new PudError(ec.PUD126, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD094, err);
+        throw new PudError(ec.PUD094, err);
     });
 
   return events[0];
@@ -396,17 +421,17 @@ export const removeUserAsEventAdmin = async (eventId: string, userId: string, ac
     })
     .catch(err => {
       if (err.code === "P0006") 
-        throw new ErrorExt(ec.PUD006, err);
+        throw new PudError(ec.PUD006, err);
       else if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else if (err.code === "P0092")
-        throw new ErrorExt(ec.PUD092, err);
+        throw new PudError(ec.PUD092, err);
       else if (err.code === "P0093")
-        throw new ErrorExt(ec.PUD093, err);
+        throw new PudError(ec.PUD093, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD095, err);
+        throw new PudError(ec.PUD095, err);
     });
 
   return events[0];
@@ -434,21 +459,21 @@ export const editEvent = async (eventId: string, activeUserId: string, name?: st
     })
     .catch(err => {
       if (err.code === "P0006")
-        throw new ErrorExt(ec.PUD006, err);
+        throw new PudError(ec.PUD006, err);
       else if (err.code === "P0005")
-        throw new ErrorExt(ec.PUD005, err);
+        throw new PudError(ec.PUD005, err);
       else if (err.code === "P0087")
-        throw new ErrorExt(ec.PUD087, err);
+        throw new PudError(ec.PUD087, err);
       else if (err.code === "P0118")
-        throw new ErrorExt(ec.PUD118, err);
+        throw new PudError(ec.PUD118, err);
       else if (err.code === "P0128")
-        throw new ErrorExt(ec.PUD128, err);
+        throw new PudError(ec.PUD128, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else if (err.code === "P0152")
-        throw new ErrorExt(ec.PUD152, err);
+        throw new PudError(ec.PUD152, err);
       else
-        throw new ErrorExt(ec.PUD044, err);
+        throw new PudError(ec.PUD044, err);
     });
 
   if (!events.length) {

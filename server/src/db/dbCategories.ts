@@ -2,7 +2,7 @@ import { pool } from "../db.ts";
 import { parseCategories } from "../parsers/parseCategories.ts";
 import { CategoryIcon, Target } from "../types/enums.ts";
 import { Category } from "../types/types.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import * as ec from "../types/errorCodes.ts";
 
 /**
@@ -27,13 +27,13 @@ export const getCategories = async (eventId: string, activeUserId: string) => {
     })
     .catch(err => {
       if (err.code === "P0006")
-        throw new ErrorExt(ec.PUD006, err);
+        throw new PudError(ec.PUD006, err);
       else if (err.code === "P0007")
-        throw new ErrorExt(ec.PUD007, err);
+        throw new PudError(ec.PUD007, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD029, err);
+        throw new PudError(ec.PUD029, err);
     });
 
   return categories;
@@ -56,13 +56,13 @@ export const getCategory = async (categoryId: string, activeUserId: string) => {
     })
     .catch(err => {
       if (err.code === "P0006")
-        throw new ErrorExt(ec.PUD006, err);
+        throw new PudError(ec.PUD006, err);
       else if (err.code === "P0007")
-        throw new ErrorExt(ec.PUD007, err);
+        throw new PudError(ec.PUD007, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD029, err);
+        throw new PudError(ec.PUD029, err);
     });
 
   if (!categories.length) {
@@ -91,15 +91,15 @@ export const createCategory = async (name: string, eventId: string, weighted: bo
     })
     .catch(err => {
       if (err.code === "P0006")
-        throw new ErrorExt(ec.PUD006, err);
+        throw new PudError(ec.PUD006, err);
       else if (err.code === "P0097")
-        throw new ErrorExt(ec.PUD097, err);
+        throw new PudError(ec.PUD097, err);
       else if (err.code === "P0118")
-        throw new ErrorExt(ec.PUD118, err);
+        throw new PudError(ec.PUD118, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD036, err);
+        throw new PudError(ec.PUD036, err);
     });
 
   return category[0];
@@ -129,21 +129,21 @@ export const addUserToCategory = async (categoryId: string, userId: string, acti
     })
     .catch(err => {
       if (err.code === "P0007")
-        throw new ErrorExt(ec.PUD007, err);
+        throw new PudError(ec.PUD007, err);
       else if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else if (err.code === "P0010")
-        throw new ErrorExt(ec.PUD010, err);
+        throw new PudError(ec.PUD010, err);
       else if (err.code === "P0011")
-        throw new ErrorExt(ec.PUD011, err);
+        throw new PudError(ec.PUD011, err);
       else if (err.code === "P0012")
-        throw new ErrorExt(ec.PUD012, err);
+        throw new PudError(ec.PUD012, err);
       else if (err.code === "P0118")
-        throw new ErrorExt(ec.PUD118, err);
+        throw new PudError(ec.PUD118, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD020, err);
+        throw new PudError(ec.PUD020, err);
     });
 
   return categories[0];
@@ -167,13 +167,13 @@ export const editCategory = async (categoryId: string, activeUserId: string, dat
     })
     .catch(err => {
       if (err.code === "P0007")
-        throw new ErrorExt(ec.PUD007, err);
+        throw new PudError(ec.PUD007, err);
       else if (err.code === "P0118")
-        throw new ErrorExt(ec.PUD118, err);
+        throw new PudError(ec.PUD118, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD041, err);
+        throw new PudError(ec.PUD041, err);
     });
   return category[0];
 };
@@ -197,13 +197,13 @@ export const editUserWeight = async (categoryId: string, userId: string, weight:
     })
     .catch(err => {
       if (err.code === "P0007")
-        throw new ErrorExt(ec.PUD007, err);
+        throw new PudError(ec.PUD007, err);
       else if (err.code === "P0118")
-        throw new ErrorExt(ec.PUD118, err);
+        throw new PudError(ec.PUD118, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD027, err);
+        throw new PudError(ec.PUD027, err);
     });
 
   return categories[0];
@@ -232,13 +232,13 @@ export const editWeightStatus = async (categoryId: string, weighted: boolean, ac
     })
     .catch(err => {
       if (err.code === "P0007")
-        throw new ErrorExt(ec.PUD007, err);
+        throw new PudError(ec.PUD007, err);
       else if (err.code === "P0118")
-        throw new ErrorExt(ec.PUD118, err);
+        throw new PudError(ec.PUD118, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD026, err);
+        throw new PudError(ec.PUD026, err);
     });
 
   return categories[0];
@@ -261,15 +261,15 @@ export const deleteCategory = async (categoryId: string, activeUserId: string) =
     })
     .catch(err => {
       if (err.code === "P0007")
-        throw new ErrorExt(ec.PUD007, err);
+        throw new PudError(ec.PUD007, err);
       else if (err.code === "P0118")
-        throw new ErrorExt(ec.PUD118, err);
+        throw new PudError(ec.PUD118, err);
       else if (err.code === "P0131")
-        throw new ErrorExt(ec.PUD131, err);
+        throw new PudError(ec.PUD131, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD022, err);
+        throw new PudError(ec.PUD022, err);
     });
 
   return success;
@@ -298,15 +298,15 @@ export const removeUserFromCategory = async (categoryId: string, userId: string,
     })
     .catch(err => {
       if (err.code === "P0007")
-        throw new ErrorExt(ec.PUD007, err);
+        throw new PudError(ec.PUD007, err);
       else if (err.code === "P0008")
-        throw new ErrorExt(ec.PUD008, err);
+        throw new PudError(ec.PUD008, err);
       else if (err.code === "P0118")
-        throw new ErrorExt(ec.PUD118, err);
+        throw new PudError(ec.PUD118, err);
       else if (err.code === "P0138")
-        throw new ErrorExt(ec.PUD138, err);
+        throw new PudError(ec.PUD138, err);
       else
-        throw new ErrorExt(ec.PUD039, err);
+        throw new PudError(ec.PUD039, err);
     });
 
   return categories[0];

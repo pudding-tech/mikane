@@ -6,7 +6,7 @@ import { authCheck } from "../middlewares/authCheck.ts";
 import { csrfCheck } from "../middlewares/csrf.ts";
 import { useRateLimit } from "../middlewares/rateLimiter.ts";
 import { Guest } from "../types/types.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
 const router = express.Router();
 
@@ -36,11 +36,11 @@ router.post("/guests", useRateLimit(), authCheck, csrfCheck, async (req, res) =>
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   if (!firstName || firstName.trim() === "") {
-    throw new ErrorExt(ec.PUD121);
+    throw new PudError(ec.PUD121);
   }
 
   const guestUser: Guest = await db.createGuestUser(id, firstName, lastName, activeUserId);
@@ -57,21 +57,21 @@ router.post("/guests", useRateLimit(), authCheck, csrfCheck, async (req, res) =>
 router.put("/guests/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const guestId = req.params.id;
   if (!isUUID(guestId)) {
-    throw new ErrorExt(ec.PUD016);
+    throw new PudError(ec.PUD016);
   }
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const firstName: string | undefined = req.body.firstName;
   const lastName: string | undefined = req.body.lastName;
 
   if (!firstName && !lastName) {
-    throw new ErrorExt(ec.PUD058);
+    throw new PudError(ec.PUD058);
   }
   if (firstName?.trim() === "") {
-    throw new ErrorExt(ec.PUD059);
+    throw new PudError(ec.PUD059);
   }
 
   const data = {
@@ -81,7 +81,7 @@ router.put("/guests/:id", useRateLimit(), authCheck, csrfCheck, async (req, res)
 
   const guestUser = await db.editGuestUser(guestId, data, activeUserId);
   if (!guestUser) {
-    throw new ErrorExt(ec.PUD122);
+    throw new PudError(ec.PUD122);
   }
   res.status(200).send(guestUser);
 });
@@ -96,11 +96,11 @@ router.put("/guests/:id", useRateLimit(), authCheck, csrfCheck, async (req, res)
 router.delete("/guests/:id", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const guestId = req.params.id;
   if (!isUUID(guestId)) {
-    throw new ErrorExt(ec.PUD016);
+    throw new PudError(ec.PUD016);
   }
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const success = await db.deleteGuestUser(guestId, activeUserId);

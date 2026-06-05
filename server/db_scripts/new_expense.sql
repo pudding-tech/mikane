@@ -5,6 +5,7 @@ create or replace function new_expense(
   ip_amount numeric(16, 2),
   ip_category_id uuid,
   ip_payer_id uuid,
+  ip_currency varchar(3),
   ip_expense_date date,
   ip_by_user_id uuid
 )
@@ -13,6 +14,7 @@ returns table (
   name varchar(255),
   description varchar(255),
   amount numeric(16, 2),
+  currency varchar(3),
   expense_date date,
   created timestamp,
   category_id uuid,
@@ -50,6 +52,10 @@ begin
     raise exception 'User cannot pay for expense as user is not in event' using errcode = 'P0062';
   end if;
 
+  if (ip_currency is not null) and not exists (select 1 from currency c where c.code = upper(ip_currency)) then
+    raise exception 'Not a valid currency code' using errcode = 'P0152';
+  end if;
+
   if not exists (
     select 1 from category c
       inner join "event" e on c.event_id = e.id
@@ -61,8 +67,8 @@ begin
     raise exception 'Cannot access private event' using errcode = 'P0138';
   end if;
 
-  insert into expense("name", "description", amount, category_id, payer_id, expense_date, created)
-    values (ip_name, nullif(trim(ip_description), ''), ip_amount, ip_category_id, ip_payer_id, ip_expense_date, CURRENT_TIMESTAMP)
+  insert into expense("name", "description", amount, currency, category_id, payer_id, expense_date, created)
+    values (ip_name, nullif(trim(ip_description), ''), ip_amount, upper(ip_currency), ip_category_id, ip_payer_id, ip_expense_date, CURRENT_TIMESTAMP)
     returning expense.id into tmp_expense_id;
 
   return query

@@ -1,13 +1,16 @@
-drop function if exists edit_expense;
-create or replace function edit_expense(
+drop function if exists patch_expense;
+create or replace function patch_expense(
   ip_expense_id uuid,
   ip_name varchar(255),
   ip_description varchar(255),
+  ip_description_set boolean,
   ip_amount numeric(16, 2),
   ip_category_id uuid,
   ip_payer_id uuid,
   ip_currency varchar(3),
+  ip_currency_set boolean,
   ip_expense_date date,
+  ip_expense_date_set boolean,
   ip_by_user_id uuid
 )
 returns table (
@@ -74,24 +77,39 @@ begin
     raise exception 'Only active events can be edited' using errcode = 'P0118';
   end if;
 
-  if (ip_payer_id is not null) and not exists (select ue.user_id from user_event ue inner join category c on ue.event_id = c.event_id where c.id = coalesce(ip_category_id, c.id) and ue.user_id = ip_payer_id) then
+  if (ip_payer_id is not null) and not exists (
+    select 1
+    from expense ex
+      inner join category c on c.id = coalesce(ip_category_id, ex.category_id)
+      inner join user_event ue on ue.event_id = c.event_id and ue.user_id = ip_payer_id
+    where ex.id = ip_expense_id
+  ) then
     raise exception 'User cannot pay for expense as user is not in event' using errcode = 'P0062';
   end if;
 
-  if (ip_currency is not null) and not exists (select 1 from currency c where c.code = upper(ip_currency)) then
+  if (ip_currency_set is true) and (ip_currency is not null) and not exists (select 1 from currency c where c.code = upper(ip_currency)) then
     raise exception 'Not a valid currency code' using errcode = 'P0152';
   end if;
 
   update
     expense e
   set
-    name = ip_name,
-    description = nullif(trim(ip_description), ''),
-    amount = ip_amount,
-    currency = upper(ip_currency),
-    category_id = ip_category_id,
-    payer_id = ip_payer_id,
-    expense_date = ip_expense_date
+    name = coalesce(ip_name, e.name),
+    description = case
+      when ip_description_set is true then nullif(trim(ip_description), '')
+      else e.description
+    end,
+    amount = coalesce(ip_amount, e.amount),
+    currency = case
+      when ip_currency_set is true then upper(ip_currency)
+      else e.currency
+    end,
+    category_id = coalesce(ip_category_id, e.category_id),
+    payer_id = coalesce(ip_payer_id, e.payer_id),
+    expense_date = case
+      when ip_expense_date_set is true then ip_expense_date
+      else e.expense_date
+    end
   where
     e.id = ip_expense_id;
 

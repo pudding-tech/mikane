@@ -585,11 +585,11 @@ export const PUD060: ErrorCode = {
 };
 
 /**
- * PUD-061: Something went wrong getting users, categories or expenses (500)
+ * PUD-061: Something went wrong getting event, users, categories or expenses (500)
  */
 export const PUD061: ErrorCode = {
   code: "PUD-061",
-  message: "Something went wrong getting users, categories or expenses",
+  message: "Something went wrong getting event, users, categories or expenses",
   status: 500,
   log: true
 };
@@ -1450,4 +1450,24 @@ export const PUD153: ErrorCode = {
   code: "PUD-153",
   message: "Request body must include at least one event property",
   status: 400
+};
+
+/**
+ * PUD-154: patch_expense (500)
+ */
+export const PUD154: ErrorCode = {
+  code: "PUD-154",
+  message: "Something went wrong while patching expense",
+  status: 500,
+  log: true
+};
+
+/**
+ * PUD-155: exchange-rate provider error (502)
+ */
+export const PUD155: ErrorCode = {
+  code: "PUD-155",
+  message: "Something went wrong while fetching exchange rates",
+  status: 502,
+  log: true
 };

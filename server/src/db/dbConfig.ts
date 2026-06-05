@@ -1,6 +1,6 @@
 import { pool } from "../db.ts";
 import { parseCurrencies } from "../parsers/parseConfigs.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import { PUD151 } from "../types/errorCodes.ts";
 
 /**
@@ -16,7 +16,7 @@ export const getCurrencies = async () => {
       return parseCurrencies(data.rows);
     })
     .catch(err => {
-      throw new ErrorExt(PUD151, err);
+      throw new PudError(PUD151, err);
     });
 
   return currencies;

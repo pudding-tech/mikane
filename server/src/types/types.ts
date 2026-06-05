@@ -154,3 +154,15 @@ export type LogEntryClient = {
   sessionId?: string,
   ip?: string
 }
+
+export type FrankfurterResponse = {
+  date: string,
+  base: string,
+  quote: string,
+  rate: number
+};
+
+export type RateCacheEntry = {
+  rate: number,
+  expiresAt: number
+};

@@ -52,11 +52,11 @@ begin
     raise exception 'Only active events can be edited' using errcode = 'P0118';
   end if;
 
-  if ip_status is not null and not exists (select 1 from event_status_type est where est.id = ip_status) then
+  if (ip_status is not null) and not exists (select 1 from event_status_type est where est.id = ip_status) then
     raise exception 'Not a valid event status type' using errcode = 'P0128';
   end if;
 
-  if ip_currency is not null and not exists (select 1 from currency c where c.code = upper(ip_currency)) then
+  if (ip_currency is not null) and not exists (select 1 from currency c where c.code = upper(ip_currency)) then
     raise exception 'Not a valid currency code' using errcode = 'P0152';
   end if;
 

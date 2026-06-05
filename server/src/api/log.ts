@@ -5,7 +5,7 @@ import { useRateLimit } from "../middlewares/rateLimiter.ts";
 import { logClientToDatabase } from "../db/dbLog.ts";
 import { createDate } from "../utils/dateCreator.ts";
 import { ALLOWED_LOG_LEVELS, type LogLevelType } from "../env.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import { PUD055, PUD144, PUD145 } from "../types/errorCodes.ts";
 const router = express.Router();
 
@@ -19,15 +19,15 @@ router.post("/log", useRateLimit(), authCheck, csrfCheck, async (req, res) => {
   const activeUserId = req.session.userId;
 
   if (!msg || msg.trim().length === 0 || msg.length > 1000) {
-    throw new ErrorExt(PUD144);
+    throw new PudError(PUD144);
   }
 
   if (level && !ALLOWED_LOG_LEVELS.includes(level)) {
-    throw new ErrorExt(PUD145);
+    throw new PudError(PUD145);
   }
 
   if (!activeUserId) {
-    throw new ErrorExt(PUD055);
+    throw new PudError(PUD055);
   }
 
   await logClientToDatabase({

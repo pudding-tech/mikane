@@ -1,5 +1,5 @@
 import { pool } from "../db.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import { LogEntryClient, LogEntryServer } from "../types/types.ts";
 import { PUD146, PUD147 } from "../types/errorCodes.ts";
 
@@ -14,7 +14,7 @@ export const logServerToDatabase = async (log: LogEntryServer) => {
   };
   await pool.query(query)
     .catch(err => {
-      throw new ErrorExt(PUD146, err);
+      throw new PudError(PUD146, err);
     });
 };
 
@@ -29,6 +29,6 @@ export const logClientToDatabase = async (log: LogEntryClient) => {
   };
   await pool.query(query)
     .catch(err => {
-      throw new ErrorExt(PUD147, err);
+      throw new PudError(PUD147, err);
     });
 };

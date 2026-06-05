@@ -19,7 +19,7 @@ import env, { drainStartupLogs } from "./env.ts";
 import logger from "./utils/logger.ts";
 import { pool } from "./db.ts";
 import { requestContext } from "./middlewares/requestContext.ts";
-import { errorHandler } from "./errorHandler.ts";
+import { csrfErrorHandler, currencyExchangeErrorHandler, fallbackErrorHandler, pudErrorHandler } from "./errorHandler.ts";
 
 const app = express();
 
@@ -156,8 +156,11 @@ app.use("/api", notificationRoutes);
 app.use("/api", userRoutes);
 app.use("/api", validationRoutes);
 
-// Error handler
-app.use(errorHandler);
+// Error handlers
+app.use(csrfErrorHandler);
+app.use(pudErrorHandler);
+app.use(currencyExchangeErrorHandler);
+app.use(fallbackErrorHandler);
 
 // Send not found message back to client if route not found
 app.use((_req, res) => {

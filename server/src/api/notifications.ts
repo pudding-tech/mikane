@@ -7,7 +7,7 @@ import { csrfCheck } from "../middlewares/csrf.ts";
 import { singleRequestLimiter } from "../middlewares/singleRequestLimiter.ts";
 import { isUUID } from "../utils/validators/uuidValidator.ts";
 import { EventStatusType } from "../types/enums.ts";
-import { ErrorExt } from "../types/errorExt.ts";
+import { PudError } from "../types/errors.ts";
 import { sendAddExpensesReminderEmails } from "../email-services/notifications/addExpensesReminder.ts";
 import { sendReadyToSettleEmails } from "../email-services/notifications/readyToSettle.ts";
 import { createDate } from "../utils/dateCreator.ts";
@@ -19,27 +19,27 @@ const router = express.Router();
 */
 router.post("/notifications/:eventId/reminder", singleRequestLimiter, authCheck, csrfCheck, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
-    throw new ErrorExt(ec.PUD073);
+    throw new PudError(ec.PUD073);
   }
 
   const eventId = req.params.eventId;
   if (!eventId || !isUUID(eventId)) {
-    throw new ErrorExt(ec.PUD013);
+    throw new PudError(ec.PUD013);
   }
 
   const activeUserId = req.session.userId;
   if (!activeUserId) {
-    throw new ErrorExt(ec.PUD055);
+    throw new PudError(ec.PUD055);
   }
 
   const cutoffDate = req.body.cutoffDate ? createDate(req.body.cutoffDate) : undefined;
 
   const event = await getEvent(eventId, activeUserId);
   if (!event) {
-    throw new ErrorExt(ec.PUD006);
+    throw new PudError(ec.PUD006);
   }
   if (event.status.id !== EventStatusType.ACTIVE) {
-    throw new ErrorExt(ec.PUD143);
+    throw new PudError(ec.PUD143);
   }
 
   const users = await getUsers(activeUserId, { eventId: eventId, excludeGuests: true });
@@ -53,21 +53,21 @@ router.post("/notifications/:eventId/reminder", singleRequestLimiter, authCheck,
 */
 router.post("/notifications/:eventId/settle", singleRequestLimiter, authCheck, csrfCheck, async (req, res) => {
   if (!env.MIKANE_EMAIL || !env.MIKANE_EMAIL_API_TOKEN) {
-    throw new ErrorExt(ec.PUD073);
+    throw new PudError(ec.PUD073);
   }
 
   const eventId = req.params.eventId;
   const activeUserId = req.session.userId;
   if (!eventId || !isUUID(eventId)) {
-    throw new ErrorExt(ec.PUD013);
+    throw new PudError(ec.PUD013);
   }
 
   const event = await getEvent(eventId, activeUserId);
   if (!event) {
-    throw new ErrorExt(ec.PUD006);
+    throw new PudError(ec.PUD006);
   }
   if (event.status.id !== EventStatusType.READY_TO_SETTLE) {
-    throw new ErrorExt(ec.PUD140);
+    throw new PudError(ec.PUD140);
   }
 
   const payments = await getEventPayments(event.id, activeUserId);
