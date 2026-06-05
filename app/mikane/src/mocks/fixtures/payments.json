@@ -7,7 +7,8 @@
 			"phone": "00000002",
 			"created": "2022-08-07T16:01:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
-			"guest": false
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true }
 		},
 		"receiver": {
 			"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
@@ -16,7 +17,8 @@
 			"phone": "00000001",
 			"created": "2022-08-07T16:00:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
-			"guest": false
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true }
 		},
 		"amount": 4735.76
 	},
@@ -28,7 +30,8 @@
 			"phone": "00000004",
 			"created": "2022-08-07T16:03:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
-			"guest": false
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true }
 		},
 		"receiver": {
 			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
@@ -39,6 +42,7 @@
 			"created": "2022-08-07T16:02:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
 			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true },
 			"superAdmin": true,
 			"publicEmail": false,
 			"publicPhone": true
@@ -52,7 +56,8 @@
 			"name": "Finley Shaw",
 			"created": "2022-08-07T16:15:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
-			"guest": true
+			"guest": true,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true }
 		},
 		"receiver": {
 			"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
@@ -61,7 +66,8 @@
 			"phone": "00000001",
 			"created": "2022-08-07T16:00:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
-			"guest": false
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true }
 		},
 		"amount": 4123.99
 	},
@@ -72,7 +78,8 @@
 			"name": "Dana Wells",
 			"created": "2022-08-07T16:08:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
-			"guest": true
+			"guest": true,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true }
 		},
 		"receiver": {
 			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
@@ -83,6 +90,7 @@
 			"created": "2022-08-07T16:02:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
 			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true },
 			"superAdmin": true,
 			"publicEmail": false,
 			"publicPhone": true
@@ -97,7 +105,8 @@
 			"phone": "00000007",
 			"created": "2022-08-07T16:07:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
-			"guest": false
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true }
 		},
 		"receiver": {
 			"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
@@ -106,7 +115,8 @@
 			"phone": "00000001",
 			"created": "2022-08-07T16:00:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
-			"guest": false
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true }
 		},
 		"amount": 4017.99
 	},
@@ -118,7 +128,8 @@
 			"phone": "00000006",
 			"created": "2022-08-07T16:05:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
-			"guest": false
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true }
 		},
 		"receiver": {
 			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
@@ -129,6 +140,7 @@
 			"created": "2022-08-07T16:02:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
 			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true },
 			"superAdmin": true,
 			"publicEmail": false,
 			"publicPhone": true
@@ -143,7 +155,8 @@
 			"phone": "00000005",
 			"created": "2022-08-07T16:04:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
-			"guest": false
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true }
 		},
 		"receiver": {
 			"id": "81ceb4d6-d1a8-4f7c-adf0-9559b96f98a5",
@@ -152,7 +165,8 @@
 			"phone": "00000001",
 			"created": "2022-08-07T16:00:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
-			"guest": false
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true }
 		},
 		"amount": 1348.73
 	},
@@ -164,7 +178,8 @@
 			"phone": "00000005",
 			"created": "2022-08-07T16:04:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
-			"guest": false
+			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true }
 		},
 		"receiver": {
 			"id": "a8e9ad25-1d89-4456-89ae-a5fbaf66d2e4",
@@ -175,6 +190,7 @@
 			"created": "2022-08-07T16:02:00.000Z",
 			"avatarURL": "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=80&d=mp",
 			"guest": false,
+			"eventInfo": { "id": "7f3df48b-1214-49a9-a98d-0b8843bcc084", "name": "Pudding Week 2029", "currency": "NOK", "private": true },
 			"superAdmin": true,
 			"publicEmail": false,
 			"publicPhone": true

@@ -58,7 +58,7 @@
 							}
 						</div>
 					</span>
-					<span class="amount-color"> {{ receiver.amount | appCurrency: currency() }} </span>
+					<span class="amount-color"> {{ receiver.amount | appCurrency: payment().sender.eventInfo?.currency }} </span>
 				</div>
 			</mat-list-item>
 		}

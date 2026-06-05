@@ -1,7 +1,7 @@
 <mat-list-item class="wrapper" (click)="gotoExpense()">
 	<mat-icon matListItemIcon class="expense-icon">{{ expense().categoryInfo?.icon ?? "shopping_cart" }}</mat-icon>
 	<div class="price-category">
-		<span class="amount-color-darker">{{ expense().amount | appCurrency: expense().currency }}</span>
+		<span class="amount-color-darker">{{ expense().amount | appCurrency: expense().eventInfo.currency }}</span>
 		<span class="category"> / {{ expense().categoryInfo?.name }} </span>
 	</div>
 	<div class="title">

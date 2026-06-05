@@ -223,7 +223,9 @@
 					<div class="">
 						<div class="overflow">
 							{{ expense.name }}
-							<span class="amount"> {{ expense.amount | appCurrency: expense.eventInfo.currency }} </span>
+							<span class="amount">
+								{{ expense.amount | appCurrency: expense.eventInfo.currency }}
+							</span>
 						</div>
 						<div class="subtext overflow">
 							{{

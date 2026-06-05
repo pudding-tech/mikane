@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
@@ -9,7 +9,6 @@ import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { User } from 'src/app/services/user/user.service';
 import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
-import { CurrencyCode } from 'src/app/types/constants';
 
 @Component({
 	selector: 'app-payment-expansion-panel-item',
@@ -31,16 +30,19 @@ export class PaymentExpansionPanelItemComponent {
 	private router = inject(Router);
 
 	@ViewChild(MatAccordion) accordion!: MatAccordion;
-	@Input() payments: {
-		sender: User;
-		receivers: {
-			receiver: User;
-			amount: number;
-		}[];
-	}[];
-	@Input() self: boolean;
-	@Input() currentUser: User;
-	@Input() currency?: CurrencyCode;
+
+	payments = input<
+		{
+			sender: User;
+			receivers: {
+				receiver: User;
+				amount: number;
+			}[];
+		}[]
+	>();
+	self = input<boolean>(false);
+	currentUser = input<User>();
+
 	@Output() allPanelsExpanded = new EventEmitter();
 
 	displayedColumns: string[] = ['name', 'amount'];

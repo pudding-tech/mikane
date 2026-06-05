@@ -9,7 +9,6 @@ import { MatListModule } from '@angular/material/list';
 import { Router } from '@angular/router';
 import { User } from 'src/app/services/user/user.service';
 import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
-import { CurrencyCode } from 'src/app/types/constants';
 
 @Component({
 	selector: 'app-payment-item',
@@ -41,7 +40,6 @@ export class PaymentItemComponent {
 	}>();
 	self = input.required<boolean>();
 	currentUser = input.required<User>();
-	currency = input<CurrencyCode>();
 	expanded = input<boolean>(false);
 	dropdownToggled = output<{ senderId: string; expanded: boolean; self: boolean }>();
 

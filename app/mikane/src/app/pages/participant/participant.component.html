@@ -72,9 +72,11 @@
 										<div class="count" [ngClass]="{ 'no-expenses': userWithBalance.expensesCount === 0 }">
 											{{ userWithBalance.expensesCount }}
 										</div>
-										<div>{{ userWithBalance.spending | appCurrency: event.currency }}</div>
-										<div>{{ userWithBalance.expenses | appCurrency: event.currency }}</div>
-										<div class="amount-color">{{ userWithBalance.balance | appCurrency: event.currency }}</div>
+										<div>{{ userWithBalance.spending | appCurrency: userWithBalance.user.eventInfo.currency }}</div>
+										<div>{{ userWithBalance.expenses | appCurrency: userWithBalance.user.eventInfo.currency }}</div>
+										<div class="amount-color">
+											{{ userWithBalance.balance | appCurrency: userWithBalance.user.eventInfo.currency }}
+										</div>
 									</mat-panel-title>
 								</mat-expansion-panel-header>
 								<ng-template matExpansionPanelContent>

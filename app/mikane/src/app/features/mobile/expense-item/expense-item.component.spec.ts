@@ -43,6 +43,7 @@ describe('ExpenseItemComponent', () => {
 					name: 'Test Category',
 					icon: 'shopping',
 				},
+				eventInfo: { id: 'e1', name: 'Test Event', private: false, currency: 'NOK' },
 			} as Expense;
 			fixture.componentRef.setInput('expense', expense);
 			fixture.detectChanges();
@@ -70,10 +71,11 @@ describe('ExpenseItemComponent', () => {
 			expect(payerEl.textContent).toContain(expense.payer.name);
 		});
 
-		it('should display the expense amount', () => {
+		it('should display the expense amount in the event currency', () => {
 			const amountEl = fixture.debugElement.query(By.css('.amount-color-darker')).nativeElement;
 
 			expect(amountEl.textContent).toContain(expense.amount.toString());
+			expect(amountEl.textContent).toContain('kr');
 		});
 
 		it('should show expense icon', () => {
@@ -103,6 +105,7 @@ describe('ExpenseItemComponent', () => {
 					email: '',
 				},
 				categoryInfo: null,
+				eventInfo: { id: 'e1', name: 'Test Event', private: false, currency: 'NOK' },
 			} as Expense;
 			fixture.componentRef.setInput('expense', expense);
 			fixture.detectChanges();

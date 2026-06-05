@@ -82,7 +82,7 @@ export class EventService {
 		name: string;
 		description: string;
 		privateEvent: boolean;
-		currency?: CurrencyCode;
+		currency: CurrencyCode;
 	}): Observable<PuddingEvent> {
 		return this.httpClient.post<PuddingEvent>(this.apiUrl, { name, description, private: privateEvent, currency });
 	}

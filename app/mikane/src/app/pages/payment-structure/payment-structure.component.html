@@ -19,7 +19,6 @@
 								[payments]="paymentsSelf()"
 								[self]="true"
 								[currentUser]="currentUser()"
-								[currency]="eventCurrency()"
 								(allPanelsExpanded)="panelToggled(1, $event)"
 							/>
 						} @else {
@@ -40,7 +39,6 @@
 								[payments]="paymentsOthers()"
 								[self]="false"
 								[currentUser]="currentUser()"
-								[currency]="eventCurrency()"
 								(allPanelsExpanded)="panelToggled(2, $event)"
 							/>
 						} @else {
@@ -55,9 +53,8 @@
 					</div>
 				}
 			</div>
-		}
 
-		@else {
+		} @else {
 			@if (senders().length > 0) {
 				<div>
 					@if (paymentsSelf().length > 0) {
@@ -74,7 +71,6 @@
 										[payment]="payment"
 										[self]="true"
 										[currentUser]="currentUser()"
-										[currency]="eventCurrency()"
 										[expanded]="expandedSelf().has(payment.sender.id)"
 										(dropdownToggled)="paymentToggledMobile($event.senderId, $event.expanded, $event.self)"
 									/>
@@ -96,7 +92,6 @@
 										[payment]="payment"
 										[self]="false"
 										[currentUser]="currentUser()"
-										[currency]="eventCurrency()"
 										[expanded]="expandedOthers().has(payment.sender.id)"
 										(dropdownToggled)="paymentToggledMobile($event.senderId, $event.expanded, $event.self)"
 									/>

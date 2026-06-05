@@ -71,7 +71,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 		name: '',
 		description: '',
 		private: false,
-		currency: CurrencyCode['EUR'],
+		currency: CurrencyCode.EUR,
 	};
 	adminsInEvent = signal<User[]>([]);
 	otherUsersInEvent = signal<User[]>([]);

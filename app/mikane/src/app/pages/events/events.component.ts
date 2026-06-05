@@ -18,6 +18,7 @@ import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { ApiError } from 'src/app/types/apiError.type';
+import { CurrencyCode } from 'src/app/types/constants';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { EventDialogComponent } from './event-dialog/event-dialog.component';
 
@@ -122,7 +123,12 @@ export class EventsComponent implements OnInit, OnDestroy {
 			next: (editedEvent: PuddingEvent) => {
 				if (editedEvent) {
 					this.eventService
-						.editEvent({ id: editedEvent.id, name: editedEvent.name, description: editedEvent.description })
+						.editEvent({
+							id: editedEvent.id,
+							name: editedEvent.name,
+							description: editedEvent.description,
+							currency: editedEvent.currency,
+						})
 						.subscribe({
 							next: (result) => {
 								const index = this.events().indexOf(this.events().find((event) => event.id === result.id));
@@ -153,20 +159,27 @@ export class EventsComponent implements OnInit, OnDestroy {
 
 		dialogRef.afterClosed().subscribe((event: { name: string; description: string; private: boolean }) => {
 			if (event) {
-				this.eventService.createEvent({ name: event.name, description: event.description, privateEvent: event.private }).subscribe({
-					next: (newEvent) => {
-						this.events.update((events) => {
-							events.unshift(newEvent);
-							return [...events];
-						});
-						this.startIndexActive.set(0);
-						this.endIndexActive.set(this.pageSizeActive());
-					},
-					error: (err: ApiError) => {
-						this.messageService.showError('Failed to create event');
-						this.logService.error('Something went wrong while creating event: ' + err?.error?.message);
-					},
-				});
+				this.eventService
+					.createEvent({
+						name: event.name,
+						description: event.description,
+						currency: CurrencyCode.NOK,
+						privateEvent: event.private,
+					})
+					.subscribe({
+						next: (newEvent) => {
+							this.events.update((events) => {
+								events.unshift(newEvent);
+								return [...events];
+							});
+							this.startIndexActive.set(0);
+							this.endIndexActive.set(this.pageSizeActive());
+						},
+						error: (err: ApiError) => {
+							this.messageService.showError('Failed to create event');
+							this.logService.error('Something went wrong while creating event: ' + err?.error?.message);
+						},
+					});
 			}
 		});
 	}
