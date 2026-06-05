@@ -44,6 +44,7 @@ describe('ExpenseComponent', () => {
 		payer: { id: 'user1', name: 'Alice', avatarURL: 'avatar.png', guest: false, username: 'alice', authenticated: true },
 		created: new Date(),
 		description: 'Team dinner',
+		eventInfo: { id: 'event1', name: 'Event 1', private: false, currency: 'NOK' },
 	} as Expense;
 
 	beforeEach(() => {

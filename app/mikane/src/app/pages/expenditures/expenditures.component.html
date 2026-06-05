@@ -99,7 +99,7 @@
 							<ng-container matColumnDef="amount">
 								<th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
 								<td mat-cell class="amount-color" *matCellDef="let expense">
-									<div>{{ expense.amount | currency: "" : "" : "1.2-2" : "no" }} kr</div>
+									<div>{{ expense.amount | appCurrency: expense.currency ?? event.currency }}</div>
 								</td>
 							</ng-container>
 							<!-- Description Column -->
@@ -142,9 +142,7 @@
 							<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 							<!-- Row shown when there is no matching data -->
 							<tr class="mat-row" *matNoDataRow>
-								<td class="mat-cell" colspan="8" class="no-expenses">
-									No expenses matching the filter
-								</td>
+								<td class="mat-cell" colspan="8" class="no-expenses">No expenses matching the filter</td>
 							</tr>
 						</table>
 					</div>

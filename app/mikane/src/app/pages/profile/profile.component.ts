@@ -18,6 +18,7 @@ import { Expense } from 'src/app/services/expense/expense.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
+import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
 import { ApiError } from 'src/app/types/apiError.type';
 
@@ -26,6 +27,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 	styleUrls: ['./profile.component.scss'],
 	imports: [
 		CommonModule,
+		AppCurrencyPipe,
 		MatCardModule,
 		ProgressSpinnerComponent,
 		MenuComponent,

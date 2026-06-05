@@ -78,6 +78,24 @@ describe('EventInfoComponent', () => {
 				{ id: 'test', name: 'test', eventInfo: { isAdmin: true }, avatarURL: 'test-avatar.png' },
 			] as User[]);
 		});
+
+		it('should display the full name and code for a known currency', () => {
+			createComponent(of({ id: 'test', currency: 'NOK', status: { id: 1, name: 'Active' } } as PuddingEvent));
+
+			expect(component.eventCurrencyDisplay).toEqual('Norwegian Krone (NOK)');
+		});
+
+		it('should fall back to the raw code for an unknown currency', () => {
+			createComponent(of({ id: 'test', currency: 'XYZ', status: { id: 1, name: 'Active' } } as unknown as PuddingEvent));
+
+			expect(component.eventCurrencyDisplay).toEqual('XYZ');
+		});
+
+		it('should display "Unknown" when the event has no currency', () => {
+			createComponent(of({ id: 'test', status: { id: 1, name: 'Active' } } as PuddingEvent));
+
+			expect(component.eventCurrencyDisplay).toEqual('Unknown');
+		});
 	});
 
 	describe('from user service', () => {

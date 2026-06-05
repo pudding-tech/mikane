@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable, of, tap } from 'rxjs';
+import { CurrencyCode } from 'src/app/types/constants';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { User, UserBalance } from '../user/user.service';
@@ -12,7 +13,7 @@ export interface PuddingEvent {
 	created: Date;
 	adminIds: string[];
 	private: boolean;
-	currency: string;
+	currency: CurrencyCode;
 	status: {
 		id: number;
 		name: string;
@@ -76,12 +77,14 @@ export class EventService {
 		name,
 		description,
 		privateEvent,
+		currency,
 	}: {
 		name: string;
 		description: string;
 		privateEvent: boolean;
+		currency: CurrencyCode;
 	}): Observable<PuddingEvent> {
-		return this.httpClient.post<PuddingEvent>(this.apiUrl, { name, description, private: privateEvent });
+		return this.httpClient.post<PuddingEvent>(this.apiUrl, { name, description, private: privateEvent, currency });
 	}
 
 	editEvent({
@@ -89,15 +92,17 @@ export class EventService {
 		name,
 		description,
 		privateEvent,
+		currency,
 		status,
 	}: {
 		id: string;
 		name?: string;
 		description?: string;
 		privateEvent?: boolean;
+		currency?: CurrencyCode;
 		status?: EventStatusType;
 	}): Observable<PuddingEvent> {
-		return this.httpClient.put<PuddingEvent>(this.apiUrl + `/${id}`, { name, description, private: privateEvent, status });
+		return this.httpClient.put<PuddingEvent>(this.apiUrl + `/${id}`, { name, description, private: privateEvent, currency, status });
 	}
 
 	deleteEvent(eventId: string): Observable<void> {

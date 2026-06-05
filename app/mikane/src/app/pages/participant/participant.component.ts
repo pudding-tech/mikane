@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe, NgOptimizedImage } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -38,6 +38,7 @@ import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { ScrollService } from 'src/app/services/scroll/scroll.service';
 import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
+import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 import { ExpenditureDialogComponent } from '../expenditures/expenditure-dialog/expenditure-dialog.component';
@@ -50,6 +51,7 @@ import { ParticipantDialogComponent } from './user-dialog/participant-dialog.com
 	styleUrls: ['./participant.component.scss'],
 	imports: [
 		CommonModule,
+		AppCurrencyPipe,
 		MatButtonModule,
 		MatIconModule,
 		MatExpansionModule,
@@ -58,7 +60,6 @@ import { ParticipantDialogComponent } from './user-dialog/participant-dialog.com
 		MatTooltipModule,
 		ProgressSpinnerComponent,
 		MatCardModule,
-		CurrencyPipe,
 		MatDialogModule,
 		MatListModule,
 		ParticipantItemComponent,

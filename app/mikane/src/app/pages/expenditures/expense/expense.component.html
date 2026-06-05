@@ -17,7 +17,7 @@
 			<div class="title">
 				<div class="header">Amount</div>
 				<div class="amount">
-					<span class="amount-color-darker">{{ expense().amount | currency: "" : "" : "1.2-2" : "no" }} kr</span>
+					<span class="amount-color-darker">{{ expense().amount | appCurrency: expense().eventInfo.currency }}</span>
 				</div>
 			</div>
 			<div class="title">

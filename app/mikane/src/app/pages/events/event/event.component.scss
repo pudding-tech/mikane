@@ -19,17 +19,35 @@ mat-toolbar button {
 }
 
 .name {
-	white-space: normal;
+	white-space: nowrap;
 	overflow: hidden;
-	display: -webkit-box;
-	-webkit-line-clamp: 1;
-	line-clamp: 1;
-	-webkit-box-orient: vertical;
+	display: flex;
+	align-items: center;
+
+	.name-text {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }
 
 .settings-tab {
 	max-width: 10px;
 	background-color: #161616;
+}
+
+.event-status-marker {
+	display: inline-flex;
+	align-items: center;
+	padding: 0px 12px;
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	border-radius: 20px;
+	font-size: 13px;
+	letter-spacing: 0.01em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.515);
+	border-color: rgba(167, 150, 150, 0.35);
+	margin-left: 1.4em;
+	margin-right: 1.4em;
 }
 
 .ready-to-settle {

@@ -94,6 +94,7 @@ describe('PaymentStructureComponent', () => {
 							name: 'test',
 							email: '',
 							avatarURL: 'test',
+							eventInfo: { currency: 'NOK' },
 						},
 						receiver: {
 							id: '2',
@@ -109,6 +110,7 @@ describe('PaymentStructureComponent', () => {
 							name: 'test',
 							email: '',
 							avatarURL: 'test',
+							eventInfo: { currency: 'NOK' },
 						},
 						receiver: {
 							id: '3',
@@ -124,6 +126,7 @@ describe('PaymentStructureComponent', () => {
 							name: 'test2',
 							email: '',
 							avatarURL: 'test',
+							eventInfo: { currency: 'NOK' },
 						},
 						receiver: {
 							id: '1',
@@ -139,6 +142,7 @@ describe('PaymentStructureComponent', () => {
 							name: 'test2',
 							email: '',
 							avatarURL: 'test',
+							eventInfo: { currency: 'NOK' },
 						},
 						receiver: {
 							id: '3',
@@ -154,6 +158,7 @@ describe('PaymentStructureComponent', () => {
 							name: 'test3',
 							email: '',
 							avatarURL: 'test',
+							eventInfo: { currency: 'NOK' },
 						},
 						receiver: {
 							id: '2',
@@ -179,6 +184,7 @@ describe('PaymentStructureComponent', () => {
 						name: 'test',
 						email: '',
 						avatarURL: 'test',
+						eventInfo: { currency: 'NOK' },
 					},
 					receivers: [
 						{
@@ -207,6 +213,7 @@ describe('PaymentStructureComponent', () => {
 						name: 'test2',
 						email: '',
 						avatarURL: 'test',
+						eventInfo: { currency: 'NOK' },
 					},
 					receivers: [
 						{
@@ -235,6 +242,7 @@ describe('PaymentStructureComponent', () => {
 						name: 'test3',
 						email: '',
 						avatarURL: 'test',
+						eventInfo: { currency: 'NOK' },
 					},
 					receivers: [
 						{
@@ -265,6 +273,7 @@ describe('PaymentStructureComponent', () => {
 						name: 'test',
 						email: '',
 						avatarURL: 'test',
+						eventInfo: { currency: 'NOK' },
 					},
 					receivers: [
 						{
@@ -293,6 +302,7 @@ describe('PaymentStructureComponent', () => {
 						name: 'test2',
 						email: '',
 						avatarURL: 'test',
+						eventInfo: { currency: 'NOK' },
 					},
 					receivers: [
 						{
@@ -332,6 +342,7 @@ describe('PaymentStructureComponent', () => {
 						name: 'test3',
 						email: '',
 						avatarURL: 'test',
+						eventInfo: { currency: 'NOK' },
 					},
 					receivers: [
 						{
@@ -476,13 +487,13 @@ describe('PaymentStructureComponent', () => {
 		const payments: Payment[] = [
 			// "Self" payment: current user is the sender
 			{
-				sender: { id: '1', name: 'me', email: '', avatarURL: 'a' },
+				sender: { id: '1', name: 'me', email: '', avatarURL: 'a', eventInfo: { currency: 'NOK' } },
 				receiver: { id: '2', name: 'them', email: '', avatarURL: 'a' },
 				amount: 1,
 			} as Payment,
 			// "Others" payment: current user not involved
 			{
-				sender: { id: '3', name: 'a', email: '', avatarURL: 'a' },
+				sender: { id: '3', name: 'a', email: '', avatarURL: 'a', eventInfo: { currency: 'NOK' } },
 				receiver: { id: '2', name: 'them', email: '', avatarURL: 'a' },
 				amount: 2,
 			} as Payment,

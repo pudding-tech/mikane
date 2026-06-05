@@ -17,6 +17,7 @@ import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { ApiError } from 'src/app/types/apiError.type';
+import { CURRENCIES } from 'src/app/types/constants';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 
 @Component({
@@ -50,6 +51,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 	loading = new BehaviorSubject<boolean>(false);
 	adminsInEvent: User[];
 	currentUser: User;
+	eventCurrencyDisplay = '';
 
 	private eventSubscription: Subscription;
 	readonly EventStatusType = EventStatusType;
@@ -68,6 +70,10 @@ export class EventInfoComponent implements OnInit, OnDestroy {
 				next: ([users, currentUser]) => {
 					this.adminsInEvent = users.filter((user) => user.eventInfo?.isAdmin);
 					this.currentUser = currentUser;
+					const selectedCurrency = CURRENCIES.find((currency) => currency.code === this.event.currency);
+					this.eventCurrencyDisplay = selectedCurrency
+						? `${selectedCurrency.name} (${selectedCurrency.code})`
+						: (this.event.currency ?? 'Unknown');
 					this.loading.next(false);
 				},
 				error: (err: ApiError) => {

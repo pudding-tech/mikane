@@ -1,6 +1,7 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { CurrencyCode } from 'src/app/types/constants';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -177,7 +178,7 @@ describe('EventService', () => {
 
 	describe('#createEvent', () => {
 		it('should create event', () => {
-			service.createEvent({ name: 'name', description: 'description', privateEvent: false }).subscribe({
+			service.createEvent({ name: 'name', description: 'description', privateEvent: false, currency: CurrencyCode.NOK }).subscribe({
 				next: (result) => {
 					expect(result).toEqual(mockEvent);
 				},
@@ -186,7 +187,7 @@ describe('EventService', () => {
 			const req = httpTestingController.expectOne('http://localhost:3002/api/events');
 
 			expect(req.request.method).toEqual('POST');
-			expect(req.request.body).toEqual({ name: 'name', description: 'description', private: false });
+			expect(req.request.body).toEqual({ name: 'name', description: 'description', private: false, currency: CurrencyCode.NOK });
 
 			req.flush(mockEvent);
 		});

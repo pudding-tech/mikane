@@ -31,15 +31,15 @@
 		<div class="balances">
 			<div>
 				<span class="text">Spending:</span>
-				<span> {{ userBalance().spending | currency: "" : "" : "1.2-2" : "no" }} kr </span>
+				<span> {{ userBalance().spending | appCurrency: userBalance().user.eventInfo.currency }} </span>
 			</div>
 			<div>
 				<span class="text">Expenses:</span>
-				<span> {{ userBalance().expenses | currency: "" : "" : "1.2-2" : "no" }} kr </span>
+				<span> {{ userBalance().expenses | appCurrency: userBalance().user.eventInfo.currency }} </span>
 			</div>
 			<div>
 				<span class="text">Balance:</span>
-				<span class="amount-color"> {{ userBalance().balance | currency: "" : "" : "1.2-2" : "no" }} kr </span>
+				<span class="amount-color"> {{ userBalance().balance | appCurrency: userBalance().user.eventInfo.currency }} </span>
 			</div>
 		</div>
 	</div>

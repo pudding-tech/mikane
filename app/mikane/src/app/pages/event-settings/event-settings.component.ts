@@ -24,6 +24,7 @@ import { MessageService } from 'src/app/services/message/message.service';
 import { User, UserService } from 'src/app/services/user/user.service';
 import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
 import { ApiError } from 'src/app/types/apiError.type';
+import { CURRENCIES, CurrencyCode } from 'src/app/types/constants';
 import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
 
@@ -52,6 +53,7 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 	],
 })
 export class EventSettingsComponent implements OnInit, OnDestroy {
+	protected readonly currencies = CURRENCIES;
 	private router = inject(Router);
 	private eventService = inject(EventService);
 	private userService = inject(UserService);
@@ -65,7 +67,12 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 	@Input() $event: BehaviorSubject<PuddingEvent>;
 	event: PuddingEvent;
 	loading = new BehaviorSubject<boolean>(false);
-	eventData: { id?: string; name: string; description: string; private: boolean } = { name: '', description: '', private: false };
+	eventData: { id?: string; name: string; description: string; private: boolean; currency: CurrencyCode } = {
+		name: '',
+		description: '',
+		private: false,
+		currency: CurrencyCode.EUR,
+	};
 	adminsInEvent = signal<User[]>([]);
 	otherUsersInEvent = signal<User[]>([]);
 	currentUser = signal<User>(undefined);
@@ -95,6 +102,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 					this.eventData.name = event.name;
 					this.eventData.description = event.description;
 					this.eventData.private = event.private;
+					this.eventData.currency = event.currency as CurrencyCode;
 					return combineLatest([this.userService.loadUsersByEvent(event.id, true), this.authService.getCurrentUser()]);
 				}),
 			)
@@ -120,6 +128,7 @@ export class EventSettingsComponent implements OnInit, OnDestroy {
 				name: this.eventData.name,
 				description: this.eventData.description,
 				privateEvent: this.eventData.private,
+				currency: this.eventData.currency,
 			})
 			.subscribe({
 				next: (event) => {

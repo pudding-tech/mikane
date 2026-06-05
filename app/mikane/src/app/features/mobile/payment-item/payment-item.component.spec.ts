@@ -44,7 +44,7 @@ describe('PaymentItemComponent', () => {
 		fixture = TestBed.createComponent(PaymentItemComponent);
 		component = fixture.componentInstance;
 		fixture.componentRef.setInput('payment', {
-			sender: { id: '1', name: 'Sender' } as User,
+			sender: { id: '1', name: 'Sender', eventInfo: { currency: 'NOK' } } as User,
 			receivers: [
 				{ receiver: { id: '2', name: 'Receiver 1' } as User, amount: 50 },
 				{ receiver: { id: '3', name: 'Receiver 2' } as User, amount: 50 },
@@ -80,6 +80,19 @@ describe('PaymentItemComponent', () => {
 			expect(nameEl.textContent).toContain(receiver.receiver.name);
 			expect(amountEl.textContent).toContain(receiver.amount);
 		});
+	});
+
+	// Regression guard
+	it('should render the amount when the sender has no eventInfo', () => {
+		fixture.componentRef.setInput('payment', {
+			sender: { id: '1', name: 'Sender' } as User,
+			receivers: [{ receiver: { id: '2', name: 'Receiver 1' } as User, amount: 50 }],
+		});
+
+		expect(() => fixture.detectChanges()).not.toThrow();
+
+		const amountEl = fixture.debugElement.query(By.css('.amount-color')).nativeElement;
+		expect(amountEl.textContent).toContain('50');
 	});
 
 	it('should toggle the dropdown when the toggleDropdown method is called', () => {

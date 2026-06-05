@@ -101,12 +101,13 @@ describe('EventSettingsComponent', () => {
 	});
 
 	it('should set event data', () => {
-		const { component } = createComponent();
+		const { component } = createComponent({ currency: 'NOK' });
 		component.ngOnInit();
 
 		expect(component.eventData.id).toEqual('1');
 		expect(component.eventData.name).toEqual('test');
 		expect(component.eventData.description).toEqual('test');
+		expect(component.eventData.currency).toEqual('NOK');
 	});
 
 	it('should set event admins and other users', () => {

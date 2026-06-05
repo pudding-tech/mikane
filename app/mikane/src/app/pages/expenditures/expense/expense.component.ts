@@ -15,6 +15,7 @@ import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/ev
 import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
 import { LogService } from 'src/app/services/log/log.service';
 import { MessageService } from 'src/app/services/message/message.service';
+import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
 import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
 import { ApiError } from 'src/app/types/apiError.type';
 import { ExpenditureDialogComponent } from '../expenditure-dialog/expenditure-dialog.component';
@@ -24,6 +25,7 @@ import { ExpenditureDialogComponent } from '../expenditure-dialog/expenditure-di
 	styleUrls: ['./expense.component.scss'],
 	imports: [
 		CommonModule,
+		AppCurrencyPipe,
 		MatCardModule,
 		ProgressSpinnerComponent,
 		MatDialogModule,

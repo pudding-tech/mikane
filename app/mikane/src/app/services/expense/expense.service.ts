@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { CurrencyCode } from 'src/app/types/constants';
 import { Environment } from 'src/environments/environment.interface';
 import { ENV } from 'src/environments/environment.provider';
 import { User } from '../user/user.service';
@@ -10,6 +11,7 @@ export interface Expense {
 	name: string;
 	description: string;
 	amount: number;
+	currency?: CurrencyCode;
 	expenseDate?: Date;
 	created: Date;
 	categoryInfo: {
@@ -21,6 +23,7 @@ export interface Expense {
 		id: string;
 		name: string;
 		private: boolean;
+		currency: CurrencyCode;
 	};
 	payer: User;
 }
