@@ -9,9 +9,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
-import { User } from 'src/app/services/user/user.service';
-import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { User } from '../../../services/user/user.service';
+import { FormControlPipe } from '../../../shared/forms/form-control.pipe';
 import { PaymentItemComponent } from './payment-item.component';
 
 describe('PaymentItemComponent', () => {
@@ -159,12 +159,10 @@ describe('PaymentItemComponent', () => {
 		vi.useFakeTimers();
 		const rafCallbacks: FrameRequestCallback[] = [];
 
-		const requestAnimationFrameSpy = vi
-			.spyOn(globalThis, 'requestAnimationFrame')
-			.mockImplementation((cb: FrameRequestCallback) => {
-				rafCallbacks.push(cb);
-				return rafCallbacks.length;
-			});
+		const requestAnimationFrameSpy = vi.spyOn(globalThis, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
+			rafCallbacks.push(cb);
+			return rafCallbacks.length;
+		});
 
 		const localFixture = TestBed.createComponent(PaymentItemComponent);
 		const localComponent = localFixture.componentInstance;

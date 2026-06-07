@@ -1,8 +1,8 @@
 import { DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, Subject, catchError, finalize, of } from 'rxjs';
-import { Expense } from 'src/app/services/expense/expense.service';
-import { UserService } from 'src/app/services/user/user.service';
-import { ApiError } from 'src/app/types/apiError.type';
+import { Expense } from '../../services/expense/expense.service';
+import { UserService } from '../../services/user/user.service';
+import { ApiError } from '../../types/apiError.type';
 
 export class ExpenseDataSource implements DataSource<Expense> {
 	private expenseSubject = new BehaviorSubject<Expense[]>([]);

@@ -1,7 +1,7 @@
 @if ((loading | async) === false) {
 	<div>
 		@if ((breakpointService.isMobile() | async) === false) {
-			<div [ngClass]="{ 'extra-margin': !inEvent && event?.status.id !== EventStatusType.ACTIVE }">
+			<div [class.extra-margin]="!inEvent && event?.status.id !== EventStatusType.ACTIVE">
 				<div class="add-actions">
 					@if (event?.status.id === EventStatusType.ACTIVE) {
 						<button mat-raised-button color="primary" (click)="openDialog()">
@@ -64,12 +64,12 @@
 												class="avatar"
 												width="24"
 												height="24"
-												[ngClass]="{ clickable: !userWithBalance.user.guest }"
+												[class.clickable]="!userWithBalance.user.guest"
 												(click)="gotoUserProfile(userWithBalance.user)"
 											/>
 											{{ userWithBalance.user.name }}
 										</div>
-										<div class="count" [ngClass]="{ 'no-expenses': userWithBalance.expensesCount === 0 }">
+										<div class="count" [class.no-expenses]="userWithBalance.expensesCount === 0">
 											{{ userWithBalance.expensesCount }}
 										</div>
 										<div>{{ userWithBalance.spending | appCurrency: userWithBalance.user.eventInfo.currency }}</div>
@@ -130,7 +130,7 @@
 																: 'Expense date not set - displaying date created instead'
 														"
 														[matTooltipShowDelay]="100"
-														[ngClass]="{ 'expense-created-date': !expense.expenseDate }"
+														[class.expense-created-date]="!expense.expenseDate"
 													>
 														{{ expense.expenseDate ?? expense.created | date: "mediumDate" : null : "en" }}
 													</span>
@@ -259,7 +259,7 @@
 					color="primary"
 					class="add-users-button-mobile"
 					(click)="openDialog()"
-					[ngClass]="{ 'iOS-PWA': contextService.isIosPwaStandalone, hidden: scrollService.isScrolledToBottom() | async }"
+					[class]="{ 'iOS-PWA': contextService.isIosPwaStandalone, hidden: scrollService.isScrolledToBottom() | async }"
 				>
 					<mat-icon>person_add</mat-icon>
 				</button>

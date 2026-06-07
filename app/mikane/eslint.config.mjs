@@ -1,23 +1,12 @@
 import parser from "@angular-eslint/template-parser";
-import { FlatCompat } from "@eslint/eslintrc";
-import { default as eslint, default as js } from "@eslint/js";
+import { default as eslint } from "@eslint/js";
 import angular from "angular-eslint";
 import prettier from "eslint-config-prettier";
 import github from "eslint-plugin-github";
 import optimizeRegex from "eslint-plugin-optimize-regex";
 import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import tseslint from "typescript-eslint";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-	baseDirectory: __dirname,
-	recommendedConfig: js.configs.recommended,
-	allConfig: js.configs.all,
-});
 
 export default defineConfig([
 	globalIgnores(["projects/**/*"]),
@@ -75,6 +64,7 @@ export default defineConfig([
 				},
 			],
 			"@angular-eslint/prefer-standalone": "warn",
+			"@angular-eslint/prefer-on-push-component-change-detection": "warn",
 			"@typescript-eslint/no-unused-vars": [
 				"error",
 				{
@@ -92,7 +82,7 @@ export default defineConfig([
 	{
 		files: ["**/*.html"],
 
-		extends: compat.extends("plugin:@angular-eslint/template/recommended", "plugin:@angular-eslint/template/accessibility"),
+		extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
 
 		languageOptions: {
 			parser: parser,
@@ -104,7 +94,6 @@ export default defineConfig([
 			"@angular-eslint/template/prefer-self-closing-tags": "warn",
 			"@angular-eslint/template/prefer-ngsrc": "warn",
 			"@angular-eslint/template/prefer-control-flow": "warn",
-			"@angular-eslint/prefer-on-push-component-change-detection": "off",
 		},
 	},
 ]);

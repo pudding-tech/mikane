@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { User, UserBalance } from 'src/app/services/user/user.service';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { User, UserBalance } from '../../../services/user/user.service';
 import { ParticipantItemComponent } from './participant-item.component';
 
 describe('ParticipantItemComponent', () => {

@@ -1,5 +1,5 @@
-<mat-toolbar [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
-	<a mat-icon-button routerLink="/events" [ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
+<mat-toolbar [class.mobile-toolbar]="breakpointService.isMobile() | async">
+	<a mat-icon-button routerLink="/events" [class]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
 		<mat-icon>arrow_back</mat-icon>
 	</a>
 	<span>Profile</span>
@@ -32,8 +32,8 @@
 							<span class="user-info-row">
 								<mat-icon class="profile-info-icon">email</mat-icon>
 								@if (user?.email) {
-									<a [href]="'mailto:' + user?.email" class="email-link">{{ user?.email }} </a>
-									@if (user?.publicEmail === false) {
+									<a [href]="'mailto:' + user.email" class="email-link">{{ user.email }} </a>
+									@if (user.publicEmail === false) {
 										<mat-icon matTooltip="Your email is private and only visible to you" class="help-icon">
 											help
 										</mat-icon>
@@ -54,7 +54,7 @@
 											" " +
 											user.phone.slice(6)
 									}}
-									@if (user?.publicPhone === false) {
+									@if (user.publicPhone === false) {
 										<mat-icon matTooltip="Your phone number is private and only visible to you" class="help-icon">
 											help
 										</mat-icon>
@@ -90,8 +90,8 @@
 					<span class="user-info-row">
 						<mat-icon class="profile-info-icon">email</mat-icon>
 						@if (user?.email) {
-							<a [href]="'mailto:' + user?.email" class="email-link">{{ user?.email }} </a>
-							@if (user?.publicEmail === false) {
+							<a [href]="'mailto:' + user.email" class="email-link">{{ user.email }} </a>
+							@if (user.publicEmail === false) {
 								<mat-icon
 									#tooltip="matTooltip"
 									matTooltip="Your email is private and only visible to you"
@@ -117,7 +117,7 @@
 									" " +
 									user.phone.slice(6)
 							}}
-							@if (user?.publicPhone === false) {
+							@if (user.publicPhone === false) {
 								<mat-icon
 									#tooltip="matTooltip"
 									matTooltip="Your phone number is private and only visible to you"
@@ -148,7 +148,7 @@
 	<div class="profile-events">
 		<h3 class="title">Participating in events</h3>
 		@for (event of events(); track event.id) {
-			<div matRipple (click)="gotoEvent(event.id)" [ngClass]="{ isMobile: breakpointService.isMobile() | async }" class="event">
+			<div matRipple (click)="gotoEvent(event.id)" [class.isMobile]="breakpointService.isMobile() | async" class="event">
 				<div class="event-left">
 					@if (event.adminIds.includes(user?.id)) {
 						<mat-icon [matTooltip]="user.name + ' is an admin for this event'" [matTooltipShowDelay]="100" class="event-icon">
@@ -204,7 +204,7 @@
 				<span class="text">Show more</span>
 			</button>
 		} @else if (events.length >= 5) {
-			<div class="no-more-text" [ngClass]="{ hide: hideEventsText }">No more events</div>
+			<div class="no-more-text" [class.hide]="hideEventsText">No more events</div>
 		}
 	</div>
 </ng-template>
@@ -246,7 +246,7 @@
 				<span class="text">Show more</span>
 			</button>
 		} @else if (expenses.length >= 5) {
-			<div class="no-more-text no-more-expenses" [ngClass]="{ hide: hideExpensesText }">No more expenses</div>
+			<div class="no-more-text no-more-expenses" [class.hide]="hideExpensesText">No more expenses</div>
 		}
 	</div>
 </ng-template>

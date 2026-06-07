@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 	selector: 'app-split-button-item',
 	templateUrl: './split-button-item.component.html',
 	styleUrls: ['./split-button-item.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [MatIconModule, MatRippleModule],
 })
 export class SplitButtonItemComponent {

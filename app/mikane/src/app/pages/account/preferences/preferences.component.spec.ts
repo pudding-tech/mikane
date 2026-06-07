@@ -6,10 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { of, throwError } from 'rxjs';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { LogService } from '../../../services/log/log.service';
+import { MessageService } from '../../../services/message/message.service';
+import { User, UserService } from '../../../services/user/user.service';
 import { PreferencesComponent } from './preferences.component';
 
 describe('PreferencesComponent', () => {

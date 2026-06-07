@@ -95,15 +95,16 @@
 		{{ event?.currency }}
 	</div>
 	<div>
-		This event uses <b>{{ eventCurrencyDisplay }}</b> as its currency for settlement and payments, and as the default currency for expenses.
+		This event uses <b>{{ eventCurrencyDisplay }}</b> as its currency for settlement and payments, and as the default currency for
+		expenses.
 	</div>
 </ng-template>
 
 <ng-template #adminsContent>
-	<div [ngClass]="{ 'info-mobile': breakpointService.isMobile() | async }">
+	<div [class.info-mobile]="breakpointService.isMobile() | async">
 		If any changes are needed for this event, please reach out to one of the administrators listed below:
 	</div>
-	<div class="admins-content" [ngClass]="{ 'full-view': (breakpointService.isMobile() | async) === false }">
+	<div class="admins-content" [class.full-view]="(breakpointService.isMobile() | async) === false">
 		<mat-nav-list>
 			@for (admin of adminsInEvent; track admin.id) {
 				<mat-list-item class="list-item">
@@ -115,7 +116,7 @@
 								class="avatar"
 								width="24"
 								height="24"
-								[ngClass]="{ clickable: !admin.guest }"
+								[class.clickable]="!admin.guest"
 								(click)="gotoUserProfile(admin)"
 							/>
 							{{ admin.name }}

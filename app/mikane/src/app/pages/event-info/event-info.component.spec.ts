@@ -1,12 +1,12 @@
 import { AsyncPipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { PuddingEvent } from 'src/app/services/event/event.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AuthService } from '../../services/auth/auth.service';
+import { PuddingEvent } from '../../services/event/event.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User, UserService } from '../../services/user/user.service';
 import { EventInfoComponent } from './event-info.component';
 
 describe('EventInfoComponent', () => {

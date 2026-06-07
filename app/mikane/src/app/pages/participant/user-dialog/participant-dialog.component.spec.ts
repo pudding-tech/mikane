@@ -10,8 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable, of } from 'rxjs';
-import { User } from 'src/app/services/user/user.service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { User } from '../../../services/user/user.service';
 import { ParticipantDialogComponent } from './participant-dialog.component';
 
 describe('ParticipantDialogComponent', () => {

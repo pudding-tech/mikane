@@ -1,5 +1,5 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AsyncPipe, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,19 +9,19 @@ import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { KeyValidationService } from 'src/app/services/key-validation/key-validation.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { createCompareValidator } from 'src/app/shared/forms/validators/compare.validator';
-import { ApiError } from 'src/app/types/apiError.type';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { KeyValidationService } from '../../services/key-validation/key-validation.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { createCompareValidator } from '../../shared/forms/validators/compare.validator';
+import { ApiError } from '../../types/apiError.type';
 
 @Component({
 	templateUrl: './reset-password.component.html',
 	styleUrls: ['./reset-password.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatToolbarModule,
 		MatCardModule,
 		MatIconModule,
@@ -31,6 +31,8 @@ import { ApiError } from 'src/app/types/apiError.type';
 		MatInputModule,
 		MatButtonModule,
 		NgOptimizedImage,
+		AsyncPipe,
+		NgTemplateOutlet,
 	],
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {

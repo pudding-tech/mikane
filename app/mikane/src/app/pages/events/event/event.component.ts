@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,26 +7,26 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, switchMap } from 'rxjs';
-import { MenuComponent } from 'src/app/features/menu/menu.component';
-import { MobileEventNavbarComponent } from 'src/app/features/mobile/mobile-event-navbar/mobile-event-navbar.component';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { ContextService } from 'src/app/services/context/context.service';
-import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
+import { MenuComponent } from '../../../features/menu/menu.component';
+import { MobileEventNavbarComponent } from '../../../features/mobile/mobile-event-navbar/mobile-event-navbar.component';
+import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
+import { ContextService } from '../../../services/context/context.service';
+import { EventService, EventStatusType, PuddingEvent } from '../../../services/event/event.service';
+import { LogService } from '../../../services/log/log.service';
+import { MessageService } from '../../../services/message/message.service';
+import { ApiError } from '../../../types/apiError.type';
 import { CategoryComponent } from '../../category/category.component';
 import { EventInfoComponent } from '../../event-info/event-info.component';
 import { EventSettingsComponent } from '../../event-settings/event-settings.component';
 import { ExpendituresComponent } from '../../expenditures/expenditures.component';
 import { ParticipantComponent } from '../../participant/participant.component';
-import { ApiError } from 'src/app/types/apiError.type';
 
 @Component({
 	selector: 'app-event',
 	templateUrl: './event.component.html',
 	styleUrls: ['./event.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatToolbarModule,
 		MatButtonModule,
 		RouterLink,
@@ -35,6 +35,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 		RouterOutlet,
 		MenuComponent,
 		MobileEventNavbarComponent,
+		AsyncPipe,
 	],
 })
 export class EventComponent implements OnInit {
@@ -128,26 +129,22 @@ export class EventComponent implements OnInit {
 			}
 		});
 
-		this.route.params
-			.pipe(
-				switchMap((params) => this.eventService.getEvent(params['eventId']))
-			)
-			.subscribe({
-				next: (event) => {
-					if (event) {
-						this.event = event;
-						this.isEventAdmin.set(event.userInfo.isAdmin);
-						this.$event.next(event);
-					} else {
-						// Event not found, redirect to event list
-						this.router.navigate(['/events']);
-					}
-				},
-				error: (error: ApiError) => {
-					this.messageService.showError('Error loading event');
-					this.logService.error('something went wrong while loading event: ' + error);
-				},
-			});
+		this.route.params.pipe(switchMap((params) => this.eventService.getEvent(params['eventId']))).subscribe({
+			next: (event) => {
+				if (event) {
+					this.event = event;
+					this.isEventAdmin.set(event.userInfo.isAdmin);
+					this.$event.next(event);
+				} else {
+					// Event not found, redirect to event list
+					this.router.navigate(['/events']);
+				}
+			},
+			error: (error: ApiError) => {
+				this.messageService.showError('Error loading event');
+				this.logService.error('something went wrong while loading event: ' + error);
+			},
+		});
 	}
 
 	getActiveLinkFromUrl(url: string) {

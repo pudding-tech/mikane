@@ -10,7 +10,7 @@
 @if (loading === false) {
 	<div>
 		@if ((breakpointService.isMobile() | async) === false) {
-			<div [ngClass]="{ 'extra-margin': event?.status.id !== EventStatusType.ACTIVE }">
+			<div [class.extra-margin]="event?.status.id !== EventStatusType.ACTIVE">
 				@if (expenses().length > 0) {
 					<div>
 						<mat-form-field class="filters">
@@ -73,7 +73,7 @@
 									<div class="payer">
 										<div
 											class="payer"
-											[ngClass]="{ clickable: !expense.payer.guest }"
+											[class.clickable]="!expense.payer.guest"
 											(click)="gotoUserProfile(expense.payer)"
 										>
 											<img
@@ -116,7 +116,7 @@
 									<span
 										[matTooltip]="expense.expenseDate ? null : 'Expense date not set - displaying date created instead'"
 										[matTooltipShowDelay]="100"
-										[ngClass]="{ 'expense-created-date': !expense.expenseDate }"
+										[class.expense-created-date]="!expense.expenseDate"
 									>
 										{{ expense.expenseDate ?? expense.created | date: "mediumDate" : null : "en" }}
 									</span>
@@ -152,7 +152,7 @@
 			</div>
 		} @else {
 			<mat-chip-set class="mobile-filters">
-				<mat-chip (click)="openFilterSearchBottomSheet()" [ngClass]="{ 'selected-chip': filterValue().length > 0 }">
+				<mat-chip (click)="openFilterSearchBottomSheet()" [class.selected-chip]="filterValue().length > 0">
 					<div class="filter-chip">
 						@if (filterValue().length > 0) {
 							<div class="filter-one-element-text">
@@ -164,7 +164,7 @@
 						<mat-icon>keyboard_arrow_down</mat-icon>
 					</div>
 				</mat-chip>
-				<mat-chip (click)="openFilterPayerBottomSheet()" [ngClass]="{ 'selected-chip': payersFilter().length > 0 }">
+				<mat-chip (click)="openFilterPayerBottomSheet()" [class.selected-chip]="payersFilter().length > 0">
 					<div class="filter-chip">
 						@if (payersFilter().length > 1) {
 							<div>
@@ -190,7 +190,7 @@
 						<mat-icon>keyboard_arrow_down</mat-icon>
 					</div>
 				</mat-chip>
-				<mat-chip (click)="openFilterCategoryBottomSheet()" [ngClass]="{ 'selected-chip': categoriesFilter().length > 0 }">
+				<mat-chip (click)="openFilterCategoryBottomSheet()" [class.selected-chip]="categoriesFilter().length > 0">
 					<div class="filter-chip">
 						@if (categoriesFilter().length > 1) {
 							<div>
@@ -226,7 +226,7 @@
 					color="primary"
 					class="add-expense-button-mobile"
 					(click)="openDialog()"
-					[ngClass]="{ 'iOS-PWA': contextService.isIosPwaStandalone, hidden: scrollService.isScrolledToBottom() | async }"
+					[class]="{ 'iOS-PWA': contextService.isIosPwaStandalone, hidden: scrollService.isScrolledToBottom() | async }"
 				>
 					<mat-icon>add_card</mat-icon>
 				</button>

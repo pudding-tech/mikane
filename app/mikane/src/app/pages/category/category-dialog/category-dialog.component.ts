@@ -1,6 +1,6 @@
 import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
 import { KeyValuePipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -9,13 +9,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
-import { categoryNameValidator } from 'src/app/shared/forms/validators/async-category-name.validator';
-import { CategoryIcon } from 'src/app/types/enums';
+import { FormValidationService } from '../../../services/form-validation/form-validation.service';
+import { categoryNameValidator } from '../../../shared/forms/validators/async-category-name.validator';
+import { CategoryIcon } from '../../../types/enums';
 
 @Component({
 	templateUrl: 'category-dialog.component.html',
 	styleUrls: ['category-dialog.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
 		MatDialogModule,
 		FormsModule,

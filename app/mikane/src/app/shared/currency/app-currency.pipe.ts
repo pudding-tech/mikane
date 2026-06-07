@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { CurrencyCode } from 'src/app/types/constants';
+import { CurrencyCode } from '../../types/constants';
 
 const LOCALE_BY_CURRENCY: Record<CurrencyCode, string> = {
 	USD: 'en-US',

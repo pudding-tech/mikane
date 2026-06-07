@@ -1,5 +1,5 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, EventEmitter, Output, ViewChild, inject, input } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, ViewChild, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
@@ -7,15 +7,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { User } from 'src/app/services/user/user.service';
-import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
+import { User } from '../../../services/user/user.service';
+import { AppCurrencyPipe } from '../../../shared/currency/app-currency.pipe';
 
 @Component({
 	selector: 'app-payment-expansion-panel-item',
 	templateUrl: './payment-expansion-panel-item.component.html',
 	styleUrls: ['./payment-expansion-panel-item.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatButtonModule,
 		MatIconModule,
 		MatExpansionModule,

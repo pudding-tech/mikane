@@ -1,5 +1,17 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, computed, effect, ElementRef, inject, input, OnDestroy, output, signal, ViewChild } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	effect,
+	ElementRef,
+	inject,
+	input,
+	OnDestroy,
+	output,
+	signal,
+	ViewChild,
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,15 +19,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { Router } from '@angular/router';
-import { User } from 'src/app/services/user/user.service';
-import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
+import { User } from '../../../services/user/user.service';
+import { AppCurrencyPipe } from '../../../shared/currency/app-currency.pipe';
 
 @Component({
 	selector: 'app-payment-item',
 	templateUrl: 'payment-item.component.html',
 	styleUrls: ['./payment-item.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatIconModule,
 		AppCurrencyPipe,
 		MatListModule,

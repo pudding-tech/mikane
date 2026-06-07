@@ -2,16 +2,16 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BehaviorSubject, of, throwError } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { ContextService } from 'src/app/services/context/context.service';
-import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
-import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { ApiError } from 'src/app/types/apiError.type';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ConfirmDialogComponent } from '../../features/confirm-dialog/confirm-dialog.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { ContextService } from '../../services/context/context.service';
+import { EventService, EventStatusType, PuddingEvent } from '../../services/event/event.service';
+import { FormValidationService } from '../../services/form-validation/form-validation.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User, UserService } from '../../services/user/user.service';
+import { ApiError } from '../../types/apiError.type';
 import { EventSettingsComponent } from './event-settings.component';
 
 function createComponent(eventData?: Partial<PuddingEvent>) {

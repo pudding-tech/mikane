@@ -1,18 +1,18 @@
 import { registerLocaleData } from '@angular/common';
 import localeNo from '@angular/common/locales/no';
+import { WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WritableSignal } from 'node_modules/@angular/core/types/_chrome_dev_tools_performance-chunk';
 import { Observable, of, Subject, throwError } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { PuddingEvent } from 'src/app/services/event/event.service';
-import { Expense } from 'src/app/services/expense/expense.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { PuddingEvent } from '../../services/event/event.service';
+import { Expense } from '../../services/expense/expense.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User, UserService } from '../../services/user/user.service';
 import { ProfileComponent } from './profile.component';
 
 class PC extends ProfileComponent {

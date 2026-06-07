@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { Expense } from 'src/app/services/expense/expense.service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Expense } from '../../../services/expense/expense.service';
 import { ExpenseItemComponent } from './expense-item.component';
 
 describe('ExpenseItemComponent', () => {

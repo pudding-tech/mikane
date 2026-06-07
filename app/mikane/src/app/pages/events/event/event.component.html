@@ -1,9 +1,9 @@
-<mat-toolbar [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
+<mat-toolbar [class.mobile-toolbar]="breakpointService.isMobile() | async">
 	<div>
 		<a
 			mat-icon-button
 			routerLink="../../events"
-			[ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'"
+			[class]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'"
 		>
 			<mat-icon>arrow_back</mat-icon>
 		</a>
@@ -11,13 +11,13 @@
 	<div class="name">
 		<span class="name-text">{{ event.name }}</span>
 		@if (event.status?.id !== EventStatusType.ACTIVE && (breakpointService.isMobile() | async) === false) {
-			<div class="event-status-marker" [ngClass]="{ 'ready-to-settle': event.status?.id === EventStatusType.READY_TO_SETTLE }">
+			<div class="event-status-marker" [class.ready-to-settle]="event.status?.id === EventStatusType.READY_TO_SETTLE">
 				{{ event.status?.id === EventStatusType.READY_TO_SETTLE ? "Ready to settle" : "Settled" }}
 			</div>
 		}
 	</div>
 	<span class="toolbar-spacer"></span>
-	<app-menu [ngClass]="{ 'mobile-menu': breakpointService.isMobile() | async }" />
+	<app-menu [class.mobile-menu]="breakpointService.isMobile() | async" />
 </mat-toolbar>
 @if ((breakpointService.isMobile() | async) === false) {
 	<nav class="navbar" mat-tab-nav-bar [tabPanel]="tabPanel">
@@ -27,7 +27,7 @@
 				[routerLink]="link.location"
 				(click)="activeLink.set(link.location)"
 				[active]="activeLink().includes(link.location)"
-				[ngClass]="{ 'settings-tab': link.name === 'Settings' || link.name === 'Info' }"
+				[class.settings-tab]="link.name === 'Settings' || link.name === 'Info'"
 			>
 				@if (link.name === "Settings" || link.name === "Info") {
 					<mat-icon>{{ link.icon }}</mat-icon>
@@ -45,10 +45,10 @@
 }
 <mat-tab-nav-panel #tabPanel />
 <div
-	[ngClass]="{
+	[class]="{
 		content: (breakpointService.isMobile() | async) === false,
 		'mobile-event': breakpointService.isMobile() | async,
-		'iOS-PWA': contextService.isIosPwaStandalone
+		'iOS-PWA': contextService.isIosPwaStandalone,
 	}"
 >
 	<router-outlet (activate)="onOutletLoaded($event)" />

@@ -1,5 +1,5 @@
-import { AsyncPipe, CommonModule, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { AsyncPipe, NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -15,20 +15,20 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { map } from 'lodash-es';
 import { BehaviorSubject, filter, of, Subject, switchMap, takeUntil } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { CategoryItemComponent } from 'src/app/features/mobile/category-item/category-item.component';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { ContextService } from 'src/app/services/context/context.service';
-import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { ScrollService } from 'src/app/services/scroll/scroll.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
-import { ApiError } from 'src/app/types/apiError.type';
-import { CategoryIcon } from 'src/app/types/enums';
+import { ConfirmDialogComponent } from '../../features/confirm-dialog/confirm-dialog.component';
+import { CategoryItemComponent } from '../../features/mobile/category-item/category-item.component';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { Category, CategoryService } from '../../services/category/category.service';
+import { ContextService } from '../../services/context/context.service';
+import { EventStatusType, PuddingEvent } from '../../services/event/event.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { ScrollService } from '../../services/scroll/scroll.service';
+import { User, UserService } from '../../services/user/user.service';
+import { FormControlPipe } from '../../shared/forms/form-control.pipe';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { ApiError } from '../../types/apiError.type';
+import { CategoryIcon } from '../../types/enums';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CategoryEditDialogComponent } from './category-edit-dialog/category-edit-dialog.component';
 
@@ -36,8 +36,8 @@ import { CategoryEditDialogComponent } from './category-edit-dialog/category-edi
 	selector: 'app-category',
 	templateUrl: './category.component.html',
 	styleUrls: ['./category.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatButtonModule,
 		MatIconModule,
 		MatExpansionModule,

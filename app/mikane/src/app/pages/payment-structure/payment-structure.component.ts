@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -8,16 +8,16 @@ import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, skip, takeUntil } from 'rxjs';
-import { PaymentItemComponent } from 'src/app/features/mobile/payment-item/payment-item.component';
-import { PaymentExpansionPanelItemComponent } from 'src/app/pages/payment-structure/payment-expansion-panel-item/payment-expansion-panel-item.component';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { EventService } from 'src/app/services/event/event.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User } from 'src/app/services/user/user.service';
-import { ApiError } from 'src/app/types/apiError.type';
+import { PaymentItemComponent } from '../../features/mobile/payment-item/payment-item.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { EventService } from '../../services/event/event.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User } from '../../services/user/user.service';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { ApiError } from '../../types/apiError.type';
+import { PaymentExpansionPanelItemComponent } from './payment-expansion-panel-item/payment-expansion-panel-item.component';
 
 interface SenderPayments {
 	sender: User;
@@ -30,8 +30,8 @@ interface SenderPayments {
 @Component({
 	templateUrl: './payment-structure.component.html',
 	styleUrls: ['./payment-structure.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatButtonModule,
 		MatIconModule,
 		MatExpansionModule,
@@ -41,6 +41,7 @@ interface SenderPayments {
 		MatListModule,
 		PaymentExpansionPanelItemComponent,
 		PaymentItemComponent,
+		AsyncPipe,
 	],
 })
 export class PaymentStructureComponent implements OnInit, OnDestroy {

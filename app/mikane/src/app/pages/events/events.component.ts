@@ -1,5 +1,5 @@
-import { AsyncPipe, CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { AsyncPipe, NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -10,24 +10,24 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { MenuComponent } from 'src/app/features/menu/menu.component';
-import { EventItemComponent } from 'src/app/features/mobile/event-item/event-item.component';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { ScrollService } from 'src/app/services/scroll/scroll.service';
-import { ApiError } from 'src/app/types/apiError.type';
-import { CurrencyCode } from 'src/app/types/constants';
+import { MenuComponent } from '../../features/menu/menu.component';
+import { EventItemComponent } from '../../features/mobile/event-item/event-item.component';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { EventService, EventStatusType, PuddingEvent } from '../../services/event/event.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { ScrollService } from '../../services/scroll/scroll.service';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { ApiError } from '../../types/apiError.type';
+import { CurrencyCode } from '../../types/constants';
 import { EventDialogComponent } from './event-dialog/event-dialog.component';
 
 @Component({
 	selector: 'app-events',
 	templateUrl: './events.component.html',
 	styleUrls: ['./events.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatToolbarModule,
 		MatButtonModule,
 		MatIconModule,

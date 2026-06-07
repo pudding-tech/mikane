@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import { beforeEach, describe, expect, it } from 'vitest';
 import packageJson from '../../../../package.json';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 import { FooterComponent } from './footer.component';
 
 describe('FooterComponent', () => {

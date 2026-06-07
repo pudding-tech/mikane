@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { UserService } from 'src/app/services/user/user.service';
-import { Phonenumber } from 'src/app/types/phonenumber.type';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { FormValidationService } from '../../services/form-validation/form-validation.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { UserService } from '../../services/user/user.service';
+import { Phonenumber } from '../../types/phonenumber.type';
 import { RegisterUserComponent } from './register-user.component';
 
 class RUC extends RegisterUserComponent {

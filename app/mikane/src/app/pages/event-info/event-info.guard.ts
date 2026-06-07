@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { map } from 'rxjs';
-import { EventService } from 'src/app/services/event/event.service';
+import { EventService } from '../../services/event/event.service';
 
 export const eventInfoGuard: CanActivateFn = (route) => {
 	const router = inject(Router);
@@ -14,6 +14,6 @@ export const eventInfoGuard: CanActivateFn = (route) => {
 			} else {
 				return true;
 			}
-		})
+		}),
 	);
 };

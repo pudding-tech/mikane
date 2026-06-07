@@ -1,14 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
 import packageJson from '../../../../package.json';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 
 @Component({
 	selector: 'app-custom-footer',
 	templateUrl: 'footer.component.html',
 	styleUrls: ['./footer.component.scss'],
-	imports: [CommonModule],
+	changeDetection: ChangeDetectionStrategy.Eager,
+	imports: [AsyncPipe],
 })
 export class FooterComponent {
 	private router = inject(Router);

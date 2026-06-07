@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 
 @Component({
 	templateUrl: './error-message.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	standalone: true,
 })
 export class ErrorMessageComponent {

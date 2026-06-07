@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable, of, tap } from 'rxjs';
-import { CurrencyCode } from 'src/app/types/constants';
-import { Environment } from 'src/environments/environment.interface';
-import { ENV } from 'src/environments/environment.provider';
+import { Environment } from '../../../environments/environment.interface';
+import { ENV } from '../../../environments/environment.provider';
+import { CurrencyCode } from '../../types/constants';
 import { User, UserBalance } from '../user/user.service';
 
 export interface PuddingEvent {

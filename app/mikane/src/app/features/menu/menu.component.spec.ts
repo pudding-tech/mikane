@@ -2,16 +2,16 @@ import { Component, Directive } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { SplitButtonItemComponent } from 'src/app/features/split-button/split-button-item/split-button-item.component';
-import { SplitButtonItemDirective } from 'src/app/features/split-button/split-button-item/split-button-item.directive';
-import { SplitButtonComponent } from 'src/app/features/split-button/split-button.component';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User } from 'src/app/services/user/user.service';
-import { ApiError } from 'src/app/types/apiError.type';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User } from '../../services/user/user.service';
+import { ApiError } from '../../types/apiError.type';
+import { SplitButtonItemComponent } from '../split-button/split-button-item/split-button-item.component';
+import { SplitButtonItemDirective } from '../split-button/split-button-item/split-button-item.directive';
+import { SplitButtonComponent } from '../split-button/split-button.component';
 import { MenuComponent } from './menu.component';
 
 @Component({ selector: 'app-split-button', template: '<div id="mock-split-button"></div>', standalone: true })

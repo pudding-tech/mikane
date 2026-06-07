@@ -1,22 +1,32 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, model } from '@angular/core';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, model } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { ApiError } from 'src/app/types/apiError.type';
+import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
+import { LogService } from '../../../services/log/log.service';
+import { MessageService } from '../../../services/message/message.service';
+import { User, UserService } from '../../../services/user/user.service';
+import { ApiError } from '../../../types/apiError.type';
 
 @Component({
 	selector: 'app-preferences',
 	templateUrl: './preferences.component.html',
 	styleUrls: ['./preferences.component.scss'],
-	imports: [CommonModule, MatCardModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSlideToggleModule],
+	changeDetection: ChangeDetectionStrategy.Eager,
+	imports: [
+		MatCardModule,
+		MatIconModule,
+		FormsModule,
+		ReactiveFormsModule,
+		MatFormFieldModule,
+		MatSlideToggleModule,
+		AsyncPipe,
+		NgTemplateOutlet,
+	],
 })
 export class PreferencesComponent implements OnInit, OnDestroy {
 	private userService = inject(UserService);

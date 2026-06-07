@@ -7,17 +7,17 @@ import { MatAccordion } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { ContextService } from 'src/app/services/context/context.service';
-import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
-import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
-import { CategoryIcon } from 'src/app/types/enums';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ConfirmDialogComponent } from '../../features/confirm-dialog/confirm-dialog.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { Category, CategoryService } from '../../services/category/category.service';
+import { ContextService } from '../../services/context/context.service';
+import { EventService, EventStatusType, PuddingEvent } from '../../services/event/event.service';
+import { Expense, ExpenseService } from '../../services/expense/expense.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User, UserBalance, UserService } from '../../services/user/user.service';
+import { CategoryIcon } from '../../types/enums';
 import { ExpenditureDialogComponent } from '../expenditures/expenditure-dialog/expenditure-dialog.component';
 import { ExpenseDataSource } from './expense.datasource';
 import { ParticipantComponent } from './participant.component';
@@ -668,9 +668,27 @@ describe('ParticipantComponent', () => {
 		beforeEach(() => {
 			eventServiceSpy.loadBalances.mockReturnValue(
 				of([
-					{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-					{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
-					{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
+					{
+						user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+						balance: 2,
+						expensesCount: 2,
+						spending: 2,
+						expenses: 2,
+					},
+					{
+						user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+						balance: 1,
+						expensesCount: 1,
+						spending: 1,
+						expenses: 1,
+					},
+					{
+						user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+						balance: 3,
+						expensesCount: 3,
+						spending: 3,
+						expenses: 3,
+					},
 				] as UserBalance[]),
 			);
 			authServiceSpy.getCurrentUser.mockReturnValue(of({ id: '1' }));
@@ -682,9 +700,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: 'name', direction: 'asc' });
 
 			expect(component.usersWithBalance).toEqual([
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
 			] as UserBalance[]);
 		});
 
@@ -694,9 +730,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: 'name', direction: 'desc' });
 
 			expect(component.usersWithBalance).toEqual([
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
 			] as UserBalance[]);
 		});
 
@@ -706,9 +760,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: 'balance', direction: 'asc' });
 
 			expect(component.usersWithBalance).toEqual([
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
 			] as UserBalance[]);
 		});
 
@@ -718,9 +790,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: 'balance', direction: 'desc' });
 
 			expect(component.usersWithBalance).toEqual([
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
 			] as UserBalance[]);
 		});
 
@@ -730,9 +820,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: 'expensesCount', direction: 'asc' });
 
 			expect(component.usersWithBalance).toEqual([
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
 			] as UserBalance[]);
 		});
 
@@ -742,9 +850,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: 'expensesCount', direction: 'desc' });
 
 			expect(component.usersWithBalance).toEqual([
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
 			] as UserBalance[]);
 		});
 
@@ -754,9 +880,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: 'costs', direction: 'asc' });
 
 			expect(component.usersWithBalance).toEqual([
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
 			] as UserBalance[]);
 		});
 
@@ -766,9 +910,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: 'costs', direction: 'desc' });
 
 			expect(component.usersWithBalance).toEqual([
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
 			] as UserBalance[]);
 		});
 
@@ -778,9 +940,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: 'expenses', direction: 'asc' });
 
 			expect(component.usersWithBalance).toEqual([
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
 			] as UserBalance[]);
 		});
 
@@ -790,9 +970,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: 'expenses', direction: 'desc' });
 
 			expect(component.usersWithBalance).toEqual([
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
 			] as UserBalance[]);
 		});
 
@@ -802,9 +1000,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: '', direction: '' });
 
 			expect(component.usersWithBalance).toEqual([
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
 			] as UserBalance[]);
 		});
 
@@ -814,9 +1030,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: 'invalid', direction: 'asc' });
 
 			expect(component.usersWithBalance).toEqual([
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
 			] as UserBalance[]);
 		});
 
@@ -826,9 +1060,27 @@ describe('ParticipantComponent', () => {
 			component.sortData({ active: 'name', direction: 'asc' });
 
 			expect(component.usersWithBalance$.getValue()).toEqual([
-				{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
-				{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
-				{ user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } }, balance: 3, expensesCount: 3, spending: 3, expenses: 3 },
+				{
+					user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+					balance: 1,
+					expensesCount: 1,
+					spending: 1,
+					expenses: 1,
+				},
+				{
+					user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+					balance: 2,
+					expensesCount: 2,
+					spending: 2,
+					expenses: 2,
+				},
+				{
+					user: { id: '3', name: 'c', avatarURL: '3', eventInfo: { currency: 'NOK' } },
+					balance: 3,
+					expensesCount: 3,
+					spending: 3,
+					expenses: 3,
+				},
 			] as UserBalance[]);
 		});
 	});
@@ -855,8 +1107,20 @@ describe('ParticipantComponent', () => {
 		beforeEach(() => {
 			eventServiceSpy.loadBalances.mockReturnValue(
 				of([
-					{ user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } }, balance: 1, expensesCount: 1, spending: 1, expenses: 1 },
-					{ user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } }, balance: 2, expensesCount: 2, spending: 2, expenses: 2 },
+					{
+						user: { id: '1', name: 'a', avatarURL: '1', eventInfo: { currency: 'NOK' } },
+						balance: 1,
+						expensesCount: 1,
+						spending: 1,
+						expenses: 1,
+					},
+					{
+						user: { id: '2', name: 'b', avatarURL: '2', eventInfo: { currency: 'NOK' } },
+						balance: 2,
+						expensesCount: 2,
+						spending: 2,
+						expenses: 2,
+					},
 				] as UserBalance[]),
 			);
 			authServiceSpy.getCurrentUser.mockReturnValue(of({ id: '1' }));

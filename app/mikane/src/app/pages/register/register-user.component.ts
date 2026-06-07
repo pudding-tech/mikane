@@ -1,5 +1,5 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AsyncPipe, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,22 +9,22 @@ import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { emailValidator } from 'src/app/shared/forms/validators/async-email.validator';
-import { phoneValidator } from 'src/app/shared/forms/validators/async-phone.validator';
-import { usernameValidator } from 'src/app/shared/forms/validators/async-username.validator';
-import { ApiError } from 'src/app/types/apiError.type';
-import { Phonenumber } from 'src/app/types/phonenumber.type';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { FormValidationService } from '../../services/form-validation/form-validation.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User, UserService } from '../../services/user/user.service';
+import { emailValidator } from '../../shared/forms/validators/async-email.validator';
+import { phoneValidator } from '../../shared/forms/validators/async-phone.validator';
+import { usernameValidator } from '../../shared/forms/validators/async-username.validator';
+import { ApiError } from '../../types/apiError.type';
+import { Phonenumber } from '../../types/phonenumber.type';
 
 @Component({
 	templateUrl: './register-user.component.html',
 	styleUrls: ['./register-user.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatToolbarModule,
 		MatCardModule,
 		MatIconModule,
@@ -34,6 +34,8 @@ import { Phonenumber } from 'src/app/types/phonenumber.type';
 		MatInputModule,
 		MatButtonModule,
 		NgOptimizedImage,
+		AsyncPipe,
+		NgTemplateOutlet,
 	],
 })
 export class RegisterUserComponent implements OnInit, AfterViewInit, OnDestroy {

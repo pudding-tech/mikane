@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { PuddingEvent } from 'src/app/services/event/event.service';
+import { PuddingEvent } from '../../app/services/event/event.service';
 import { CURRENT_USER, db } from '../db';
 
 export const eventHandlers = [

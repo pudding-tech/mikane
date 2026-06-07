@@ -1,9 +1,8 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject, input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, model } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { ContextService } from 'src/app/services/context/context.service';
+import { ContextService } from '../../../services/context/context.service';
 
 interface Route {
 	name: string;
@@ -15,7 +14,8 @@ interface Route {
 	selector: 'app-mobile-event-navbar',
 	templateUrl: 'mobile-event-navbar.component.html',
 	styleUrls: ['./mobile-event-navbar.component.scss'],
-	imports: [CommonModule, RouterLink, MatIconModule, MatRippleModule],
+	changeDetection: ChangeDetectionStrategy.Eager,
+	imports: [RouterLink, MatIconModule, MatRippleModule],
 })
 export class MobileEventNavbarComponent {
 	contextService = inject(ContextService);

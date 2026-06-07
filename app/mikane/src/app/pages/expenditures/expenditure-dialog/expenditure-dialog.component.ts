@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,17 +10,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { ContextService } from 'src/app/services/context/context.service';
-import { Expense } from 'src/app/services/expense/expense.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
-import { CategoryIcon } from 'src/app/types/enums';
+import { Category, CategoryService } from '../../../services/category/category.service';
+import { ContextService } from '../../../services/context/context.service';
+import { Expense } from '../../../services/expense/expense.service';
+import { User, UserService } from '../../../services/user/user.service';
+import { FormControlPipe } from '../../../shared/forms/form-control.pipe';
+import { CategoryIcon } from '../../../types/enums';
 
 @Component({
 	templateUrl: 'expenditure-dialog.component.html',
 	styleUrls: ['expenditure-dialog.component.scss'],
 	providers: [provideNativeDateAdapter()],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
 		MatDialogModule,
 		FormsModule,

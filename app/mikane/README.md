@@ -1,10 +1,10 @@
 # Mikane — Frontend
 
-Angular 21 frontend for [Mikane](../../README.md). For project overview, installation, and backend setup, see the [root README](../../README.md).
+Angular 22 frontend for [Mikane](../../README.md). For project overview, installation, and backend setup, see the [root README](../../README.md).
 
 ## Stack
 
-- Angular 21 (standalone components, signals where present, `provideZonelessChangeDetection`)
+- Angular 22 (standalone components, signals where present, `provideZonelessChangeDetection`)
 - Angular Material
 - RxJS, SCSS
 - [MSW](https://mswjs.io/) for local mock backend

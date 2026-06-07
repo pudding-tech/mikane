@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { UserService } from 'src/app/services/user/user.service';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ConfirmDialogComponent } from '../../../features/confirm-dialog/confirm-dialog.component';
+import { LogService } from '../../../services/log/log.service';
+import { MessageService } from '../../../services/message/message.service';
+import { UserService } from '../../../services/user/user.service';
 import { DangerZoneComponent } from './danger-zone.component';
 
 describe('DangerZoneComponent', () => {

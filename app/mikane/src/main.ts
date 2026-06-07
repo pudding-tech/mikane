@@ -1,5 +1,5 @@
 import { registerLocaleData } from '@angular/common';
-import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import localeNo from '@angular/common/locales/no';
 import { ErrorHandler, LOCALE_ID, enableProdMode, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -74,7 +74,7 @@ prepare().then(() => {
 				useFactory: getEnv,
 			},
 			provideAnimations(),
-			provideHttpClient(withInterceptorsFromDi(), withInterceptors([authInterceptor, csrfInterceptor])),
+			provideHttpClient(withXhr(), withInterceptorsFromDi(), withInterceptors([authInterceptor, csrfInterceptor])),
 			provideZonelessChangeDetection(),
 		],
 	}).catch((err) => console.error(err));

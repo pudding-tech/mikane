@@ -1,13 +1,13 @@
-<div class="navbar" [ngClass]="{ 'iOS-PWA': contextService.isIosPwaStandalone}">
+<div class="navbar" [class.iOS-PWA]="contextService.isIosPwaStandalone">
 	@for (link of mobileLinks(); track link.location) {
 		<a
 			class="nav-button"
 			[routerLink]="link.location"
 			(click)="activeLink.set(link.location)"
-			[ngClass]="{ active: activeLink().includes(link.location), 'nav-back-button': link.location === '/events' }"
+			[class]="{ active: activeLink().includes(link.location), 'nav-back-button': link.location === '/events' }"
 			matRipple
 		>
-			<mat-icon [ngClass]="{ 'back-icon': link.location === '/events' }">{{ link.icon }}</mat-icon>
+			<mat-icon [class.back-icon]="link.location === '/events'">{{ link.icon }}</mat-icon>
 			<div>{{ link.name }}</div>
 		</a>
 	}

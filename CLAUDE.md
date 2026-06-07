@@ -8,7 +8,7 @@ Behavioral guidelines for working in the Mikane (PuddingDebt) repo. Reduce commo
 
 Mikane is a shared-expense settlement tool. Two deployables in one repo:
 
-- **Frontend** — `app/mikane/` — Angular 21 (standalone components, signals where present), Angular Material, RxJS, SCSS. Tests via `ng test` (Vitest under the hood).
+- **Frontend** — `app/mikane/` — Angular 22 (standalone components, signals where present), Angular Material, RxJS, SCSS. Tests via `ng test` (Vitest under the hood).
 - **Backend** — `server/` — Express 5 on Node 24, PostgreSQL (via `pg`), session auth (`express-session` + `csrf-sync`). Tests via Vitest + Supertest against a Dockerized test DB.
 
 Layout cheatsheet:

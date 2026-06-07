@@ -52,7 +52,7 @@
 						<button
 							mat-icon-button
 							(click)="removeUserFromCategory(category().id, user.id)"
-							[ngClass]="{ button: !category().weighted }"
+							[class.button]="!category().weighted"
 						>
 							<mat-icon>remove</mat-icon>
 						</button>
@@ -64,7 +64,7 @@
 			@if (filterUsers()(category().id).length !== 0) {
 				<form [formGroup]="addUserForm()" class="new-user">
 					<div class="inputs">
-						<mat-form-field subscriptSizing="dynamic" [ngClass]="{ 'user-input-weighted': !category().weighted }">
+						<mat-form-field subscriptSizing="dynamic" [class.user-input-weighted]="!category().weighted">
 							<select
 								matNativeControl
 								[formControl]="addUserForm().get('participantName') | formControl"

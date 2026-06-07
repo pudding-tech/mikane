@@ -1,11 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RouterOutlet } from '@angular/router';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter } from 'rxjs';
-import { ENV } from 'src/environments/environment.provider';
+import { ENV } from '../environments/environment.provider';
 import { FooterComponent } from './features/footer/footer.component';
 import { LogService } from './services/log/log.service';
 
@@ -13,6 +13,7 @@ import { LogService } from './services/log/log.service';
 	selector: 'app-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [RouterOutlet, FooterComponent],
 })
 export class AppComponent {

@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject, throwError } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { ContextService } from 'src/app/services/context/context.service';
-import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AuthService } from '../../../services/auth/auth.service';
+import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
+import { ContextService } from '../../../services/context/context.service';
+import { EventService, EventStatusType, PuddingEvent } from '../../../services/event/event.service';
+import { LogService } from '../../../services/log/log.service';
+import { MessageService } from '../../../services/message/message.service';
 import { EventComponent } from './event.component';
 
 describe('EventComponent', () => {
