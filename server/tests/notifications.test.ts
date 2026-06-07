@@ -3,8 +3,9 @@ import request from "supertest";
 import app from "../src/server.ts";
 import env from "../src/env.ts";
 import * as ec from "../src/types/errorCodes.ts";
-import { Category, Event, Payment, User } from "../src/types/types.ts";
+import { Category, Currency, Event, Payment, User } from "../src/types/types.ts";
 import { EventStatusType } from "../src/types/enums.ts";
+import { formatCurrency } from "../src/utils/formatCurrency.ts";
 import { getSentEmails, resetSentEmails } from "./mocks/postmarkMock.ts";
 
 describe("notifications", async () => {
@@ -14,6 +15,7 @@ describe("notifications", async () => {
   let user2: User;
   let user3: User;
   let event: Event;
+  let eventCurrency: Currency;
   let category: Category;
 
   /*
@@ -72,10 +74,19 @@ describe("notifications", async () => {
         name: "Example event",
         description: "Example description",
         private: false,
-        currency: "NOK"
+        currency: "JPY"
       });
 
     event = resEvent.body;
+
+    // Get event currency (for formatting amounts in emails)
+    const resCurrencies = await request(app)
+      .get("/api/currencies")
+      .set("Cookie", authToken);
+
+    expect(resCurrencies.status).toEqual(200);
+    eventCurrency = resCurrencies.body.find((currency: Currency) => currency.code === event.currency);
+    expect(eventCurrency.formatLocale).toEqual("ja-JP");
 
     // Add users to event
     await request(app)
@@ -300,16 +311,10 @@ describe("notifications", async () => {
       const receiver1NameStart = html.indexOf("<div style=\"margin-left: 10px;\">") + "<div style=\"margin-left: 10px;\">".length;
       const receiver1NameEnd = html.indexOf("<", receiver1NameStart);
       const receiver1Name = html.substring(receiver1NameStart, receiver1NameEnd).replace("- ", "").trim();
-      const receiver1AmountStart = html.indexOf("border-radius: 4px;\">", receiver1NameEnd) + "border-radius: 4px;\">".length;
-      const receiver1AmountEnd = html.indexOf("kr", receiver1AmountStart);
-      const receiver1Amount = Number(html.substring(receiver1AmountStart, receiver1AmountEnd).trim());
 
-      const receiver2NameStart = html.indexOf("<div style=\"margin-left: 10px;\">", receiver1AmountEnd) + "<div style=\"margin-left: 10px;\">".length;
+      const receiver2NameStart = html.indexOf("<div style=\"margin-left: 10px;\">", receiver1NameEnd) + "<div style=\"margin-left: 10px;\">".length;
       const receiver2NameEnd = html.indexOf("<", receiver2NameStart);
       const receiver2Name = html.substring(receiver2NameStart, receiver2NameEnd).replace("- ", "").trim();
-      const receiver2AmountStart = html.indexOf("border-radius: 4px;\">", receiver2NameEnd) + "border-radius: 4px;\">".length;
-      const receiver2AmountEnd = html.indexOf("kr", receiver2AmountStart);
-      const receiver2Amount = Number(html.substring(receiver2AmountStart, receiver2AmountEnd).trim());
 
       expect(res.status).toEqual(200);
       expect(res.body.message).toEqual("Emails successfully sent");
@@ -320,9 +325,10 @@ describe("notifications", async () => {
       expect(sentToEmail2).toEqual(user2.email);
       expect(sentToEmail3).toEqual(user3.email);
       expect(receiver1Name).toEqual(payments[0].receiver.name);
-      expect(receiver1Amount).toEqual(payments[0].amount);
+      expect(html).toContain(formatCurrency(payments[0].amount, event.currency, eventCurrency.formatLocale));
       expect(receiver2Name).toEqual(payments[1].receiver.name);
-      expect(receiver2Amount).toEqual(payments[1].amount);
+      expect(html).toContain(formatCurrency(payments[1].amount, event.currency, eventCurrency.formatLocale));
+      expect(html).not.toContain(" kr");
     });
   });
 });

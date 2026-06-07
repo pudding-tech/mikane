@@ -1,7 +1,8 @@
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import request from "supertest";
 import app from "../src/server.ts";
-import { Category, Event, User, UserBalance, Payment } from "../src/types/types.ts";
+import { PUD001 } from "../src/types/errorCodes.ts";
+import { Category, Currency, Event, User, UserBalance, Payment } from "../src/types/types.ts";
 import { mockCurrencyExchangeFetch, STATIC_EXCHANGE_RATES } from "./mocks/currencyExchangeMock.ts";
 
 describe("currency exchange", async () => {
@@ -130,6 +131,49 @@ describe("currency exchange", async () => {
   afterAll(() => {
     // Restore the original fetch function after tests
     fetchMock.mockRestore();
+  });
+
+  /* --------------- */
+  /* GET /currencies */
+  /* --------------- */
+  describe("GET /currencies", async () => {
+    test("fail getting currencies when not authenticated", async () => {
+      const res = await request(app)
+        .get("/api/currencies");
+
+      expect(res.status).toEqual(401);
+      expect(res.body.code).toEqual(PUD001.code);
+    });
+
+    test("should get supported currencies with format locale", async () => {
+      const res = await request(app)
+        .get("/api/currencies")
+        .set("Cookie", authToken);
+
+      const currencies: Currency[] = res.body;
+      const nok = currencies.find((currency) => currency.code === "NOK");
+      const usd = currencies.find((currency) => currency.code === "USD");
+      const jpy = currencies.find((currency) => currency.code === "JPY");
+
+      expect(res.status).toEqual(200);
+      expect(currencies.length).toBeGreaterThan(0);
+
+      expect(nok).toEqual({
+        code: "NOK",
+        name: "Norwegian Krone",
+        formatLocale: "nb-NO"
+      });
+      expect(usd).toEqual({
+        code: "USD",
+        name: "US Dollar",
+        formatLocale: "en-US"
+      });
+      expect(jpy).toEqual({
+        code: "JPY",
+        name: "Japanese Yen",
+        formatLocale: "ja-JP"
+      });
+    });
   });
 
   /* ------------------------ */

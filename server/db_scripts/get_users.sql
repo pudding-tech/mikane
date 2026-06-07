@@ -21,20 +21,22 @@ returns table (
   public_phone boolean,
   event_id uuid,
   is_event_admin boolean,
-  event_joined_time timestamp
+  event_joined_time timestamp,
+  event_currency varchar(3)
 ) as
 $$
 begin
 
   if (ip_event_id is null) then
-  begin
+  begin -- No event ID provided, return all users based on deleted status and excluding specific user if provided
     return query
     select
       u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, u.guest, u.guest_created_by, u.super_admin, u.deleted,
       up.public_email, up.public_phone,
       null::uuid as event_id,
       null::boolean as is_event_admin,
-      null::timestamp as event_joined_time
+      null::timestamp as event_joined_time,
+      null::varchar(3) as event_currency
     from
       "user" u
       left join user_preferences up on u.id = up.user_id
@@ -48,7 +50,7 @@ begin
   end;
 
   else
-  begin
+  begin -- Event ID provided, return users associated with the event based on deleted status and excluding specific user if provided
 
     if not exists (select 1 from "event" e where e.id = ip_event_id) then
       raise exception 'Event not found' using errcode = 'P0006';
@@ -68,7 +70,7 @@ begin
     select
       u.id, u.username, u.first_name, u.last_name, u.email, u.phone_number, u.created, u.guest, u.guest_created_by, u.super_admin, u.deleted,
       up.public_email, up.public_phone,
-      e.id as event_id, ue.admin as is_event_admin, ue.joined_time as event_joined_time
+      e.id as event_id, ue.admin as is_event_admin, ue.joined_time as event_joined_time, e.currency as event_currency
     from
       "user" u
       inner join user_event ue on ue.user_id = u.id

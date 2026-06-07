@@ -29,7 +29,8 @@ returns table (
   payer_deleted boolean,
   event_id uuid,
   event_name varchar(255),
-  event_private boolean
+  event_private boolean,
+  event_currency varchar(3)
 ) as
 $$
 declare

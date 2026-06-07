@@ -17,7 +17,8 @@ export type User = {
   eventInfo?: {
     id: string,
     isAdmin: boolean,
-    joinedTime: Date
+    joinedTime: Date,
+    currency: string
   }
 };
 
@@ -86,7 +87,8 @@ export type Expense = {
   eventInfo: {
     id: string,
     name: string,
-    private: boolean
+    private: boolean,
+    currency: string
   },
   payer: User
 };
@@ -127,7 +129,8 @@ export type APIKey = {
 
 export type Currency = {
   code: string,
-  name: string
+  name: string,
+  formatLocale: string
 };
 
 export type DBConfig = {

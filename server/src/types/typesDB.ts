@@ -14,7 +14,8 @@ export type UserDB = {
   deleted: boolean,
   event_id?: string,
   is_event_admin?: boolean,
-  event_joined_time?: Date
+  event_joined_time?: Date,
+  event_currency?: string
 };
 
 export type EventDB = {
@@ -73,7 +74,8 @@ export type ExpenseDB = {
   payer_deleted: boolean,
   event_id: string,
   event_name: string,
-  event_private: boolean
+  event_private: boolean,
+  event_currency: string
 };
 
 export type APIKeyDB = {
@@ -87,7 +89,8 @@ export type APIKeyDB = {
 
 export type CurrencyDB = {
   code: string,
-  name: string
+  name: string,
+  format_locale: string
 };
 
 export type UserNamesDB = {

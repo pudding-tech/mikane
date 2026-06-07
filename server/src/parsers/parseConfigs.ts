@@ -11,7 +11,8 @@ export const parseCurrencies = (currenciesInput: CurrencyDB[]) => {
   for (const currencyObj of currenciesInput) {
     const currency: Currency = {
       code: currencyObj.code,
-      name: currencyObj.name
+      name: currencyObj.name,
+      formatLocale: currencyObj.format_locale
     };
     currencies.push(currency);
   }

@@ -5463,9 +5463,13 @@
                 "type": "boolean",
                 "example": false
               },
-              "joinedDate": {
+              "joinedTime": {
                 "type": "date-time",
                 "example": "2023-01-20T19:00:00"
+              },
+              "currency": {
+                "type": "string",
+                "example": "EUR"
               }
             }
           }
@@ -5809,6 +5813,14 @@
               "name": {
                 "type": "string",
                 "example": "Example event"
+              },
+              "private": {
+                "type": "boolean",
+                "example": false
+              },
+              "currency": {
+                "type": "string",
+                "example": "EUR"
               }
             }
           },
