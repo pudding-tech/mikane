@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
-import { CategoryInfo } from 'src/app/pages/expenditures/expense-bottom-sheet/expense-bottom-sheet.component';
-import { User } from 'src/app/services/user/user.service';
 import { describe, expect, it, vi } from 'vitest';
-import { ExpenseBottomSheetComponent } from './expense-bottom-sheet.component';
+import { User } from '../../../services/user/user.service';
+import { CategoryInfo, ExpenseBottomSheetComponent } from './expense-bottom-sheet.component';
 
 class EBSC extends ExpenseBottomSheetComponent {
 	public override searchValue: string;

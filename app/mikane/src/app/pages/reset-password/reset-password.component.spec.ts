@@ -3,13 +3,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { KeyValidationService } from 'src/app/services/key-validation/key-validation.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { ApiError } from 'src/app/types/apiError.type';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { KeyValidationService } from '../../services/key-validation/key-validation.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { ApiError } from '../../types/apiError.type';
 import { ResetPasswordComponent } from './reset-password.component';
 
 describe('ResetPasswordComponent', () => {

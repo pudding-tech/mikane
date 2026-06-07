@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, model, signal } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, model, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,22 +8,22 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Subscription } from 'rxjs';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { emailValidator } from 'src/app/shared/forms/validators/async-email.validator';
-import { phoneValidator } from 'src/app/shared/forms/validators/async-phone.validator';
-import { usernameValidator } from 'src/app/shared/forms/validators/async-username.validator';
-import { ApiError } from 'src/app/types/apiError.type';
+import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
+import { FormValidationService } from '../../../services/form-validation/form-validation.service';
+import { LogService } from '../../../services/log/log.service';
+import { MessageService } from '../../../services/message/message.service';
+import { User, UserService } from '../../../services/user/user.service';
+import { emailValidator } from '../../../shared/forms/validators/async-email.validator';
+import { phoneValidator } from '../../../shared/forms/validators/async-phone.validator';
+import { usernameValidator } from '../../../shared/forms/validators/async-username.validator';
+import { ApiError } from '../../../types/apiError.type';
 
 @Component({
 	selector: 'app-user-settings',
 	templateUrl: './user-settings.component.html',
 	styleUrls: ['./user-settings.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatCardModule,
 		MatIconModule,
 		FormsModule,
@@ -31,6 +31,7 @@ import { ApiError } from 'src/app/types/apiError.type';
 		MatFormFieldModule,
 		MatInputModule,
 		MatButtonModule,
+		AsyncPipe,
 	],
 })
 export class UserSettingsComponent implements OnInit, OnDestroy {

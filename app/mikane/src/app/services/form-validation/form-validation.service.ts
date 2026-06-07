@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { Environment } from 'src/environments/environment.interface';
-import { ENV } from 'src/environments/environment.provider';
+import { Environment } from '../../../environments/environment.interface';
+import { ENV } from '../../../environments/environment.provider';
 
 export interface ValidationResult {
 	valid: boolean;

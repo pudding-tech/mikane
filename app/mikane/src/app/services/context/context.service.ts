@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { Environment } from 'src/environments/environment.interface';
-import { ENV } from 'src/environments/environment.provider';
+import { Environment } from '../../../environments/environment.interface';
+import { ENV } from '../../../environments/environment.provider';
 
 interface NavigatorIOS extends Navigator {
 	standalone?: boolean;

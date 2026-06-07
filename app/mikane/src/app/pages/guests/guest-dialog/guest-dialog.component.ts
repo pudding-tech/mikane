@@ -1,15 +1,16 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { User } from 'src/app/services/user/user.service';
+import { User } from '../../../services/user/user.service';
 
 @Component({
 	templateUrl: 'guest-dialog.component.html',
 	styleUrls: ['guest-dialog.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, MatProgressSpinnerModule],
 })
 export class GuestDialogComponent {

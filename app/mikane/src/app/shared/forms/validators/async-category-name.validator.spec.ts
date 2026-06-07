@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { FormControl, ValidationErrors } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
-import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
-import { ApiError } from 'src/app/types/apiError.type';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FormValidationService } from '../../../services/form-validation/form-validation.service';
+import { ApiError } from '../../../types/apiError.type';
 import { categoryNameValidator } from './async-category-name.validator';
 
 describe('categoryNameValidator', () => {

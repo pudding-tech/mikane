@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 
 @Component({
 	selector: 'app-success-message-component',
 	templateUrl: './success-message.component.html',
+	changeDetection: ChangeDetectionStrategy.Eager,
 	standalone: true,
 })
 export class SuccessMessageComponent {

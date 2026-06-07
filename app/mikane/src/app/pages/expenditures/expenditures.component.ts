@@ -1,5 +1,17 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { AsyncPipe, DatePipe, NgOptimizedImage } from '@angular/common';
+import {
+	ChangeDetectionStrategy,
+	ChangeDetectorRef,
+	Component,
+	ElementRef,
+	Input,
+	OnDestroy,
+	OnInit,
+	ViewChild,
+	computed,
+	inject,
+	signal,
+} from '@angular/core';
 import { MatBottomSheet, MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -15,20 +27,20 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, filter, map, of, skip, switchMap, take, takeUntil } from 'rxjs';
-import { ExpenseItemComponent } from 'src/app/features/mobile/expense-item/expense-item.component';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { ContextService } from 'src/app/services/context/context.service';
-import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
-import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { ScrollService } from 'src/app/services/scroll/scroll.service';
-import { User } from 'src/app/services/user/user.service';
-import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
-import { ApiError } from 'src/app/types/apiError.type';
+import { ExpenseItemComponent } from '../../features/mobile/expense-item/expense-item.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { Category, CategoryService } from '../../services/category/category.service';
+import { ContextService } from '../../services/context/context.service';
+import { EventStatusType, PuddingEvent } from '../../services/event/event.service';
+import { Expense, ExpenseService } from '../../services/expense/expense.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { ScrollService } from '../../services/scroll/scroll.service';
+import { User } from '../../services/user/user.service';
+import { AppCurrencyPipe } from '../../shared/currency/app-currency.pipe';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { ApiError } from '../../types/apiError.type';
 import { ExpenditureDialogComponent } from './expenditure-dialog/expenditure-dialog.component';
 import { ExpenseBottomSheetComponent } from './expense-bottom-sheet/expense-bottom-sheet.component';
 
@@ -36,8 +48,8 @@ import { ExpenseBottomSheetComponent } from './expense-bottom-sheet/expense-bott
 	selector: 'app-expenditures',
 	templateUrl: './expenditures.component.html',
 	styleUrls: ['./expenditures.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		AppCurrencyPipe,
 		MatButtonModule,
 		MatIconModule,
@@ -55,6 +67,8 @@ import { ExpenseBottomSheetComponent } from './expense-bottom-sheet/expense-bott
 		MatChipsModule,
 		MatBottomSheetModule,
 		NgOptimizedImage,
+		AsyncPipe,
+		DatePipe,
 	],
 })
 export class ExpendituresComponent implements OnInit, OnDestroy {

@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, OnDestroy } from '@angular/core';
 import { filter, Subscription, take } from 'rxjs';
-import { Environment } from 'src/environments/environment.interface';
-import { ENV } from 'src/environments/environment.provider';
+import { Environment } from '../../../environments/environment.interface';
+import { ENV } from '../../../environments/environment.provider';
 import { AuthService } from '../auth/auth.service';
 import { LOG_LEVEL, LoggerLevel } from './log-level.config';
 

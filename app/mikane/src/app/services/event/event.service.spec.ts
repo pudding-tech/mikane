@@ -1,10 +1,10 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { CurrencyCode } from 'src/app/types/constants';
-import { Environment } from 'src/environments/environment.interface';
-import { ENV } from 'src/environments/environment.provider';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { Environment } from '../../../environments/environment.interface';
+import { ENV } from '../../../environments/environment.provider';
+import { CurrencyCode } from '../../types/constants';
 import { UserBalance } from '../user/user.service';
 import { EventService, EventStatusType, Payment, PuddingEvent } from './event.service';
 

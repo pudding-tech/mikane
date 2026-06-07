@@ -2,10 +2,10 @@ import { ElementRef, inputBinding } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { Category } from 'src/app/services/category/category.service';
-import { User } from 'src/app/services/user/user.service';
-import { CategoryIcon } from 'src/app/types/enums';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Category } from '../../../services/category/category.service';
+import { User } from '../../../services/user/user.service';
+import { CategoryIcon } from '../../../types/enums';
 import { CategoryItemComponent } from './category-item.component';
 
 describe('CategoryItemComponent', () => {

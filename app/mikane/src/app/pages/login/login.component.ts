@@ -1,5 +1,5 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
+import { AsyncPipe, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,17 +10,17 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { ApiError } from 'src/app/types/apiError.type';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { ApiError } from '../../types/apiError.type';
 
 @Component({
 	templateUrl: 'login.component.html',
 	styleUrls: ['./login.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatToolbarModule,
 		MatCardModule,
 		MatIconModule,
@@ -31,6 +31,8 @@ import { ApiError } from 'src/app/types/apiError.type';
 		MatProgressSpinnerModule,
 		MatButtonModule,
 		NgOptimizedImage,
+		AsyncPipe,
+		NgTemplateOutlet,
 	],
 })
 export class LoginComponent {

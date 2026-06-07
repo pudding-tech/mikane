@@ -2,9 +2,9 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, of } from 'rxjs';
-import { Environment } from 'src/environments/environment.interface';
-import { ENV } from 'src/environments/environment.provider';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Environment } from '../../../environments/environment.interface';
+import { ENV } from '../../../environments/environment.provider';
 import { AuthService } from '../auth/auth.service';
 import { LOG_LEVEL, LoggerLevel } from './log-level.config';
 import { LogService } from './log.service';

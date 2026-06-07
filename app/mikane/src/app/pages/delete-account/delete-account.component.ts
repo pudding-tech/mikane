@@ -1,23 +1,24 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subject, switchMap, takeUntil } from 'rxjs';
-import { MenuComponent } from 'src/app/features/menu/menu.component';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { ApiError } from 'src/app/types/apiError.type';
+import { MenuComponent } from '../../features/menu/menu.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User, UserService } from '../../services/user/user.service';
+import { ApiError } from '../../types/apiError.type';
 
 @Component({
 	templateUrl: './delete-account.component.html',
 	styleUrls: ['./delete-account.component.scss'],
-	imports: [CommonModule, MatCardModule, MenuComponent, MatToolbarModule, MatIconModule, MatButtonModule, RouterModule],
+	changeDetection: ChangeDetectionStrategy.Eager,
+	imports: [MatCardModule, MenuComponent, MatToolbarModule, MatIconModule, MatButtonModule, RouterModule, AsyncPipe],
 })
 export class DeleteAccountComponent implements OnInit, OnDestroy {
 	private userService = inject(UserService);

@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { authGuard } from 'src/app/services/auth/auth.guard';
+import { authGuard } from '../../services/auth/auth.guard';
 import { eventInfoGuard } from '../event-info/event-info.guard';
 import { eventSettingsGuard } from '../event-settings/event-settings.guard';
 import { EventComponent } from './event/event.component';

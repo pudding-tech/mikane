@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,19 +8,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { createCompareValidator } from 'src/app/shared/forms/validators/compare.validator';
-import { ApiError } from 'src/app/types/apiError.type';
+import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
+import { LogService } from '../../../services/log/log.service';
+import { MessageService } from '../../../services/message/message.service';
+import { User, UserService } from '../../../services/user/user.service';
+import { createCompareValidator } from '../../../shared/forms/validators/compare.validator';
+import { ApiError } from '../../../types/apiError.type';
 
 @Component({
 	selector: 'app-change-password',
 	templateUrl: './change-password.component.html',
 	styleUrls: ['./change-password.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatCardModule,
 		MatIconModule,
 		FormsModule,
@@ -28,6 +28,8 @@ import { ApiError } from 'src/app/types/apiError.type';
 		MatFormFieldModule,
 		MatInputModule,
 		MatButtonModule,
+		AsyncPipe,
+		NgTemplateOutlet,
 	],
 })
 export class ChangePasswordComponent implements OnInit, OnDestroy {

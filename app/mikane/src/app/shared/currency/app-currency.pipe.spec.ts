@@ -1,5 +1,5 @@
-import { CurrencyCode } from 'src/app/types/constants';
 import { describe, expect, it } from 'vitest';
+import { CurrencyCode } from '../../types/constants';
 import { AppCurrencyPipe } from './app-currency.pipe';
 
 describe('AppCurrencyPipe', () => {

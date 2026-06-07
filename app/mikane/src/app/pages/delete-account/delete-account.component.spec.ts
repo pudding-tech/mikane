@@ -2,12 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of, throwError } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { UserService } from 'src/app/services/user/user.service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { UserService } from '../../services/user/user.service';
 import { DeleteAccountComponent } from './delete-account.component';
 
 describe('DeleteAccountComponent', () => {

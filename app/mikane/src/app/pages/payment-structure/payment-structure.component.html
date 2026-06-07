@@ -4,7 +4,7 @@
 			<div>
 				@if (senders().length > 0) {
 					<div>
-						<div class="payments-header" [ngClass]="{ 'empty-payments': paymentsSelf().length === 0 }">
+						<div class="payments-header" [class.empty-payments]="paymentsSelf().length === 0">
 							<h3 class="payments-title">Your payments</h3>
 							@if (paymentsSelf().length > 0) {
 								<button mat-button color="accent" (click)="toggleExpand(1)" class="collapse-button">
@@ -24,7 +24,7 @@
 						} @else {
 							<span class="empty-payments-text">You have no payments in this event</span>
 						}
-						<div class="payments-header" [ngClass]="{ 'empty-payments': paymentsOthers().length === 0 }">
+						<div class="payments-header" [class.empty-payments]="paymentsOthers().length === 0">
 							<h3 class="payments-title">Other payments</h3>
 							@if (paymentsOthers().length > 0) {
 								<button mat-button color="accent" (click)="toggleExpand(2)" class="collapse-button">
@@ -53,7 +53,6 @@
 					</div>
 				}
 			</div>
-
 		} @else {
 			@if (senders().length > 0) {
 				<div>

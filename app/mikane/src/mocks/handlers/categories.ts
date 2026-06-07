@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { Category } from 'src/app/services/category/category.service';
+import { Category } from '../../app/services/category/category.service';
 import { db } from '../db';
 
 export const categoryHandlers = [

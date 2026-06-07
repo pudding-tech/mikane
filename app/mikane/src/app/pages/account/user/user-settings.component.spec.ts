@@ -8,13 +8,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { of, throwError } from 'rxjs';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { ApiError } from 'src/app/types/apiError.type';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
+import { FormValidationService } from '../../../services/form-validation/form-validation.service';
+import { LogService } from '../../../services/log/log.service';
+import { MessageService } from '../../../services/message/message.service';
+import { User, UserService } from '../../../services/user/user.service';
+import { ApiError } from '../../../types/apiError.type';
 import { UserSettingsComponent } from './user-settings.component';
 
 describe('UserSettingsComponent', () => {

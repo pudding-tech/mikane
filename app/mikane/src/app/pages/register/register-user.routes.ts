@@ -1,11 +1,11 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn, Route, Router } from '@angular/router';
 import { EMPTY, catchError, of, switchMap } from 'rxjs';
-import { ContextService } from 'src/app/services/context/context.service';
-import { KeyValidationService } from 'src/app/services/key-validation/key-validation.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { ApiError } from 'src/app/types/apiError.type';
+import { ContextService } from '../../services/context/context.service';
+import { KeyValidationService } from '../../services/key-validation/key-validation.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { ApiError } from '../../types/apiError.type';
 import { RegisterUserComponent } from './register-user.component';
 
 const registerResolver: ResolveFn<{ key: string; user: { firstName?: string; lastName?: string; email: string } }> = (

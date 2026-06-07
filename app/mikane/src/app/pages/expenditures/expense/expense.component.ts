@@ -1,5 +1,5 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { AsyncPipe, DatePipe, NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -7,24 +7,24 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subject, filter, switchMap, takeUntil } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
-import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
-import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
-import { ApiError } from 'src/app/types/apiError.type';
+import { ConfirmDialogComponent } from '../../../features/confirm-dialog/confirm-dialog.component';
+import { AuthService } from '../../../services/auth/auth.service';
+import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
+import { Category, CategoryService } from '../../../services/category/category.service';
+import { EventService, EventStatusType, PuddingEvent } from '../../../services/event/event.service';
+import { Expense, ExpenseService } from '../../../services/expense/expense.service';
+import { LogService } from '../../../services/log/log.service';
+import { MessageService } from '../../../services/message/message.service';
+import { AppCurrencyPipe } from '../../../shared/currency/app-currency.pipe';
+import { ProgressSpinnerComponent } from '../../../shared/progress-spinner/progress-spinner.component';
+import { ApiError } from '../../../types/apiError.type';
 import { ExpenditureDialogComponent } from '../expenditure-dialog/expenditure-dialog.component';
 
 @Component({
 	templateUrl: 'expense.component.html',
 	styleUrls: ['./expense.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		AppCurrencyPipe,
 		MatCardModule,
 		ProgressSpinnerComponent,
@@ -33,6 +33,8 @@ import { ExpenditureDialogComponent } from '../expenditure-dialog/expenditure-di
 		MatButtonModule,
 		MatToolbarModule,
 		NgOptimizedImage,
+		AsyncPipe,
+		DatePipe,
 	],
 })
 export class ExpenseComponent implements OnInit, OnDestroy {

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { Environment } from 'src/environments/environment.interface';
-import { ENV } from 'src/environments/environment.provider';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Environment } from '../../../environments/environment.interface';
+import { ENV } from '../../../environments/environment.provider';
 import { ContextService } from './context.service';
 
 interface NavigatorIOS extends Navigator {

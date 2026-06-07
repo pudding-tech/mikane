@@ -10,13 +10,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { By } from '@angular/platform-browser';
 import { Router, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User } from 'src/app/services/user/user.service';
-import { ApiError } from 'src/app/types/apiError.type';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User } from '../../services/user/user.service';
+import { ApiError } from '../../types/apiError.type';
 import { LoginComponent } from './login.component';
 
 @Component({ selector: 'app-events', template: '' })

@@ -31,7 +31,7 @@
 			</div>
 			<div class="title">
 				<div class="header">Date</div>
-				<span [ngClass]="{ 'expense-created-date': !expense().expenseDate }">
+				<span [class.expense-created-date]="!expense().expenseDate">
 					{{ expense().expenseDate ?? expense().created | date: "mediumDate" : null : "en" }}
 				</span>
 				@if (!expense().expenseDate) {

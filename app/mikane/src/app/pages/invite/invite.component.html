@@ -1,5 +1,5 @@
-<mat-toolbar [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
-	<a mat-icon-button routerLink="/events" [ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
+<mat-toolbar [class.mobile-toolbar]="breakpointService.isMobile() | async">
+	<a mat-icon-button routerLink="/events" [class]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
 		<mat-icon>arrow_back</mat-icon>
 	</a>
 	<span>Invite user</span>
@@ -79,7 +79,7 @@
 		data associated with this guest.
 	</div>
 	<form [formGroup]="inviteFromGuestForm" (ngSubmit)="inviteUserFromGuest(formDirective)" #formDirective="ngForm">
-		<div class="add-admin" [ngClass]="{ mobile: breakpointService.isMobile() | async }">
+		<div class="add-admin" [class.mobile]="breakpointService.isMobile() | async">
 			<mat-form-field>
 				<mat-select formControlName="guestId" name="guestId" placeholder="Select guest" required>
 					@for (guest of guests(); track guest.id) {

@@ -10,7 +10,7 @@
 @if ((loading | async) === false) {
 	<div>
 		@if ((breakpointService.isMobile() | async) === false) {
-			<div [ngClass]="{ 'extra-margin': event()?.status.id !== EventStatusType.ACTIVE }">
+			<div [class.extra-margin]="event()?.status.id !== EventStatusType.ACTIVE">
 				@if (categories().length > 0) {
 					<mat-accordion>
 						@for (category of categories(); track category.id) {
@@ -22,13 +22,13 @@
 										</mat-icon>
 										<span class="category-name">{{ category.name }}</span>
 										<span class="number-of">
-											<span class="number" [ngClass]="{ zero: category.users.length === 0 }">{{
+											<span class="number" [class.zero]="category.users.length === 0">{{
 												category.users.length
 											}}</span>
 											{{ category.users.length === 1 ? "participant" : "participants" }}
 										</span>
 										<span class="number-of">
-											<span class="number" [ngClass]="{ zero: category.numberOfExpenses === 0 }">{{
+											<span class="number" [class.zero]="category.numberOfExpenses === 0">{{
 												category.numberOfExpenses
 											}}</span>
 											{{ category.numberOfExpenses === 1 ? "expense" : "expenses" }}
@@ -51,7 +51,7 @@
 														[ngSrc]="user.avatarURL"
 														alt="User avatar"
 														class="avatar"
-														[ngClass]="{ clickable: !user.guest }"
+														[class.clickable]="!user.guest"
 														(click)="gotoUserProfile(user)"
 														width="24"
 														height="24"
@@ -262,7 +262,7 @@
 					color="primary"
 					class="add-category-button-mobile"
 					(click)="openDialog()"
-					[ngClass]="{ 'iOS-PWA': contextService.isIosPwaStandalone, hidden: scrollService.isScrolledToBottom() | async }"
+					[class]="{ 'iOS-PWA': contextService.isIosPwaStandalone, hidden: scrollService.isScrolledToBottom() | async }"
 				>
 					<mat-icon>post_add</mat-icon>
 				</button>

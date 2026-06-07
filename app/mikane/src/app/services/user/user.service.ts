@@ -1,10 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CurrencyCode } from 'src/app/types/constants';
-import { Phonenumber } from 'src/app/types/phonenumber.type';
-import { Environment } from 'src/environments/environment.interface';
-import { ENV } from 'src/environments/environment.provider';
+import { Environment } from '../../../environments/environment.interface';
+import { ENV } from '../../../environments/environment.provider';
+import { CurrencyCode } from '../../types/constants';
+import { Phonenumber } from '../../types/phonenumber.type';
 import { PuddingEvent } from '../event/event.service';
 import { Expense } from '../expense/expense.service';
 

@@ -4,7 +4,7 @@
 			<ng-content select="[button]" />
 		</mat-button-toggle>
 	}
-	<mat-button-toggle (click)="toggleDropdown()" class="split-button" [ngClass]="{ mobile: breakpointService.isMobile() | async }">
+	<mat-button-toggle (click)="toggleDropdown()" class="split-button" [class.mobile]="breakpointService.isMobile() | async">
 		<div #ref>
 			<ng-content select="[dropdown-button]" />
 		</div>
@@ -17,10 +17,10 @@
 @if (toggled) {
 	<div
 		class="dropdown"
-		[ngClass]="{ 'dropdown-mobile-override': breakpointService.isMobile() | async }"
+		[class.dropdown-mobile-override]="breakpointService.isMobile() | async"
 		[@overlayAnimation]="{
 			value: 'toggled',
-			params: { showTransitionParams: showTransitionOptions, hideTransitionParams: hideTransitionOptions }
+			params: { showTransitionParams: showTransitionOptions, hideTransitionParams: hideTransitionOptions },
 		}"
 	>
 		<ul class="menu-list">

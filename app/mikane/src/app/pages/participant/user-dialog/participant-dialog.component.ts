@@ -1,6 +1,6 @@
 import { ENTER } from '@angular/cdk/keycodes';
 import { AsyncPipe, NgOptimizedImage } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,11 +12,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Observable, map, startWith, switchMap } from 'rxjs';
-import { User } from 'src/app/services/user/user.service';
+import { User } from '../../../services/user/user.service';
 
 @Component({
 	templateUrl: './participant-dialog.component.html',
 	styleUrls: ['./participant-dialog.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
 		MatDialogModule,
 		FormsModule,

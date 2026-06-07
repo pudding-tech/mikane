@@ -1,5 +1,5 @@
-<mat-toolbar [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
-	<a mat-icon-button routerLink="/events" [ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
+<mat-toolbar [class.mobile-toolbar]="breakpointService.isMobile() | async">
+	<a mat-icon-button routerLink="/events" [class]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
 		<mat-icon>arrow_back</mat-icon>
 	</a>
 	<span>Account</span>
@@ -11,12 +11,12 @@
 		@if (user()) {
 			<div class="account-settings">
 				<app-user-settings
-					[ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc first'"
+					[class]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc first'"
 					[user]="user()"
 				/>
-				<app-preferences [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'" [user]="user()" />
-				<app-change-password [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'" />
-				<app-danger-zone [ngClass]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc last'" />
+				<app-preferences [class]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'" [user]="user()" />
+				<app-change-password [class]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc'" />
+				<app-danger-zone [class]="(breakpointService.isMobile() | async) ? 'section-mobile' : 'section-pc last'" />
 			</div>
 		} @else {
 			<div class="no-user">

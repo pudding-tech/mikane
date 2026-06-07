@@ -1,5 +1,5 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { AsyncPipe, DatePipe, NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -26,21 +26,21 @@ import {
 	switchMap,
 	takeUntil,
 } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { ParticipantItemComponent } from 'src/app/features/mobile/participant-item/participant-item.component';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { Category, CategoryService } from 'src/app/services/category/category.service';
-import { ContextService } from 'src/app/services/context/context.service';
-import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
-import { ExpenseService } from 'src/app/services/expense/expense.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { ScrollService } from 'src/app/services/scroll/scroll.service';
-import { User, UserBalance, UserService } from 'src/app/services/user/user.service';
-import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
-import { ApiError } from 'src/app/types/apiError.type';
+import { ConfirmDialogComponent } from '../../features/confirm-dialog/confirm-dialog.component';
+import { ParticipantItemComponent } from '../../features/mobile/participant-item/participant-item.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { Category, CategoryService } from '../../services/category/category.service';
+import { ContextService } from '../../services/context/context.service';
+import { EventService, EventStatusType, PuddingEvent } from '../../services/event/event.service';
+import { ExpenseService } from '../../services/expense/expense.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { ScrollService } from '../../services/scroll/scroll.service';
+import { User, UserBalance, UserService } from '../../services/user/user.service';
+import { AppCurrencyPipe } from '../../shared/currency/app-currency.pipe';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { ApiError } from '../../types/apiError.type';
 import { ExpenditureDialogComponent } from '../expenditures/expenditure-dialog/expenditure-dialog.component';
 import { ExpenseDataSource } from './expense.datasource';
 import { ParticipantDialogComponent } from './user-dialog/participant-dialog.component';
@@ -49,8 +49,8 @@ import { ParticipantDialogComponent } from './user-dialog/participant-dialog.com
 	selector: 'app-participant',
 	templateUrl: './participant.component.html',
 	styleUrls: ['./participant.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		AppCurrencyPipe,
 		MatButtonModule,
 		MatIconModule,
@@ -65,6 +65,8 @@ import { ParticipantDialogComponent } from './user-dialog/participant-dialog.com
 		ParticipantItemComponent,
 		MatSortModule,
 		NgOptimizedImage,
+		AsyncPipe,
+		DatePipe,
 	],
 })
 export class ParticipantComponent implements OnInit, OnDestroy {

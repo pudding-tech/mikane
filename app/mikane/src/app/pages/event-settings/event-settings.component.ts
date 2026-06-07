@@ -1,5 +1,5 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { AsyncPipe, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -14,26 +14,26 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
 import { BehaviorSubject, NEVER, Subscription, combineLatest, filter, switchMap } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/features/confirm-dialog/confirm-dialog.component';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { ContextService } from 'src/app/services/context/context.service';
-import { EventService, EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { EventNameValidatorDirective } from 'src/app/shared/forms/validators/async-event-name.validator';
-import { ApiError } from 'src/app/types/apiError.type';
-import { CURRENCIES, CurrencyCode } from 'src/app/types/constants';
+import { ConfirmDialogComponent } from '../../features/confirm-dialog/confirm-dialog.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { ContextService } from '../../services/context/context.service';
+import { EventService, EventStatusType, PuddingEvent } from '../../services/event/event.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User, UserService } from '../../services/user/user.service';
 import { FormControlPipe } from '../../shared/forms/form-control.pipe';
+import { EventNameValidatorDirective } from '../../shared/forms/validators/async-event-name.validator';
 import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { ApiError } from '../../types/apiError.type';
+import { CURRENCIES, CurrencyCode } from '../../types/constants';
 
 @Component({
 	templateUrl: 'event-settings.component.html',
 	styleUrls: ['./event-settings.component.scss'],
 	providers: [provideNativeDateAdapter()],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatButtonModule,
 		MatCardModule,
 		MatDatepickerModule,
@@ -50,6 +50,8 @@ import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress
 		EventNameValidatorDirective,
 		FormControlPipe,
 		NgOptimizedImage,
+		AsyncPipe,
+		NgTemplateOutlet,
 	],
 })
 export class EventSettingsComponent implements OnInit, OnDestroy {

@@ -1,9 +1,9 @@
 import { animate, style, transition, trigger } from '@angular/animations';
-import { CommonModule } from '@angular/common';
-import { Component, ContentChildren, ElementRef, HostListener, inject, output, QueryList } from '@angular/core';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ContentChildren, ElementRef, HostListener, inject, output, QueryList } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 import { SplitButtonItemDirective } from './split-button-item/split-button-item.directive';
 
 @Component({
@@ -16,7 +16,8 @@ import { SplitButtonItemDirective } from './split-button-item/split-button-item.
 			transition(':leave', [animate('{{hideTransitionParams}}', style({ opacity: 0 }))]),
 		]),
 	],
-	imports: [CommonModule, MatButtonToggleModule, MatIconModule],
+	changeDetection: ChangeDetectionStrategy.Eager,
+	imports: [MatButtonToggleModule, MatIconModule, AsyncPipe, NgTemplateOutlet],
 })
 export class SplitButtonComponent {
 	private self = inject(ElementRef);

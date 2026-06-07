@@ -1,6 +1,6 @@
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { Observable, catchError, map, of, switchMap, timer } from 'rxjs';
-import { ApiError } from 'src/app/types/apiError.type';
+import { ApiError } from '../../../types/apiError.type';
 
 /**
  * Default debounce window

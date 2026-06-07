@@ -1,10 +1,10 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn, Route, Router } from '@angular/router';
 import { EMPTY, catchError, of, switchMap } from 'rxjs';
-import { KeyValidationService } from 'src/app/services/key-validation/key-validation.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { ApiError } from 'src/app/types/apiError.type';
+import { KeyValidationService } from '../../services/key-validation/key-validation.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { ApiError } from '../../types/apiError.type';
 import { DeleteAccountComponent } from './delete-account.component';
 
 const deleteResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {

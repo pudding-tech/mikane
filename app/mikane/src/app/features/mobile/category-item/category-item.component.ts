@@ -1,22 +1,22 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, ElementRef, inject, input, output, Renderer2, signal, ViewChild } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, input, output, Renderer2, signal, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { Category } from 'src/app/services/category/category.service';
-import { User } from 'src/app/services/user/user.service';
-import { FormControlPipe } from 'src/app/shared/forms/form-control.pipe';
-import { CategoryIcon } from 'src/app/types/enums';
+import { Category } from '../../../services/category/category.service';
+import { User } from '../../../services/user/user.service';
+import { FormControlPipe } from '../../../shared/forms/form-control.pipe';
+import { CategoryIcon } from '../../../types/enums';
 
 @Component({
 	selector: 'app-category-item',
 	templateUrl: 'category-item.component.html',
 	styleUrls: ['./category-item.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatIconModule,
 		MatListModule,
 		MatButtonModule,

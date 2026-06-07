@@ -1,15 +1,16 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Expense } from 'src/app/services/expense/expense.service';
-import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
+import { Expense } from '../../../services/expense/expense.service';
+import { AppCurrencyPipe } from '../../../shared/currency/app-currency.pipe';
 
 @Component({
 	selector: 'app-expense-item',
 	templateUrl: 'expense-item.component.html',
 	styleUrls: ['./expense-item.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [MatIconModule, AppCurrencyPipe, MatListModule, NgOptimizedImage],
 })
 export class ExpenseItemComponent {

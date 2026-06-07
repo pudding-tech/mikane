@@ -3,14 +3,14 @@ import no from '@angular/common/locales/no';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Params } from '@angular/router';
 import { BehaviorSubject, of, throwError } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { EventService, Payment } from 'src/app/services/event/event.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User } from 'src/app/services/user/user.service';
-import { ApiError } from 'src/app/types/apiError.type';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { EventService, Payment } from '../../services/event/event.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User } from '../../services/user/user.service';
+import { ApiError } from '../../types/apiError.type';
 import { PaymentExpansionPanelItemComponent } from './payment-expansion-panel-item/payment-expansion-panel-item.component';
 import { PaymentStructureComponent } from './payment-structure.component';
 
@@ -571,14 +571,8 @@ describe('PaymentStructureComponent', () => {
 		// which would clobber any manually-assigned mock ref before setTimeout fires.)
 
 		it('on flip to mobile: invokes syncMobileFromBooleans synchronously', () => {
-			const mobileSpy = vi.spyOn(
-				component as unknown as { syncMobileFromBooleans: () => void },
-				'syncMobileFromBooleans',
-			);
-			const desktopSpy = vi.spyOn(
-				component as unknown as { syncDesktopFromBooleans: () => void },
-				'syncDesktopFromBooleans',
-			);
+			const mobileSpy = vi.spyOn(component as unknown as { syncMobileFromBooleans: () => void }, 'syncMobileFromBooleans');
+			const desktopSpy = vi.spyOn(component as unknown as { syncDesktopFromBooleans: () => void }, 'syncDesktopFromBooleans');
 			initComponent();
 
 			isMobile$.next(true);
@@ -588,10 +582,7 @@ describe('PaymentStructureComponent', () => {
 		});
 
 		it('on flip to desktop: defers syncDesktopFromBooleans via a macrotask', async () => {
-			const desktopSpy = vi.spyOn(
-				component as unknown as { syncDesktopFromBooleans: () => void },
-				'syncDesktopFromBooleans',
-			);
+			const desktopSpy = vi.spyOn(component as unknown as { syncDesktopFromBooleans: () => void }, 'syncDesktopFromBooleans');
 			initComponent();
 
 			// Initial subject value is `false` (desktop); to simulate a real flip we
@@ -606,14 +597,8 @@ describe('PaymentStructureComponent', () => {
 		});
 
 		it('stops orchestrating syncs after ngOnDestroy', async () => {
-			const mobileSpy = vi.spyOn(
-				component as unknown as { syncMobileFromBooleans: () => void },
-				'syncMobileFromBooleans',
-			);
-			const desktopSpy = vi.spyOn(
-				component as unknown as { syncDesktopFromBooleans: () => void },
-				'syncDesktopFromBooleans',
-			);
+			const mobileSpy = vi.spyOn(component as unknown as { syncMobileFromBooleans: () => void }, 'syncMobileFromBooleans');
+			const desktopSpy = vi.spyOn(component as unknown as { syncDesktopFromBooleans: () => void }, 'syncDesktopFromBooleans');
 			initComponent();
 
 			component.ngOnDestroy();
@@ -696,9 +681,7 @@ describe('PaymentStructureComponent', () => {
 			component.paymentsOthersRef = undefined as unknown as PaymentExpansionPanelItemComponent;
 
 			// Would throw on `.openExpand` if the guard were missing.
-			expect(() =>
-				(component as unknown as { syncDesktopFromBooleans: () => void }).syncDesktopFromBooleans(),
-			).not.toThrow();
+			expect(() => (component as unknown as { syncDesktopFromBooleans: () => void }).syncDesktopFromBooleans()).not.toThrow();
 		});
 	});
 });

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { User } from 'src/app/services/user/user.service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { User } from '../../../services/user/user.service';
 import { PaymentExpansionPanelItemComponent } from './payment-expansion-panel-item.component';
 
 describe('PaymentExpansionPanelItemComponent', () => {

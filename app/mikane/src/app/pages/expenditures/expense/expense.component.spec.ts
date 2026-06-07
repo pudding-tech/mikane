@@ -3,14 +3,14 @@ import localeNo from '@angular/common/locales/no';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { CategoryService } from 'src/app/services/category/category.service';
-import { EventService } from 'src/app/services/event/event.service';
-import { Expense, ExpenseService } from 'src/app/services/expense/expense.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AuthService } from '../../../services/auth/auth.service';
+import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
+import { CategoryService } from '../../../services/category/category.service';
+import { EventService } from '../../../services/event/event.service';
+import { Expense, ExpenseService } from '../../../services/expense/expense.service';
+import { LogService } from '../../../services/log/log.service';
+import { MessageService } from '../../../services/message/message.service';
 import { ExpenseComponent } from './expense.component';
 
 describe('ExpenseComponent', () => {

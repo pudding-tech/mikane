@@ -1,7 +1,7 @@
 import { Directive, Input, inject } from '@angular/core';
 import { AbstractControl, AsyncValidator, AsyncValidatorFn, NG_ASYNC_VALIDATORS, ValidationErrors } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { FormValidationService } from 'src/app/services/form-validation/form-validation.service';
+import { FormValidationService } from '../../../services/form-validation/form-validation.service';
 import { createUniquenessValidator } from './uniqueness-validator';
 
 export function eventNameValidator(formValidationService: FormValidationService, eventId?: string): AsyncValidatorFn {

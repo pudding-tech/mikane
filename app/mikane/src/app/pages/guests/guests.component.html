@@ -1,5 +1,5 @@
-<mat-toolbar [ngClass]="{ 'mobile-toolbar': breakpointService.isMobile() | async }">
-	<a mat-icon-button routerLink="/events" [ngClass]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
+<mat-toolbar [class.mobile-toolbar]="breakpointService.isMobile() | async">
+	<a mat-icon-button routerLink="/events" [class]="(breakpointService.isMobile() | async) ? 'back-button-mobile' : 'back-button'">
 		<mat-icon>arrow_back</mat-icon>
 	</a>
 	<span>Guest users</span>
@@ -59,7 +59,7 @@
 				[pageSize]="pageSize"
 				[pageSizeOptions]="pageSizeOptions"
 				(page)="onPageChange($event)"
-				[ngClass]="{ 'paginator-mobile': breakpointService.isMobile() | async }"
+				[class.paginator-mobile]="breakpointService.isMobile() | async"
 			/>
 		}
 	</div>

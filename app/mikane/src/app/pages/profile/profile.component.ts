@@ -1,5 +1,5 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { AsyncPipe, DatePipe, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -10,23 +10,23 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BehaviorSubject, EMPTY, Subscription, catchError, combineLatest, map, switchMap, tap } from 'rxjs';
-import { MenuComponent } from 'src/app/features/menu/menu.component';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { EventStatusType, PuddingEvent } from 'src/app/services/event/event.service';
-import { Expense } from 'src/app/services/expense/expense.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { AppCurrencyPipe } from 'src/app/shared/currency/app-currency.pipe';
-import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
-import { ApiError } from 'src/app/types/apiError.type';
+import { MenuComponent } from '../../features/menu/menu.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { EventStatusType, PuddingEvent } from '../../services/event/event.service';
+import { Expense } from '../../services/expense/expense.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User, UserService } from '../../services/user/user.service';
+import { AppCurrencyPipe } from '../../shared/currency/app-currency.pipe';
+import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { ApiError } from '../../types/apiError.type';
 
 @Component({
 	templateUrl: 'profile.component.html',
 	styleUrls: ['./profile.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		AppCurrencyPipe,
 		MatCardModule,
 		ProgressSpinnerComponent,
@@ -39,6 +39,9 @@ import { ApiError } from 'src/app/types/apiError.type';
 		MatToolbarModule,
 		MatTooltipModule,
 		NgOptimizedImage,
+		AsyncPipe,
+		DatePipe,
+		NgTemplateOutlet,
 	],
 })
 export class ProfileComponent implements OnInit, OnDestroy {

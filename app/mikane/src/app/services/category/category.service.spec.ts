@@ -1,10 +1,10 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { CategoryIcon } from 'src/app/types/enums';
-import { Environment } from 'src/environments/environment.interface';
-import { ENV } from 'src/environments/environment.provider';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { Environment } from '../../../environments/environment.interface';
+import { ENV } from '../../../environments/environment.provider';
+import { CategoryIcon } from '../../types/enums';
 import { Category, CategoryService } from './category.service';
 
 describe('CategoryService', () => {

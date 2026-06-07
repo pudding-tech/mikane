@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -7,14 +7,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { BehaviorSubject, Subscription, switchMap } from 'rxjs';
-import { MenuComponent } from 'src/app/features/menu/menu.component';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { BreakpointService } from 'src/app/services/breakpoint/breakpoint.service';
-import { LogService } from 'src/app/services/log/log.service';
-import { MessageService } from 'src/app/services/message/message.service';
-import { User, UserService } from 'src/app/services/user/user.service';
-import { ProgressSpinnerComponent } from 'src/app/shared/progress-spinner/progress-spinner.component';
-import { ApiError } from 'src/app/types/apiError.type';
+import { MenuComponent } from '../../features/menu/menu.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
+import { LogService } from '../../services/log/log.service';
+import { MessageService } from '../../services/message/message.service';
+import { User, UserService } from '../../services/user/user.service';
+import { ProgressSpinnerComponent } from '../../shared/progress-spinner/progress-spinner.component';
+import { ApiError } from '../../types/apiError.type';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { DangerZoneComponent } from './danger-zone/danger-zone.component';
 import { PreferencesComponent } from './preferences/preferences.component';
@@ -23,8 +23,8 @@ import { UserSettingsComponent } from './user/user-settings.component';
 @Component({
 	templateUrl: './account.component.html',
 	styleUrls: ['./account.component.scss'],
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [
-		CommonModule,
 		MatToolbarModule,
 		MatButtonModule,
 		MatDialogModule,
@@ -37,6 +37,7 @@ import { UserSettingsComponent } from './user/user-settings.component';
 		MenuComponent,
 		ProgressSpinnerComponent,
 		MatCardModule,
+		AsyncPipe,
 	],
 })
 export class AccountComponent implements OnInit, OnDestroy {
