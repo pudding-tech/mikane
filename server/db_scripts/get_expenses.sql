@@ -25,13 +25,14 @@ returns table (
   payer_deleted boolean,
   event_id uuid,
   event_name varchar(255),
-  event_private boolean
+  event_private boolean,
+  event_currency varchar(3)
 ) as
 $$
 begin
 
   if (ip_expense_id is not null) then
-  begin
+  begin -- Get specific expense by ID
     if not exists (select 1 from expense ex where ex.id = ip_expense_id) then
       raise exception 'Expense not found' using errcode = 'P0084';
     end if;
@@ -53,7 +54,7 @@ begin
       ex.id, ex.name, ex.description, ex.amount, ex.currency, ex.expense_date, ex.created,
       c.id as category_id, c.name as category_name, c.icon as category_icon,
       u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email, u.guest as payer_guest, u.deleted as payer_deleted,
-      ev.id as event_id, ev.name as event_name, ev.private as event_private
+      ev.id as event_id, ev.name as event_name, ev.private as event_private, ev.currency as event_currency
     from
       expense ex
       inner join category c on c.id = ex.category_id
@@ -66,7 +67,7 @@ begin
   end;
 
   elsif (ip_event_id is not null and ip_user_id is null) then
-  begin
+  begin -- Get all expenses for an event
     if not exists (select 1 from "event" e where e.id = ip_event_id) then
       raise exception 'Event not found' using errcode = 'P0006';
     end if;
@@ -86,7 +87,7 @@ begin
       ex.id, ex.name, ex.description, ex.amount, ex.currency, ex.expense_date, ex.created,
       c.id as category_id, c.name as category_name, c.icon as category_icon,
       u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email, u.guest as payer_guest, u.deleted as payer_deleted,
-      ev.id as event_id, ev.name as event_name, ev.private as event_private
+      ev.id as event_id, ev.name as event_name, ev.private as event_private, ev.currency as event_currency
     from
       expense ex
       inner join category c on c.id = ex.category_id
@@ -99,7 +100,7 @@ begin
   end;
 
   elsif (ip_event_id is null and ip_user_id is not null) then
-  begin
+  begin -- Get all expenses for a user
     if not exists (select 1 from "user" u where u.id = ip_user_id) then
       raise exception 'User not found' using errcode = 'P0008';
     end if;
@@ -109,7 +110,7 @@ begin
       ex.id, ex.name, ex.description, ex.amount, ex.currency, ex.expense_date, ex.created,
       c.id as category_id, c.name as category_name, c.icon as category_icon,
       u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email, u.guest as payer_guest, u.deleted as payer_deleted,
-      ev.id as event_id, ev.name as event_name, ev.private as event_private
+      ev.id as event_id, ev.name as event_name, ev.private as event_private, ev.currency as event_currency
     from
       expense ex
       inner join category c on c.id = ex.category_id
@@ -124,7 +125,7 @@ begin
   end;
 
   elsif (ip_event_id is not null and ip_user_id is not null) then
-  begin
+  begin -- Get all expenses for a specific event and user
     if not exists (select 1 from "event" e where e.id = ip_event_id) then
       raise exception 'Event not found' using errcode = 'P0006';
     end if;
@@ -148,7 +149,7 @@ begin
       ex.id, ex.name, ex.description, ex.amount, ex.currency, ex.expense_date, ex.created,
       c.id as category_id, c.name as category_name, c.icon as category_icon,
       u.id as payer_id, u.first_name as payer_first_name, u.last_name as payer_last_name, u.username as payer_username, u.email as payer_email, u.guest as payer_guest, u.deleted as payer_deleted,
-      ev.id as event_id, ev.name as event_name, ev.private as event_private
+      ev.id as event_id, ev.name as event_name, ev.private as event_private, ev.currency as event_currency
     from
       expense ex
       inner join category c on c.id = ex.category_id

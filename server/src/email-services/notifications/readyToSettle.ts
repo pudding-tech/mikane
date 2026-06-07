@@ -1,7 +1,8 @@
 import env from "../../env.ts";
 import logger from "../../utils/logger.ts";
 import { sendEmail } from "../../utils/sendEmail.ts";
-import { Event, Payment, User } from "../../types/types.ts";
+import { formatCurrency } from "../../utils/formatCurrency.ts";
+import { Currency, Event, Payment, User } from "../../types/types.ts";
 
 type SenderPayments = {
   sender: User,
@@ -24,8 +25,9 @@ const url = env.ALLOWED_ORIGIN + "/events/";
  * Send emails to all payment senders and receivers in an event
  * @param payments List of payments within an event
  * @param event Event to send payment emails for
+ * @param currency Currency used in the event, for formatting payment amounts in the email
  */
-export const sendReadyToSettleEmails = async (paymentsInput: Payment[], event: Event) => {
+export const sendReadyToSettleEmails = async (paymentsInput: Payment[], event: Event, currency: Currency) => {
 
   const subjectSenders = `${event.name} is now ready for settlement - Mikane`;
   const subjectReceivers = `${event.name}: You will soon receive payments - Mikane`;
@@ -70,7 +72,7 @@ export const sendReadyToSettleEmails = async (paymentsInput: Payment[], event: E
       throw new Error("User " + senderPayment.sender.name + " missing email");
     }
 
-    const html = senderEmailHTML(senderPayment, event);
+    const html = senderEmailHTML(senderPayment, event, currency);
 
     const sentMessageInfo = await sendEmail(senderPayment.sender.email, subjectSenders, html);
     if (sentMessageInfo.To) {
@@ -86,7 +88,7 @@ export const sendReadyToSettleEmails = async (paymentsInput: Payment[], event: E
       throw new Error("User " + receiverPayment.receiver.name + " missing email");
     }
 
-    const html = receiverEmailHTML(receiverPayment, event);
+    const html = receiverEmailHTML(receiverPayment, event, currency);
 
     const sentMessageInfo = await sendEmail(receiverPayment.receiver.email, subjectReceivers, html);
     if (sentMessageInfo.To) {
@@ -95,7 +97,7 @@ export const sendReadyToSettleEmails = async (paymentsInput: Payment[], event: E
   }
 };
 
-const senderEmailHTML = (senderPayment: SenderPayments, event: Event) => {
+const senderEmailHTML = (senderPayment: SenderPayments, event: Event, currency: Currency) => {
   return `<html>
             <body>
               <h2 style="color:#7d0a37;">${event.name} is now ready for settlement</h2>
@@ -107,7 +109,7 @@ const senderEmailHTML = (senderPayment: SenderPayments, event: Event) => {
                   return `<div style="margin-left: 10px;">
                             - ${payment.receiver.name}
                             <span style="display: inline-block; background-color: #ff85b65e; padding: 1px 4px; margin-bottom: 2px; border-radius: 4px;">
-                              ${payment.amount} kr
+                              ${formatCurrency(payment.amount, event.currency, currency.formatLocale)}
                             </span>
                           </div>`;
                 }).join("")}
@@ -122,7 +124,7 @@ const senderEmailHTML = (senderPayment: SenderPayments, event: Event) => {
           </html>`;
 };
 
-const receiverEmailHTML = (receiverPayment: ReceiverPayments, event: Event) => {
+const receiverEmailHTML = (receiverPayment: ReceiverPayments, event: Event, currency: Currency) => {
   return `<html>
             <body>
               <h2 style="color:#0d4f11;">${event.name}: You will soon receive payments</h2>
@@ -134,7 +136,7 @@ const receiverEmailHTML = (receiverPayment: ReceiverPayments, event: Event) => {
                   return `<div style="margin-left: 10px;">
                             - ${payment.sender.name}
                             <span style="display: inline-block; background-color: #ff85b65e; padding: 1px 4px; margin-bottom: 2px; border-radius: 4px;">
-                              ${payment.amount} kr
+                              ${formatCurrency(payment.amount, event.currency, currency.formatLocale)}
                             </span>
                           </div>`;
                 }).join("")}

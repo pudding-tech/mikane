@@ -2,6 +2,7 @@ import express from "express";
 import env from "../env.ts";
 import { getEvent, getEventPayments } from "../db/dbEvents.ts";
 import { getUsers } from "../db/dbUsers.ts";
+import { getCurrencies } from "../db/dbConfig.ts";
 import { authCheck } from "../middlewares/authCheck.ts";
 import { csrfCheck } from "../middlewares/csrf.ts";
 import { singleRequestLimiter } from "../middlewares/singleRequestLimiter.ts";
@@ -12,6 +13,8 @@ import { sendAddExpensesReminderEmails } from "../email-services/notifications/a
 import { sendReadyToSettleEmails } from "../email-services/notifications/readyToSettle.ts";
 import { createDate } from "../utils/dateCreator.ts";
 import * as ec from "../types/errorCodes.ts";
+import logger from "../utils/logger.ts";
+
 const router = express.Router();
 
 /*
@@ -72,7 +75,14 @@ router.post("/notifications/:eventId/settle", singleRequestLimiter, authCheck, c
 
   const payments = await getEventPayments(event.id, activeUserId);
 
-  await sendReadyToSettleEmails(payments, event);
+  const currencies = await getCurrencies();
+  const currency = currencies.find(c => c.code === event.currency);
+  if (!currency) {
+    logger.error(`Currency ${event.currency} not found in database for event ${event.name} (${event.id})`);
+    throw new PudError(ec.PUD151);
+  }
+
+  await sendReadyToSettleEmails(payments, event, currency);
   res.status(200).json({ message: "Emails successfully sent" });
 });
 

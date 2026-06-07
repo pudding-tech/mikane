@@ -6,6 +6,7 @@ create table event_status_type (
 create table currency (
   code varchar(3) primary key,
   "name" varchar(255) not null,
+  format_locale varchar(10) not null,
   sort_order int not null
 );
 
@@ -142,9 +143,19 @@ create table log_client (
 insert into event_status_type (id, "name")
   values (1, 'Active'), (2, 'Ready to settle'), (3, 'Settled');
 
-insert into currency (code, "name", sort_order)
-  values ('USD', 'US Dollar', 2), ('EUR', 'Euro', 3), ('GBP', 'British Pound', 4), ('CAD', 'Canadian Dollar', 5), ('AUD', 'Australian Dollar', 6),
-    ('NOK', 'Norwegian Krone', 1), ('SEK', 'Swedish Krona', 7), ('DKK', 'Danish Krone', 8), ('JPY', 'Japanese Yen', 9), ('CNY', 'Chinese Yuan', 10),
-    ('KRW', 'South Korean Won', 11), ('CHF', 'Swiss Franc', 12);
+insert into currency (code, "name", format_locale, sort_order)
+  values
+    ('NOK', 'Norwegian Krone', 'nb-NO', 1),
+    ('USD', 'US Dollar', 'en-US', 2),
+    ('EUR', 'Euro', 'de-DE', 3),
+    ('GBP', 'British Pound', 'en-GB', 4),
+    ('CAD', 'Canadian Dollar', 'en-CA', 5),
+    ('AUD', 'Australian Dollar', 'en-AU', 6),
+    ('SEK', 'Swedish Krona', 'sv-SE', 7),
+    ('DKK', 'Danish Krone', 'da-DK', 8),
+    ('JPY', 'Japanese Yen', 'ja-JP', 9),
+    ('CNY', 'Chinese Yuan', 'zh-CN', 10),
+    ('KRW', 'South Korean Won', 'ko-KR', 11),
+    ('CHF', 'Swiss Franc', 'de-CH', 12);
 
 create extension if not exists pgcrypto;

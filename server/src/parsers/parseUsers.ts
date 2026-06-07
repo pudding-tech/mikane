@@ -46,10 +46,11 @@ export const parseUsers = (usersInput: UserDB[], withEventData: boolean, exclude
       superAdmin: userObj.super_admin,
       publicEmail: userObj.public_email ?? false,
       publicPhone: userObj.public_phone ?? false,
-      eventInfo: withEventData && userObj.event_id && userObj.event_joined_time ? {
+      eventInfo: withEventData && userObj.event_id && userObj.event_joined_time && userObj.event_currency ? {
         id: userObj.event_id,
         isAdmin: userObj.is_event_admin ?? false,
-        joinedTime: userObj.event_joined_time
+        joinedTime: userObj.event_joined_time,
+        currency: userObj.event_currency
       } : undefined
     };
     allUsers.push(user);

@@ -35,7 +35,8 @@ export const parseExpenses = (expInput: ExpenseDB[], usersInEventInput?: UserNam
       eventInfo: {
         id: expObj.event_id,
         name: expObj.event_name,
-        private: expObj.event_private
+        private: expObj.event_private,
+        currency: expObj.event_currency
       },
       payer: expObj.payer_deleted ? {
         id: expObj.payer_id,
